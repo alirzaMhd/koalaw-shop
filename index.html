@@ -1,577 +1,1303 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LUMIÈRE | Illuminate Your Beauty</title>
+    <title>LUMIÈRE | Luxury Cosmetics Redefined</title>
     <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
-    
-    <!-- Scripts & Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.waves.min.js"></script>
-
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-    <!-- Tailwind Configuration (Simulated) -->
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'primary': '#f9f5f0', // Soft beige background
-                        'secondary': '#1a1a1a', // Rich black for text/buttons
-                        'accent': '#c4a484', // Muted gold/tan
-                        'accent-dark': '#9a7b5f', // Darker accent for contrast
-                        'highlight': '#e8c8b8', // Soft pinkish highlight
-                    },
-                    fontFamily: {
-                        'serif': ['"Playfair Display"', 'serif'],
-                        'sans': ['"Montserrat"', 'sans-serif'],
-                    },
-                    animation: {
-                        'bounce-slow': 'bounce 3s infinite',
-                        'float': 'float 6s ease-in-out infinite',
-                        'aurora': 'aurora 15s ease-in-out infinite',
-                    },
-                    keyframes: {
-                        float: {
-                            '0%, 100%': { transform: 'translateY(0px)' },
-                            '50%': { transform: 'translateY(-20px)' },
-                        },
-                        aurora: {
-                            '0%, 100%': { 'background-position': '0% 50%' },
-                            '50%': { 'background-position': '100% 50%' },
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    <script src="https://unpkg.com/three@0.140.0/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.fog.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
     
-    <!-- Custom Styles -->
     <style>
-        /* General Body Styles */
-        body {
-            font-family: 'Montserrat', sans-serif;
-            background-color: #f9f5f0;
-            color: #333;
-            overflow-x: hidden;
+        :root {
+            --primary-gold: #D4AF37;
+            --secondary-gold: #B8860B;
+            --rose-gold: #E8C1A0;
+            --deep-burgundy: #800020;
+            --warm-cream: #F7F3E9;
+            --charcoal: #2C2C2C;
+            --soft-white: #FEFEFE;
+            --shadow-light: rgba(212, 175, 55, 0.1);
+            --shadow-medium: rgba(44, 44, 44, 0.15);
+            --gradient-gold: linear-gradient(135deg, #D4AF37 0%, #B8860B 50%, #DAA520 100%);
+            --gradient-rose: linear-gradient(135deg, #E8C1A0 0%, #DDB892 50%, #D2B48C 100%);
         }
         
-        /* Custom Scrollbar for a polished look */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #f9f5f0; }
-        ::-webkit-scrollbar-thumb { background: #c4a484; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #9a7b5f; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         
-        /* Gradient Text Utility */
-        .gradient-text {
-            background: linear-gradient(45deg, #9a7b5f, #c4a484);
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--warm-cream);
+            color: var(--charcoal);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+        
+        .font-serif {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .font-elegant {
+            font-family: 'Cormorant Garamond', serif;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--warm-cream);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--gradient-gold);
+            border-radius: 3px;
+        }
+        
+        /* Loading Animation */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: var(--warm-cream);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+        
+        .loading-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        .loader {
+            width: 60px;
+            height: 60px;
+            border: 3px solid var(--rose-gold);
+            border-top: 3px solid var(--primary-gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Enhanced Navigation */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .navbar.scrolled {
+            background: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 8px 30px var(--shadow-light);
+        }
+        
+        .logo {
+            background: var(--gradient-gold);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+            letter-spacing: 2px;
         }
         
-        /* Navigation Link Underline Effect */
-        .nav-link::after {
+        .nav-link {
+            position: relative;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link::before {
             content: '';
-            display: block;
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
             width: 0;
             height: 2px;
-            background: #c4a484;
-            transition: width .3s ease-in-out;
+            background: var(--gradient-gold);
+            transition: width 0.3s ease;
         }
-        .nav-link:hover::after { width: 100%; }
-
-        /* Product Card Overlay Transition */
+        
+        .nav-link:hover::before {
+            width: 100%;
+        }
+        
+        /* Hero Section Enhancements */
+        .hero-container {
+            background: linear-gradient(135deg, var(--warm-cream) 0%, rgba(232, 193, 160, 0.3) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-bg-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        
+        .floating-element {
+            position: absolute;
+            opacity: 0.1;
+            animation: float 20s infinite ease-in-out;
+        }
+        
+        .floating-element:nth-child(1) {
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+        
+        .floating-element:nth-child(2) {
+            top: 60%;
+            right: 15%;
+            animation-delay: 7s;
+        }
+        
+        .floating-element:nth-child(3) {
+            bottom: 30%;
+            left: 20%;
+            animation-delay: 14s;
+        }
+        
+        @keyframes float {
+            0%, 100% { 
+                transform: translate(0, 0) rotate(0deg); 
+                opacity: 0.1;
+            }
+            25% { 
+                transform: translate(30px, -30px) rotate(90deg); 
+                opacity: 0.2;
+            }
+            50% { 
+                transform: translate(-20px, -60px) rotate(180deg); 
+                opacity: 0.1;
+            }
+            75% { 
+                transform: translate(-40px, -20px) rotate(270deg); 
+                opacity: 0.15;
+            }
+        }
+        
+        .hero-title {
+            font-size: clamp(2.5rem, 6vw, 5rem);
+            line-height: 1.1;
+            background: linear-gradient(135deg, var(--charcoal) 0%, var(--deep-burgundy) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero-subtitle {
+            font-size: clamp(1rem, 2vw, 1.25rem);
+            color: rgba(44, 44, 44, 0.8);
+            max-width: 600px;
+        }
+        
+        /* Button Enhancements */
+        .btn-primary {
+            background: var(--gradient-gold);
+            color: white;
+            font-weight: 600;
+            padding: 16px 32px;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px var(--shadow-light);
+        }
+        
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.6s;
+        }
+        
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px var(--shadow-medium);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: var(--charcoal);
+            font-weight: 600;
+            padding: 16px 32px;
+            border: 2px solid var(--charcoal);
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-secondary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 100%;
+            background: var(--charcoal);
+            transition: width 0.3s ease;
+            z-index: -1;
+        }
+        
+        .btn-secondary:hover::before {
+            width: 100%;
+        }
+        
+        .btn-secondary:hover {
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px var(--shadow-medium);
+        }
+        
+        /* Enhanced Product Cards */
+        .product-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px var(--shadow-light);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+        
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--gradient-gold);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 25px 50px var(--shadow-medium);
+        }
+        
+        .product-image {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .product-image img {
+            transition: transform 0.6s ease;
+        }
+        
+        .product-card:hover .product-image img {
+            transform: scale(1.1);
+        }
+        
+        .product-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        
         .product-card:hover .product-overlay {
             opacity: 1;
-            transform: translateY(0);
         }
-        .product-overlay {
-            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        
+        /* Collection Cards */
+        .collection-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 20px;
+            height: 400px;
+            cursor: pointer;
+        }
+        
+        .collection-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(212, 175, 55, 0.3), rgba(128, 0, 32, 0.3));
             opacity: 0;
-            transform: translateY(20px);
+            transition: opacity 0.3s ease;
+            z-index: 2;
         }
-
-        /* Aurora Background for Newsletter */
-        .aurora-bg {
-            background: linear-gradient(-45deg, #9a7b5f, #c4a484, #e8c8b8, #f9f5f0);
-            background-size: 400% 400%;
+        
+        .collection-card:hover::before {
+            opacity: 1;
+        }
+        
+        .collection-card img {
+            transition: transform 0.6s ease;
+        }
+        
+        .collection-card:hover img {
+            transform: scale(1.1);
+        }
+        
+        /* Testimonial Cards */
+        .testimonial-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px var(--shadow-light);
+            transition: all 0.3s ease;
+            position: relative;
+            border: 1px solid rgba(212, 175, 55, 0.1);
+        }
+        
+        .testimonial-card::before {
+            content: '"';
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            font-size: 4rem;
+            color: var(--primary-gold);
+            font-family: 'Playfair Display', serif;
+            opacity: 0.3;
+        }
+        
+        .testimonial-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 60px var(--shadow-medium);
+        }
+        
+        /* Newsletter Section */
+        .newsletter-section {
+            background: linear-gradient(135deg, var(--deep-burgundy) 0%, var(--charcoal) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .newsletter-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>') repeat;
+            background-size: 50px 50px;
+            animation: twinkle 10s linear infinite;
+        }
+        
+        @keyframes twinkle {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-100px); }
+        }
+        
+        /* Footer Enhancements */
+        .footer {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2c2c2c 100%);
+            position: relative;
+        }
+        
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--gradient-gold);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .product-card:hover {
+                transform: translateY(-8px) scale(1.01);
+            }
+            
+            .btn-primary, .btn-secondary {
+                padding: 12px 24px;
+                font-size: 0.9rem;
+            }
+        }
+        
+        /* Accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+        
+        /* Focus states */
+        .btn-primary:focus,
+        .btn-secondary:focus,
+        .nav-link:focus {
+            outline: 2px solid var(--primary-gold);
+            outline-offset: 2px;
+        }
+        
+        /* Scroll indicator */
+        .scroll-indicator {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 3px;
+            background: var(--gradient-gold);
+            z-index: 9999;
+            transition: width 0.1s ease;
         }
     </style>
 </head>
-<body class="bg-primary text-secondary/80 font-sans">
+<body>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loader"></div>
+    </div>
     
-    <!-- =================================================================== -->
-    <!-- Navigation Bar -->
-    <!-- =================================================================== -->
-    <nav id="navbar" class="fixed w-full z-50 transition-all duration-300">
+    <!-- Scroll Indicator -->
+    <div class="scroll-indicator" id="scrollIndicator"></div>
+    
+    <!-- Navigation -->
+    <nav class="navbar fixed w-full z-50 transition-all duration-300" id="navbar">
         <div class="container mx-auto px-6 py-4">
             <div class="flex items-center justify-between">
-                <a href="#" class="text-3xl font-serif font-bold text-secondary tracking-wider">LUMIÈRE</a>
+                <div class="flex items-center">
+                    <a href="#" class="logo text-3xl font-serif font-bold">LUMIÈRE</a>
+                    <span class="ml-2 text-xs text-gray-500 font-elegant">EST. 2012</span>
+                </div>
                 
-                <div class="hidden md:flex items-center space-x-10">
-                    <a href="#collections" class="nav-link text-secondary/70 hover:text-secondary transition duration-300">Collections</a>
-                    <a href="#bestsellers" class="nav-link text-secondary/70 hover:text-secondary transition duration-300">Shop</a>
-                    <a href="#philosophy" class="nav-link text-secondary/70 hover:text-secondary transition duration-300">About</a>
-                    <a href="#" class="nav-link text-secondary/70 hover:text-secondary transition duration-300">Journal</a>
+                <div class="hidden md:flex items-center space-x-12">
+                    <a href="#collections" class="nav-link text-gray-700 hover:text-gray-900">Collections</a>
+                    <a href="#products" class="nav-link text-gray-700 hover:text-gray-900">Products</a>
+                    <a href="#story" class="nav-link text-gray-700 hover:text-gray-900">Our Story</a>
+                    <a href="#reviews" class="nav-link text-gray-700 hover:text-gray-900">Reviews</a>
                 </div>
                 
                 <div class="flex items-center space-x-6">
-                    <a href="#" class="text-secondary/70 hover:text-secondary"><i data-feather="search" class="w-5 h-5"></i></a>
-                    <a href="#" class="text-secondary/70 hover:text-secondary"><i data-feather="user" class="w-5 h-5"></i></a>
-                    <a href="#" class="text-secondary/70 hover:text-secondary relative">
-                        <i data-feather="shopping-bag" class="w-5 h-5"></i>
-                        <span class="absolute -top-2.5 -right-2.5 bg-accent text-white text-[10px] rounded-full h-5 w-5 flex items-center justify-center font-bold">3</span>
-                    </a>
+                    <button class="text-gray-700 hover:text-gray-900 transition-colors duration-300" aria-label="Search">
+                        <i data-feather="search"></i>
+                    </button>
+                    <button class="text-gray-700 hover:text-gray-900 transition-colors duration-300" aria-label="Account">
+                        <i data-feather="user"></i>
+                    </button>
+                    <button class="text-gray-700 hover:text-gray-900 relative transition-colors duration-300" aria-label="Shopping bag">
+                        <i data-feather="shopping-bag"></i>
+                        <span class="absolute -top-2 -right-2 bg-gradient-to-r from-red-500 to-pink-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center animate-pulse">3</span>
+                    </button>
                 </div>
             </div>
         </div>
     </nav>
     
-    <!-- =================================================================== -->
     <!-- Hero Section -->
-    <!-- =================================================================== -->
-    <section id="hero" class="min-h-screen relative flex items-center overflow-hidden">
-        <div id="hero-vanta-bg" class="absolute top-0 left-0 w-full h-full z-0"></div>
-        <div class="container mx-auto px-6 z-10">
-            <div class="flex flex-col md:flex-row items-center">
-                <div class="md:w-1/2 text-center md:text-left" data-aos="fade-right">
-                    <h1 class="text-5xl md:text-7xl font-serif font-extrabold text-secondary leading-tight mb-6">
-                        Illuminate Your <br> <span class="gradient-text">Inner Radiance</span>
+    <section class="hero-container min-h-screen flex items-center pt-20 relative">
+        <div class="hero-bg-elements">
+            <div class="floating-element w-32 h-32 bg-gradient-to-br from-yellow-200 to-yellow-400 rounded-full"></div>
+            <div class="floating-element w-24 h-24 bg-gradient-to-br from-pink-200 to-pink-400 rounded-full"></div>
+            <div class="floating-element w-40 h-40 bg-gradient-to-br from-purple-200 to-purple-400 rounded-full"></div>
+        </div>
+        
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="flex flex-col lg:flex-row items-center">
+                <div class="lg:w-1/2 mb-12 lg:mb-0" data-aos="fade-right" data-aos-duration="1000">
+                    <div class="mb-6">
+                        <span class="inline-block px-4 py-2 bg-white bg-opacity-80 text-sm font-semibold text-gray-700 rounded-full mb-4">
+                            ✨ New Collection Available
+                        </span>
+                    </div>
+                    <h1 class="hero-title font-serif font-bold mb-6">
+                        Redefine Your
+                        <span class="block">Natural</span>
+                        <span class="bg-gradient-to-r from-yellow-600 via-yellow-500 to-yellow-400 bg-clip-text text-transparent">Elegance</span>
                     </h1>
-                    <p class="text-lg text-secondary/60 mb-8 max-w-lg mx-auto md:mx-0">
-                        Discover luxurious, cruelty-free cosmetics crafted with the finest natural ingredients to enhance your true beauty.
+                    <p class="hero-subtitle mb-8 font-light leading-relaxed">
+                        Experience the perfect harmony of luxury and nature with our ethically crafted cosmetics. Each product is a celebration of your unique beauty, designed to enhance rather than mask your natural radiance.
                     </p>
-                    <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 justify-center md:justify-start">
-                        <a href="#bestsellers" class="px-8 py-3 bg-secondary text-white rounded-full hover:bg-secondary/80 transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center">
-                            Shop The Collection <i data-feather="arrow-right" class="ml-2 w-5 h-5"></i>
-                        </a>
-                        <a href="#philosophy" class="px-8 py-3 border border-secondary/50 text-secondary rounded-full hover:bg-white/50 transition duration-300">
-                            Our Philosophy
-                        </a>
+                    <div class="flex flex-col sm:flex-row gap-4 mb-8">
+                        <button class="btn-primary group">
+                            Explore Collections
+                            <i data-feather="arrow-right" class="ml-2 transition-transform duration-300 group-hover:translate-x-1"></i>
+                        </button>
+                        <button class="btn-secondary">
+                            Watch Our Story
+                        </button>
+                    </div>
+                    <div class="flex items-center space-x-8">
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-gray-800">50K+</div>
+                            <div class="text-sm text-gray-600">Happy Customers</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-gray-800">98%</div>
+                            <div class="text-sm text-gray-600">Satisfaction Rate</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-gray-800">15+</div>
+                            <div class="text-sm text-gray-600">Awards Won</div>
+                        </div>
                     </div>
                 </div>
-                <div class="md:w-1/2 relative mt-16 md:mt-0" data-aos="zoom-in-up">
-                    <div class="absolute inset-0 bg-highlight rounded-full blur-3xl opacity-30"></div>
-                    <img src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?q=80&w=1780&auto=format&fit=crop" alt="Luxury Cosmetics" class="relative rounded-lg shadow-2xl w-full">
-                    <div class="absolute -bottom-6 -left-6 bg-white/70 backdrop-blur-sm p-5 rounded-lg shadow-lg" data-aos="fade-up" data-aos-delay="300">
-                        <p class="text-sm text-secondary/50">Featured Collection</p>
-                        <h3 class="font-serif text-xl font-bold text-secondary">Golden Radiance</h3>
-                    </div>
-                    <div class="absolute -top-10 -right-10 animate-float" data-aos="fade-down" data-aos-delay="300">
-                        <div class="bg-accent-dark text-white text-xs px-4 py-2 rounded-full transform -rotate-12 shadow-md">
-                            New Arrival
+                
+                <div class="lg:w-1/2 relative" data-aos="fade-left" data-aos-duration="1000" data-aos-delay="300">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" 
+                             alt="Luxury Cosmetics" 
+                             class="rounded-3xl shadow-2xl w-full object-cover h-96 lg:h-[500px]">
+                        
+                        <!-- Floating Cards -->
+                        <div class="absolute -bottom-8 -left-8 bg-white p-6 rounded-2xl shadow-xl max-w-xs" data-aos="fade-up" data-aos-delay="800">
+                            <div class="flex items-center mb-2">
+                                <div class="w-3 h-3 bg-green-400 rounded-full mr-2"></div>
+                                <span class="text-sm font-semibold text-gray-700">In Stock</span>
+                            </div>
+                            <h3 class="font-serif text-xl font-bold text-gray-800 mb-1">Golden Hour Collection</h3>
+                            <p class="text-gray-600 text-sm">Limited Edition • 24K Gold Infused</p>
+                        </div>
+                        
+                        <div class="absolute -top-8 -right-8 bg-gradient-to-br from-yellow-400 to-yellow-600 text-white p-4 rounded-2xl shadow-xl transform rotate-12" data-aos="zoom-in" data-aos-delay="1000">
+                            <div class="text-center">
+                                <div class="text-2xl font-bold">4.9</div>
+                                <div class="text-xs">★★★★★</div>
+                                <div class="text-xs opacity-90">Customer Rating</div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce-slow">
-            <a href="#collections"><i data-feather="arrow-down" class="text-secondary/50 w-8 h-8"></i></a>
+        
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+            <div class="w-6 h-10 border-2 border-gray-400 rounded-full flex justify-center">
+                <div class="w-1 h-3 bg-gray-400 rounded-full mt-2 animate-pulse"></div>
+            </div>
         </div>
     </section>
-
-    <!-- ... (Rest of the sections will follow) ... -->
     
-    <!-- =================================================================== -->
-    <!-- Featured Collections Section -->
-    <!-- =================================================================== -->
-    <section id="collections" class="py-24 bg-white">
+    <!-- Collections Section -->
+    <section id="collections" class="py-20 bg-white">
         <div class="container mx-auto px-6">
             <div class="text-center mb-16" data-aos="fade-up">
-                <h2 class="text-4xl font-serif font-bold text-secondary mb-4">Our Curated Collections</h2>
-                <p class="text-secondary/60 max-w-2xl mx-auto">Carefully composed to complement every skin tone and enhance your natural beauty.</p>
+                <span class="inline-block px-4 py-2 bg-yellow-100 text-yellow-800 text-sm font-semibold rounded-full mb-4">
+                    Our Collections
+                </span>
+                <h2 class="text-4xl lg:text-5xl font-serif font-bold text-gray-800 mb-6">Curated for Perfection</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+                    Three distinct collections, each telling a unique story of beauty, crafted with the finest ingredients and uncompromising attention to detail.
+                </p>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Collection Card 1 -->
-                <a href="#" class="relative overflow-hidden rounded-xl group shadow-lg" data-aos="fade-up" data-aos-delay="100">
-                    <img src="https://images.unsplash.com/photo-1556228720-195a672e8a03?q=80&w=1887&auto=format&fit=crop" alt="Skincare" class="w-full h-96 object-cover transition duration-500 group-hover:scale-110">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
-                    <div class="absolute bottom-0 left-0 p-8 text-white transition-transform duration-500 group-hover:-translate-y-2">
-                        <h3 class="text-3xl font-serif font-bold mb-2">Skincare Rituals</h3>
-                        <p class="opacity-80 mb-4">Nourish and rejuvenate your skin.</p>
-                        <span class="font-semibold border-b-2 border-accent pb-1">Explore</span>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="collection-card group" data-aos="fade-up" data-aos-delay="100">
+                    <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" 
+                         alt="Skincare Rituals" 
+                         class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-70"></div>
+                    <div class="absolute bottom-0 left-0 p-8 text-white z-10">
+                        <span class="inline-block px-3 py-1 bg-white bg-opacity-20 text-sm rounded-full mb-3">Skincare</span>
+                        <h3 class="text-3xl font-serif font-bold mb-3">Skincare Rituals</h3>
+                        <p class="mb-4 opacity-90">Transform your daily routine into a luxurious self-care ritual</p>
+                        <button class="flex items-center text-white font-semibold group-hover:text-yellow-300 transition-colors duration-300">
+                            Discover More <i data-feather="arrow-right" class="ml-2 group-hover:translate-x-1 transition-transform duration-300"></i>
+                        </button>
                     </div>
-                </a>
-                <!-- Collection Card 2 -->
-                <a href="#" class="relative overflow-hidden rounded-xl group shadow-lg" data-aos="fade-up" data-aos-delay="200">
-                    <img src="https://images.unsplash.com/photo-1620464049015-234397b91bf9?q=80&w=1887&auto=format&fit=crop" alt="Makeup" class="w-full h-96 object-cover transition duration-500 group-hover:scale-110">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
-                    <div class="absolute bottom-0 left-0 p-8 text-white transition-transform duration-500 group-hover:-translate-y-2">
-                        <h3 class="text-3xl font-serif font-bold mb-2">Luminous Makeup</h3>
-                        <p class="opacity-80 mb-4">Enhance your natural features.</p>
-                        <span class="font-semibold border-b-2 border-accent pb-1">Explore</span>
+                </div>
+                
+                <div class="collection-card group" data-aos="fade-up" data-aos-delay="200">
+                    <img src="https://images.unsplash.com/photo-1583189013816-c7804814e19b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" 
+                         alt="Luminous Makeup" 
+                         class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-70"></div>
+                    <div class="absolute bottom-0 left-0 p-8 text-white z-10">
+                        <span class="inline-block px-3 py-1 bg-white bg-opacity-20 text-sm rounded-full mb-3">Makeup</span>
+                        <h3 class="text-3xl font-serif font-bold mb-3">Luminous Makeup</h3>
+                        <p class="mb-4 opacity-90">Enhance your natural features with our signature glow</p>
+                        <button class="flex items-center text-white font-semibold group-hover:text-yellow-300 transition-colors duration-300">
+                            Discover More <i data-feather="arrow-right" class="ml-2 group-hover:translate-x-1 transition-transform duration-300"></i>
+                        </button>
                     </div>
-                </a>
-                <!-- Collection Card 3 -->
-                <a href="#" class="relative overflow-hidden rounded-xl group shadow-lg" data-aos="fade-up" data-aos-delay="300">
-                    <img src="https://images.unsplash.com/photo-1583209814683-c023dd293cc6?q=80&w=1887&auto=format&fit=crop" alt="Fragrance" class="w-full h-96 object-cover transition duration-500 group-hover:scale-110">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
-                    <div class="absolute bottom-0 left-0 p-8 text-white transition-transform duration-500 group-hover:-translate-y-2">
-                        <h3 class="text-3xl font-serif font-bold mb-2">Signature Scents</h3>
-                        <p class="opacity-80 mb-4">Captivate with every note.</p>
-                        <span class="font-semibold border-b-2 border-accent pb-1">Explore</span>
+                </div>
+                
+                <div class="collection-card group md:col-span-2 lg:col-span-1" data-aos="fade-up" data-aos-delay="300">
+                    <img src="https://images.unsplash.com/photo-1541643600914-78b084683601?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" 
+                         alt="Signature Scents" 
+                         class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-70"></div>
+                    <div class="absolute bottom-0 left-0 p-8 text-white z-10">
+                        <span class="inline-block px-3 py-1 bg-white bg-opacity-20 text-sm rounded-full mb-3">Fragrance</span>
+                        <h3 class="text-3xl font-serif font-bold mb-3">Signature Scents</h3>
+                        <p class="mb-4 opacity-90">Captivating fragrances that tell your unique story</p>
+                        <button class="flex items-center text-white font-semibold group-hover:text-yellow-300 transition-colors duration-300">
+                            Discover More <i data-feather="arrow-right" class="ml-2 group-hover:translate-x-1 transition-transform duration-300"></i>
+                        </button>
                     </div>
-                </a>
+                </div>
             </div>
         </div>
     </section>
-
-    <!-- =================================================================== -->
+    
     <!-- Best Sellers Section -->
-    <!-- =================================================================== -->
-    <section id="bestsellers" class="py-24 bg-primary">
+    <section id="products" class="py-20 bg-gray-50">
         <div class="container mx-auto px-6">
             <div class="text-center mb-16" data-aos="fade-up">
-                <h2 class="text-4xl font-serif font-bold text-secondary mb-4">Our Best Sellers</h2>
-                <p class="text-secondary/60 max-w-2xl mx-auto">The most loved, must-have products adored by our community.</p>
+                <span class="inline-block px-4 py-2 bg-yellow-100 text-yellow-800 text-sm font-semibold rounded-full mb-4">
+                    Best Sellers
+                </span>
+                <h2 class="text-4xl lg:text-5xl font-serif font-bold text-gray-800 mb-6">Customer Favorites</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Our most beloved products, chosen by thousands of satisfied customers worldwide
+                </p>
             </div>
+            
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                <!-- Product Card Template -->
-                <div class="bg-white rounded-xl overflow-hidden group product-card" data-aos="fade-up" data-aos-delay="100">
-                    <div class="relative">
-                        <img src="https://images.unsplash.com/photo-1590439471364-192aa70c0b23?q=80&w=1887&auto=format&fit=crop" alt="Product" class="w-full h-80 object-cover">
-                        <div class="product-overlay absolute inset-0 bg-black/40 flex items-center justify-center space-x-2">
-                            <button data-product="Radiant Glow Serum" class="quick-view-btn bg-white text-secondary px-6 py-2 rounded-full font-semibold hover:bg-highlight transition duration-300 transform hover:scale-105">Quick View</button>
+                <!-- Product 1 -->
+                <div class="product-card group" data-aos="fade-up" data-aos-delay="100">
+                    <div class="product-image h-80 relative">
+                        <img src="https://images.unsplash.com/photo-1620916566398-39f1143ab7be?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
+                             alt="Radiant Glow Serum" 
+                             class="w-full h-full object-cover">
+                        <div class="product-overlay">
+                            <button class="bg-white text-gray-800 px-6 py-3 rounded-full font-semibold shadow-lg hover:bg-gray-100 transition-all duration-300 transform hover:scale-105">
+                                Quick View
+                            </button>
                         </div>
-                        <div class="absolute top-4 right-4 bg-highlight text-accent-dark text-xs px-2 py-1 rounded-full font-bold">-20%</div>
+                        <div class="absolute top-4 right-4 bg-red-500 text-white text-xs px-3 py-1 rounded-full font-semibold">
+                            -25%
+                        </div>
+                        <div class="absolute top-4 left-4 bg-green-500 text-white text-xs px-3 py-1 rounded-full font-semibold">
+                            Bestseller
+                        </div>
                     </div>
-                    <div class="p-6 text-center">
-                        <h3 class="font-semibold text-secondary">Radiant Glow Serum</h3>
-                        <p class="text-sm text-secondary/50 mb-3">Illuminating facial serum</p>
-                        <div class="flex justify-center items-center space-x-2">
-                            <span class="font-serif font-bold text-lg text-secondary">$48.00</span>
-                            <span class="text-sm text-secondary/40 line-through">$60.00</span>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-3">
+                            <h3 class="font-semibold text-gray-800 text-lg">Radiant Glow Serum</h3>
+                            <div class="flex items-center">
+                                <div class="flex text-yellow-400 mr-1">
+                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                </div>
+                                <span class="text-sm text-gray-600">(4.9)</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-4">24K Gold infused illuminating facial serum for radiant skin</p>
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center space-x-2">
+                                <span class="text-lg font-bold text-gray-800">$48.00</span>
+                                <span class="text-sm text-gray-500 line-through">$64.00</span>
+                            </div>
+                            <button class="text-gray-400 hover:text-yellow-600 transition-colors duration-300 p-2 hover:bg-yellow-50 rounded-full">
+                                <i data-feather="shopping-cart"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
-                <!-- Add 3 more product cards following the template -->
-                <div class="bg-white rounded-xl overflow-hidden group product-card" data-aos="fade-up" data-aos-delay="200">
-                    <div class="relative">
-                        <img src="https://images.unsplash.com/photo-1625093742435-6fa192b6fb10?q=80&w=1887&auto=format&fit=crop" alt="Product" class="w-full h-80 object-cover">
-                        <div class="product-overlay absolute inset-0 bg-black/40 flex items-center justify-center space-x-2">
-                            <button data-product="Luxe Matte Lipstick" class="quick-view-btn bg-white text-secondary px-6 py-2 rounded-full font-semibold hover:bg-highlight transition duration-300 transform hover:scale-105">Quick View</button>
+                
+                <!-- Product 2 -->
+                <div class="product-card group" data-aos="fade-up" data-aos-delay="200">
+                    <div class="product-image h-80 relative">
+                        <img src="https://images.unsplash.com/photo-1586495777744-4413f21062fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
+                             alt="Luxe Matte Lipstick" 
+                             class="w-full h-full object-cover">
+                        <div class="product-overlay">
+                            <button class="bg-white text-gray-800 px-6 py-3 rounded-full font-semibold shadow-lg hover:bg-gray-100 transition-all duration-300 transform hover:scale-105">
+                                Quick View
+                            </button>
+                        </div>
+                        <div class="absolute top-4 left-4 bg-purple-500 text-white text-xs px-3 py-1 rounded-full font-semibold">
+                            New
                         </div>
                     </div>
-                    <div class="p-6 text-center">
-                        <h3 class="font-semibold text-secondary">Luxe Matte Lipstick</h3>
-                        <p class="text-sm text-secondary/50 mb-3">Long-wear, hydrating formula</p>
-                        <span class="font-serif font-bold text-lg text-secondary">$32.00</span>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-3">
+                            <h3 class="font-semibold text-gray-800 text-lg">Luxe Matte Lipstick</h3>
+                            <div class="flex items-center">
+                                <div class="flex text-yellow-400 mr-1">
+                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                </div>
+                                <span class="text-sm text-gray-600">(4.8)</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-4">Long-wear, hydrating formula in 12 stunning shades</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-lg font-bold text-gray-800">$32.00</span>
+                            <button class="text-gray-400 hover:text-yellow-600 transition-colors duration-300 p-2 hover:bg-yellow-50 rounded-full">
+                                <i data-feather="shopping-cart"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
-                <div class="bg-white rounded-xl overflow-hidden group product-card" data-aos="fade-up" data-aos-delay="300">
-                    <div class="relative">
-                        <img src="https://images.unsplash.com/photo-1580893246231-99a534346115?q=80&w=1887&auto=format&fit=crop" alt="Product" class="w-full h-80 object-cover">
-                        <div class="product-overlay absolute inset-0 bg-black/40 flex items-center justify-center space-x-2">
-                            <button data-product="Silk Touch Foundation" class="quick-view-btn bg-white text-secondary px-6 py-2 rounded-full font-semibold hover:bg-highlight transition duration-300 transform hover:scale-105">Quick View</button>
+                
+                <!-- Product 3 -->
+                <div class="product-card group" data-aos="fade-up" data-aos-delay="300">
+                    <div class="product-image h-80 relative">
+                        <img src="https://images.unsplash.com/photo-1631729371254-42c2892f0e4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
+                             alt="Silk Touch Foundation" 
+                             class="w-full h-full object-cover">
+                        <div class="product-overlay">
+                            <button class="bg-white text-gray-800 px-6 py-3 rounded-full font-semibold shadow-lg hover:bg-gray-100 transition-all duration-300 transform hover:scale-105">
+                                Quick View
+                            </button>
                         </div>
-                        <div class="absolute top-4 left-4 bg-accent/80 text-white text-xs px-2 py-1 rounded-full font-bold">VEGAN</div>
+                        <div class="absolute top-4 left-4 bg-green-500 text-white text-xs px-3 py-1 rounded-full font-semibold">
+                            Vegan
+                        </div>
                     </div>
-                    <div class="p-6 text-center">
-                        <h3 class="font-semibold text-secondary">Silk Touch Foundation</h3>
-                        <p class="text-sm text-secondary/50 mb-3">Buildable, natural finish</p>
-                        <span class="font-serif font-bold text-lg text-secondary">$42.00</span>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-3">
+                            <h3 class="font-semibold text-gray-800 text-lg">Silk Touch Foundation</h3>
+                            <div class="flex items-center">
+                                <div class="flex text-yellow-400 mr-1">
+                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                </div>
+                                <span class="text-sm text-gray-600">(4.7)</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-4">Buildable coverage with a natural, silk-like finish</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-lg font-bold text-gray-800">$42.00</span>
+                            <button class="text-gray-400 hover:text-yellow-600 transition-colors duration-300 p-2 hover:bg-yellow-50 rounded-full">
+                                <i data-feather="shopping-cart"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
-                <div class="bg-white rounded-xl overflow-hidden group product-card" data-aos="fade-up" data-aos-delay="400">
-                    <div class="relative">
-                        <img src="https://images.unsplash.com/photo-1594035918239-f923285c5b35?q=80&w=1888&auto=format&fit=crop" alt="Product" class="w-full h-80 object-cover">
-                        <div class="product-overlay absolute inset-0 bg-black/40 flex items-center justify-center space-x-2">
-                            <button data-product="Moonlight Perfume" class="quick-view-btn bg-white text-secondary px-6 py-2 rounded-full font-semibold hover:bg-highlight transition duration-300 transform hover:scale-105">Quick View</button>
+                
+                <!-- Product 4 -->
+                <div class="product-card group" data-aos="fade-up" data-aos-delay="400">
+                    <div class="product-image h-80 relative">
+                        <img src="https://images.unsplash.com/photo-1592428122612-df6825e22b05?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
+                             alt="Moonlight Perfume" 
+                             class="w-full h-full object-cover">
+                        <div class="product-overlay">
+                            <button class="bg-white text-gray-800 px-6 py-3 rounded-full font-semibold shadow-lg hover:bg-gray-100 transition-all duration-300 transform hover:scale-105">
+                                Quick View
+                            </button>
+                        </div>
+                        <div class="absolute top-4 left-4 bg-blue-500 text-white text-xs px-3 py-1 rounded-full font-semibold">
+                            Limited
                         </div>
                     </div>
-                    <div class="p-6 text-center">
-                        <h3 class="font-semibold text-secondary">Moonlight Perfume</h3>
-                        <p class="text-sm text-secondary/50 mb-3">Enchanting floral musk</p>
-                        <span class="font-serif font-bold text-lg text-secondary">$68.00</span>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-3">
+                            <h3 class="font-semibold text-gray-800 text-lg">Moonlight Perfume</h3>
+                            <div class="flex items-center">
+                                <div class="flex text-yellow-400 mr-1">
+                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                </div>
+                                <span class="text-sm text-gray-600">(4.9)</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-4">Enchanting floral musk with notes of jasmine and cedar</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-lg font-bold text-gray-800">$68.00</span>
+                            <button class="text-gray-400 hover:text-yellow-600 transition-colors duration-300 p-2 hover:bg-yellow-50 rounded-full">
+                                <i data-feather="shopping-cart"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
+            
+            <div class="text-center mt-12" data-aos="fade-up">
+                <button class="btn-secondary">
+                    View All Products
+                </button>
+            </div>
         </div>
     </section>
-
-    <!-- =================================================================== -->
-    <!-- Brand Philosophy Section -->
-    <!-- =================================================================== -->
-    <section id="philosophy" class="py-24 bg-white overflow-hidden">
+    
+    <!-- Brand Story Section -->
+    <section id="story" class="py-20 bg-white">
         <div class="container mx-auto px-6">
-            <div class="relative flex flex-col md:flex-row items-center">
-                <div class="md:w-1/2 relative md:pr-12" data-aos="fade-right">
-                    <img src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?q=80&w=1787&auto=format&fit=crop" alt="Brand Philosophy" class="rounded-lg shadow-2xl w-full z-10 relative">
-                    <div class="absolute -top-12 -left-12 w-full h-full bg-highlight/30 rounded-full blur-3xl"></div>
+            <div class="flex flex-col lg:flex-row items-center gap-16">
+                <div class="lg:w-1/2" data-aos="fade-right">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1580870069867-74c57ee1bb07?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" 
+                             alt="Brand Story" 
+                             class="rounded-3xl shadow-2xl w-full">
+                        <div class="absolute -bottom-8 -right-8 bg-gradient-to-br from-yellow-400 to-yellow-600 p-8 rounded-2xl shadow-xl text-white">
+                            <div class="text-center">
+                                <h3 class="text-3xl font-bold mb-2">12+</h3>
+                                <p class="text-sm opacity-90">Years of Excellence</p>
+                            </div>
+                        </div>
+                        <div class="absolute -top-8 -left-8 bg-white p-6 rounded-2xl shadow-xl">
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center mr-3">
+                                    <i data-feather="award" class="text-white w-6 h-6"></i>
+                                </div>
+                                <div>
+                                    <div class="font-bold text-gray-800">Certified</div>
+                                    <div class="text-sm text-gray-600">Cruelty-Free</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="md:w-1/2 mt-12 md:mt-0" data-aos="fade-left">
-                    <h2 class="text-4xl font-serif font-bold text-secondary mb-6">Beauty with Purpose</h2>
-                    <p class="text-secondary/60 mb-8">At LUMIÈRE, we believe beauty should be as kind to your skin as it is to the planet. Our products are meticulously formulated with clean, ethically-sourced ingredients that deliver visible results without compromise.</p>
-                    <div class="space-y-6">
-                        <div class="flex items-start" data-aos="fade-left" data-aos-delay="100">
-                            <div class="bg-highlight p-2 rounded-full mr-4"><i data-feather="feather" class="text-accent-dark"></i></div>
+                
+                <div class="lg:w-1/2" data-aos="fade-left">
+                    <span class="inline-block px-4 py-2 bg-yellow-100 text-yellow-800 text-sm font-semibold rounded-full mb-6">
+                        Our Philosophy
+                    </span>
+                    <h2 class="text-4xl lg:text-5xl font-serif font-bold text-gray-800 mb-6">Beauty with Purpose</h2>
+                    <p class="text-xl text-gray-600 mb-8 leading-relaxed">
+                        At LUMIÈRE, we believe beauty should be as kind to your skin as it is to the planet. Our products are meticulously formulated with clean, ethically-sourced ingredients that deliver visible results without compromise.
+                    </p>
+                    
+                    <div class="space-y-6 mb-8">
+                        <div class="flex items-start">
+                            <div class="bg-gradient-to-br from-yellow-400 to-yellow-600 p-3 rounded-full mr-4 flex-shrink-0">
+                                <i data-feather="check" class="text-white w-5 h-5"></i>
+                            </div>
                             <div>
-                                <h4 class="font-semibold text-secondary mb-1">Cruelty-Free</h4>
-                                <p class="text-sm text-secondary/60">We are Leaping Bunny certified. No animal testing, ever.</p>
+                                <h4 class="font-semibold text-gray-800 mb-2 text-lg">100% Cruelty-Free</h4>
+                                <p class="text-gray-600">Never tested on animals, certified by Leaping Bunny</p>
                             </div>
                         </div>
-                        <div class="flex items-start" data-aos="fade-left" data-aos-delay="200">
-                            <div class="bg-highlight p-2 rounded-full mr-4"><i data-feather="leaf" class="text-accent-dark"></i></div>
+                        <div class="flex items-start">
+                            <div class="bg-gradient-to-br from-green-400 to-green-600 p-3 rounded-full mr-4 flex-shrink-0">
+                                <i data-feather="leaf" class="text-white w-5 h-5"></i>
+                            </div>
                             <div>
-                                <h4 class="font-semibold text-secondary mb-1">Clean Ingredients</h4>
-                                <p class="text-sm text-secondary/60">Free from parabens, sulfates, and harmful chemicals.</p>
+                                <h4 class="font-semibold text-gray-800 mb-2 text-lg">Clean Beauty Standards</h4>
+                                <p class="text-gray-600">Free from parabens, sulfates, and 1,500+ harmful ingredients</p>
                             </div>
                         </div>
-                        <div class="flex items-start" data-aos="fade-left" data-aos-delay="300">
-                            <div class="bg-highlight p-2 rounded-full mr-4"><i data-feather="globe" class="text-accent-dark"></i></div>
-                            <div>
-                                <h4 class="font-semibold text-secondary mb-1">Sustainable Packaging</h4>
-                                <p class="text-sm text-secondary/60">Using recycled and recyclable materials wherever possible.</p>
+                        <div class="flex items-start">
+                            <div class="bg-gradient-to-br from-blue-400 to-blue-600 p-3 rounded-full mr-4 flex-shrink-0">
+                                <i data-feather="globe" class="text-white w-5 h-5"></i>
                             </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800 mb-2 text-lg">Sustainable Packaging</h4>
+                                <p class="text-gray-600">Recyclable materials and carbon-neutral shipping</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center space-x-4">
+                        <button class="btn-primary">
+                            Read Our Story
+                        </button>
+                        <div class="flex items-center text-gray-600">
+                            <div class="flex -space-x-2 mr-3">
+                                <img src="https://images.unsplash.com/photo-1494790108755-2616b612b436?ixlib=rb-4.0.3&auto=format&fit=crop&w=50&q=80" alt="Team" class="w-8 h-8 rounded-full border-2 border-white">
+                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=50&q=80" alt="Team" class="w-8 h-8 rounded-full border-2 border-white">
+                                <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&auto=format&fit=crop&w=50&q=80" alt="Team" class="w-8 h-8 rounded-full border-2 border-white">
+                            </div>
+                            <span class="text-sm">Meet our team</span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
-
-    <!-- ... (Testimonials, Newsletter, and Footer sections follow) ... -->
-    <!-- =================================================================== -->
+    
     <!-- Testimonials Section -->
-    <!-- =================================================================== -->
-    <section class="py-24 bg-primary">
+    <section id="reviews" class="py-20 bg-gray-50">
         <div class="container mx-auto px-6">
             <div class="text-center mb-16" data-aos="fade-up">
-                <h2 class="text-4xl font-serif font-bold text-secondary mb-4">Glowing Reviews</h2>
-                <p class="text-secondary/60 max-w-2xl mx-auto">What our customers say about LUMIÈRE.</p>
+                <span class="inline-block px-4 py-2 bg-yellow-100 text-yellow-800 text-sm font-semibold rounded-full mb-4">
+                    Customer Reviews
+                </span>
+                <h2 class="text-4xl lg:text-5xl font-serif font-bold text-gray-800 mb-6">What Our Customers Say</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Real reviews from real customers who have experienced the LUMIÈRE difference
+                </p>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Testimonial Card 1 -->
-                <div class="bg-white p-8 rounded-xl shadow-lg transform hover:-translate-y-2 transition-transform duration-300" data-aos="fade-up" data-aos-delay="100">
-                    <div class="flex mb-4 text-accent-dark"><i data-feather="star" class="fill-current"></i><i data-feather="star" class="fill-current"></i><i data-feather="star" class="fill-current"></i><i data-feather="star" class="fill-current"></i><i data-feather="star" class="fill-current"></i></div>
-                    <p class="text-secondary/70 italic mb-6">"The Radiant Glow Serum has transformed my skin. My complexion has never looked so luminous. An absolute must-have!"</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="testimonial-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="flex mb-4">
+                        <div class="flex text-yellow-400">
+                            <i data-feather="star" class="w-5 h-5 fill-current"></i>
+                            <i data-feather="star" class="w-5 h-5 fill-current"></i>
+                            <i data-feather="star" class="w-5 h-5 fill-current"></i>
+                            <i data-feather="star" class="w-5 h-5 fill-current"></i>
+                            <i data-feather="star" class="w-5 h-5 fill-current"></i>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 mb-6 text-lg leading-relaxed">
+                        "The Radiant Glow Serum has completely transformed my skincare routine. My complexion has never looked so luminous and even-toned. I get compliments daily!"
+                    </p>
                     <div class="flex items-center">
-                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Customer" class="w-12 h-12 rounded-full object-cover mr-4">
+                        <img src="https://images.unsplash.com/photo-1494790108755-2616b612b436?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" alt="Sophia R." class="w-12 h-12 rounded-full object-cover mr-4">
                         <div>
-                            <h4 class="font-semibold text-secondary">Sophia R.</h4>
-                            <p class="text-sm text-secondary/50">Verified Customer</p>
+                            <h4 class="font-semibold text-gray-800">Sophia Richardson</h4>
+                            <p class="text-sm text-gray-500">Verified Customer • New York</p>
                         </div>
                     </div>
                 </div>
-                <!-- Testimonial Card 2 -->
-                <div class="bg-white p-8 rounded-xl shadow-lg transform hover:-translate-y-2 transition-transform duration-300" data-aos="fade-up" data-aos-delay="200">
-                    <div class="flex mb-4 text-accent-dark"><i data-feather="star" class="fill-current"></i><i data-feather="star" class="fill-current"></i><i data-feather="star" class="fill-current"></i><i data-feather="star" class="fill-current"></i><i data-feather="star" class="fill-current"></i></div>
-                    <p class="text-secondary/70 italic mb-6">"I'm obsessed with the Luxe Matte Lipstick. It's so comfortable, and the color lasts all day without drying out my lips."</p>
+                
+                <div class="testimonial-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="flex mb-4">
+                        <div class="flex text-yellow-400">
+                            <i data-feather="star" class="w-5 h-5 fill-current"></i>
+                            <i data-feather="star" class="w-5 h-5 fill-current"></i>
+                            <i data-feather="star" class="w-5 h-5 fill-current"></i>
+                            <i data-feather="star" class="w-5 h-5 fill-current"></i>
+                            <i data-feather="star" class="w-5 h-5 fill-current"></i>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 mb-6 text-lg leading-relaxed">
+                        "I'm absolutely obsessed with the Luxe Matte Lipstick collection. The formula is incredibly comfortable and the color payoff is phenomenal. It truly lasts all day!"
+                    </p>
                     <div class="flex items-center">
-                        <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Customer" class="w-12 h-12 rounded-full object-cover mr-4">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" alt="Emma L." class="w-12 h-12 rounded-full object-cover mr-4">
                         <div>
-                            <h4 class="font-semibold text-secondary">Emma L.</h4>
-                            <p class="text-sm text-secondary/50">Verified Customer</p>
+                            <h4 class="font-semibold text-gray-800">Emma Lawrence</h4>
+                            <p class="text-sm text-gray-500">Verified Customer • Los Angeles</p>
                         </div>
                     </div>
                 </div>
-                <!-- Testimonial Card 3 -->
-                <div class="bg-white p-8 rounded-xl shadow-lg transform hover:-translate-y-2 transition-transform duration-300" data-aos="fade-up" data-aos-delay="300">
-                    <div class="flex mb-4 text-accent-dark"><i data-feather="star" class="fill-current"></i><i data-feather="star" class="fill-current"></i><i data-feather="star" class="fill-current"></i><i data-feather="star" class="fill-current"></i><i data-feather="star" class="fill-current"></i></div>
-                    <p class="text-secondary/70 italic mb-6">"Moonlight Perfume is my new signature scent. It's sophisticated and alluring. I get compliments every time I wear it."</p>
-                    <div class="flex items-center">
-                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Customer" class="w-12 h-12 rounded-full object-cover mr-4">
-                        <div>
-                            <h4 class="font-semibold text-secondary">Olivia M.</h4>
-                            <p class="text-sm text-secondary/50">Verified Customer</p>
+                
+                <div class="testimonial-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="flex mb-4">
+                        <div class="flex text-yellow-400">
+                            <i data-feather="star" class="w-5 h-5 fill-current"></i>
+                            <i data-feather="star" class="w-5 h-5 fill-current"></i>
+                            <i data-feather="star" class="w-5 h-5 fill-current"></i>
+                            <i data-feather="star" class="w-5 h-5 fill-current"></i>
+                            <i data-feather="star" class="w-5 h-5 fill-current"></i>
                         </div>
                     </div>
+                    <p class="text-gray-600 mb-6 text-lg leading-relaxed">
+                        "Moonlight Perfume has become my signature scent. It's the perfect balance of floral and musk - sophisticated, alluring, and absolutely unforgettable."
+                    </p>
+                    <div class="flex items-center">
+                        <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" alt="Olivia M." class="w-12 h-12 rounded-full object-cover mr-4">
+                        <div>
+                            <h4 class="font-semibold text-gray-800">Olivia Martinez</h4>
+                            <p class="text-sm text-gray-500">Verified Customer • Miami</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12" data-aos="fade-up">
+                <div class="inline-flex items-center bg-white px-6 py-3 rounded-full shadow-lg">
+                    <div class="flex text-yellow-400 mr-3">
+                        <i data-feather="star" class="w-5 h-5 fill-current"></i>
+                        <i data-feather="star" class="w-5 h-5 fill-current"></i>
+                        <i data-feather="star" class="w-5 h-5 fill-current"></i>
+                        <i data-feather="star" class="w-5 h-5 fill-current"></i>
+                        <i data-feather="star" class="w-5 h-5 fill-current"></i>
+                    </div>
+                    <span class="text-gray-800 font-semibold">4.9/5 from 10,000+ reviews</span>
                 </div>
             </div>
         </div>
     </section>
-
-    <!-- =================================================================== -->
+    
     <!-- Newsletter Section -->
-    <!-- =================================================================== -->
-    <section class="py-24 aurora-bg animate-aurora">
+    <section class="newsletter-section py-20 text-white relative z-10">
         <div class="container mx-auto px-6">
             <div class="max-w-4xl mx-auto text-center" data-aos="fade-up">
-                <h2 class="text-4xl font-serif font-bold text-secondary mb-6">Join The LUMIÈRE Community</h2>
-                <p class="text-secondary/70 mb-8 max-w-2xl mx-auto">Subscribe for exclusive offers, beauty tips, and early access to new collections.</p>
-                <form class="flex flex-col sm:flex-row max-w-lg mx-auto bg-white/50 p-2 rounded-full shadow-lg">
-                    <input type="email" placeholder="Your email address" class="px-6 py-3 rounded-full text-secondary mb-2 sm:mb-0 sm:mr-2 flex-grow focus:outline-none focus:ring-2 focus:ring-accent bg-transparent placeholder-secondary/50">
-                    <button type="submit" class="px-8 py-3 bg-secondary text-white rounded-full hover:bg-secondary/80 transition-all duration-300 transform active:scale-95">
-                        Subscribe
+                <span class="inline-block px-4 py-2 bg-white bg-opacity-20 text-sm font-semibold rounded-full mb-6">
+                    Join Our Community
+                </span>
+                <h2 class="text-4xl lg:text-5xl font-serif font-bold mb-6">Stay in the Glow</h2>
+                <p class="text-xl mb-8 max-w-2xl mx-auto opacity-90 leading-relaxed">
+                    Subscribe to receive exclusive offers, beauty tips, early access to new products, and insider secrets from our beauty experts.
+                </p>
+                <form class="flex flex-col sm:flex-row max-w-md mx-auto sm:max-w-xl gap-4 mb-6">
+                    <input 
+                        type="email" 
+                        placeholder="Enter your email address" 
+                        class="px-6 py-4 rounded-full text-gray-800 flex-grow focus:outline-none focus:ring-4 focus:ring-yellow-300 text-lg"
+                        required
+                    >
+                    <button 
+                        type="submit" 
+                        class="px-8 py-4 bg-white text-gray-800 rounded-full font-semibold hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 shadow-lg"
+                    >
+                        Subscribe Now
                     </button>
                 </form>
+                <div class="flex items-center justify-center space-x-8 text-sm opacity-80">
+                    <div class="flex items-center">
+                        <i data-feather="check" class="w-4 h-4 mr-2"></i>
+                        <span>Exclusive offers</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i data-feather="check" class="w-4 h-4 mr-2"></i>
+                        <span>Beauty tips</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i data-feather="check" class="w-4 h-4 mr-2"></i>
+                        <span>No spam, ever</span>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
-
-    <!-- =================================================================== -->
+    
     <!-- Footer -->
-    <!-- =================================================================== -->
-    <footer class="bg-secondary text-white py-20">
+    <footer class="footer text-white py-16">
         <div class="container mx-auto px-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
-                <div class="col-span-1 md:col-span-2 lg:col-span-1">
-                    <h3 class="text-3xl font-serif font-bold mb-6">LUMIÈRE</h3>
-                    <p class="text-white/60 mb-6">Crafting luxury cosmetics with clean, ethical ingredients to enhance your natural beauty.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+                <div class="lg:col-span-1">
+                    <h3 class="text-3xl font-serif font-bold mb-6 bg-gradient-to-r from-yellow-400 to-yellow-600 bg-clip-text text-transparent">LUMIÈRE</h3>
+                    <p class="text-gray-400 mb-6 leading-relaxed">
+                        Luxury cosmetics crafted with clean, ethical ingredients to enhance your natural beauty and celebrate your unique radiance.
+                    </p>
                     <div class="flex space-x-4">
-                        <a href="#" class="text-white/60 hover:text-white transition"><i data-feather="instagram"></i></a>
-                        <a href="#" class="text-white/60 hover:text-white transition"><i data-feather="facebook"></i></a>
-                        <a href="#" class="text-white/60 hover:text-white transition"><i data-feather="twitter"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-yellow-400 transition-colors duration-300 p-2 bg-gray-800 rounded-full hover:bg-gray-700">
+                            <i data-feather="instagram"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-yellow-400 transition-colors duration-300 p-2 bg-gray-800 rounded-full hover:bg-gray-700">
+                            <i data-feather="facebook"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-yellow-400 transition-colors duration-300 p-2 bg-gray-800 rounded-full hover:bg-gray-700">
+                            <i data-feather="twitter"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-yellow-400 transition-colors duration-300 p-2 bg-gray-800 rounded-full hover:bg-gray-700">
+                            <i data-feather="youtube"></i>
+                        </a>
                     </div>
                 </div>
+                
                 <div>
-                    <h4 class="font-semibold text-lg mb-6 tracking-wider">SHOP</h4>
+                    <h4 class="font-semibold text-lg mb-6 text-yellow-400">Shop</h4>
                     <ul class="space-y-3">
-                        <li><a href="#" class="text-white/60 hover:text-white transition">Skincare</a></li>
-                        <li><a href="#" class="text-white/60 hover:text-white transition">Makeup</a></li>
-                        <li><a href="#" class="text-white/60 hover:text-white transition">Fragrance</a></li>
-                        <li><a href="#" class="text-white/60 hover:text-white transition">New Arrivals</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-300">Skincare Collection</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-300">Makeup Essentials</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-300">Signature Fragrances</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-300">Best Sellers</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-300">New Arrivals</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-300">Gift Sets</a></li>
                     </ul>
                 </div>
+                
                 <div>
-                    <h4 class="font-semibold text-lg mb-6 tracking-wider">ABOUT</h4>
+                    <h4 class="font-semibold text-lg mb-6 text-yellow-400">Company</h4>
                     <ul class="space-y-3">
-                        <li><a href="#" class="text-white/60 hover:text-white transition">Our Story</a></li>
-                        <li><a href="#" class="text-white/60 hover:text-white transition">Sustainability</a></li>
-                        <li><a href="#" class="text-white/60 hover:text-white transition">Press</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-300">Our Story</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-300">Clean Beauty</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-300">Sustainability</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-300">Press & Media</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-300">Careers</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-300">Become a Partner</a></li>
                     </ul>
                 </div>
+                
                 <div>
-                    <h4 class="font-semibold text-lg mb-6 tracking-wider">HELP</h4>
+                    <h4 class="font-semibold text-lg mb-6 text-yellow-400">Support</h4>
                     <ul class="space-y-3">
-                        <li><a href="#" class="text-white/60 hover:text-white transition">Contact Us</a></li>
-                        <li><a href="#" class="text-white/60 hover:text-white transition">FAQs</a></li>
-                        <li><a href="#" class="text-white/60 hover:text-white transition">Shipping & Returns</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-300">Contact Us</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-300">Help Center</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-300">Shipping & Returns</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-300">Track Your Order</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-300">Size Guide</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-300">Gift Cards</a></li>
                     </ul>
                 </div>
             </div>
-            <div class="border-t border-white/20 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center text-sm">
-                <p class="text-white/50 mb-4 md:mb-0">&copy; 2024 LUMIÈRE Cosmetics. All Rights Reserved.</p>
-                <div class="flex space-x-4"><img src="https://img.icons8.com/color/48/000000/visa.png" class="h-6"><img src="https://img.icons8.com/color/48/000000/mastercard.png" class="h-6"><img src="https://img.icons8.com/color/48/000000/paypal.png" class="h-6"></div>
+            
+            <div class="border-t border-gray-700 pt-8">
+                <div class="flex flex-col lg:flex-row justify-between items-center">
+                    <div class="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-6 mb-6 lg:mb-0">
+                        <p class="text-gray-400 text-sm">
+                            © 2024 LUMIÈRE Cosmetics. All rights reserved.
+                        </p>
+                        <div class="flex space-x-6 text-sm">
+                            <a href="#" class="text-gray-400 hover:text-white transition-colors duration-300">Privacy Policy</a>
+                            <a href="#" class="text-gray-400 hover:text-white transition-colors duration-300">Terms of Service</a>
+                            <a href="#" class="text-gray-400 hover:text-white transition-colors duration-300">Accessibility</a>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <span class="text-gray-400 text-sm mr-2">Secure payments:</span>
+                        <div class="flex space-x-2">
+                            <div class="w-8 h-6 bg-blue-600 rounded flex items-center justify-center text-white text-xs font-bold">V</div>
+                            <div class="w-8 h-6 bg-red-600 rounded flex items-center justify-center text-white text-xs font-bold">M</div>
+                            <div class="w-8 h-6 bg-blue-500 rounded flex items-center justify-center text-white text-xs font-bold">P</div>
+                            <div class="w-8 h-6 bg-black rounded flex items-center justify-center text-white text-xs font-bold">A</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </footer>
     
-    <!-- =================================================================== -->
-    <!-- Quick View Modal -->
-    <!-- =================================================================== -->
-    <div id="quick-view-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4 transition-opacity duration-300 opacity-0 pointer-events-none">
-        <div id="modal-content" class="bg-white rounded-xl shadow-2xl w-full max-w-4xl flex flex-col md:flex-row overflow-hidden transition-transform duration-300 transform scale-95">
-            <!-- Modal Close Button -->
-            <button id="modal-close-btn" class="absolute top-4 right-4 text-secondary/50 hover:text-secondary z-20"><i data-feather="x" class="w-8 h-8"></i></button>
-
-            <!-- Modal Image -->
-            <div class="w-full md:w-1/2">
-                <img id="modal-image" src="https://images.unsplash.com/photo-1590439471364-192aa70c0b23?q=80&w=1887&auto=format&fit=crop" class="w-full h-full object-cover" alt="Product Image">
-            </div>
-
-            <!-- Modal Details -->
-            <div class="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center">
-                <h2 id="modal-title" class="text-3xl font-serif font-bold text-secondary mb-2">Radiant Glow Serum</h2>
-                <p class="text-secondary/60 mb-4">Illuminating facial serum</p>
-                <div class="flex items-center mb-6">
-                    <div class="flex text-accent-dark"><i data-feather="star" class="w-5 h-5 fill-current"></i><i data-feather="star" class="w-5 h-5 fill-current"></i><i data-feather="star" class="w-5 h-5 fill-current"></i><i data-feather="star" class="w-5 h-5 fill-current"></i><i data-feather="star" class="w-5 h-5 fill-current"></i></div>
-                    <span class="text-sm text-secondary/50 ml-2">(128 reviews)</span>
-                </div>
-                <p class="text-secondary/70 mb-6">A potent blend of Vitamin C, Hyaluronic Acid, and botanical extracts to brighten, hydrate, and plump the skin. Lightweight, fast-absorbing, and suitable for all skin types.</p>
-                <div class="flex items-baseline mb-8">
-                    <span class="font-serif font-bold text-4xl text-secondary">$48.00</span>
-                    <span class="text-lg text-secondary/40 line-through ml-3">$60.00</span>
-                </div>
-                <button class="w-full py-3 bg-secondary text-white rounded-full hover:bg-secondary/80 transition-all duration-300 transform active:scale-95 flex items-center justify-center">
-                    <i data-feather="shopping-bag" class="mr-2 w-5 h-5"></i> Add to Bag
-                </button>
-            </div>
-        </div>
-    </div>
-
-
-    <!-- =================================================================== -->
-    <!-- Custom JavaScript -->
-    <!-- =================================================================== -->
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-
-            // --- Initialize Libraries ---
-            AOS.init({ duration: 800, easing: 'ease-in-out-quad', once: true });
-            feather.replace();
-            
-            // --- Hero Section Vanta.js Background ---
-            // Only initialize if the element exists to prevent errors on other pages
-            const vantaEl = document.getElementById('hero-vanta-bg');
-            if (vantaEl) {
-                VANTA.WAVES({
-                    el: vantaEl,
-                    mouseControls: false,
-                    touchControls: false,
-                    gyroControls: false,
-                    minHeight: 200.00,
-                    minWidth: 200.00,
-                    scale: 1.00,
-                    scaleMobile: 1.00,
-                    color: 0xe8c8b8, // highlight color
-                    shininess: 25.00,
-                    waveHeight: 15.00,
-                    waveSpeed: 0.60,
-                    zoom: 0.8
-                });
-            }
-
-            // --- Dynamic Navbar on Scroll ---
-            const navbar = document.getElementById('navbar');
-            window.addEventListener('scroll', () => {
-                if (window.scrollY > 50) {
-                    navbar.classList.add('bg-white/80', 'backdrop-blur-sm', 'shadow-md');
-                } else {
-                    navbar.classList.remove('bg-white/80', 'backdrop-blur-sm', 'shadow-md');
-                }
-            });
-
-            // --- Quick View Modal Functionality ---
-            const modal = document.getElementById('quick-view-modal');
-            const modalContent = document.getElementById('modal-content');
-            const closeModalBtn = document.getElementById('modal-close-btn');
-            const quickViewBtns = document.querySelectorAll('.quick-view-btn');
-
-            const openModal = (productName) => {
-                // In a real app, you'd fetch product data here
-                document.getElementById('modal-title').textContent = productName;
-                modal.classList.remove('opacity-0', 'pointer-events-none');
-                modalContent.classList.remove('scale-95');
-            };
-
-            const closeModal = () => {
-                modal.classList.add('opacity-0', 'pointer-events-none');
-                modalContent.classList.add('scale-95');
-            };
-
-            quickViewBtns.forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const productName = btn.dataset.product;
-                    openModal(productName);
-                });
-            });
-
-            closeModalBtn.addEventListener('click', closeModal);
-            // Close modal if clicking on the background overlay
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) {
-                    closeModal();
-                }
-            });
-            // Close modal with Escape key
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape') {
-                    closeModal();
-                }
-            });
-
+        // Loading animation
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                document.getElementById('loadingOverlay').classList.add('hidden');
+            }, 1000);
         });
+        
+        // Scroll indicator
+        window.addEventListener('scroll', function() {
+            const scrollTop = window.pageYOffset;
+            const docHeight = document.body.offsetHeight - window.innerHeight;
+            const scrollPercent = (scrollTop / docHeight) * 100;
+            document.getElementById('scrollIndicator').style.width = scrollPercent + '%';
+        });
+        
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+        
+        // Initialize animations
+        AOS.init({
+            duration: 1000,
+            easing: 'ease-out-cubic',
+            once: true,
+            offset: 50
+        });
+        
+        // Initialize feather icons
+        feather.replace();
+        
+        // Smooth scroll for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Product quick view functionality
+        const quickViewButtons = document.querySelectorAll('.product-overlay button');
+        quickViewButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Add a more sophisticated modal or product preview here
+                console.log('Quick view clicked');
+            });
+        });
+        
+        // Enhanced hover effects for product cards
+        const productCards = document.querySelectorAll('.product-card');
+        productCards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-15px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+        
+        // Newsletter form submission
+        document.querySelector('form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = this.querySelector('input[type="email"]').value;
+            if (email) {
+                // Add newsletter subscription logic here
+                alert('Thank you for subscribing to our newsletter!');
+                this.reset();
+            }
+        });
+        
+        // Intersection Observer for enhanced animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-in');
+                }
+            });
+        }, observerOptions);
+        
+        // Observe elements for animations
+        document.querySelectorAll('[data-aos]').forEach(el => {
+            observer.observe(el);
+        });
+        
+        // Performance optimization: Debounced scroll handler
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+        
+        const debouncedScrollHandler = debounce(() => {
+            // Additional scroll-based animations can be added here
+        }, 10);
+        
+        window.addEventListener('scroll', debouncedScrollHandler);
     </script>
 </body>
 </html>
