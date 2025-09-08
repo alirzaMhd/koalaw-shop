@@ -1,704 +1,1293 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>LUMIÈRE | Luxury Cosmetics</title>
-  <meta name="description" content="LUMIÈRE — Luxury, clean cosmetics crafted to elevate your natural radiance." />
-  <meta name="theme-color" content="#0f0e0d" media="(prefers-color-scheme: dark)">
-  <meta name="theme-color" content="#faf7f2" media="(prefers-color-scheme: light)">
-  <link rel="icon" type="image/x-icon" href="/static/favicon.ico" />
-
-  <!-- Performance: preconnect fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
-
-  <!-- Tailwind (CDN) with small theme extension -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            paper: '#faf7f2',
-            ink: '#1a1a1a',
-            luxe: '#C6A572', /* Champagne gold */
-            blush: '#E8C8B8',
-            cocoa: '#9a7b5f',
-          },
-          fontFamily: {
-            serif: ['Playfair Display', 'serif'],
-            sans: ['Montserrat', 'system-ui', 'sans-serif'],
-          },
-          boxShadow: {
-            elegant: '0 18px 50px -12px rgba(17,17,17,0.25)',
-          },
-          backgroundImage: {
-            'hero-gradient': 'radial-gradient(1200px 600px at 10% 20%, rgba(198,165,114,0.20) 0%, rgba(232,200,184,0.08) 35%, rgba(255,255,255,0) 70%)',
-          },
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LUMIÈRE | Luxury Cosmetics</title>
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.fog.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,700&family=Poppins:wght@200;300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary: #d4a574;
+            --secondary: #1a1a1a;
+            --accent: #f7e7ce;
+            --rose-gold: #e8b4b8;
+            --cream: #faf8f3;
+            --deep-brown: #3d2914;
         }
-      }
-    }
-  </script>
-
-  <!-- Libraries -->
-  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-  <script defer src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.waves.min.js"></script>
-
-  <style>
-    :root{
-      --gold:#C6A572;
-      --ink:#1a1a1a;
-      --paper:#faf7f2;
-      --blush:#E8C8B8;
-      --cocoa:#9a7b5f;
-    }
-
-    body{ font-family: 'Montserrat', sans-serif; background-color: var(--paper); color:#333; overflow-x:hidden; }
-
-    /* HERO enhancement */
-    .hero-wrap::after{
-      content:'';
-      position:absolute;
-      inset:0;
-      background: radial-gradient(600px 300px at 85% 15%, rgba(198,165,114,.12), transparent 60%),
-                  radial-gradient(400px 240px at 20% 80%, rgba(232,200,184,.18), transparent 60%);
-      pointer-events:none;
-    }
-
-    /* Links underline animation */
-    .nav-link{
-      position:relative;
-    }
-    .nav-link::after{
-      content:'';
-      position:absolute;
-      left:0; bottom:-6px;
-      width:0; height:2px;
-      background:var(--gold);
-      transition: width .35s ease;
-    }
-    .nav-link:hover::after{ width:100%; }
-
-    /* Product overlay motion */
-    .product-card .product-overlay{
-      opacity:0; transform: translateY(16px);
-      transition: all .35s cubic-bezier(.2,.7,.3,1);
-    }
-    .product-card:hover .product-overlay{
-      opacity:1; transform: translateY(0);
-    }
-
-    .testimonial-card{
-      box-shadow: 0 15px 30px -10px rgba(0,0,0,.1);
-      transition: transform .28s ease, box-shadow .28s ease;
-    }
-    .testimonial-card:hover{
-      transform: translateY(-6px);
-      box-shadow: 0 25px 50px -12px rgba(0,0,0,.18);
-    }
-
-    .floating-badge { animation: float 6s ease-in-out infinite; }
-    @keyframes float{ 0%,100%{ transform: translateY(0)} 50%{ transform: translateY(-12px)} }
-
-    .scroll-down{ animation: bounce 1.8s infinite; }
-    @keyframes bounce{
-      0%,20%,53%,80%,100%{ transform: translateY(0) }
-      40%,43%{ transform: translateY(-14px) }
-      70%{ transform: translateY(-7px) }
-      90%{ transform: translateY(-3px) }
-    }
-
-    /* Respect reduced motion */
-    @media (prefers-reduced-motion: reduce){
-      .scroll-down, .floating-badge{ animation: none !important; }
-      [data-aos]{ transition: none !important; opacity: 1 !important; transform: none !important; }
-    }
-
-    /* Waves canvas behind everything */
-    .waves-bg{
-      position:fixed; inset:0; z-index:-1;
-    }
-
-    /* Skip link */
-    .skip-link{
-      position:absolute; left:-999px; top:auto; width:1px; height:1px; overflow:hidden;
-    }
-    .skip-link:focus{
-      left:16px; top:16px; width:auto; height:auto; padding:.5rem .75rem;
-      background:#000; color:#fff; border-radius:.5rem; z-index:9999;
-    }
-
-    /* Fancy focus outline */
-    :focus-visible{ outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 8px; }
-
-    /* Subtle grain */
-    .grain::before{
-      content:''; position:absolute; inset:0; pointer-events:none; opacity:.07; mix-blend-mode:multiply;
-      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="140" height="140" viewBox="0 0 140 140"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23n)" opacity=".25"/></svg>');
-    }
-  </style>
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--cream);
+            color: #333;
+            overflow-x: hidden;
+            cursor: default;
+        }
+        
+        .font-serif {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        /* Custom Cursor */
+        .cursor {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--primary);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            transition: all 0.1s ease;
+            z-index: 9999;
+            mix-blend-mode: difference;
+        }
+        
+        .cursor-follower {
+            width: 40px;
+            height: 40px;
+            background: rgba(212, 165, 116, 0.1);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            z-index: 9998;
+        }
+        
+        /* Navigation Enhancements */
+        nav {
+            backdrop-filter: blur(20px);
+            background: rgba(250, 248, 243, 0.85);
+            box-shadow: 0 1px 20px rgba(0, 0, 0, 0.05);
+        }
+        
+        .nav-link {
+            position: relative;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary), var(--rose-gold));
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::before {
+            width: 100%;
+        }
+        
+        /* Hero Section Enhancements */
+        .hero-gradient {
+            background: linear-gradient(135deg, 
+                rgba(212, 165, 116, 0.1) 0%, 
+                rgba(232, 180, 184, 0.1) 50%, 
+                rgba(250, 248, 243, 0.9) 100%);
+        }
+        
+        .hero-title {
+            background: linear-gradient(135deg, var(--deep-brown) 0%, var(--primary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+        }
+        
+        /* Magnetic Button Effect */
+        .magnetic-btn {
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            overflow: hidden;
+        }
+        
+        .magnetic-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .magnetic-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        /* Product Card Enhancements */
+        .product-card {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, transparent 0%, rgba(212, 165, 116, 0.05) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+        
+        .product-card:hover::before {
+            opacity: 1;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.15);
+        }
+        
+        .product-image {
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .product-image img {
+            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .product-card:hover .product-image img {
+            transform: scale(1.1);
+        }
+        
+        .product-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.7) 100%);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding: 2rem;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        
+        .product-card:hover .product-overlay {
+            opacity: 1;
+        }
+        
+        /* Collection Cards */
+        .collection-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 30px;
+            height: 500px;
+            cursor: pointer;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .collection-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.8) 100%);
+            transition: all 0.5s ease;
+        }
+        
+        .collection-card:hover {
+            transform: scale(1.03);
+            box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .collection-card:hover img {
+            transform: scale(1.1);
+        }
+        
+        .collection-card img {
+            transition: transform 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        /* Testimonial Cards */
+        .testimonial-card {
+            background: white;
+            border-radius: 30px;
+            padding: 3rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            border: 1px solid rgba(212, 165, 116, 0.1);
+        }
+        
+        .testimonial-card::before {
+            content: '"';
+            position: absolute;
+            top: 20px;
+            left: 30px;
+            font-size: 100px;
+            font-family: 'Playfair Display', serif;
+            color: rgba(212, 165, 116, 0.1);
+            line-height: 1;
+        }
+        
+        .testimonial-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 50px -20px rgba(0, 0, 0, 0.15);
+            border-color: rgba(212, 165, 116, 0.3);
+        }
+        
+        /* Floating Elements */
+        .float-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-20px) rotate(2deg); }
+            66% { transform: translateY(-10px) rotate(-2deg); }
+        }
+        
+        .pulse-animation {
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+        }
+        
+        /* Scroll Indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 50px;
+            border: 2px solid var(--primary);
+            border-radius: 25px;
+            cursor: pointer;
+        }
+        
+        .scroll-indicator::before {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            width: 6px;
+            height: 6px;
+            background: var(--primary);
+            border-radius: 50%;
+            transform: translateX(-50%);
+            animation: scroll-down 2s infinite;
+        }
+        
+        @keyframes scroll-down {
+            0% { transform: translate(-50%, 0); opacity: 0; }
+            40% { opacity: 1; }
+            80% { transform: translate(-50%, 20px); opacity: 0; }
+            100% { opacity: 0; }
+        }
+        
+        /* Newsletter Section */
+        .newsletter-bg {
+            background: linear-gradient(135deg, var(--deep-brown) 0%, var(--primary) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .newsletter-bg::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            animation: rotate 30s linear infinite;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Loading Animation */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--cream);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            transition: opacity 0.5s ease;
+        }
+        
+        .loader-content {
+            text-align: center;
+        }
+        
+        .loader-logo {
+            font-size: 3rem;
+            font-family: 'Playfair Display', serif;
+            color: var(--primary);
+            margin-bottom: 2rem;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        
+        .loader-bar {
+            width: 200px;
+            height: 2px;
+            background: rgba(212, 165, 116, 0.2);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        
+        .loader-progress {
+            height: 100%;
+            background: var(--primary);
+            width: 0;
+            animation: load 2s ease-in-out forwards;
+        }
+        
+        @keyframes load {
+            to { width: 100%; }
+        }
+        
+        /* Responsive Enhancements */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 3rem;
+            }
+            
+            .collection-card {
+                height: 350px;
+            }
+            
+            .testimonial-card {
+                padding: 2rem;
+            }
+        }
+    </style>
 </head>
-
-<body class="relative antialiased">
-  <a href="#main" class="skip-link">Skip to content</a>
-  <div id="waves" class="waves-bg"></div>
-
-  <!-- Announcement bar -->
-  <div class="relative z-50 bg-ink text-white text-sm">
-    <div class="max-w-7xl mx-auto px-4 py-2 flex items-center justify-center gap-3">
-      <span class="opacity-80">Complimentary shipping on orders over $60</span>
-      <span class="hidden sm:inline">•</span>
-      <a href="#collections" class="underline decoration-luxe/50 hover:text-blush transition">Explore new Golden Radiance</a>
+<body>
+    <!-- Loading Screen -->
+    <div class="loader" id="loader">
+        <div class="loader-content">
+            <div class="loader-logo">LUMIÈRE</div>
+            <div class="loader-bar">
+                <div class="loader-progress"></div>
+            </div>
+        </div>
     </div>
-  </div>
-
-  <!-- Navigation -->
-  <header class="fixed w-full z-50 top-0 left-0">
-    <nav class="bg-white/80 backdrop-blur-md shadow-[0_8px_30px_rgba(0,0,0,0.05)]">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6">
-        <div class="flex items-center justify-between h-16">
-          <a href="#" class="flex items-center gap-2">
-            <span class="text-2xl font-serif font-bold tracking-wide text-ink">LUMIÈRE</span>
-            <span class="inline-block h-2 w-2 rounded-full bg-luxe"></span>
-          </a>
-
-          <div class="hidden md:flex items-center gap-10">
-            <a href="#shop" class="nav-link text-gray-700 hover:text-ink transition">Shop</a>
-            <a href="#collections" class="nav-link text-gray-700 hover:text-ink transition">Collections</a>
-            <a href="#story" class="nav-link text-gray-700 hover:text-ink transition">About</a>
-            <a href="#journal" class="nav-link text-gray-700 hover:text-ink transition">Journal</a>
-          </div>
-
-          <div class="flex items-center gap-4">
-            <button aria-label="Search" class="text-gray-700 hover:text-ink transition p-1">
-              <i data-feather="search"></i>
-            </button>
-            <button aria-label="Account" class="text-gray-700 hover:text-ink transition p-1">
-              <i data-feather="user"></i>
-            </button>
-            <a href="#" class="relative text-gray-700 hover:text-ink transition p-1" aria-label="Shopping bag">
-              <i data-feather="shopping-bag"></i>
-              <span class="absolute -top-2 -right-2 bg-rose-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">3</span>
-            </a>
-
-            <!-- Mobile menu button -->
-            <button id="menuBtn" class="md:hidden ml-2 p-2 rounded-md hover:bg-gray-100 transition" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
-              <i data-feather="menu"></i>
-            </button>
-          </div>
+    
+    <!-- Custom Cursor -->
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
+    
+    <!-- Vanta Background -->
+    <div id="vanta-bg" style="position: fixed; width: 100%; height: 100%; z-index: -1;"></div>
+    
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 transition-all duration-300" id="navbar">
+        <div class="container mx-auto px-6 py-5">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <a href="#" class="text-3xl font-serif font-bold text-gray-800 tracking-wider">LUMIÈRE</a>
+                </div>
+                
+                <div class="hidden lg:flex items-center space-x-12">
+                    <a href="#" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">Collections</a>
+                    <a href="#" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">Bestsellers</a>
+                    <a href="#" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">About</a>
+                                        <a href="#" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">Journal</a>
+                    <a href="#" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">Sustainability</a>
+                </div>
+                
+                <div class="flex items-center space-x-6">
+                    <button class="text-gray-700 hover:text-gray-900 transition-all duration-300 hover:scale-110">
+                        <i data-feather="search" class="w-5 h-5"></i>
+                    </button>
+                    <button class="text-gray-700 hover:text-gray-900 transition-all duration-300 hover:scale-110">
+                        <i data-feather="user" class="w-5 h-5"></i>
+                    </button>
+                    <button class="text-gray-700 hover:text-gray-900 relative transition-all duration-300 hover:scale-110">
+                        <i data-feather="shopping-bag" class="w-5 h-5"></i>
+                        <span class="absolute -top-2 -right-2 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center pulse-animation">3</span>
+                    </button>
+                    <button class="lg:hidden text-gray-700 hover:text-gray-900">
+                        <i data-feather="menu" class="w-6 h-6"></i>
+                    </button>
+                </div>
+            </div>
         </div>
-      </div>
-
-      <!-- Mobile menu -->
-      <div id="mobileMenu" class="md:hidden hidden bg-white/95 backdrop-blur-md border-t border-gray-100">
-        <div class="max-w-7xl mx-auto px-4 py-4 space-y-2">
-          <a href="#shop" class="block py-2 nav-link text-gray-800">Shop</a>
-          <a href="#collections" class="block py-2 nav-link text-gray-800">Collections</a>
-          <a href="#story" class="block py-2 nav-link text-gray-800">About</a>
-          <a href="#journal" class="block py-2 nav-link text-gray-800">Journal</a>
-        </div>
-      </div>
     </nav>
-  </header>
-
-  <!-- Hero -->
-  <section class="relative min-h-[92vh] pt-28 hero-wrap bg-hero-gradient grain">
-    <main id="main" class="max-w-7xl mx-auto px-6">
-      <div class="flex flex-col md:flex-row items-center gap-12">
-        <div class="md:w-1/2" data-aos="fade-right">
-          <h1 class="text-5xl md:text-7xl font-serif font-bold text-ink leading-tight mb-6">
-            Illuminate<br/>
-            Your <span class="bg-clip-text text-transparent bg-gradient-to-r from-luxe via-cocoa to-luxe">Beauty</span>
-          </h1>
-          <p class="text-lg text-gray-600 mb-8 max-w-lg">
-            Luxury, cruelty-free cosmetics crafted with the finest natural ingredients to reveal your most radiant self.
-          </p>
-          <div class="flex flex-wrap gap-4">
-            <a href="#shop" class="group inline-flex items-center px-8 py-3 rounded-full text-white bg-ink hover:bg-black transition shadow-elegant">
-              Shop Now
-              <i data-feather="arrow-right" class="ml-2 transition-transform group-hover:translate-x-1"></i>
-            </a>
-            <a href="#story" class="inline-flex items-center px-8 py-3 rounded-full border border-ink text-ink hover:bg-gray-100 transition">
-              Learn More
-            </a>
-          </div>
+    
+    <!-- Hero Section -->
+    <section class="hero-gradient min-h-screen flex items-center pt-20 relative overflow-hidden">
+        <div class="container mx-auto px-6 z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="order-2 lg:order-1" data-aos="fade-right" data-aos-duration="1000">
+                    <div class="inline-block mb-6">
+                        <span class="bg-gradient-to-r from-amber-100 to-rose-100 text-amber-900 px-4 py-2 rounded-full text-sm font-medium float-animation">
+                            ✨ New Collection 2024
+                        </span>
+                    </div>
+                    <h1 class="hero-title text-5xl lg:text-7xl font-serif font-bold leading-tight mb-6">
+                        Illuminate Your Natural Beauty
+                    </h1>
+                    <p class="text-lg text-gray-600 mb-8 max-w-lg leading-relaxed">
+                        Experience the perfect harmony of luxury and nature. Our meticulously crafted cosmetics celebrate your unique radiance with clean, conscious ingredients.
+                    </p>
+                    <div class="flex flex-wrap gap-4">
+                        <button class="magnetic-btn group px-8 py-4 bg-gradient-to-r from-gray-900 to-black text-white rounded-full hover:shadow-2xl transition-all duration-300 flex items-center space-x-2">
+                            <span>Explore Collection</span>
+                            <i data-feather="arrow-right" class="w-4 h-4 group-hover:translate-x-2 transition-transform duration-300"></i>
+                        </button>
+                        <button class="px-8 py-4 border-2 border-gray-900 text-gray-900 rounded-full hover:bg-gray-900 hover:text-white transition-all duration-300">
+                            Watch Story
+                        </button>
+                    </div>
+                    
+                    <!-- Trust Badges -->
+                    <div class="flex items-center space-x-8 mt-12">
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-gray-800">98%</div>
+                            <div class="text-sm text-gray-600">Natural Ingredients</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-gray-800">100%</div>
+                            <div class="text-sm text-gray-600">Cruelty Free</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-gray-800">50K+</div>
+                            <div class="text-sm text-gray-600">Happy Customers</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="order-1 lg:order-2 relative" data-aos="fade-left" data-aos-duration="1000">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800&h=1000&fit=crop" alt="Luxury Cosmetics" class="rounded-3xl shadow-2xl w-full object-cover h-[600px]">
+                        
+                        <!-- Floating Product Card -->
+                        <div class="absolute -bottom-10 -left-10 bg-white p-6 rounded-2xl shadow-xl float-animation" data-aos="zoom-in" data-aos-delay="500">
+                            <div class="flex items-center space-x-4">
+                                <img src="https://images.unsplash.com/photo-1608979048467-6194dabc6a3d?w=100&h=100&fit=crop" alt="Product" class="w-16 h-16 rounded-xl object-cover">
+                                <div>
+                                    <p class="text-sm text-gray-500">Bestseller</p>
+                                    <h4 class="font-semibold text-gray-800">Golden Elixir Serum</h4>
+                                    <div class="flex items-center mt-1">
+                                        <div class="flex text-yellow-400">
+                                            <i data-feather="star" class="w-3 h-3 fill-current"></i>
+                                            <i data-feather="star" class="w-3 h-3 fill-current"></i>
+                                            <i data-feather="star" class="w-3 h-3 fill-current"></i>
+                                            <i data-feather="star" class="w-3 h-3 fill-current"></i>
+                                            <i data-feather="star" class="w-3 h-3 fill-current"></i>
+                                        </div>
+                                        <span class="text-xs text-gray-600 ml-2">(2.3k reviews)</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Decorative Elements -->
+                        <div class="absolute -top-10 -right-10 w-32 h-32 bg-gradient-to-br from-amber-200 to-rose-200 rounded-full blur-3xl opacity-60"></div>
+                        <div class="absolute -bottom-20 -right-20 w-40 h-40 bg-gradient-to-br from-pink-200 to-purple-200 rounded-full blur-3xl opacity-40"></div>
+                    </div>
+                </div>
+            </div>
         </div>
-
-        <div class="md:w-1/2 relative" data-aos="fade-left">
-          <img src="http://static.photos/cosmetic/1200x630/1" alt="LUMIÈRE Golden Radiance Collection" class="rounded-2xl shadow-elegant w-full" loading="eager" fetchpriority="high" decoding="async">
-          <div class="absolute -bottom-6 -left-6 bg-white p-5 rounded-xl shadow-lg">
-            <p class="text-xs text-gray-500 uppercase tracking-wider">Featured</p>
-            <h3 class="font-serif text-xl font-bold">Golden Radiance</h3>
-          </div>
-          <div class="absolute -top-8 -right-8 floating-badge">
-            <div class="bg-ink text-white text-xs px-3 py-1 rounded-full rotate-6 shadow-md">
-              New Arrival
+        
+        <!-- Scroll Indicator -->
+        <div class="scroll-indicator"></div>
+    </section>
+    
+    <!-- Featured Collections -->
+    <section class="py-24 bg-white relative">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <span class="text-sm font-medium text-amber-800 tracking-wider uppercase mb-4 block">Curated for You</span>
+                <h2 class="text-4xl lg:text-5xl font-serif font-bold text-gray-800 mb-6">Signature Collections</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto text-lg">
+                    Each collection is thoughtfully designed to enhance your natural beauty with luxurious formulations
+                </p>
             </div>
-          </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="collection-card group" data-aos="fade-up" data-aos-delay="100">
+                    <img src="https://images.unsplash.com/photo-1570194065650-d99fb4b38e39?w=600&h=800&fit=crop" alt="Skincare" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 z-10 flex flex-col justify-end p-10 text-white">
+                        <h3 class="text-3xl font-serif font-bold mb-3 transform group-hover:translate-y-[-10px] transition-transform duration-500">Radiant Skincare</h3>
+                        <p class="mb-6 opacity-90 transform group-hover:translate-y-[-10px] transition-all duration-500 delay-75">Transform your skin with our botanical-infused formulas</p>
+                        <a href="#" class="inline-flex items-center text-white font-medium group-hover:text-amber-200 transition-all duration-300 transform group-hover:translate-y-[-10px] delay-100">
+                            <span class="border-b-2 border-white group-hover:border-amber-200 pb-1">Discover Collection</span>
+                            <i data-feather="arrow-right" class="ml-2 w-4 h-4 group-hover:translate-x-2 transition-transform duration-300"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="collection-card group" data-aos="fade-up" data-aos-delay="200">
+                    <img src="https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=600&h=800&fit=crop" alt="Makeup" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 z-10 flex flex-col justify-end p-10 text-white">
+                        <h3 class="text-3xl font-serif font-bold mb-3 transform group-hover:translate-y-[-10px] transition-transform duration-500">Artistry Makeup</h3>
+                        <p class="mb-6 opacity-90 transform group-hover:translate-y-[-10px] transition-all duration-500 delay-75">Express yourself with our professional-grade cosmetics</p>
+                        <a href="#" class="inline-flex items-center text-white font-medium group-hover:text-amber-200 transition-all duration-300 transform group-hover:translate-y-[-10px] delay-100">
+                            <span class="border-b-2 border-white group-hover:border-amber-200 pb-1">Discover Collection</span>
+                            <i data-feather="arrow-right" class="ml-2 w-4 h-4 group-hover:translate-x-2 transition-transform duration-300"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="collection-card group" data-aos="fade-up" data-aos-delay="300">
+                    <img src="https://images.unsplash.com/photo-1594035900144-17151c9910af?w=600&h=800&fit=crop" alt="Fragrance" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 z-10 flex flex-col justify-end p-10 text-white">
+                        <h3 class="text-3xl font-serif font-bold mb-3 transform group-hover:translate-y-[-10px] transition-transform duration-500">Enchanting Fragrance</h3>
+                        <p class="mb-6 opacity-90 transform group-hover:translate-y-[-10px] transition-all duration-500 delay-75">Captivate the senses with our exclusive perfumes</p>
+                        <a href="#" class="inline-flex items-center text-white font-medium group-hover:text-amber-200 transition-all duration-300 transform group-hover:translate-y-[-10px] delay-100">
+                            <span class="border-b-2 border-white group-hover:border-amber-200 pb-1">Discover Collection</span>
+                            <i data-feather="arrow-right" class="ml-2 w-4 h-4 group-hover:translate-x-2 transition-transform duration-300"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-
-      <div class="absolute bottom-8 left-1/2 -translate-x-1/2 scroll-down">
-        <i data-feather="chevron-down" class="text-gray-600"></i>
-      </div>
-    </main>
-  </section>
-
-  <!-- Press strip -->
-  <section aria-label="As seen in" class="py-6">
-    <div class="max-w-7xl mx-auto px-6">
-      <div class="flex flex-wrap items-center justify-center gap-8 opacity-70">
-        <span class="text-sm tracking-wider uppercase">As seen in</span>
-        <img src="https://upload.wikimedia.org/wikipedia/commons/2/2e/Vogue_logo.svg" alt="Vogue" class="h-6" loading="lazy" decoding="async">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/1/19/Elle_logo.svg" alt="ELLE" class="h-6" loading="lazy" decoding="async">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/e/e4/Allure_logo.svg" alt="Allure" class="h-6" loading="lazy" decoding="async">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/3/33/Harper%27s_Bazaar_Logo.svg" alt="Harper's Bazaar" class="h-6" loading="lazy" decoding="async">
-      </div>
-    </div>
-  </section>
-
-  <!-- Collections -->
-  <section id="collections" class="py-20 bg-white">
-    <div class="max-w-7xl mx-auto px-6">
-      <div class="text-center mb-16" data-aos="fade-up">
-        <h2 class="text-4xl font-serif font-bold text-ink mb-4">Our Collections</h2>
-        <p class="text-gray-600 max-w-2xl mx-auto">Curated for every skin tone to enhance your natural glow.</p>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <!-- Card -->
-        <article class="relative overflow-hidden rounded-2xl group shadow-[0_10px_30px_-15px_rgba(0,0,0,.25)]" data-aos="fade-up" data-aos-delay="100">
-          <img src="http://static.photos/cosmetic/640x360/2" alt="Skincare Rituals Collection" class="w-full h-96 object-cover transition duration-700 group-hover:scale-105" loading="lazy" decoding="async">
-          <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
-          <div class="absolute bottom-0 left-0 p-8 text-white">
-            <h3 class="text-2xl font-serif font-bold mb-2">Skincare Rituals</h3>
-            <p class="mb-4 opacity-90">Nourish and rejuvenate</p>
-            <a href="#shop" class="inline-flex items-center border-b border-white pb-1 hover:text-blush hover:border-blush transition">
-              Explore <i data-feather="arrow-right" class="ml-2 h-4"></i>
-            </a>
-          </div>
-        </article>
-
-        <article class="relative overflow-hidden rounded-2xl group shadow-[0_10px_30px_-15px_rgba(0,0,0,.25)]" data-aos="fade-up" data-aos-delay="200">
-          <img src="http://static.photos/cosmetic/640x360/3" alt="Luminous Makeup Collection" class="w-full h-96 object-cover transition duration-700 group-hover:scale-105" loading="lazy" decoding="async">
-          <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
-          <div class="absolute bottom-0 left-0 p-8 text-white">
-            <h3 class="text-2xl font-serif font-bold mb-2">Luminous Makeup</h3>
-            <p class="mb-4 opacity-90">Enhance your features</p>
-            <a href="#shop" class="inline-flex items-center border-b border-white pb-1 hover:text-blush hover:border-blush transition">
-              Explore <i data-feather="arrow-right" class="ml-2 h-4"></i>
-            </a>
-          </div>
-        </article>
-
-        <article class="relative overflow-hidden rounded-2xl group shadow-[0_10px_30px_-15px_rgba(0,0,0,.25)]" data-aos="fade-up" data-aos-delay="300">
-          <img src="http://static.photos/cosmetic/640x360/4" alt="Signature Scents Collection" class="w-full h-96 object-cover transition duration-700 group-hover:scale-105" loading="lazy" decoding="async">
-          <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
-          <div class="absolute bottom-0 left-0 p-8 text-white">
-            <h3 class="text-2xl font-serif font-bold mb-2">Signature Scents</h3>
-            <p class="mb-4 opacity-90">Captivate every note</p>
-            <a href="#shop" class="inline-flex items-center border-b border-white pb-1 hover:text-blush hover:border-blush transition">
-              Explore <i data-feather="arrow-right" class="ml-2 h-4"></i>
-            </a>
-          </div>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- Best Sellers -->
-  <section id="shop" class="py-20 bg-gray-50">
-    <div class="max-w-7xl mx-auto px-6">
-      <div class="text-center mb-16" data-aos="fade-up">
-        <h2 class="text-4xl font-serif font-bold text-ink mb-4">Best Sellers</h2>
-        <p class="text-gray-600 max-w-2xl mx-auto">Customer favorites loved across the globe</p>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-        <!-- Product -->
-        <article class="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition product-card" data-aos="fade-up" data-aos-delay="100">
-          <div class="relative">
-            <img src="http://static.photos/cosmetic/640x360/5" alt="Radiant Glow Serum" class="w-full h-80 object-cover" loading="lazy" decoding="async">
-            <div class="product-overlay absolute inset-0 bg-black/30 flex items-center justify-center gap-3">
-              <button class="bg-white text-ink px-5 py-2 rounded-full font-medium hover:bg-gray-100 transition">Quick View</button>
-              <button class="bg-ink text-white px-5 py-2 rounded-full font-medium hover:bg-black transition">Add to Bag</button>
+    </section>
+    
+    <!-- Best Sellers -->
+    <section class="py-24 bg-gradient-to-b from-white to-gray-50">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <span class="text-sm font-medium text-amber-800 tracking-wider uppercase mb-4 block">Customer Favorites</span>
+                <h2 class="text-4xl lg:text-5xl font-serif font-bold text-gray-800 mb-6">Bestselling Beauty</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto text-lg">
+                    Discover the products our customers can't live without
+                </p>
             </div>
-            <span class="absolute top-4 right-4 bg-rose-500 text-white text-xs px-2 py-1 rounded-full">-20%</span>
-          </div>
-          <div class="p-6">
-            <div class="flex justify-between items-start mb-2">
-              <h3 class="font-semibold text-ink">Radiant Glow Serum</h3>
-              <div class="flex items-center text-yellow-500">
-                <i data-feather="star" class="w-4 h-4 fill-current"></i>
-                <span class="text-xs text-gray-600 ml-1">4.9</span>
-              </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Product 1 -->
+                <div class="product-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="product-image h-80 relative">
+                        <img src="https://images.unsplash.com/photo-1617897903246-719242758050?w=400&h=500&fit=crop" alt="Product" class="w-full h-full object-cover">
+                        <div class="absolute top-4 right-4 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-xs px-3 py-1 rounded-full font-medium">
+                            -25% OFF
+                        </div>
+                        <div class="product-overlay">
+                            <button class="bg-white text-black px-8 py-3 rounded-full font-medium hover:bg-gray-100 transition duration-300 transform hover:scale-105">
+                                Quick Shop
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-medium text-amber-800 uppercase tracking-wider">Serum</span>
+                            <div class="flex items-center">
+                                <div class="flex text-yellow-400">
+                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                </div>
+                                <span class="text-xs text-gray-600 ml-2">(324)</span>
+                            </div>
+                                                </div>
+                        <h3 class="font-semibold text-gray-800 text-lg mb-2">Golden Radiance Elixir</h3>
+                        <p class="text-sm text-gray-500 mb-4">Vitamin C + Hyaluronic Acid</p>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <span class="text-gray-400 line-through text-sm">$64.00</span>
+                                <span class="font-serif font-bold text-xl text-gray-800 ml-2">$48.00</span>
+                            </div>
+                            <button class="bg-gradient-to-r from-gray-900 to-black text-white p-3 rounded-full hover:shadow-lg transition-all duration-300 transform hover:scale-110">
+                                <i data-feather="shopping-bag" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Product 2 -->
+                <div class="product-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="product-image h-80 relative">
+                        <img src="https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=400&h=500&fit=crop" alt="Product" class="w-full h-full object-cover">
+                        <div class="absolute top-4 left-4 bg-gradient-to-r from-green-500 to-emerald-500 text-white text-xs px-3 py-1 rounded-full font-medium">
+                            VEGAN
+                        </div>
+                        <div class="product-overlay">
+                            <button class="bg-white text-black px-8 py-3 rounded-full font-medium hover:bg-gray-100 transition duration-300 transform hover:scale-105">
+                                Quick Shop
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-medium text-amber-800 uppercase tracking-wider">Lipstick</span>
+                            <div class="flex items-center">
+                                <div class="flex text-yellow-400">
+                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                </div>
+                                <span class="text-xs text-gray-600 ml-2">(289)</span>
+                            </div>
+                        </div>
+                        <h3 class="font-semibold text-gray-800 text-lg mb-2">Velvet Kiss Matte</h3>
+                        <p class="text-sm text-gray-500 mb-4">Long-wear comfort formula</p>
+                        <div class="flex items-center justify-between">
+                            <span class="font-serif font-bold text-xl text-gray-800">$32.00</span>
+                            <button class="bg-gradient-to-r from-gray-900 to-black text-white p-3 rounded-full hover:shadow-lg transition-all duration-300 transform hover:scale-110">
+                                <i data-feather="shopping-bag" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Product 3 -->
+                <div class="product-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="product-image h-80 relative">
+                        <img src="https://images.unsplash.com/photo-1631730486572-226d1f595b68?w=400&h=500&fit=crop" alt="Product" class="w-full h-full object-cover">
+                        <div class="absolute top-4 right-4 bg-gradient-to-r from-purple-500 to-indigo-500 text-white text-xs px-3 py-1 rounded-full font-medium">
+                            NEW
+                        </div>
+                        <div class="product-overlay">
+                            <button class="bg-white text-black px-8 py-3 rounded-full font-medium hover:bg-gray-100 transition duration-300 transform hover:scale-105">
+                                Quick Shop
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-medium text-amber-800 uppercase tracking-wider">Foundation</span>
+                            <div class="flex items-center">
+                                <div class="flex text-yellow-400">
+                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                    <i data-feather="star" class="w-4 h-4"></i>
+                                </div>
+                                <span class="text-xs text-gray-600 ml-2">(198)</span>
+                            </div>
+                        </div>
+                        <h3 class="font-semibold text-gray-800 text-lg mb-2">Silk Perfection Base</h3>
+                        <p class="text-sm text-gray-500 mb-4">Buildable medium coverage</p>
+                        <div class="flex items-center justify-between">
+                            <span class="font-serif font-bold text-xl text-gray-800">$42.00</span>
+                            <button class="bg-gradient-to-r from-gray-900 to-black text-white p-3 rounded-full hover:shadow-lg transition-all duration-300 transform hover:scale-110">
+                                <i data-feather="shopping-bag" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Product 4 -->
+                <div class="product-card" data-aos="fade-up" data-aos-delay="400">
+                    <div class="product-image h-80 relative">
+                        <img src="https://images.unsplash.com/photo-1541643600914-78b084683601?w=400&h=500&fit=crop" alt="Product" class="w-full h-full object-cover">
+                        <div class="absolute top-4 left-4 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs px-3 py-1 rounded-full font-medium">
+                            BESTSELLER
+                        </div>
+                        <div class="product-overlay">
+                            <button class="bg-white text-black px-8 py-3 rounded-full font-medium hover:bg-gray-100 transition duration-300 transform hover:scale-105">
+                                Quick Shop
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-medium text-amber-800 uppercase tracking-wider">Perfume</span>
+                            <div class="flex items-center">
+                                <div class="flex text-yellow-400">
+                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                </div>
+                                <span class="text-xs text-gray-600 ml-2">(412)</span>
+                            </div>
+                        </div>
+                        <h3 class="font-semibold text-gray-800 text-lg mb-2">Midnight Mystique</h3>
+                        <p class="text-sm text-gray-500 mb-4">Oriental floral fragrance</p>
+                        <div class="flex items-center justify-between">
+                            <span class="font-serif font-bold text-xl text-gray-800">$78.00</span>
+                            <button class="bg-gradient-to-r from-gray-900 to-black text-white p-3 rounded-full hover:shadow-lg transition-all duration-300 transform hover:scale-110">
+                                <i data-feather="shopping-bag" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <p class="text-sm text-gray-500 mb-3">Illuminating facial serum</p>
-            <div class="flex justify-between items-center">
-              <span class="font-serif font-bold text-ink">$48.00</span>
-              <button class="text-gray-500 hover:text-ink transition" aria-label="Add Radiant Glow Serum to cart">
-                <i data-feather="shopping-cart"></i>
-              </button>
+            
+            <div class="text-center mt-16" data-aos="fade-up">
+                <a href="#" class="inline-flex items-center px-8 py-4 border-2 border-gray-900 text-gray-900 rounded-full hover:bg-gray-900 hover:text-white transition-all duration-300 group">
+                    <span>View All Products</span>
+                    <i data-feather="arrow-right" class="ml-2 w-4 h-4 group-hover:translate-x-2 transition-transform duration-300"></i>
+                </a>
             </div>
-          </div>
-        </article>
-
-        <article class="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition product-card" data-aos="fade-up" data-aos-delay="200">
-          <div class="relative">
-            <img src="http://static.photos/cosmetic/640x360/6" alt="Luxe Matte Lipstick" class="w-full h-80 object-cover" loading="lazy" decoding="async">
-            <div class="product-overlay absolute inset-0 bg-black/30 flex items-center justify-center gap-3">
-              <button class="bg-white text-ink px-5 py-2 rounded-full font-medium hover:bg-gray-100 transition">Quick View</button>
-              <button class="bg-ink text-white px-5 py-2 rounded-full font-medium hover:bg-black transition">Add to Bag</button>
-            </div>
-          </div>
-          <div class="p-6">
-            <div class="flex justify-between items-start mb-2">
-              <h3 class="font-semibold text-ink">Luxe Matte Lipstick</h3>
-              <div class="flex items-center text-yellow-500">
-                <i data-feather="star" class="w-4 h-4 fill-current"></i>
-                <span class="text-xs text-gray-600 ml-1">4.8</span>
-              </div>
-            </div>
-            <p class="text-sm text-gray-500 mb-3">Long-wear, hydrating formula</p>
-            <div class="flex justify-between items-center">
-              <span class="font-serif font-bold text-ink">$32.00</span>
-              <button class="text-gray-500 hover:text-ink transition" aria-label="Add Luxe Matte Lipstick to cart">
-                <i data-feather="shopping-cart"></i>
-              </button>
-            </div>
-          </div>
-        </article>
-
-        <article class="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition product-card" data-aos="fade-up" data-aos-delay="300">
-          <div class="relative">
-            <img src="http://static.photos/cosmetic/640x360/7" alt="Silk Touch Foundation" class="w-full h-80 object-cover" loading="lazy" decoding="async">
-            <div class="product-overlay absolute inset-0 bg-black/30 flex items-center justify-center gap-3">
-              <button class="bg-white text-ink px-5 py-2 rounded-full font-medium hover:bg-gray-100 transition">Quick View</button>
-              <button class="bg-ink text-white px-5 py-2 rounded-full font-medium hover:bg-black transition">Add to Bag</button>
-            </div>
-            <span class="absolute top-4 left-4 bg-green-600 text-white text-xs px-2 py-1 rounded-full">Vegan</span>
-          </div>
-          <div class="p-6">
-            <div class="flex justify-between items-start mb-2">
-              <h3 class="font-semibold text-ink">Silk Touch Foundation</h3>
-              <div class="flex items-center text-yellow-500">
-                <i data-feather="star" class="w-4 h-4 fill-current"></i>
-                <span class="text-xs text-gray-600 ml-1">4.7</span>
-              </div>
-            </div>
-            <p class="text-sm text-gray-500 mb-3">Buildable, natural finish</p>
-            <div class="flex justify-between items-center">
-              <span class="font-serif font-bold text-ink">$42.00</span>
-              <button class="text-gray-500 hover:text-ink transition" aria-label="Add Silk Touch Foundation to cart">
-                <i data-feather="shopping-cart"></i>
-              </button>
-            </div>
-          </div>
-        </article>
-
-        <article class="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition product-card" data-aos="fade-up" data-aos-delay="400">
-          <div class="relative">
-            <img src="http://static.photos/cosmetic/640x360/8" alt="Moonlight Perfume" class="w-full h-80 object-cover" loading="lazy" decoding="async">
-            <div class="product-overlay absolute inset-0 bg-black/30 flex items-center justify-center gap-3">
-              <button class="bg-white text-ink px-5 py-2 rounded-full font-medium hover:bg-gray-100 transition">Quick View</button>
-              <button class="bg-ink text-white px-5 py-2 rounded-full font-medium hover:bg-black transition">Add to Bag</button>
-            </div>
-          </div>
-          <div class="p-6">
-            <div class="flex justify-between items-start mb-2">
-              <h3 class="font-semibold text-ink">Moonlight Perfume</h3>
-              <div class="flex items-center text-yellow-500">
-                <i data-feather="star" class="w-4 h-4 fill-current"></i>
-                <span class="text-xs text-gray-600 ml-1">4.9</span>
-              </div>
-            </div>
-            <p class="text-sm text-gray-500 mb-3">Enchanting floral musk</p>
-            <div class="flex justify-between items-center">
-              <span class="font-serif font-bold text-ink">$68.00</span>
-              <button class="text-gray-500 hover:text-ink transition" aria-label="Add Moonlight Perfume to cart">
-                <i data-feather="shopping-cart"></i>
-              </button>
-            </div>
-          </div>
-        </article>
-      </div>
-
-      <div class="text-center mt-12" data-aos="fade-up">
-        <a href="#shop" class="inline-block px-8 py-3 border border-ink text-ink rounded-full hover:bg-ink hover:text-white transition">View All Products</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- Brand Story -->
-  <section id="story" class="py-20 bg-white">
-    <div class="max-w-7xl mx-auto px-6">
-      <div class="flex flex-col md:flex-row items-center gap-12">
-        <div class="md:w-1/2" data-aos="fade-right">
-          <div class="relative">
-            <img src="http://static.photos/cosmetic/640x360/9" alt="Crafted with purpose since 2012" class="rounded-2xl shadow-elegant w-full" loading="lazy" decoding="async">
-            <div class="absolute -bottom-6 -right-6 bg-luxe/10 border border-luxe/30 p-6 rounded-xl shadow-lg">
-              <h3 class="font-serif text-2xl font-bold text-cocoa mb-1">Since 2012</h3>
-              <p class="text-sm text-cocoa/90">Crafting beauty with purpose</p>
-            </div>
-          </div>
         </div>
-        <div class="md:w-1/2 md:pl-6" data-aos="fade-left">
-          <h2 class="text-4xl font-serif font-bold text-ink mb-6">Our Philosophy</h2>
-          <p class="text-gray-600 mb-6">
-            At LUMIÈRE, beauty is kind—to your skin and the planet. Every formula blends clean, ethically sourced ingredients to deliver visible results without compromise.
-          </p>
-          <div class="space-y-4 mb-8">
-            <div class="flex items-start">
-              <div class="bg-luxe/15 p-2 rounded-full mr-4">
-                <i data-feather="check" class="text-cocoa"></i>
-              </div>
-              <div>
-                <h4 class="font-semibold text-ink mb-1">Cruelty-Free</h4>
-                <p class="text-sm text-gray-600">Never tested on animals</p>
-              </div>
+    </section>
+    
+    <!-- Brand Story -->
+    <section class="py-24 bg-gradient-to-b from-gray-50 to-white overflow-hidden">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <div class="relative" data-aos="fade-right" data-aos-duration="1000">
+                    <div class="relative z-10">
+                        <img src="https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=600&h=700&fit=crop" alt="Brand Story" class="rounded-3xl shadow-2xl w-full">
+                        <div class="absolute -bottom-10 -right-10 bg-gradient-to-br from-amber-100 to-rose-100 p-8 rounded-2xl shadow-xl">
+                            <h3 class="font-serif text-3xl font-bold text-amber-900 mb-2">12+ Years</h3>
+                            <p class="text-amber-800">of Beauty Innovation</p>
+                        </div>
+                    </div>
+                    <!-- Decorative Elements -->
+                    <div class="absolute top-0 left-0 w-72 h-72 bg-gradient-to-br from-amber-200 to-rose-200 rounded-full blur-3xl opacity-30 -z-10"></div>
+                </div>
+                
+                <div data-aos="fade-left" data-aos-duration="1000">
+                    <span class="text-sm font-medium text-amber-800 tracking-wider uppercase mb-4 block">Our Story</span>
+                    <h2 class="text-4xl lg:text-5xl font-serif font-bold text-gray-800 mb-6">Beauty Redefined</h2>
+                    <p class="text-gray-600 mb-6 text-lg leading-relaxed">
+                        Born from a passion for clean beauty and sustainable luxury, LUMIÈRE represents a new era in cosmetics. We believe that true beauty comes from harmony—between nature and science, tradition and innovation, luxury and consciousness.
+                    </p>
+                    <p class="text-gray-600 mb-8 leading-relaxed">
+                        Every product in our collection is a testament to our commitment to excellence, formulated with the finest botanical ingredients and cutting-edge technology to deliver transformative results.
+                    </p>
+                    
+                    <div class="grid grid-cols-2 gap-6 mb-8">
+                        <div class="bg-gradient-to-br from-amber-50 to-rose-50 p-6 rounded-2xl">
+                            <div class="bg-white w-12 h-12 rounded-full flex items-center justify-center mb-4">
+                                <i data-feather="leaf" class="text-amber-800"></i>
+                            </div>
+                            <h4 class="font-semibold text-gray-800 mb-2">98% Natural</h4>
+                            <p class="text-sm text-gray-600">Botanical ingredients sourced ethically</p>
+                        </div>
+                        <div class="bg-gradient-to-br from-purple-50 to-pink-50 p-6 rounded-2xl">
+                            <div class="bg-white w-12 h-12 rounded-full flex items-center justify-center mb-4">
+                                <i data-feather="heart" class="text-purple-800"></i>
+                            </div>
+                            <h4 class="font-semibold text-gray-800 mb-2">Cruelty-Free</h4>
+                            <p class="text-sm text-gray-600">Never tested on animals, ever</p>
+                        </div>
+                    </div>
+                    
+                    <a href="#" class="inline-flex items-center text-amber-900 font-semibold hover:text-amber-700 transition duration-300 group">
+                        <span class="border-b-2 border-amber-900 group-hover:border-amber-700 pb-1">Discover Our Philosophy</span>
+                        <i data-feather="arrow-right" class="ml-2 w-4 h-4 group-hover:translate-x-2 transition-transform duration-300"></i>
+                    </a>
+                </div>
             </div>
-            <div class="flex items-start">
-              <div class="bg-luxe/15 p-2 rounded-full mr-4">
-                <i data-feather="check" class="text-cocoa"></i>
-              </div>
-              <div>
-                <h4 class="font-semibold text-ink mb-1">Clean Ingredients</h4>
-                <p class="text-sm text-gray-600">Free from harmful chemicals</p>
-              </div>
+        </div>
+    </section>
+    
+    <!-- Testimonials -->
+    <section class="py-24 bg-gradient-to-b from-white to-gray-50">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <span class="text-sm font-medium text-amber-800 tracking-wider uppercase mb-4 block">Testimonials</span>
+                <h2 class="text-4xl lg:text-5xl font-serif font-bold text-gray-800 mb-6">Love Letters</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto text-lg">
+                    Real stories from our beautiful community
+                </p>
             </div>
-            <div class="flex items-start">
-              <div class="bg-luxe/15 p-2 rounded-full mr-4">
-                <i data-feather="check" class="text-cocoa"></i>
-              </div>
-              <div>
-                <h4 class="font-semibold text-ink mb-1">Sustainable Packaging</h4>
-                <p class="text-sm text-gray-600">Eco-conscious materials</p>
-              </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="testimonial-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="flex mb-6">
+                        <div class="flex text-yellow-400">
+                            <i data-feather="star" class="w-5 h-5 fill-current"></i>
+                                                        <i data-feather="star" class="w-5 h-5 fill-current"></i>
+                            <i data-feather="star" class="w-5 h-5 fill-current"></i>
+                            <i data-feather="star" class="w-5 h-5 fill-current"></i>
+                            <i data-feather="star" class="w-5 h-5 fill-current"></i>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 mb-8 italic leading-relaxed">
+                        "The Golden Radiance Elixir has completely transformed my skin. I've never received so many compliments on my complexion. It's like having a filter in real life!"
+                    </p>
+                    <div class="flex items-center">
+                        <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop" alt="Customer" class="w-14 h-14 rounded-full object-cover mr-4">
+                        <div>
+                            <h4 class="font-semibold text-gray-800">Sophia Chen</h4>
+                            <p class="text-sm text-gray-500">Verified Buyer • 3 months ago</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="flex mb-6">
+                        <div class="flex text-yellow-400">
+                            <i data-feather="star" class="w-5 h-5 fill-current"></i>
+                            <i data-feather="star" class="w-5 h-5 fill-current"></i>
+                            <i data-feather="star" class="w-5 h-5 fill-current"></i>
+                            <i data-feather="star" class="w-5 h-5 fill-current"></i>
+                            <i data-feather="star" class="w-5 h-5 fill-current"></i>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 mb-8 italic leading-relaxed">
+                        "As a makeup artist, I'm incredibly picky about products. LUMIÈRE's foundation is a game-changer - perfect coverage that still looks like skin. My clients are obsessed!"
+                    </p>
+                    <div class="flex items-center">
+                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop" alt="Customer" class="w-14 h-14 rounded-full object-cover mr-4">
+                        <div>
+                            <h4 class="font-semibold text-gray-800">Emma Rodriguez</h4>
+                            <p class="text-sm text-gray-500">Pro MUA • 1 month ago</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="flex mb-6">
+                        <div class="flex text-yellow-400">
+                            <i data-feather="star" class="w-5 h-5 fill-current"></i>
+                            <i data-feather="star" class="w-5 h-5 fill-current"></i>
+                            <i data-feather="star" class="w-5 h-5 fill-current"></i>
+                            <i data-feather="star" class="w-5 h-5 fill-current"></i>
+                            <i data-feather="star" class="w-5 h-5 fill-current"></i>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 mb-8 italic leading-relaxed">
+                        "Midnight Mystique is my signature scent now. It's sophisticated, long-lasting, and I get asked what I'm wearing every single day. Pure luxury in a bottle!"
+                    </p>
+                    <div class="flex items-center">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop" alt="Customer" class="w-14 h-14 rounded-full object-cover mr-4">
+                        <div>
+                            <h4 class="font-semibold text-gray-800">Michael Park</h4>
+                            <p class="text-sm text-gray-500">Loyal Customer • 2 weeks ago</p>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-          <a href="#journal" class="inline-flex items-center text-cocoa font-medium hover:text-ink transition">
-            Read Our Story <i data-feather="arrow-right" class="ml-2"></i>
-          </a>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Testimonials -->
-  <section class="py-20 bg-gray-50">
-    <div class="max-w-7xl mx-auto px-6">
-      <div class="text-center mb-16" data-aos="fade-up">
-        <h2 class="text-4xl font-serif font-bold text-ink mb-4">Glowing Reviews</h2>
-        <p class="text-gray-600 max-w-2xl mx-auto">What our customers say about LUMIÈRE</p>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <figure class="bg-white p-8 rounded-2xl testimonial-card" data-aos="fade-up" data-aos-delay="100">
-          <div class="flex mb-4 text-yellow-500" aria-label="5 out of 5 stars">
-            <i data-feather="star" class="w-5 h-5 fill-current"></i><i data-feather="star" class="w-5 h-5 fill-current"></i><i data-feather="star" class="w-5 h-5 fill-current"></i><i data-feather="star" class="w-5 h-5 fill-current"></i><i data-feather="star" class="w-5 h-5 fill-current"></i>
-          </div>
-          <blockquote class="text-gray-600 mb-6">
-            “Radiant Glow Serum transformed my routine—my complexion has never looked so luminous and even-toned.”
-          </blockquote>
-          <figcaption class="flex items-center">
-            <img src="http://static.photos/people/200x200/1" alt="Sophia R." class="w-12 h-12 rounded-full object-cover mr-4" loading="lazy" decoding="async">
-            <div>
-              <div class="font-semibold text-ink">Sophia R.</div>
-              <div class="text-sm text-gray-500">Verified Customer</div>
+    </section>
+    
+    <!-- Instagram Feed -->
+    <section class="py-24 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <span class="text-sm font-medium text-amber-800 tracking-wider uppercase mb-4 block">Follow Us</span>
+                <h2 class="text-4xl lg:text-5xl font-serif font-bold text-gray-800 mb-6">@lumiere.beauty</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto text-lg">
+                    Join our community of beauty enthusiasts
+                </p>
             </div>
-          </figcaption>
-        </figure>
-
-        <figure class="bg-white p-8 rounded-2xl testimonial-card" data-aos="fade-up" data-aos-delay="200">
-          <div class="flex mb-4 text-yellow-500" aria-label="5 out of 5 stars">
-            <i data-feather="star" class="w-5 h-5 fill-current"></i><i data-feather="star" class="w-5 h-5 fill-current"></i><i data-feather="star" class="w-5 h-5 fill-current"></i><i data-feather="star" class="w-5 h-5 fill-current"></i><i data-feather="star" class="w-5 h-5 fill-current"></i>
-          </div>
-          <blockquote class="text-gray-600 mb-6">
-            “Obsessed with the Luxe Matte Lipstick—comfortable, incredible color payoff, and it lasts all day.”
-          </blockquote>
-          <figcaption class="flex items-center">
-            <img src="http://static.photos/people/200x200/2" alt="Emma L." class="w-12 h-12 rounded-full object-cover mr-4" loading="lazy" decoding="async">
-            <div>
-              <div class="font-semibold text-ink">Emma L.</div>
-              <div class="text-sm text-gray-500">Verified Customer</div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4" data-aos="fade-up">
+                <div class="relative group overflow-hidden rounded-2xl cursor-pointer">
+                    <img src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=400&h=400&fit=crop" alt="Instagram" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                        <div class="text-white">
+                            <i data-feather="heart" class="w-5 h-5 mb-1"></i>
+                            <p class="text-sm">2.3k likes</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative group overflow-hidden rounded-2xl cursor-pointer">
+                    <img src="https://images.unsplash.com/photo-1512207736890-6ffca8dad650?w=400&h=400&fit=crop" alt="Instagram" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                        <div class="text-white">
+                            <i data-feather="heart" class="w-5 h-5 mb-1"></i>
+                            <p class="text-sm">3.1k likes</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative group overflow-hidden rounded-2xl cursor-pointer">
+                    <img src="https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?w=400&h=400&fit=crop" alt="Instagram" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                        <div class="text-white">
+                            <i data-feather="heart" class="w-5 h-5 mb-1"></i>
+                            <p class="text-sm">1.8k likes</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative group overflow-hidden rounded-2xl cursor-pointer">
+                    <img src="https://images.unsplash.com/photo-1519699047748-de8e457a634e?w=400&h=400&fit=crop" alt="Instagram" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                        <div class="text-white">
+                            <i data-feather="heart" class="w-5 h-5 mb-1"></i>
+                            <p class="text-sm">4.2k likes</p>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </figcaption>
-        </figure>
-
-        <figure class="bg-white p-8 rounded-2xl testimonial-card" data-aos="fade-up" data-aos-delay="300">
-          <div class="flex mb-4 text-yellow-500" aria-label="5 out of 5 stars">
-            <i data-feather="star" class="w-5 h-5 fill-current"></i><i data-feather="star" class="w-5 h-5 fill-current"></i><i data-feather="star" class="w-5 h-5 fill-current"></i><i data-feather="star" class="w-5 h-5 fill-current"></i><i data-feather="star" class="w-5 h-5 fill-current"></i>
-          </div>
-          <blockquote class="text-gray-600 mb-6">
-            “Moonlight Perfume is my new signature—sophisticated, alluring, the perfect floral-musk balance.”
-          </blockquote>
-          <figcaption class="flex items-center">
-            <img src="http://static.photos/people/200x200/3" alt="Olivia M." class="w-12 h-12 rounded-full object-cover mr-4" loading="lazy" decoding="async">
-            <div>
-              <div class="font-semibold text-ink">Olivia M.</div>
-              <div class="text-sm text-gray-500">Verified Customer</div>
+            
+            <div class="text-center mt-12" data-aos="fade-up">
+                <a href="#" class="inline-flex items-center text-amber-900 font-semibold hover:text-amber-700 transition duration-300 group">
+                    <i data-feather="instagram" class="mr-2 w-5 h-5"></i>
+                    <span>Follow Us on Instagram</span>
+                    <i data-feather="arrow-right" class="ml-2 w-4 h-4 group-hover:translate-x-2 transition-transform duration-300"></i>
+                </a>
             </div>
-          </figcaption>
-        </figure>
-      </div>
-    </div>
-  </section>
-
-  <!-- Newsletter -->
-  <section class="py-20 bg-ink text-white">
-    <div class="max-w-7xl mx-auto px-6">
-      <div class="max-w-4xl mx-auto text-center" data-aos="fade-up">
-        <h2 class="text-4xl font-serif font-bold mb-6">Join Our Beauty Community</h2>
-        <p class="text-gray-300 mb-8 max-w-2xl mx-auto">
-          Subscribe to receive exclusive offers, beauty tips, and early access to new products.
-        </p>
-        <form class="flex flex-col sm:flex-row max-w-xl mx-auto" onsubmit="event.preventDefault(); this.reset(); alert('Thanks for subscribing!')">
-          <input type="email" required placeholder="Your email address" class="px-6 py-3 rounded-full text-ink mb-4 sm:mb-0 sm:mr-4 flex-grow focus:outline-none" aria-label="Email address">
-          <button type="submit" class="px-8 py-3 bg-luxe text-ink rounded-full hover:brightness-95 transition font-medium">
-            Subscribe
-          </button>
-        </form>
-        <p class="text-xs text-gray-400 mt-4">
-          We respect your privacy. Unsubscribe anytime.
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Footer -->
-  <footer class="bg-gray-900 text-white py-16">
-    <div class="max-w-7xl mx-auto px-6">
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-12">
-        <div>
-          <h3 class="text-2xl font-serif font-bold mb-6">LUMIÈRE</h3>
-          <p class="text-gray-400 mb-6">
-            Luxury cosmetics crafted with clean, ethical ingredients to illuminate your natural beauty.
-          </p>
-          <div class="flex space-x-4">
-            <a href="#" class="text-gray-400 hover:text-white transition" aria-label="Instagram"><i data-feather="instagram"></i></a>
-            <a href="#" class="text-gray-400 hover:text-white transition" aria-label="Facebook"><i data-feather="facebook"></i></a>
-            <a href="#" class="text-gray-400 hover:text-white transition" aria-label="Twitter"><i data-feather="twitter"></i></a>
-            <a href="#" class="text-gray-400 hover:text-white transition" aria-label="YouTube"><i data-feather="youtube"></i></a>
-          </div>
         </div>
-
-        <div>
-          <h4 class="font-semibold text-lg mb-6">Shop</h4>
-          <ul class="space-y-3">
-            <li><a href="#collections" class="text-gray-400 hover:text-white transition">Skincare</a></li>
-            <li><a href="#collections" class="text-gray-400 hover:text-white transition">Makeup</a></li>
-            <li><a href="#collections" class="text-gray-400 hover:text-white transition">Fragrance</a></li>
-            <li><a href="#shop" class="text-gray-400 hover:text-white transition">Bestsellers</a></li>
-            <li><a href="#collections" class="text-gray-400 hover:text-white transition">New Arrivals</a></li>
-          </ul>
+    </section>
+    
+    <!-- Newsletter -->
+    <section class="py-24 newsletter-bg relative">
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="max-w-4xl mx-auto text-center" data-aos="fade-up">
+                <h2 class="text-4xl lg:text-5xl font-serif font-bold text-white mb-6">Stay Luminous</h2>
+                <p class="text-amber-100 mb-10 text-lg max-w-2xl mx-auto">
+                    Be the first to discover new collections, exclusive offers, and beauty tips from our experts
+                </p>
+                <form class="flex flex-col sm:flex-row max-w-xl mx-auto gap-4">
+                    <input 
+                        type="email" 
+                        placeholder="Enter your email" 
+                        class="flex-grow px-6 py-4 rounded-full text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-amber-300/50 transition-all duration-300"
+                    >
+                    <button 
+                        type="submit" 
+                        class="px-8 py-4 bg-white text-gray-900 rounded-full font-semibold hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 hover:shadow-xl"
+                    >
+                        Subscribe
+                    </button>
+                </form>
+                <p class="text-xs text-amber-200 mt-6">
+                    Join 50,000+ beauty lovers. Unsubscribe anytime.
+                </p>
+            </div>
         </div>
-
-        <div>
-          <h4 class="font-semibold text-lg mb-6">About</h4>
-          <ul class="space-y-3">
-            <li><a href="#story" class="text-gray-400 hover:text-white transition">Our Story</a></li>
-            <li><a href="#story" class="text-gray-400 hover:text-white transition">Ingredients</a></li>
-            <li><a href="#story" class="text-gray-400 hover:text-white transition">Sustainability</a></li>
-            <li><a href="#journal" class="text-gray-400 hover:text-white transition">Press</a></li>
-            <li><a href="#journal" class="text-gray-400 hover:text-white transition">Careers</a></li>
-          </ul>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="bg-gradient-to-b from-gray-900 to-black text-white py-20">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-12">
+                <div class="lg:col-span-2">
+                    <h3 class="text-3xl font-serif font-bold mb-6">LUMIÈRE</h3>
+                    <p class="text-gray-400 mb-8 leading-relaxed">
+                        Elevating beauty through conscious luxury. Every product is a celebration of nature's finest ingredients and innovative science.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="bg-gray-800 p-3 rounded-full hover:bg-gray-700 transition-all duration-300 transform hover:scale-110">
+                            <i data-feather="instagram" class="w-5 h-5"></i>
+                        </a>
+                        <a href="#" class="bg-gray-800 p-3 rounded-full hover:bg-gray-700 transition-all duration-300 transform hover:scale-110">
+                            <i data-feather="facebook" class="w-5 h-5"></i>
+                        </a>
+                        <a href="#" class="bg-gray-800 p-3 rounded-full hover:bg-gray-700 transition-all duration-300 transform hover:scale-110">
+                            <i data-feather="twitter" class="w-5 h-5"></i>
+                        </a>
+                        <a href="#" class="bg-gray-800 p-3 rounded-full hover:bg-gray-700 transition-all duration-300 transform hover:scale-110">
+                            <i data-feather="youtube" class="w-5 h-5"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold text-lg mb-6">Shop</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">New Arrivals</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Bestsellers</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Skincare</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Makeup</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Fragrance</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Gift Sets</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold text-lg mb-6">About</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Our Story</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Ingredients</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Sustainability</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Press</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Careers</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Stores</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold text-lg mb-6">Customer Care</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Contact Us</a></li>
+                                                <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">FAQs</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Shipping Info</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Returns</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Track Order</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Size Guide</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 pt-8">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <div class="flex flex-col md:flex-row items-center mb-4 md:mb-0">
+                        <p class="text-gray-400 text-sm mb-2 md:mb-0 md:mr-6">
+                            © 2024 LUMIÈRE Beauty. All rights reserved.
+                        </p>
+                        <div class="flex space-x-6 text-sm">
+                            <a href="#" class="text-gray-400 hover:text-white transition duration-300">Privacy Policy</a>
+                            <a href="#" class="text-gray-400 hover:text-white transition duration-300">Terms of Service</a>
+                            <a href="#" class="text-gray-400 hover:text-white transition duration-300">Cookie Policy</a>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center space-x-4">
+                        <span class="text-gray-400 text-sm mr-2">Secure Payments:</span>
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa" class="h-8 opacity-70 hover:opacity-100 transition-opacity duration-300">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" class="h-8 opacity-70 hover:opacity-100 transition-opacity duration-300">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal" class="h-6 opacity-70 hover:opacity-100 transition-opacity duration-300">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" alt="Apple Pay" class="h-8 opacity-70 hover:opacity-100 transition-opacity duration-300">
+                    </div>
+                </div>
+            </div>
         </div>
-
-        <div>
-          <h4 class="font-semibold text-lg mb-6">Help</h4>
-          <ul class="space-y-3">
-            <li><a href="#" class="text-gray-400 hover:text-white transition">Contact Us</a></li>
-            <li><a href="#" class="text-gray-400 hover:text-white transition">FAQs</a></li>
-            <li><a href="#" class="text-gray-400 hover:text-white transition">Shipping & Returns</a></li>
-            <li><a href="#" class="text-gray-400 hover:text-white transition">Track Order</a></li>
-            <li><a href="#" class="text-gray-400 hover:text-white transition">Privacy Policy</a></li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center gap-6">
-        <p class="text-gray-400 text-sm">© <span id="year"></span> LUMIÈRE Cosmetics. All rights reserved.</p>
-        <div class="flex items-center gap-6 opacity-80">
-          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/visa/visa-original.svg" alt="Visa" class="h-8" loading="lazy" decoding="async">
-          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mastercard/mastercard-original.svg" alt="Mastercard" class="h-8" loading="lazy" decoding="async">
-          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/apple/apple-original.svg" alt="Apple Pay" class="h-8" loading="lazy" decoding="async">
-          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/paypal/paypal-original.svg" alt="PayPal" class="h-8" loading="lazy" decoding="async">
-        </div>
-      </div>
-    </div>
-  </footer>
-
-  <!-- Optional: Journal anchor placeholder -->
-  <div id="journal" class="sr-only" aria-hidden="true"></div>
-
-  <script>
-    // Initialize AOS
-    window.addEventListener('load', () => {
-      AOS.init({ duration: 800, easing: 'ease-in-out', once: true });
-    });
-
-    // Replace feather icons
-    document.addEventListener('DOMContentLoaded', () => {
-      feather.replace();
-      document.getElementById('year').textContent = new Date().getFullYear();
-    });
-
-    // Vanta Waves background
-    let vantaEffect = null;
-    function initVanta() {
-      if (vantaEffect) return;
-      vantaEffect = VANTA.WAVES({
-        el: "#waves",
-        mouseControls: true,
-        touchControls: true,
-        gyroControls: false,
-        minHeight: 200.00,
-        minWidth: 200.00,
-        scale: 1.00,
-        scaleMobile: 1.00,
-        color: 0x9a7b5f,     // cocoa
-        shininess: 35.00,
-        waveHeight: 18.00,
-        waveSpeed: 0.45,
-        zoom: 0.85
-      });
-    }
-    window.addEventListener('load', initVanta);
-
-    // Smooth scroll for anchor links (native via .scroll-smooth + fallback)
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function(e){
-        const target = document.querySelector(this.getAttribute('href'));
-        if(!target) return;
-        e.preventDefault();
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      });
-    });
-
-    // Product Quick View (demo)
-    document.addEventListener('click', (e) => {
-      const btn = e.target.closest('.product-overlay button');
-      if (!btn) return;
-      alert('Quick view would open a modal with product details here ✨');
-    });
-
-    // Mobile menu toggle
-    const menuBtn = document.getElementById('menuBtn');
-    const mobileMenu = document.getElementById('mobileMenu');
-    if(menuBtn){
-      menuBtn.addEventListener('click', () => {
-        const expanded = menuBtn.getAttribute('aria-expanded') === 'true';
-        menuBtn.setAttribute('aria-expanded', String(!expanded));
-        mobileMenu.classList.toggle('hidden');
-      });
-    }
-  </script>
+    </footer>
+    
+    <!-- Back to Top Button -->
+    <button id="backToTop" class="fixed bottom-8 right-8 bg-gradient-to-r from-gray-900 to-black text-white p-4 rounded-full shadow-lg opacity-0 invisible transition-all duration-300 hover:shadow-xl transform hover:scale-110 z-40">
+        <i data-feather="arrow-up" class="w-5 h-5"></i>
+    </button>
+    
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 1000,
+            easing: 'ease-out-cubic',
+            once: true,
+            offset: 100
+        });
+        
+        // Initialize Feather Icons
+        feather.replace();
+        
+        // Custom Cursor
+        const cursor = document.querySelector('.cursor');
+        const cursorFollower = document.querySelector('.cursor-follower');
+        
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+            
+            setTimeout(() => {
+                cursorFollower.style.left = e.clientX - 10 + 'px';
+                cursorFollower.style.top = e.clientY - 10 + 'px';
+            }, 100);
+        });
+        
+        // Cursor hover effects
+        const hoverElements = document.querySelectorAll('a, button, .product-card, .collection-card');
+        hoverElements.forEach(element => {
+            element.addEventListener('mouseenter', () => {
+                cursor.style.transform = 'scale(2)';
+                cursorFollower.style.transform = 'scale(1.5)';
+            });
+            element.addEventListener('mouseleave', () => {
+                cursor.style.transform = 'scale(1)';
+                cursorFollower.style.transform = 'scale(1)';
+            });
+        });
+        
+        // Hide cursor on mobile
+        if (window.innerWidth <= 768) {
+            cursor.style.display = 'none';
+            cursorFollower.style.display = 'none';
+        }
+        
+        // Vanta.js Background
+        VANTA.FOG({
+            el: "#vanta-bg",
+            mouseControls: true,
+            touchControls: true,
+            gyroControls: false,
+            minHeight: 200.00,
+            minWidth: 200.00,
+            highlightColor: 0xe8c8b8,
+            midtoneColor: 0xd4a574,
+            lowlightColor: 0xfaf8f3,
+            baseColor: 0xfaf8f3,
+            blurFactor: 0.6,
+            speed: 1.5,
+            zoom: 1.5
+        });
+        
+        // Loading Screen
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const loader = document.getElementById('loader');
+                loader.style.opacity = '0';
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                }, 500);
+            }, 2000);
+        });
+        
+        // Navbar Scroll Effect
+        const navbar = document.getElementById('navbar');
+        let lastScroll = 0;
+        
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
+            
+            if (currentScroll > 100) {
+                navbar.style.background = 'rgba(250, 248, 243, 0.95)';
+                navbar.style.boxShadow = '0 4px 30px rgba(0, 0, 0, 0.1)';
+            } else {
+                navbar.style.background = 'rgba(250, 248, 243, 0.85)';
+                navbar.style.boxShadow = '0 1px 20px rgba(0, 0, 0, 0.05)';
+            }
+            
+            // Hide/Show navbar on scroll
+            if (currentScroll > lastScroll && currentScroll > 500) {
+                navbar.style.transform = 'translateY(-100%)';
+            } else {
+                navbar.style.transform = 'translateY(0)';
+            }
+            
+            lastScroll = currentScroll;
+        });
+        
+        // Back to Top Button
+        const backToTop = document.getElementById('backToTop');
+        
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 500) {
+                backToTop.style.opacity = '1';
+                backToTop.style.visibility = 'visible';
+            } else {
+                backToTop.style.opacity = '0';
+                backToTop.style.visibility = 'hidden';
+            }
+        });
+        
+        backToTop.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+        
+        // GSAP Animations
+        gsap.registerPlugin(ScrollTrigger);
+        
+        // Parallax effect for hero image
+        gsap.to('.hero-gradient img', {
+            yPercent: -20,
+            ease: 'none',
+            scrollTrigger: {
+                trigger: '.hero-gradient',
+                start: 'top top',
+                end: 'bottom top',
+                scrub: true
+            }
+        });
+        
+        // Stagger animation for products
+        gsap.utils.toArray('.product-card').forEach((card, index) => {
+            gsap.from(card, {
+                y: 50,
+                opacity: 0,
+                duration: 0.8,
+                delay: index * 0.1,
+                scrollTrigger: {
+                    trigger: card,
+                    start: 'top 80%',
+                    once: true
+                }
+            });
+        });
+        
+        // Magnetic button effect
+        document.querySelectorAll('.magnetic-btn').forEach(btn => {
+            btn.addEventListener('mousemove', (e) => {
+                const rect = btn.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                
+                btn.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
+            });
+            
+            btn.addEventListener('mouseleave', () => {
+                btn.style.transform = 'translate(0, 0)';
+            });
+        });
+        
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Newsletter form animation
+        const newsletterInput = document.querySelector('.newsletter-bg input');
+        const newsletterButton = document.querySelector('.newsletter-bg button');
+        
+        newsletterInput.addEventListener('focus', () => {
+            gsap.to(newsletterInput, {
+                scale: 1.02,
+                duration: 0.3
+            });
+        });
+        
+        newsletterInput.addEventListener('blur', () => {
+            gsap.to(newsletterInput, {
+                scale: 1,
+                duration: 0.3
+            });
+        });
+        
+        // Product quick view functionality
+        document.querySelectorAll('.product-overlay button').forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                // In a real implementation, this would open a modal
+                console.log('Quick view clicked');
+            });
+        });
+        
+        // Instagram feed hover effect
+        document.querySelectorAll('.grid img').forEach(img => {
+            img.addEventListener('mouseenter', () => {
+                gsap.to(img, {
+                    scale: 1.05,
+                    duration: 0.3
+                });
+            });
+            
+            img.addEventListener('mouseleave', () => {
+                gsap.to(img, {
+                    scale: 1,
+                    duration: 0.3
+                });
+            });
+        });
+    </script>
 </body>
 </html>
