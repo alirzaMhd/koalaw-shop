@@ -714,35 +714,43 @@
     <!-- منوی ناوبری -->
     <nav class="fixed w-full z-50 transition-all duration-300" id="navbar">
         <div class="container mx-auto px-6 py-5">
-            <div class="flex items-center justify-between">
+            <!-- START: MODIFICATION FOR LTR LAYOUT AND SPACING -->
+            <div class="flex items-center justify-between" dir="ltr">
+                <!-- Logo -->
                 <div class="flex items-center">
                     <a href="#" class="text-3xl font-serif font-bold text-gray-800 tracking-wider">KOALAW</a>
                 </div>
-                
-                <div class="hidden lg:flex items-center space-x-12">
-                    <a href="#" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">کالکشن‌ها</a>
-                    <a href="#" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">پرفروش‌ترین‌ها</a>
-                    <a href="#" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">درباره ما</a>
-                    <a href="#" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">مجله</a>
-                    <a href="#" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">توسعه پایدار</a>
-                </div>
-                
-                <div class="flex items-center space-x-6">
-                    <button class="text-gray-700 hover:text-gray-900 transition-all duration-300 hover:scale-110">
-                        <i data-feather="search" class="w-5 h-5"></i>
-                    </button>
-                    <button class="text-gray-700 hover:text-gray-900 transition-all duration-300 hover:scale-110">
-                        <i data-feather="user" class="w-5 h-5"></i>
-                    </button>
-                    <button class="text-gray-700 hover:text-gray-900 relative transition-all duration-300 hover:scale-110">
-                        <i data-feather="shopping-bag" class="w-5 h-5"></i>
-                        <span class="absolute -top-2 -left-2 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center pulse-animation">۳</span>
-                    </button>
-                    <button class="lg:hidden text-gray-700 hover:text-gray-900">
-                        <i data-feather="menu" class="w-6 h-6"></i>
-                    </button>
+
+                <!-- New wrapper for Menu and Buttons -->
+                <div class="flex items-center gap-x-10">
+                    <!-- Menu Links -->
+                    <div class="hidden lg:flex items-center space-x-10">
+                        <a href="#" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">کالکشن‌ها</a>
+                        <a href="#" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">پرفروش‌ترین‌ها</a>
+                        <a href="#" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">درباره ما</a>
+                        <a href="#" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">مجله</a>
+                        <a href="#" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">توسعه پایدار</a>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="flex items-center space-x-6">
+                        <button class="text-gray-700 hover:text-gray-900 transition-all duration-300 hover:scale-110">
+                            <i data-feather="search" class="w-5 h-5"></i>
+                        </button>
+                        <button class="text-gray-700 hover:text-gray-900 transition-all duration-300 hover:scale-110">
+                            <i data-feather="user" class="w-5 h-5"></i>
+                        </button>
+                        <button class="text-gray-700 hover:text-gray-900 relative transition-all duration-300 hover:scale-110">
+                            <i data-feather="shopping-bag" class="w-5 h-5"></i>
+                            <span class="absolute -top-2 -right-2 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center pulse-animation">۳</span>
+                        </button>
+                        <button class="lg:hidden text-gray-700 hover:text-gray-900">
+                            <i data-feather="menu" class="w-6 h-6"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
+            <!-- END: MODIFICATION -->
         </div>
     </nav>
     
@@ -791,7 +799,7 @@
                     درخششی فراتر از طبیعت
                 </h1>
                 <p class="text-lg text-gray-200 mb-10 max-w-2xl leading-relaxed mx-auto" style="text-shadow: 0 1px 4px rgba(0,0,0,0.5);">
-                    با KOALAW، جایی که علم پیشرفته و خالص‌ترین ترکیبات طبیعی با هم ترکیب می‌شوند، زیبایی خود را بازتعریف کنید.
+                    با کوالا، جایی که علم پیشرفته و خالص‌ترین ترکیبات طبیعی با هم ترکیب می‌شوند، زیبایی خود را بازتعریف کنید.
                 </p>
                 <div class="flex justify-center">
                     <button class="magnetic-btn group px-8 py-4 bg-white text-gray-900 rounded-full hover:shadow-2xl transition-all duration-300 flex items-center space-x-2 font-semibold">
