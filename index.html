@@ -429,7 +429,7 @@
         
         @keyframes rotate {
             from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+            to { transform: rotate(30deg); }
         }
         
         /* Loading Animation */
@@ -1263,12 +1263,12 @@
             mouseControls: true,
             touchControls: true,
             gyroControls: false,
-            skyColor: 0x0,         // Black sky becomes transparent with blend mode
-            cloudColor: 0xcccccc,  // Light gray for a soft smoke effect
-            cloudShadowColor: 0x555555, // Darker gray for depth
-            sunColor: 0x0,         // Black sun (hidden)
-            sunGlareColor: 0x0,    // Black glare (hidden)
-            sunlightColor: 0x0,    // Black sunlight (hidden)
+            skyColor: 0x0,              // Black sky for transparency with blend mode
+            cloudColor: 0xe39ab4,        // Main pink from the theme (var(--primary))
+            cloudShadowColor: 0xb57d96,  // A darker, more muted pink for depth
+            sunColor: 0xe39ab4,          // Pink sun to create a pink light source
+            sunGlareColor: 0xffe9f2,     // Light pink glare using the accent color
+            sunlightColor: 0xf0b7c4,     // Rose-gold sunlight for a warm glow (var(--rose-gold))
             speed: 1.2
         });
 
