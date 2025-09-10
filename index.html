@@ -928,7 +928,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <!-- Large Card (Skincare) -->
                 <div class="collection-card h-[640px] group" data-aos="fade-right" data-aos-duration="1200">
-                    <img src="https://images.unsplash.com/photo-1570194065650-d99fb4b38e39?w=800&h=1000&fit=crop" alt="مراقبت از پوست" class="w-full h-full object-cover">
+                    <img src="https://images.unsplash.com/photo-1552046122-03184de85e08?w=800&h=1000&fit=cover" alt="مراقبت از پوست" class="w-full h-full object-cover block">
                     <div class="absolute inset-0 z-10 flex flex-col justify-end p-10 text-white">
                         <div class="collection-content">
                             <span class="collection-category block text-sm font-medium uppercase tracking-widest mb-2">مراقبت از پوست</span>
@@ -1590,19 +1590,6 @@
         });
 
         // --- NEW: Parallax effect for collection card images ---
-        gsap.utils.toArray('.collection-card').forEach(card => {
-            const image = card.querySelector('img');
-            gsap.to(image, {
-                y: "-10%",
-                ease: "none",
-                scrollTrigger: {
-                    trigger: card,
-                    start: "top bottom",
-                    end: "bottom top",
-                    scrub: true,
-                }
-            });
-        });
         
         // Stagger animation for products
         gsap.utils.toArray('.product-card').forEach((card, index) => {
