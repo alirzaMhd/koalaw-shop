@@ -403,14 +403,21 @@
             height: 300px;
         }
         
-        /* Product Card Enhancements */
+        /* ENHANCED PRODUCT CARD STYLES */
         .product-card {
+            opacity: 1 !important;
+            transform: translateY(0) !important;
             position: relative;
             overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
+            transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+            background: linear-gradient(145deg, #ffffff 0%, #fefefe 100%);
+            border-radius: 24px;
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.06),
+                0 2px 16px rgba(227, 154, 180, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(227, 154, 180, 0.05);
+            backdrop-filter: blur(10px);
         }
         
         .product-card::before {
@@ -420,10 +427,14 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(135deg, transparent 0%, rgba(212, 165, 116, 0.05) 100%);
+            background: linear-gradient(145deg, 
+                rgba(227, 154, 180, 0.03) 0%, 
+                rgba(240, 183, 196, 0.06) 50%,
+                rgba(255, 233, 242, 0.04) 100%);
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.6s ease;
             pointer-events: none;
+            border-radius: 24px;
         }
         
         .product-card:hover::before {
@@ -431,39 +442,361 @@
         }
         
         .product-card:hover {
-            transform: translateY(-10px) scale(1.02);
-            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.15);
+            transform: translateY(-16px) scale(1.02);
+            box-shadow: 
+                0 32px 64px rgba(0, 0, 0, 0.12),
+                0 8px 32px rgba(227, 154, 180, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 1);
+            border-color: rgba(227, 154, 180, 0.15);
         }
         
         .product-image {
             overflow: hidden;
             position: relative;
+            border-radius: 20px 20px 0 0;
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+        }
+        
+        .product-image::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, 
+                transparent 0%, 
+                transparent 60%, 
+                rgba(0, 0, 0, 0.02) 100%);
+            pointer-events: none;
         }
         
         .product-image img {
-            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.8s cubic-bezier(0.165, 0.84, 0.44, 1);
+            filter: contrast(1.02) saturate(1.05);
         }
         
         .product-card:hover .product-image img {
-            transform: scale(1.1);
+            transform: scale(1.08) rotate(1deg);
+            filter: contrast(1.05) saturate(1.1) brightness(1.02);
         }
         
         .product-overlay {
             position: absolute;
             inset: 0;
-            background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.7) 100%);
+            background: linear-gradient(to bottom, 
+                transparent 0%, 
+                rgba(0, 0, 0, 0.3) 60%,
+                rgba(0, 0, 0, 0.7) 100%);
             display: flex;
             align-items: flex-end;
             justify-content: center;
             padding: 2rem;
             opacity: 0;
-            transition: opacity 0.4s ease;
+            transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+            border-radius: 20px 20px 0 0;
         }
         
         .product-card:hover .product-overlay {
             opacity: 1;
         }
-        
+
+        .product-overlay button {
+            background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+            border: 1px solid rgba(227, 154, 180, 0.2);
+            color: #1a1a1a;
+            padding: 14px 28px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+
+        .product-overlay button:hover {
+            background: linear-gradient(145deg, #1a1a1a 0%, #2a2a2a 100%);
+            color: white;
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        /* ENHANCED PRODUCT INFO SECTION */
+        .product-info {
+            padding: 24px;
+            position: relative;
+        }
+
+        .product-info::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 24px;
+            right: 24px;
+            height: 1px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(227, 154, 180, 0.2) 50%, 
+                transparent 100%);
+        }
+
+        .product-rating {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .rating-stars {
+            display: flex;
+            gap: 2px;
+        }
+
+        .rating-stars i {
+            color: #fbbf24;
+            font-size: 14px;
+            filter: drop-shadow(0 1px 2px rgba(251, 191, 36, 0.3));
+        }
+
+        .rating-count {
+            font-size: 12px;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .product-category {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--primary);
+            background: linear-gradient(135deg, rgba(227, 154, 180, 0.1) 0%, rgba(240, 183, 196, 0.15) 100%);
+            padding: 4px 12px;
+            border-radius: 20px;
+            display: inline-block;
+            border: 1px solid rgba(227, 154, 180, 0.2);
+        }
+
+        .product-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin: 12px 0 8px 0;
+            line-height: 1.3;
+            letter-spacing: -0.2px;
+        }
+
+        .product-description {
+            font-size: 13px;
+            color: #6b7280;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .product-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .product-price {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+        }
+
+        .current-price {
+            font-size: 22px;
+            font-weight: 800;
+            color: #1a1a1a;
+            font-family: 'IRANSans', serif;
+        }
+
+        .original-price {
+            font-size: 14px;
+            color: #9ca3af;
+            text-decoration: line-through;
+            font-weight: 500;
+        }
+
+        .add-to-cart-btn {
+            background: linear-gradient(145deg, #1a1a1a 0%, #2a2a2a 100%);
+            color: white;
+            padding: 12px;
+            border-radius: 16px;
+            border: none;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            box-shadow: 
+                0 4px 16px rgba(0, 0, 0, 0.1),
+                0 2px 8px rgba(26, 26, 26, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .add-to-cart-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(145deg, var(--primary) 0%, var(--rose-gold) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .add-to-cart-btn:hover::before {
+            opacity: 1;
+        }
+
+        .add-to-cart-btn:hover {
+            transform: translateY(-2px) scale(1.1);
+            box-shadow: 
+                0 8px 24px rgba(0, 0, 0, 0.15),
+                0 4px 12px rgba(227, 154, 180, 0.3);
+        }
+
+        .add-to-cart-btn i {
+            position: relative;
+            z-index: 1;
+            font-size: 16px;
+        }
+
+        /* ENHANCED BADGES */
+        .product-badge {
+            position: absolute;
+            top: 16px;
+            z-index: 10;
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .badge-discount {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            right: 16px;
+            box-shadow: 0 4px 16px rgba(239, 68, 68, 0.3);
+        }
+
+        .badge-new {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            color: white;
+            left: 16px;
+            box-shadow: 0 4px 16px rgba(139, 92, 246, 0.3);
+        }
+
+        .badge-bestseller {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            right: 16px;
+            box-shadow: 0 4px 16px rgba(245, 158, 11, 0.3);
+        }
+
+        .badge-vegan {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            left: 16px;
+            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3);
+        }
+
+        .badge-limited {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: #1a1a1a;
+            left: 16px;
+            box-shadow: 0 4px 16px rgba(251, 191, 36, 0.3);
+        }
+
+        .badge-organic {
+            background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+            color: white;
+            right: 16px;
+            box-shadow: 0 4px 16px rgba(236, 72, 153, 0.3);
+        }
+
+        /* ENHANCED FILTER BUTTONS */
+        .filter-btn {
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            border: 2px solid transparent;
+            cursor: none;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .filter-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--rose-gold) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .filter-btn span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .filter-btn.active::before,
+        .filter-btn:hover::before {
+            opacity: 1;
+        }
+
+        .filter-btn.active,
+        .filter-btn:hover {
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(227, 154, 180, 0.3);
+        }
+
+        .filter-btn:not(.active) {
+            background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+            color: #1a1a1a;
+            border-color: rgba(227, 154, 180, 0.2);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+        }
+
+        /* ENHANCED SECTION BACKGROUND */
+        .bestsellers-section {
+            background: linear-gradient(135deg, 
+                #ffffff 0%, 
+                #fefefe 25%,
+                #f8f9fa 50%,
+                #fefefe 75%,
+                #ffffff 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bestsellers-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(227, 154, 180, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(240, 183, 196, 0.04) 0%, transparent 50%),
+                radial-gradient(circle at 40% 60%, rgba(255, 233, 242, 0.02) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .section-title-enhanced {
+            position: relative;
+            display: inline-block;
+        }
+
         /* --- START: NEW COLLECTION STYLES --- */
         .collection-card {
             position: relative;
@@ -708,6 +1041,19 @@
             /* Reduce number of clouds on mobile for performance */
             .cloud-4, .cloud-5, .cloud-7, .cloud-8, .cloud-9, .cloud-10 {
                 display: none;
+            }
+
+            .product-card {
+                border-radius: 20px;
+            }
+
+            .product-info {
+                padding: 20px;
+            }
+
+            .filter-btn {
+                padding: 10px 20px;
+                font-size: 13px;
             }
         }
 
@@ -978,180 +1324,341 @@
         </div>
     </section>
     
-    <!-- پرفروش‌ترین‌ها -->
-    <section class="py-24 bg-gradient-to-b from-white to-gray-50">
-        <div class="container mx-auto px-6">
-            <div class="text-center mb-16" data-aos="fade-up">
-                <span class="text-sm font-medium text-rose-800 tracking-wider uppercase mb-4 block">محبوب‌ترین‌های مشتریان</span>
-                <h2 class="text-4xl lg:text-5xl font-serif font-bold text-gray-800 mb-6">زیبایی‌های پرفروش</h2>
-                <div class="cute-divider"><span class="star">✦</span></div>
-                <p class="text-gray-600 max-w-2xl mx-auto text-lg">
-                    محصولاتی را کشف کنید که مشتریان ما نمی‌توانند بدون آن‌ها زندگی کنند.
+    <!-- پرفروش‌ترین‌ها (ENHANCED & REDESIGNED) -->
+    <section class="py-32 bestsellers-section relative">
+        <div class="container mx-auto px-6 relative z-10">
+            <!-- Enhanced Header Section -->
+            <div class="text-center mb-20" data-aos="fade-up">
+                <span class="text-sm font-medium text-rose-800 tracking-wider uppercase mb-4 block opacity-90">محبوب‌ترین‌های مشتریان</span>
+                <h2 class="section-title-enhanced text-5xl lg:text-6xl font-serif font-bold text-gray-800 mb-8">زیبایی‌های پرفروش</h2>
+                <div class="cute-divider mb-6"><span class="star">✦</span></div>
+                <p class="text-gray-600 max-w-3xl mx-auto text-lg leading-relaxed">
+                    محصولاتی را کشف کنید که مشتریان ما نمی‌توانند بدون آن‌ها زندگی کنند. هر محصول داستان عشق و تحولی را روایت می‌کند.
                 </p>
             </div>
             
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                <!-- محصول ۱ -->
-                <div class="product-card" data-aos="fade-up" data-aos-delay="100">
+            <!-- Enhanced Filter Controls -->
+            <div class="flex flex-wrap justify-center items-center gap-4 mb-16" data-aos="fade-up" data-aos-delay="100">
+                <button class="filter-btn active" data-filter="all">
+                    <span>همه محصولات</span>
+                </button>
+                <button class="filter-btn" data-filter="skincare">
+                    <span>مراقبت از پوست</span>
+                </button>
+                <button class="filter-btn" data-filter="makeup">
+                    <span>آرایش</span>
+                </button>
+                <button class="filter-btn" data-filter="fragrance">
+                    <span>عطر</span>
+                </button>
+                <button class="filter-btn" data-filter="bestseller">
+                    <span>پرفروش‌ترین‌ها</span>
+                </button>
+            </div>
+
+            <!-- Enhanced Product Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+                <!-- محصول ۱ - اکسیر درخشش طلایی -->
+                <div class="product-card group" data-aos="fade-up" data-aos-delay="100" data-category="skincare bestseller">
                     <div class="product-image h-80 relative">
-                        <img src="https://images.unsplash.com/photo-1617897903246-719242758050?w=400&h=500&fit=crop" alt="محصول" class="w-full h-full object-cover">
-                        <div class="absolute top-4 left-4 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-xs px-3 py-1 rounded-full font-medium badge-cute"> <!-- RTL change -->
-                            <span>۲۵٪ تخفیف ✨</span>
+                        <img src="https://images.unsplash.com/photo-1617897903246-719242758050?w=400&h=500&fit=crop" alt="اکسیر درخشش طلایی" class="w-full h-full object-cover">
+                        <div class="product-badge badge-discount">
+                            <span>۲۵٪ تخفیف</span>
+                            <span>✨</span>
                         </div>
                         <div class="product-overlay">
-                            <button class="bg-white text-black px-8 py-3 rounded-full font-medium hover:bg-gray-100 transition duration-300 transform hover:scale-105">
-                                خرید سریع
-                            </button>
+                            <button class="quick-view-btn">مشاهده سریع</button>
                         </div>
                     </div>
-                    <div class="p-6 text-right"> <!-- RTL change -->
-                        <div class="flex items-center justify-between mb-2">
-                            <div class="flex items-center">
-                                <span class="text-xs text-gray-600 ml-2">(۳۲۴)</span> <!-- RTL change -->
-                                <div class="flex text-yellow-400">
-                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
-                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
-                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
-                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
-                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
-                                </div>
+                    <div class="product-info">
+                        <div class="product-rating">
+                            <div class="rating-stars">
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
                             </div>
-                            <span class="text-xs font-medium text-rose-800 uppercase tracking-wider">سرم</span>
+                            <span class="rating-count">(۳۲۴ نظر)</span>
                         </div>
-                        <h3 class="font-semibold text-gray-800 text-lg mb-2">اکسیر درخشش طلایی</h3>
-                        <p class="text-sm text-gray-500 mb-4">ویتامین C + هیالورونیک اسید</p>
-                        <div class="flex items-center justify-between">
-                            <button class="bg-gradient-to-r from-gray-900 to-black text-white p-3 rounded-full hover:shadow-lg transition-all duration-300 transform hover:scale-110">
+                        <div class="product-category">سرم صورت</div>
+                        <h3 class="product-title">اکسیر درخشش طلایی</h3>
+                        <p class="product-description">سرم قدرتمند ویتامین C با هیالورونیک اسید برای پوستی درخشان و جوان</p>
+                        <div class="product-footer">
+                            <div class="product-price">
+                                <span class="current-price">۴۸.۰۰ $</span>
+                                <span class="original-price">۶۴.۰۰ $</span>
+                            </div>
+                            <button class="add-to-cart-btn">
                                 <i data-feather="shopping-bag" class="w-4 h-4"></i>
                             </button>
-                            <div>
-                                <span class="font-serif font-bold text-xl text-gray-800 ml-2">$۴۸.۰۰</span> <!-- RTL change -->
-                                <span class="text-gray-400 line-through text-sm">$۶۴.۰۰</span>
-                            </div>
                         </div>
                     </div>
                 </div>
                 
-                <!-- محصول ۲ -->
-                <div class="product-card" data-aos="fade-up" data-aos-delay="200">
+                <!-- محصول ۲ - بوسه مخملی مات -->
+                <div class="product-card group" data-aos="fade-up" data-aos-delay="200" data-category="makeup">
                     <div class="product-image h-80 relative">
-                        <img src="https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=400&h=500&fit=crop" alt="محصول" class="w-full h-full object-cover">
-                        <div class="absolute top-4 right-4 bg-gradient-to-r from-green-500 to-emerald-500 text-white text-xs px-3 py-1 rounded-full font-medium badge-cute"> <!-- RTL change -->
-                            <span>وگان 🌱</span>
+                        <img src="https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=400&h=500&fit=crop" alt="بوسه مخملی مات" class="w-full h-full object-cover">
+                        <div class="product-badge badge-vegan">
+                            <span>وگان</span>
+                            <span>🌱</span>
                         </div>
                         <div class="product-overlay">
-                            <button class="bg-white text-black px-8 py-3 rounded-full font-medium hover:bg-gray-100 transition duration-300 transform hover:scale-105">
-                                خرید سریع
-                            </button>
+                            <button class="quick-view-btn">مشاهده سریع</button>
                         </div>
                     </div>
-                    <div class="p-6 text-right"> <!-- RTL change -->
-                        <div class="flex items-center justify-between mb-2">
-                             <div class="flex items-center">
-                                <span class="text-xs text-gray-600 ml-2">(۲۸۹)</span> <!-- RTL change -->
-                                <div class="flex text-yellow-400">
-                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
-                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
-                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
-                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
-                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
-                                </div>
+                    <div class="product-info">
+                        <div class="product-rating">
+                            <div class="rating-stars">
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
                             </div>
-                            <span class="text-xs font-medium text-rose-800 uppercase tracking-wider">رژ لب</span>
+                            <span class="rating-count">(۲۸۹ نظر)</span>
                         </div>
-                        <h3 class="font-semibold text-gray-800 text-lg mb-2">بوسه مخملی مات</h3>
-                        <p class="text-sm text-gray-500 mb-4">فرمول راحت با ماندگاری بالا</p>
-                        <div class="flex items-center justify-between">
-                            <button class="bg-gradient-to-r from-gray-900 to-black text-white p-3 rounded-full hover:shadow-lg transition-all duration-300 transform hover:scale-110">
+                        <div class="product-category">رژ لب</div>
+                        <h3 class="product-title">بوسه مخملی مات</h3>
+                        <p class="product-description">رژ لب مات با فرمول راحت و ماندگاری استثنایی تا ۱۲ ساعت</p>
+                        <div class="product-footer">
+                            <div class="product-price">
+                                <span class="current-price">۳۲.۰۰ $</span>
+                            </div>
+                            <button class="add-to-cart-btn">
                                 <i data-feather="shopping-bag" class="w-4 h-4"></i>
                             </button>
-                            <span class="font-serif font-bold text-xl text-gray-800">$۳۲.۰۰</span>
                         </div>
                     </div>
                 </div>
                 
-                <!-- محصول ۳ -->
-                <div class="product-card" data-aos="fade-up" data-aos-delay="300">
+                <!-- محصول ۳ - پایه ابریشمی بی‌نقص -->
+                <div class="product-card group" data-aos="fade-up" data-aos-delay="300" data-category="makeup">
                     <div class="product-image h-80 relative">
-                        <img src="https://images.unsplash.com/photo-1631730486572-226d1f595b68?w=400&h=500&fit=crop" alt="محصول" class="w-full h-full object-cover">
-                        <div class="absolute top-4 left-4 bg-gradient-to-r from-purple-500 to-indigo-500 text-white text-xs px-3 py-1 rounded-full font-medium badge-cute"> <!-- RTL change -->
-                            <span>جدید ✨</span>
+                        <img src="https://images.unsplash.com/photo-1631730486572-226d1f595b68?w=400&h=500&fit=crop" alt="پایه ابریشمی بی‌نقص" class="w-full h-full object-cover">
+                        <div class="product-badge badge-new">
+                            <span>جدید</span>
+                            <span>✨</span>
                         </div>
                         <div class="product-overlay">
-                            <button class="bg-white text-black px-8 py-3 rounded-full font-medium hover:bg-gray-100 transition duration-300 transform hover:scale-105">
-                                خرید سریع
-                            </button>
+                            <button class="quick-view-btn">مشاهده سریع</button>
                         </div>
                     </div>
-                    <div class="p-6 text-right"> <!-- RTL change -->
-                        <div class="flex items-center justify-between mb-2">
-                            <div class="flex items-center">
-                                <span class="text-xs text-gray-600 ml-2">(۱۹۸)</span> <!-- RTL change -->
-                                <div class="flex text-yellow-400">
-                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
-                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
-                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
-                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
-                                    <i data-feather="star" class="w-4 h-4"></i>
-                                </div>
+                    <div class="product-info">
+                        <div class="product-rating">
+                            <div class="rating-stars">
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4"></i>
                             </div>
-                            <span class="text-xs font-medium text-rose-800 uppercase tracking-wider">کرم پودر</span>
+                            <span class="rating-count">(۱۹۸ نظر)</span>
                         </div>
-                        <h3 class="font-semibold text-gray-800 text-lg mb-2">پایه ابریشمی بی‌نقص</h3>
-                        <p class="text-sm text-gray-500 mb-4">پوشش متوسط و قابل افزایش</p>
-                        <div class="flex items-center justify-between">
-                            <button class="bg-gradient-to-r from-gray-900 to-black text-white p-3 rounded-full hover:shadow-lg transition-all duration-300 transform hover:scale-110">
+                        <div class="product-category">کرم پودر</div>
+                        <h3 class="product-title">پایه ابریشمی بی‌نقص</h3>
+                        <p class="product-description">کرم پودر با پوشش متوسط و قابل افزایش برای ظاهری طبیعی</p>
+                        <div class="product-footer">
+                            <div class="product-price">
+                                <span class="current-price">۴۲.۰۰ $</span>
+                            </div>
+                            <button class="add-to-cart-btn">
                                 <i data-feather="shopping-bag" class="w-4 h-4"></i>
                             </button>
-                            <span class="font-serif font-bold text-xl text-gray-800">$۴۲.۰۰</span>
                         </div>
                     </div>
                 </div>
                 
-                <!-- محصول ۴ -->
-                <div class="product-card" data-aos="fade-up" data-aos-delay="400">
+                <!-- محصول ۴ - راز نیمه‌شب -->
+                <div class="product-card group" data-aos="fade-up" data-aos-delay="400" data-category="fragrance bestseller">
                     <div class="product-image h-80 relative">
-                        <img src="https://images.unsplash.com/photo-1541643600914-78b084683601?w=400&h=500&fit=crop" alt="محصول" class="w-full h-full object-cover">
-                        <div class="absolute top-4 right-4 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-xs px-3 py-1 rounded-full font-medium badge-cute"> <!-- RTL change -->
-                            <span>پرفروش 💫</span>
+                        <img src="https://images.unsplash.com/photo-1541643600914-78b084683601?w=400&h=500&fit=crop" alt="راز نیمه‌شب" class="w-full h-full object-cover">
+                        <div class="product-badge badge-bestseller">
+                            <span>پرفروش</span>
+                            <span>💫</span>
                         </div>
                         <div class="product-overlay">
-                            <button class="bg-white text-black px-8 py-3 rounded-full font-medium hover:bg-gray-100 transition duration-300 transform hover:scale-105">
-                                خرید سریع
+                            <button class="quick-view-btn">مشاهده سریع</button>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-rating">
+                            <div class="rating-stars">
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                            </div>
+                            <span class="rating-count">(۴۱۲ نظر)</span>
+                        </div>
+                        <div class="product-category">عطر زنانه</div>
+                        <h3 class="product-title">راز نیمه‌شب</h3>
+                        <p class="product-description">عطر اغواگر با نت‌های گل‌های شرقی و وانیل گرم</p>
+                        <div class="product-footer">
+                            <div class="product-price">
+                                <span class="current-price">۷۸.۰۰ $</span>
+                            </div>
+                            <button class="add-to-cart-btn">
+                                <i data-feather="shopping-bag" class="w-4 h-4"></i>
                             </button>
                         </div>
                     </div>
-                    <div class="p-6 text-right"> <!-- RTL change -->
-                        <div class="flex items-center justify-between mb-2">
-                            <div class="flex items-center">
-                                <span class="text-xs text-gray-600 ml-2">(۴۱۲)</span> <!-- RTL change -->
-                                <div class="flex text-yellow-400">
-                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
-                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
-                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
-                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
-                                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
-                                </div>
-                            </div>
-                            <span class="text-xs font-medium text-rose-800 uppercase tracking-wider">عطر</span>
+                </div>
+
+                <!-- محصول ۵ - کرم ابریشمی هیدرا -->
+                <div class="product-card group" data-aos="fade-up" data-aos-delay="500" data-category="skincare">
+                    <div class="product-image h-80 relative">
+                        <img src="https://images.unsplash.com/photo-1590152868212-2d131b643ff2?w=400&h=500&fit=crop" alt="کرم ابریشمی هیدرا" class="w-full h-full object-cover">
+                        <div class="product-badge badge-vegan" style="left: 16px;">
+                            <span>آبرسان</span>
+                            <span>💧</span>
                         </div>
-                        <h3 class="font-semibold text-gray-800 text-lg mb-2">راز نیمه‌شب</h3>
-                        <p class="text-sm text-gray-500 mb-4">رایحه گل‌های شرقی</p>
-                        <div class="flex items-center justify-between">
-                            <button class="bg-gradient-to-r from-gray-900 to-black text-white p-3 rounded-full hover:shadow-lg transition-all duration-300 transform hover:scale-110">
+                        <div class="product-overlay">
+                            <button class="quick-view-btn">مشاهده سریع</button>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-rating">
+                            <div class="rating-stars">
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4"></i>
+                            </div>
+                            <span class="rating-count">(۲۵۵ نظر)</span>
+                        </div>
+                        <div class="product-category">مرطوب کننده</div>
+                        <h3 class="product-title">کرم ابریشمی هیدرا</h3>
+                        <p class="product-description">مرطوب کننده سبک و ابریشمی مناسب برای تمام انواع پوست</p>
+                        <div class="product-footer">
+                            <div class="product-price">
+                                <span class="current-price">۵۵.۰۰ $</span>
+                            </div>
+                            <button class="add-to-cart-btn">
                                 <i data-feather="shopping-bag" class="w-4 h-4"></i>
                             </button>
-                            <span class="font-serif font-bold text-xl text-gray-800">$۷۸.۰۰</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- محصول ۶ - رؤیاهای صحرا -->
+                <div class="product-card group" data-aos="fade-up" data-aos-delay="600" data-category="makeup">
+                    <div class="product-image h-80 relative">
+                        <img src="https://images.unsplash.com/photo-1557205465-f374a4a49cde?w=400&h=500&fit=crop" alt="رؤیاهای صحرا" class="w-full h-full object-cover">
+                        <div class="product-overlay">
+                            <button class="quick-view-btn">مشاهده سریع</button>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-rating">
+                            <div class="rating-stars">
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                            </div>
+                            <span class="rating-count">(۱۸۷ نظر)</span>
+                        </div>
+                        <div class="product-category">پالت سایه چشم</div>
+                        <h3 class="product-title">رؤیاهای صحرا</h3>
+                        <p class="product-description">پالت ۱۲ رنگ گرم و خنثی با کیفیت حرفه‌ای</p>
+                        <div class="product-footer">
+                            <div class="product-price">
+                                <span class="current-price">۴۹.۰۰ $</span>
+                            </div>
+                            <button class="add-to-cart-btn">
+                                <i data-feather="shopping-bag" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- محصول ۷ - احیاگر چشم روشن -->
+                <div class="product-card group" data-aos="fade-up" data-aos-delay="700" data-category="skincare">
+                    <div class="product-image h-80 relative">
+                        <img src="https://images.unsplash.com/photo-1620916566398-39f168a27e20?w=400&h=500&fit=crop" alt="احیاگر چشم روشن" class="w-full h-full object-cover">
+                        <div class="product-badge badge-limited">
+                            <span>نسخه محدود</span>
+                            <span>🌟</span>
+                        </div>
+                        <div class="product-overlay">
+                            <button class="quick-view-btn">مشاهده سریع</button>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-rating">
+                            <div class="rating-stars">
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                            </div>
+                            <span class="rating-count">(۳۰۱ نظر)</span>
+                        </div>
+                        <div class="product-category">کرم دور چشم</div>
+                        <h3 class="product-title">احیاگر چشم روشن</h3>
+                        <p class="product-description">کرم قدرتمند ضد پیری با کافئین و پپتیدهای فعال</p>
+                        <div class="product-footer">
+                            <div class="product-price">
+                                <span class="current-price">۶۲.۰۰ $</span>
+                            </div>
+                            <button class="add-to-cart-btn">
+                                <i data-feather="shopping-bag" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- محصول ۸ - فوم پاک کننده ملایم -->
+                <div class="product-card group" data-aos="fade-up" data-aos-delay="800" data-category="skincare">
+                    <div class="product-image h-80 relative">
+                        <img src="https://images.unsplash.com/photo-1611059142868-84b5a452c9d8?w=400&h=500&fit=crop" alt="فوم پاک کننده ملایم" class="w-full h-full object-cover">
+                        <div class="product-badge badge-organic">
+                            <span>بدون سولفات</span>
+                            <span>💖</span>
+                        </div>
+                        <div class="product-overlay">
+                            <button class="quick-view-btn">مشاهده سریع</button>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-rating">
+                            <div class="rating-stars">
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4"></i>
+                            </div>
+                            <span class="rating-count">(۱۴۵ نظر)</span>
+                        </div>
+                        <div class="product-category">پاک کننده</div>
+                        <h3 class="product-title">فوم پاک کننده ملایم</h3>
+                        <p class="product-description">پاک کننده لطیف با عصاره گل رز و چای سبز ارگانیک</p>
+                        <div class="product-footer">
+                            <div class="product-price">
+                                <span class="current-price">۲۸.۰۰ $</span>
+                            </div>
+                            <button class="add-to-cart-btn">
+                                <i data-feather="shopping-bag" class="w-4 h-4"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
             
-            <div class="text-center mt-16" data-aos="fade-up">
-                <a href="#" class="inline-flex items-center px-8 py-4 border-2 border-gray-900 text-gray-900 rounded-full hover:bg-gray-900 hover:text-white transition-all duration-300 group">
-                    <i data-feather="arrow-left" class="ml-2 w-4 h-4 group-hover:-translate-x-2 transition-transform duration-300"></i> <!-- RTL change -->
-                    <span>مشاهده همه محصولات</span>
+            <!-- Enhanced CTA Section -->
+            <div class="text-center" data-aos="fade-up" data-aos-delay="100">
+                <a href="#" class="inline-flex items-center px-10 py-5 border-2 border-gray-900 text-gray-900 rounded-full hover:bg-gray-900 hover:text-white transition-all duration-500 group text-lg font-semibold tracking-wide">
+                    <i data-feather="arrow-left" class="ml-3 w-5 h-5 group-hover:-translate-x-2 transition-transform duration-300"></i>
+                    <span>کاوش کامل کالکشن</span>
                 </a>
+                <p class="text-gray-500 text-sm mt-4">بیش از ۲۰۰ محصول منحصر به فرد در انتظار شماست</p>
             </div>
         </div>
     </section>
@@ -1574,6 +2081,36 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
         
+        // ENHANCED FILTER FUNCTIONALITY
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const productCards = document.querySelectorAll('.product-card');
+
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active class from all buttons
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                // Add active class to clicked button
+                button.classList.add('active');
+                
+                const filterValue = button.getAttribute('data-filter');
+                setTimeout(() => {
+                    productCards.forEach((card, index) => {
+                        const categories = card.getAttribute('data-category').split(' ');
+                        
+                        if (filterValue === 'all' || categories.includes(filterValue)) {
+                            card.style.display = 'block';
+                            setTimeout(() => {
+                                card.style.opacity = '1';
+                                card.style.transform = 'translateY(0)';
+                            }, index * 100);
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                }, 300);
+            });
+        });
+        
         // GSAP Animations
         gsap.registerPlugin(ScrollTrigger);
         
@@ -1588,38 +2125,38 @@
                 scrub: 1.5
             }
         });
-
-        // --- NEW: Parallax effect for collection card images ---
         
-        // Stagger animation for products
+        // Enhanced stagger animation for products
         gsap.utils.toArray('.product-card').forEach((card, index) => {
             gsap.from(card, {
-                y: 50,
+                y: 60,
                 opacity: 0,
-                duration: 0.8,
+                scale: 0.95,
+                duration: 1,
                 delay: index * 0.1,
+                ease: "power3.out",
                 scrollTrigger: {
                     trigger: card,
-                    start: 'top 80%',
+                    start: 'top 85%',
                     once: true
                 }
             });
         });
         
-        // Magnetic button effect
+        // Enhanced magnetic button effect
         document.querySelectorAll('.magnetic-btn').forEach(btn => {
             btn.addEventListener('mousemove', (e) => {
                 const rect = btn.getBoundingClientRect();
                 const x = e.clientX - rect.left - rect.width / 2;
                 const y = e.clientY - rect.top - rect.height / 2;
-                btn.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
+                btn.style.transform = `translate(${x * 0.15}px, ${y * 0.15}px)`;
             });
             btn.addEventListener('mouseleave', () => {
                 btn.style.transform = 'translate(0, 0)';
             });
         });
         
-        // --- (Rest of the script is unchanged) ---
+        // Smooth scroll for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -1629,17 +2166,37 @@
                 }
             });
         });
+
+        // Newsletter input enhancements
         const newsletterInput = document.querySelector('.newsletter-bg input');
         const newsletterButton = document.querySelector('.newsletter-bg button');
-        newsletterInput.addEventListener('focus', () => { gsap.to(newsletterInput, { scale: 1.02, duration: 0.3 }); });
-        newsletterInput.addEventListener('blur', () => { gsap.to(newsletterInput, { scale: 1, duration: 0.3 }); });
-        document.querySelectorAll('.product-overlay button').forEach(button => {
-            button.addEventListener('click', (e) => { e.preventDefault(); console.log('Quick view clicked'); });
+        newsletterInput.addEventListener('focus', () => { 
+            gsap.to(newsletterInput, { scale: 1.02, duration: 0.3 }); 
         });
+        newsletterInput.addEventListener('blur', () => { 
+            gsap.to(newsletterInput, { scale: 1, duration: 0.3 }); 
+        });
+
+        // Quick view functionality
+        document.querySelectorAll('.quick-view-btn').forEach(button => {
+            button.addEventListener('click', (e) => { 
+                e.preventDefault(); 
+                console.log('Quick view clicked');
+                // Add your quick view modal logic here
+            });
+        });
+
+        // Instagram grid hover effects
         document.querySelectorAll('.grid img').forEach(img => {
-            img.addEventListener('mouseenter', () => { gsap.to(img, { scale: 1.05, duration: 0.3 }); });
-            img.addEventListener('mouseleave', () => { gsap.to(img, { scale: 1, duration: 0.3 }); });
+            img.addEventListener('mouseenter', () => { 
+                gsap.to(img, { scale: 1.05, duration: 0.3 }); 
+            });
+            img.addEventListener('mouseleave', () => { 
+                gsap.to(img, { scale: 1, duration: 0.3 }); 
+            });
         });
+
+        // Floating hearts/sparkles on click
         (function(){
           const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
           const colors = ['#f7bcd6','#c9c2ff','#bcefe1','#ffe3a4','#ffcfe0','#d6f0ff'];
@@ -1659,7 +2216,6 @@
             }, { passive: true });
           }
         })();
-        // --- (End of unchanged script) ---
     </script>
 </body>
 </html>
