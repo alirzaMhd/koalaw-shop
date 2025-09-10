@@ -35,35 +35,128 @@
             background-color: var(--cream);
             color: #333;
             overflow-x: hidden;
-            cursor: default;
+            cursor: none;
         }
         
         .font-serif {
             font-family: 'Playfair Display', serif;
         }
         
-        /* Custom Cursor */
+        /* Koala Cursor - Outlined */
         .cursor {
-            width: 20px;
-            height: 20px;
-            border: 2px solid var(--primary);
-            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            border: 2px solid #666;
+            background: transparent;
+            border-radius: 50% 50% 45% 45%;
             position: fixed;
             pointer-events: none;
-            transition: all 0.1s ease;
             z-index: 9999;
-            mix-blend-mode: difference;
+            transform: translate(-50%, -50%);
+            transition: border-color 0.2s ease, transform 0.2s ease;
+        }
+        
+        /* Koala ears */
+        .cursor::before,
+        .cursor::after {
+            content: '';
+            position: absolute;
+            width: 14px;
+            height: 14px;
+            border: 2px solid #666;
+            background: transparent;
+            border-radius: 50%;
+            top: -8px;
+            transition: border-color 0.2s ease;
+        }
+        
+        .cursor::before {
+            left: -2px;
+        }
+        
+        .cursor::after {
+            right: -2px;
+        }
+        
+        /* Koala face features */
+        .cursor-face {
+            position: fixed;
+            width: 30px;
+            height: 30px;
+            pointer-events: none;
+            z-index: 10000;
+            transform: translate(-50%, -50%);
+        }
+        
+        /* Koala nose */
+        .cursor-face::before {
+            content: '';
+            position: absolute;
+            width: 8px;
+            height: 6px;
+            border: 1.5px solid #333;
+            background: transparent;
+            border-radius: 50%;
+            top: 14px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        /* Koala eyes */
+        .cursor-eyes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+        
+        .cursor-eyes::before,
+        .cursor-eyes::after {
+            content: '';
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            border: 1.5px solid #333;
+            background: transparent;
+            border-radius: 50%;
+            top: 10px;
+        }
+        
+        .cursor-eyes::before {
+            left: 8px;
+        }
+        
+        .cursor-eyes::after {
+            right: 8px;
+        }
+        
+        /* Hover state - happy koala */
+        .cursor.hover {
+            border-color: var(--primary);
+            transform: translate(-50%, -50%) scale(1.2);
+        }
+        
+        .cursor.hover::before,
+        .cursor.hover::after {
+            border-color: var(--primary);
         }
         
         .cursor-follower {
-            width: 40px;
-            height: 40px;
-            background: rgba(212, 165, 116, 0.1);
+            width: 50px;
+            height: 50px;
+            background: rgba(227, 154, 180, 0.1);
             border-radius: 50%;
             position: fixed;
             pointer-events: none;
-            transition: all 0.3s ease;
             z-index: 9998;
+            transform: translate(-50%, -50%);
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+        
+        /* Hide default cursor for all elements */
+        * {
+            cursor: none !important;
         }
         
         /* Navigation Enhancements */
@@ -203,7 +296,7 @@
             overflow: hidden;
             border-radius: 30px;
             height: 500px;
-            cursor: pointer;
+            cursor: none;
             transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         
@@ -286,7 +379,7 @@
             height: 50px;
             border: 2px solid var(--primary);
             border-radius: 25px;
-            cursor: pointer;
+            cursor: none;
         }
         
         .scroll-indicator::before {
@@ -483,8 +576,11 @@
         </div>
     </div>
     
-    <!-- Custom Cursor -->
-    <div class="cursor"></div>
+    <!-- Koala Cursor -->
+    <div class="cursor">
+        <div class="cursor-eyes"></div>
+    </div>
+    <div class="cursor-face"></div>
     <div class="cursor-follower"></div>
     
     <!-- Vanta Background -->
@@ -992,7 +1088,7 @@
             </div>
             
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4" data-aos="fade-up">
-                <div class="relative group overflow-hidden rounded-2xl cursor-pointer">
+                <div class="relative group overflow-hidden rounded-2xl">
                     <img src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=400&h=400&fit=crop" alt="Instagram" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
                         <div class="text-white">
@@ -1001,7 +1097,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="relative group overflow-hidden rounded-2xl cursor-pointer">
+                <div class="relative group overflow-hidden rounded-2xl">
                     <img src="https://images.unsplash.com/photo-1512207736890-6ffca8dad650?w=400&h=400&fit=crop" alt="Instagram" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
                         <div class="text-white">
@@ -1010,7 +1106,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="relative group overflow-hidden rounded-2xl cursor-pointer">
+                <div class="relative group overflow-hidden rounded-2xl">
                     <img src="https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?w=400&h=400&fit=crop" alt="Instagram" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
                         <div class="text-white">
@@ -1019,7 +1115,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="relative group overflow-hidden rounded-2xl cursor-pointer">
+                <div class="relative group overflow-hidden rounded-2xl">
                     <img src="https://images.unsplash.com/photo-1519699047748-de8e457a634e?w=400&h=400&fit=crop" alt="Instagram" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
                         <div class="text-white">
@@ -1173,36 +1269,60 @@
         // Initialize Feather Icons
         feather.replace();
         
-        // Custom Cursor
+        // Smooth Koala Cursor
         const cursor = document.querySelector('.cursor');
+        const cursorFace = document.querySelector('.cursor-face');
         const cursorFollower = document.querySelector('.cursor-follower');
         
+        let cursorX = 0;
+        let cursorY = 0;
+        let followerX = 0;
+        let followerY = 0;
+        
+        const speed = 0.5;
+        
         document.addEventListener('mousemove', (e) => {
-            cursor.style.left = e.clientX + 'px';
-            cursor.style.top = e.clientY + 'px';
-            
-            setTimeout(() => {
-                cursorFollower.style.left = (e.clientX - 10) + 'px';
-                cursorFollower.style.top = (e.clientY - 10) + 'px';
-            }, 100);
+            cursorX = e.clientX;
+            cursorY = e.clientY;
         });
+        
+        function animateCursor() {
+            // Instant position for main cursor
+            cursor.style.left = cursorX + 'px';
+            cursor.style.top = cursorY + 'px';
+            
+            cursorFace.style.left = cursorX + 'px';
+            cursorFace.style.top = cursorY + 'px';
+            
+            // Smooth following for follower
+            followerX += (cursorX - followerX) * speed;
+            followerY += (cursorY - followerY) * speed;
+            
+            cursorFollower.style.left = followerX + 'px';
+            cursorFollower.style.top = followerY + 'px';
+            
+            requestAnimationFrame(animateCursor);
+        }
+        
+        animateCursor();
         
         // Cursor hover effects
         const hoverElements = document.querySelectorAll('a, button, .product-card, .collection-card');
         hoverElements.forEach(element => {
             element.addEventListener('mouseenter', () => {
-                cursor.style.transform = 'scale(2)';
-                cursorFollower.style.transform = 'scale(1.5)';
+                cursor.classList.add('hover');
+                cursorFollower.style.transform = 'translate(-50%, -50%) scale(1.5)';
             });
             element.addEventListener('mouseleave', () => {
-                cursor.style.transform = 'scale(1)';
-                cursorFollower.style.transform = 'scale(1)';
+                cursor.classList.remove('hover');
+                cursorFollower.style.transform = 'translate(-50%, -50%) scale(1)';
             });
         });
         
         // Hide cursor on mobile
         if (window.innerWidth <= 768) {
             cursor.style.display = 'none';
+            cursorFace.style.display = 'none';
             cursorFollower.style.display = 'none';
         }
         
