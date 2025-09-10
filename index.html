@@ -464,36 +464,85 @@
             opacity: 1;
         }
         
-        /* Collection Cards */
+        /* --- START: NEW COLLECTION STYLES --- */
         .collection-card {
             position: relative;
             overflow: hidden;
             border-radius: 30px;
-            height: 500px;
             cursor: none;
             transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        
+
+        /* Darkening gradient overlay that appears on hover */
         .collection-card::after {
             content: '';
             position: absolute;
             inset: 0;
-            background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.8) 100%);
-            transition: all 0.5s ease;
+            background: linear-gradient(180deg, transparent 40%, rgba(0, 0, 0, 0.9) 100%);
+            transition: opacity 0.7s ease;
+            opacity: 0;
+            z-index: 5;
         }
-        
+
+        .collection-card:hover::after {
+            opacity: 1;
+        }
+
+        /* General hover effects for the card */
         .collection-card:hover {
-            transform: scale(1.03);
+            transform: scale(1.02);
             box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.3);
         }
-        
+
         .collection-card:hover img {
             transform: scale(1.1);
         }
-        
+
+        /* The image itself */
         .collection-card img {
-            transition: transform 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
+
+        /* The container for the text content */
+        .collection-content > * {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        /* Staggered animation for content on hover */
+        .collection-card:hover .collection-content > * {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .collection-card:hover .collection-category { transition-delay: 0.1s; }
+        .collection-card:hover .collection-title { transition-delay: 0.2s; }
+        .collection-card:hover .collection-desc { transition-delay: 0.3s; }
+        .collection-card:hover .collection-link { transition-delay: 0.4s; }
+
+        /* The link style */
+        .collection-link {
+            position: relative;
+            width: fit-content;
+        }
+
+        .collection-link::before {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            right: 0;
+            width: 0;
+            height: 1px;
+            background-color: white;
+            transition: width 0.4s ease;
+        }
+
+        .collection-card:hover .collection-link::before {
+            width: 100%;
+            transition-delay: 0.5s;
+        }
+        /* --- END: NEW COLLECTION STYLES --- */
         
         /* Testimonial Cards */
         .testimonial-card {
@@ -650,10 +699,6 @@
         @media (max-width: 768px) {
             .hero-title-creative {
                 font-size: 2.5rem;
-            }
-            
-            .collection-card {
-                height: 350px;
             }
             
             .testimonial-card {
@@ -864,52 +909,69 @@
         <div class="scroll-indicator"></div>
     </section>
     
-    <!-- کالکشن‌های ویژه -->
-    <section class="py-24 bg-white relative">
-        <div class="container mx-auto px-6">
+    <!-- کالکشن‌های ویژه (Featured Collections) - REIMAGINED -->
+    <section class="py-24 bg-cream relative overflow-hidden">
+        <!-- Decorative background glow -->
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vh] bg-rose-200/40 rounded-full blur-3xl opacity-50 z-0"></div>
+    
+        <div class="container mx-auto px-6 relative z-10">
             <div class="text-center mb-16" data-aos="fade-up">
                 <span class="text-sm font-medium text-rose-800 tracking-wider uppercase mb-4 block">دست‌چین شده برای شما</span>
                 <h2 class="text-4xl lg:text-5xl font-serif font-bold text-gray-800 mb-6">کالکشن‌های ویژه</h2>
                 <div class="cute-divider"><span class="star">✦</span></div>
                 <p class="text-gray-600 max-w-2xl mx-auto text-lg">
-                    هر کالکشن با دقت طراحی شده تا زیبایی طبیعی شما را با فرمولاسیون‌های لوکس تقویت کند.
+                    سفری به دنیای زیبایی‌های ما. هر کالکشن داستانی منحصر به فرد را روایت می‌کند.
                 </p>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="collection-card group" data-aos="fade-up" data-aos-delay="100">
-                    <img src="https://images.unsplash.com/photo-1570194065650-d99fb4b38e39?w=600&h=800&fit=crop" alt="مراقبت از پوست" class="w-full h-full object-cover">
+            <!-- New Asymmetrical Layout -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Large Card (Skincare) -->
+                <div class="collection-card h-[640px] group" data-aos="fade-right" data-aos-duration="1200">
+                    <img src="https://images.unsplash.com/photo-1570194065650-d99fb4b38e39?w=800&h=1000&fit=crop" alt="مراقبت از پوست" class="w-full h-full object-cover">
                     <div class="absolute inset-0 z-10 flex flex-col justify-end p-10 text-white">
-                        <h3 class="text-3xl font-serif font-bold mb-3 transform group-hover:translate-y-[-10px] transition-transform duration-500">مراقبت از پوست درخشان</h3>
-                        <p class="mb-6 opacity-90 transform group-hover:translate-y-[-10px] transition-all duration-500 delay-75">پوست خود را با فرمول‌های گیاهی ما متحول کنید</p>
-                        <a href="#" class="inline-flex items-center text-white font-medium group-hover:text-amber-200 transition-all duration-300 transform group-hover:translate-y-[-10px] delay-100">
-                            <span class="border-b-2 border-white group-hover:border-amber-200 pb-1">مشاهده کالکشن</span>
-                            <i data-feather="arrow-left" class="mr-2 w-4 h-4 group-hover:-translate-x-2 transition-transform duration-300"></i> <!-- RTL change -->
-                        </a>
+                        <div class="collection-content">
+                            <span class="collection-category block text-sm font-medium uppercase tracking-widest mb-2">مراقبت از پوست</span>
+                            <h3 class="collection-title text-4xl font-serif font-bold mb-4">پوست درخشان</h3>
+                            <p class="collection-desc mb-6 max-w-sm">پوست خود را با فرمول‌های گیاهی ما که برای تغذیه و جوانسازی طراحی شده‌اند، متحول کنید.</p>
+                            <a href="#" class="collection-link inline-flex items-center text-white font-semibold">
+                                <span>کشف کنید</span>
+                                <i data-feather="arrow-left" class="mr-2 w-5 h-5 transition-transform duration-300 group-hover:-translate-x-2"></i> <!-- RTL change -->
+                            </a>
+                        </div>
                     </div>
                 </div>
                 
-                <div class="collection-card group" data-aos="fade-up" data-aos-delay="200">
-                    <img src="https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=600&h=800&fit=crop" alt="آرایش" class="w-full h-full object-cover">
-                    <div class="absolute inset-0 z-10 flex flex-col justify-end p-10 text-white">
-                        <h3 class="text-3xl font-serif font-bold mb-3 transform group-hover:translate-y-[-10px] transition-transform duration-500">آرایش هنرمندانه</h3>
-                        <p class="mb-6 opacity-90 transform group-hover:translate-y-[-10px] transition-all duration-500 delay-75">با لوازم آرایشی حرفه‌ای ما، خود را ابراز کنید</p>
-                        <a href="#" class="inline-flex items-center text-white font-medium group-hover:text-amber-200 transition-all duration-300 transform group-hover:translate-y-[-10px] delay-100">
-                            <span class="border-b-2 border-white group-hover:border-amber-200 pb-1">مشاهده کالکشن</span>
-                            <i data-feather="arrow-left" class="mr-2 w-4 h-4 group-hover:-translate-x-2 transition-transform duration-300"></i> <!-- RTL change -->
-                        </a>
+                <!-- Wrapper for two smaller cards -->
+                <div class="flex flex-col gap-8">
+                    <!-- Small Card (Makeup) -->
+                    <div class="collection-card h-[304px] group" data-aos="fade-left" data-aos-duration="1200" data-aos-delay="200">
+                        <img src="https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=800&h=600&fit=crop" alt="آرایش" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 z-10 flex flex-col justify-end p-10 text-white">
+                            <div class="collection-content">
+                                 <span class="collection-category block text-sm font-medium uppercase tracking-widest mb-2">آرایش</span>
+                                <h3 class="collection-title text-3xl font-serif font-bold mb-4">آرایش هنرمندانه</h3>
+                                <a href="#" class="collection-link inline-flex items-center text-white font-semibold">
+                                    <span>کشف کنید</span>
+                                    <i data-feather="arrow-left" class="mr-2 w-5 h-5 transition-transform duration-300 group-hover:-translate-x-2"></i> <!-- RTL change -->
+                                </a>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                
-                <div class="collection-card group" data-aos="fade-up" data-aos-delay="300">
-                    <img src="https://images.unsplash.com/photo-1594035900144-17151c9910af?w=600&h=800&fit=crop" alt="عطر" class="w-full h-full object-cover">
-                    <div class="absolute inset-0 z-10 flex flex-col justify-end p-10 text-white">
-                        <h3 class="text-3xl font-serif font-bold mb-3 transform group-hover:translate-y-[-10px] transition-transform duration-500">عطرهای فریبنده</h3>
-                        <p class="mb-6 opacity-90 transform group-hover:translate-y-[-10px] transition-all duration-500 delay-75">با عطرهای انحصاری ما، حواس را مجذوب خود کنید</p>
-                        <a href="#" class="inline-flex items-center text-white font-medium group-hover:text-amber-200 transition-all duration-300 transform group-hover:translate-y-[-10px] delay-100">
-                            <span class="border-b-2 border-white group-hover:border-amber-200 pb-1">مشاهده کالکشن</span>
-                            <i data-feather="arrow-left" class="mr-2 w-4 h-4 group-hover:-translate-x-2 transition-transform duration-300"></i> <!-- RTL change -->
-                        </a>
+                    
+                    <!-- Small Card (Fragrance) -->
+                    <div class="collection-card h-[304px] group" data-aos="fade-left" data-aos-duration="1200" data-aos-delay="400">
+                        <img src="https://images.unsplash.com/photo-1594035900144-17151c9910af?w=800&h=600&fit=crop" alt="عطر" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 z-10 flex flex-col justify-end p-10 text-white">
+                             <div class="collection-content">
+                                 <span class="collection-category block text-sm font-medium uppercase tracking-widest mb-2">عطر</span>
+                                <h3 class="collection-title text-3xl font-serif font-bold mb-4">عطرهای فریبنده</h3>
+                                <a href="#" class="collection-link inline-flex items-center text-white font-semibold">
+                                    <span>کشف کنید</span>
+                                    <i data-feather="arrow-left" class="mr-2 w-5 h-5 transition-transform duration-300 group-hover:-translate-x-2"></i> <!-- RTL change -->
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1525,6 +1587,21 @@
                 end: 'bottom top',
                 scrub: 1.5
             }
+        });
+
+        // --- NEW: Parallax effect for collection card images ---
+        gsap.utils.toArray('.collection-card').forEach(card => {
+            const image = card.querySelector('img');
+            gsap.to(image, {
+                y: "-10%",
+                ease: "none",
+                scrollTrigger: {
+                    trigger: card,
+                    start: "top bottom",
+                    end: "bottom top",
+                    scrub: true,
+                }
+            });
         });
         
         // Stagger animation for products
