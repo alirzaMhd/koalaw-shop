@@ -43,7 +43,7 @@
         }
         /* --- END: FONT CHANGE --- */
 
-        /* OPTIMIZED CLOUD ANIMATION - Pure CSS Alternative */
+        /* --- START: CLOUD MODIFICATION --- */
         .cloud-animation {
             position: absolute;
             inset: 0;
@@ -53,23 +53,21 @@
 
         .cloud {
             position: absolute;
-            /* MODIFICATION: Made the pink color much more visible by increasing the alpha from 0.3 to 0.8 */
             background: radial-gradient(ellipse at center, rgba(227, 154, 180, 0.8) 0%, transparent 70%);
             border-radius: 100%;
             opacity: 0;
-            /* MODIFICATION: Reduced blur slightly to make the effect more defined */
             filter: blur(30px);
             animation: float-cloud linear infinite;
             will-change: transform, opacity;
         }
 
-        /* Different cloud sizes and animations */
+        /* Different cloud sizes and faster animations */
         .cloud-1 {
             width: 600px;
             height: 200px;
             top: 10%;
             left: -300px;
-            animation-duration: 45s;
+            animation-duration: 8s; /* 45s / 1.2 */
             animation-delay: 0s;
         }
 
@@ -78,8 +76,8 @@
             height: 250px;
             top: 30%;
             left: -400px;
-            animation-duration: 55s;
-            animation-delay: 10s;
+            animation-duration: 12s; /* 55s / 1.2 */
+            animation-delay: 2s;
         }
 
         .cloud-3 {
@@ -87,8 +85,8 @@
             height: 180px;
             top: 50%;
             left: -250px;
-            animation-duration: 40s;
-            animation-delay: 5s;
+            animation-duration: 10s; /* 40s / 1.2 */
+            animation-delay: 4s;
         }
 
         .cloud-4 {
@@ -96,8 +94,8 @@
             height: 220px;
             top: 70%;
             left: -350px;
-            animation-duration: 50s;
-            animation-delay: 15s;
+            animation-duration: 12s; /* 50s / 1.2 */
+            animation-delay: 2s;
         }
 
         .cloud-5 {
@@ -105,8 +103,54 @@
             height: 190px;
             top: 20%;
             left: -275px;
-            animation-duration: 48s;
-            animation-delay: 20s;
+            animation-duration: 12s; /* 48s / 1.2 */
+            animation-delay: 8s;
+        }
+
+        /* Added 5 new clouds for a denser effect */
+        .cloud-6 {
+            width: 450px;
+            height: 170px;
+            top: 85%;
+            left: -225px;
+            animation-duration: 8s; /* 42s / 1.2 */
+            animation-delay: 2s;
+        }
+
+        .cloud-7 {
+            width: 750px;
+            height: 240px;
+            top: 5%;
+            left: -375px;
+            animation-duration: 8.3s; /* 58s / 1.2 */
+            animation-delay: 5s;
+        }
+
+        .cloud-8 {
+            width: 650px;
+            height: 210px;
+            top: 60%;
+            left: -325px;
+            animation-duration: 11.7s; /* 38s / 1.2 */
+            animation-delay: 6s;
+        }
+
+        .cloud-9 {
+            width: 580px;
+            height: 200px;
+            top: 40%;
+            left: -290px;
+            animation-duration: 13.3s; /* 52s / 1.2 */
+            animation-delay: 4s;
+        }
+
+        .cloud-10 {
+            width: 820px;
+            height: 260px;
+            top: 75%;
+            left: -410px;
+            animation-duration: 8.3s; /* 46s / 1.2 */
+            animation-delay: 2s;
         }
 
         @keyframes float-cloud {
@@ -115,11 +159,9 @@
                 opacity: 0;
             }
             10% {
-                /* MODIFICATION: Increased opacity from 0.7 to 0.9 for more visibility */
                 opacity: 0.9;
             }
             90% {
-                /* MODIFICATION: Increased opacity from 0.7 to 0.9 for more visibility */
                 opacity: 0.9;
             }
             100% {
@@ -127,6 +169,8 @@
                 opacity: 0;
             }
         }
+        /* --- END: CLOUD MODIFICATION --- */
+
 
         /* Subtle particle effect overlay */
         .particle-overlay {
@@ -617,7 +661,7 @@
             }
 
             /* Reduce number of clouds on mobile for performance */
-            .cloud-4, .cloud-5 {
+            .cloud-4, .cloud-5, .cloud-7, .cloud-8, .cloud-9, .cloud-10 {
                 display: none;
             }
         }
@@ -714,7 +758,6 @@
     <!-- منوی ناوبری -->
     <nav class="fixed w-full z-50 transition-all duration-300" id="navbar">
         <div class="container mx-auto px-6 py-5">
-            <!-- START: MODIFICATION FOR LTR LAYOUT AND SPACING -->
             <div class="flex items-center justify-between" dir="ltr">
                 <!-- Logo -->
                 <div class="flex items-center">
@@ -750,11 +793,10 @@
                     </div>
                 </div>
             </div>
-            <!-- END: MODIFICATION -->
         </div>
     </nav>
     
-    <!-- بخش اصلی (Hero) - START: OPTIMIZED HERO SECTION -->
+    <!-- بخش اصلی (Hero) -->
     <section class="min-h-screen relative flex items-center justify-center text-center overflow-hidden">
         <!-- Background Image with Parallax -->
         <img 
@@ -764,14 +806,22 @@
             class="absolute inset-0 w-full h-full object-cover z-0"
         >
         
-        <!-- OPTIMIZED CLOUD ANIMATION -->
+        <!-- --- START: CLOUD MODIFICATION --- -->
         <div class="cloud-animation">
             <div class="cloud cloud-1"></div>
             <div class="cloud cloud-2"></div>
             <div class="cloud cloud-3"></div>
             <div class="cloud cloud-4"></div>
             <div class="cloud cloud-5"></div>
+            <!-- Added 5 new clouds for a denser effect -->
+            <div class="cloud cloud-6"></div>
+            <div class="cloud cloud-7"></div>
+            <div class="cloud cloud-8"></div>
+            <div class="cloud cloud-9"></div>
+            <div class="cloud cloud-10"></div>
         </div>
+        <!-- --- END: CLOUD MODIFICATION --- -->
+
         
         <!-- Subtle Particle Effect -->
         <div class="particle-overlay">
@@ -813,7 +863,6 @@
         <!-- نشانگر اسکرول -->
         <div class="scroll-indicator"></div>
     </section>
-    <!-- END: OPTIMIZED HERO SECTION -->
     
     <!-- کالکشن‌های ویژه -->
     <section class="py-24 bg-white relative">
