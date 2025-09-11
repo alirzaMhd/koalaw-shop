@@ -2,7 +2,7 @@
 <html lang="fa" dir="rtl">
 
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-g">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>KOALAW | لوازم آرایشی لوکس</title>
   <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
@@ -1286,6 +1286,25 @@
         color: var(--primary);
     }
 
+    /* === NEW: CATEGORY SCROLL STYLES (ADDED) === */
+    .category-scroll-container {
+      direction: rtl; /* This forces the flex items to layout LTR */
+      overflow-x: auto; /* Enables horizontal scrolling */
+      scroll-snap-type: x mandatory; /* Adds smooth snapping */
+      padding: 0.5rem; /* Add some padding so shadows aren't clipped */
+      margin: -0.5rem; /* Compensate for the padding to maintain layout */
+      /* Hide the scrollbar across browsers */
+      -ms-overflow-style: none;  /* IE and Edge */
+      scrollbar-width: none;  /* Firefox */
+    }
+    .category-scroll-container::-webkit-scrollbar {
+      display: none; /* Chrome, Safari and Opera */
+    }
+    /* Target the direct children (the cards) for snapping */
+    .category-scroll-container > div > a {
+      scroll-snap-align: start;
+    }
+
     /* === NEW: CATEGORY CARD STYLES === */
     .category-card {
       position: relative;
@@ -1510,9 +1529,9 @@
   </section>
 
   <!-- =============================================== -->
-  <!-- NEW: CATEGORIES SECTION START                   -->
+  <!-- NEW: CATEGORIES SECTION START (MODIFIED)        -->
   <!-- =============================================== -->
-  <section class="py-24 bg-gray-50/50">
+  <section class="py-24 bg-gray-50/50 overflow-hidden">
     <div class="container mx-auto px-6">
       <div class="text-center mb-16" data-aos="fade-up">
         <span class="text-sm font-medium text-rose-800 tracking-wider uppercase mb-4 block">راهنمای شما</span>
@@ -1521,67 +1540,70 @@
         <p class="text-gray-600 max-w-2xl mx-auto text-lg mt-4">محصولات مورد علاقه خود را در مجموعه‌های منتخب ما بیابید. از مراقبت‌های ضروری پوست تا آرایش‌های جذاب.</p>
       </div>
 
-      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 lg:gap-8" data-aos="fade-up" data-aos-delay="200">
+      <!-- Wrapper for LTR horizontal scrolling -->
+      <div class="category-scroll-container" data-aos="fade-up" data-aos-delay="200">
+        <div class="flex flex-nowrap gap-6 lg:gap-8">
         
-        <!-- Category Card 1: Skincare -->
-        <a href="/shop?category=skincare" class="category-card">
-          <img src="./image/skin.png" alt="مراقبت از پوست" class="category-card-bg">
-          <div class="category-card-overlay"></div>
-          <div class="category-card-content">
-            <div class="category-card-icon">
-              <i data-feather="shield" class="w-6 h-6"></i>
+          <!-- Category Card 1: Skincare -->
+          <a href="/shop?category=skincare" class="category-card w-60 md:w-64 flex-shrink-0">
+            <img src="./image/skin.png" alt="مراقبت از پوست" class="category-card-bg">
+            <div class="category-card-overlay"></div>
+            <div class="category-card-content">
+              <div class="category-card-icon">
+                <i data-feather="shield" class="w-6 h-6"></i>
+              </div>
+              <h3 class="category-card-title">مراقبت از پوست</h3>
             </div>
-            <h3 class="category-card-title">مراقبت از پوست</h3>
-          </div>
-        </a>
+          </a>
 
-        <!-- Category Card 2: Makeup -->
-        <a href="/shop?category=makeup" class="category-card">
-          <img src="./image/cosmetic.png" alt="آرایش" class="category-card-bg">
-          <div class="category-card-overlay"></div>
-          <div class="category-card-content">
-            <div class="category-card-icon">
-              <i data-feather="pen-tool" class="w-6 h-6"></i>
+          <!-- Category Card 2: Makeup -->
+          <a href="/shop?category=makeup" class="category-card w-60 md:w-64 flex-shrink-0">
+            <img src="./image/cosmetic.png" alt="آرایش" class="category-card-bg">
+            <div class="category-card-overlay"></div>
+            <div class="category-card-content">
+              <div class="category-card-icon">
+                <i data-feather="pen-tool" class="w-6 h-6"></i>
+              </div>
+              <h3 class="category-card-title">آرایش</h3>
             </div>
-            <h3 class="category-card-title">آرایش</h3>
-          </div>
-        </a>
+          </a>
 
-        <!-- Category Card 3: Fragrance -->
-        <a href="/shop?category=fragrance" class="category-card">
-          <img src="./image/perfume.png" alt="عطر" class="category-card-bg">
-          <div class="category-card-overlay"></div>
-          <div class="category-card-content">
-            <div class="category-card-icon">
-              <i data-feather="wind" class="w-6 h-6"></i>
+          <!-- Category Card 3: Fragrance -->
+          <a href="/shop?category=fragrance" class="category-card w-60 md:w-64 flex-shrink-0">
+            <img src="./image/perfume.png" alt="عطر" class="category-card-bg">
+            <div class="category-card-overlay"></div>
+            <div class="category-card-content">
+              <div class="category-card-icon">
+                <i data-feather="wind" class="w-6 h-6"></i>
+              </div>
+              <h3 class="category-card-title">عطر</h3>
             </div>
-            <h3 class="category-card-title">عطر</h3>
-          </div>
-        </a>
+          </a>
 
-        <!-- Category Card 4: Haircare -->
-        <a href="/shop?category=haircare" class="category-card">
-          <img src="./image/hair.png" alt="مراقبت از مو" class="category-card-bg">
-          <div class="category-card-overlay"></div>
-          <div class="category-card-content">
-            <div class="category-card-icon">
-              <i data-feather="git-branch" class="w-6 h-6"></i>
+          <!-- Category Card 4: Haircare -->
+          <a href="/shop?category=haircare" class="category-card w-60 md:w-64 flex-shrink-0">
+            <img src="./image/hair.png" alt="مراقبت از مو" class="category-card-bg">
+            <div class="category-card-overlay"></div>
+            <div class="category-card-content">
+              <div class="category-card-icon">
+                <i data-feather="git-branch" class="w-6 h-6"></i>
+              </div>
+              <h3 class="category-card-title">مراقبت از مو</h3>
             </div>
-            <h3 class="category-card-title">مراقبت از مو</h3>
-          </div>
-        </a>
+          </a>
 
-        <!-- Category Card 5: Body & Bath -->
-        <a href="/shop?category=body-bath" class="category-card">
-          <img src="./image/body.png" alt="بدن و حمام" class="category-card-bg">
-          <div class="category-card-overlay"></div>
-          <div class="category-card-content">
-            <div class="category-card-icon">
-              <i data-feather="droplet" class="w-6 h-6"></i>
+          <!-- Category Card 5: Body & Bath -->
+          <a href="/shop?category=body-bath" class="category-card w-60 md:w-64 flex-shrink-0">
+            <img src="./image/body.png" alt="بدن و حمام" class="category-card-bg">
+            <div class="category-card-overlay"></div>
+            <div class="category-card-content">
+              <div class="category-card-icon">
+                <i data-feather="droplet" class="w-6 h-6"></i>
+              </div>
+              <h3 class="category-card-title">بدن و حمام</h3>
             </div>
-            <h3 class="category-card-title">بدن و حمام</h3>
-          </div>
-        </a>
+          </a>
+        </div>
       </div>
     </div>
   </section>
