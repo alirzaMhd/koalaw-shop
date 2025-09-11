@@ -414,7 +414,8 @@
     .break-inside-avoid {
       break-inside: avoid
     }
-
+    
+    /* === Old Product Card Styles (Unused) === */
     .product-card-pro {
       border-radius: 10px;
       box-shadow: 0 10px 40px -10px rgba(0, 0, 0, .04), 0 5px 20px -15px rgba(227, 154, 180, .1);
@@ -422,240 +423,201 @@
       overflow: hidden
     }
 
-    .product-card-pro:hover {
-      transform: translateY(-12px);
-      box-shadow: 0 20px 50px -15px rgba(0, 0, 0, .1), 0 10px 30px -10px rgba(227, 154, 180, .25)
+    /* ... other old styles ... */
+
+
+    /* ========================================= */
+    /* === NEW PRODUCT CARD DESIGN (MODIFIED) === */
+    /* ========================================= */
+    .product-card-v2 {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 3 / 4.2;
+        background-color: var(--accent); /* Pinkish bottom part */
+        border-radius: 24px;
+        overflow: hidden;
+        font-family: 'IRANSans', sans-serif;
+        box-shadow: 0 8px 24px rgba(120, 80, 100, 0.05);
+        transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+        display: flex;
+        flex-direction: column;
     }
 
-    .product-image-container {
-      position: relative;
-      overflow: hidden;
-      border-radius: 10px
+    .product-card-v2:hover {
+        transform: translateY(-12px);
+        box-shadow: 0 16px 40px rgba(120, 80, 100, 0.12);
     }
 
-    .product-image-container img {
-      width: 100%;
-      height: auto;
-      aspect-ratio: 4 / 5;
-      object-fit: cover;
-      display: block;
-      transition: transform .6s cubic-bezier(.165, .84, .44, 1)
+    .product-card-v2-bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 65%;
+        clip-path: polygon(0 0, 100% 0, 100% 70%, 0 100%); /* Slanted bottom edge */
+        z-index: 1;
+        transition: clip-path 0.4s ease;
     }
 
-    .product-card-pro:hover .product-image-container img {
-      transform: scale(1.08)
+    .product-card-v2:hover .product-card-v2-bg {
+      clip-path: polygon(0 0, 100% 0, 100% 80%, 0 90%);
     }
 
-    .product-action-overlay {
-      position: absolute;
-      inset: 0;
-      background: rgba(255, 255, 255, .2);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 1rem;
-      opacity: 0;
-      transition: opacity .4s ease
+    .product-card-v2-content {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        padding: 1.25rem;
     }
 
-    .product-card-pro:hover .product-action-overlay {
-      opacity: 1
+    .product-card-v2-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 1rem;
     }
 
-    .action-btn {
-      width: 52px;
-      height: 52px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, .8);
-      border: 1px solid rgba(0, 0, 0, .05);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--secondary);
-      box-shadow: 0 4px 15px rgba(0, 0, 0, .08);
-      transform: translateY(20px);
-      transition: all .4s cubic-bezier(.165, .84, .44, 1)
+    .product-card-v2-price {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--deep-brown);
+        background-color: rgba(255,255,255,0.5);
+        padding: 0.25rem 0.75rem;
+        border-radius: 50px;
+        white-space: nowrap;
     }
 
-    .product-card-pro:hover .action-btn {
-      transform: translateY(0)
+    .product-card-v2-title-desc {
+        text-align: right;
     }
 
-    .product-card-pro:hover .action-btn:first-child {
-      transition-delay: .05s
+    .product-card-v2-title {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #fff;
+        text-shadow: 0 1px 4px rgba(0,0,0,0.15);
+        margin-bottom: 0.25rem;
+        line-height: 1.3;
     }
 
-    .product-card-pro:hover .action-btn:nth-child(2) {
-      transition-delay: .1s
+    .product-card-v2-desc {
+        font-size: 0.8rem;
+        color: rgba(255, 255, 255, 0.9);
+        line-height: 1.5;
+        height: 4.5em; /* 3 lines of text */
+        overflow: hidden;
     }
 
-    .action-btn:hover {
-      transform: scale(1.1) !important;
-      background: var(--primary);
-      color: #fff
+    .product-card-v2-image-wrapper {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: clamp(120px, 45%, 160px);
+        aspect-ratio: 1 / 1;
+        border-radius: 50%;
+        padding: 8px;
+        background-color: rgba(255, 255, 255, 0.4);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        box-shadow: 0 12px 25px rgba(0,0,0,0.1);
+        z-index: 3;
+        transition: transform 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
     }
 
-    .product-info-pro {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      padding: 1.25rem;
-      text-align: right;
-      background: rgba(255, 233, 242, .6);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      transition: background .4s ease, backdrop-filter .4s ease;
-      border-radius: 0 0 4px 4px
+    .product-card-v2:hover .product-card-v2-image-wrapper {
+        transform: translate(-50%, -50%) scale(1.1) rotate(3deg);
     }
 
-    .product-card-pro:active .product-info-pro,
-    .product-card-pro:focus-within .product-info-pro,
-    .product-card-pro:hover .product-info-pro {
-      background: #fff;
-      backdrop-filter: blur(0)
+    .product-card-v2-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
     }
 
-    .product-category-pro {
-      font-size: .75rem;
-      font-weight: 600;
-      color: var(--cream);
-      letter-spacing: .5px;
-      text-transform: uppercase;
-      margin-bottom: .5rem;
-      transition: color .4s ease
+    .product-card-v2-footer {
+        margin-top: auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 1rem;
     }
 
-    .product-card-pro:active .product-category-pro,
-    .product-card-pro:focus-within .product-category-pro,
-    .product-card-pro:hover .product-category-pro {
-      color: var(--primary)
+    .product-card-v2-rating {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        background-color: #fff;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        font-weight: 700;
+        font-size: 0.9rem;
+        color: var(--deep-brown);
+        gap: 0.15rem;
+        transition: transform 0.3s ease;
+    }
+    
+    .product-card-v2-rating:hover {
+        transform: scale(1.1);
     }
 
-    .product-title-pro {
-      font-size: 1.15rem;
-      font-weight: 700;
-      color: var(--secondary);
-      line-height: 1.4;
-      margin-bottom: 1rem;
-      flex-grow: 1
+    .star-icon-filled {
+      color: #f59e0b; /* Amber/Gold color */
+    }
+    .star-icon-filled svg {
+      fill: currentColor;
     }
 
-    .product-footer-pro {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: auto
+    /* === MODIFIED BUTTON STYLES === */
+    .add-to-cart-btn-v2 {
+        background-color: var(--deep-brown);
+        color: #fff;
+        border: none;
+        border-radius: 50px;
+        padding: 0.8rem 1.6rem;
+        font-weight: 600;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: transform 0.3s cubic-bezier(0.165, 0.84, 0.44, 1), box-shadow 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+        box-shadow: 0 4px 15px rgba(61, 41, 20, 0.2);
+        position: relative;
+        overflow: hidden;
+        z-index: 1;
     }
 
-    .product-price-pro {
-      font-size: 1.15rem;
-      font-weight: 800;
-      color: var(--secondary);
-      font-family: "IRANSans", serif;
-      display: flex;
-      align-items: baseline;
-      gap: .5rem
+    .add-to-cart-btn-v2 span, .add-to-cart-btn-v2 i {
+        position: relative;
+        z-index: 2;
     }
 
-    .product-price-pro .original-price {
-      font-size: .9rem;
-      color: #9ca3af;
-      text-decoration: line-through;
-      font-weight: 500
+    .add-to-cart-btn-v2::before {
+        content: "";
+        position: absolute;
+        z-index: 1;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+        transition: left 0.7s cubic-bezier(0.23, 1, 0.32, 1);
     }
-
-    .add-to-cart-btn-pro {
-      background: var(--secondary);
-      color: #fff;
-      border: none;
-      border-radius: 50px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 48px;
-      width: 48px;
-      padding: 0 14px;
-      overflow: hidden;
-      transition: width .4s cubic-bezier(.65, 0, .35, 1)
+    
+    .add-to-cart-btn-v2:hover {
+        transform: translateY(-3px) scale(1.05);
+        box-shadow: 0 8px 25px rgba(61, 41, 20, 0.3);
     }
-
-    .product-card-pro:hover .add-to-cart-btn-pro {
-      width: 140px
+    
+    .add-to-cart-btn-v2:hover::before {
+        left: 100%;
     }
-
-    .add-to-cart-btn-pro span {
-      font-weight: 600;
-      font-size: .9rem;
-      white-space: nowrap;
-      opacity: 0;
-      max-width: 0;
-      margin-left: 0;
-      transition: max-width .4s cubic-bezier(.65, 0, .35, 1), opacity .2s ease .1s, margin-left .4s cubic-bezier(.65, 0, .35, 1)
-    }
-
-    .product-card-pro:hover .add-to-cart-btn-pro span {
-      opacity: 1;
-      max-width: 100px;
-      margin-right: .5rem
-    }
-
-    .product-badge {
-      position: absolute;
-      top: 16px;
-      right: 16px;
-      z-index: 3;
-      padding: 6px 12px;
-      border-radius: 8px;
-      font-size: 10px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: .8px;
-      backdrop-filter: blur(10px);
-      border: 1px solid hsla(0, 0%, 100%, .2);
-      box-shadow: 0 4px 16px rgba(0, 0, 0, .1);
-      display: flex;
-      align-items: center;
-      gap: 6px
-    }
-
-    .badge-discount {
-      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-      color: #fff;
-      box-shadow: 0 4px 16px rgba(239, 68, 68, .3)
-    }
-
-    .badge-new {
-      background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-      color: #fff;
-      box-shadow: 0 4px 16px rgba(139, 92, 246, .3)
-    }
-
-    .badge-bestseller {
-      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-      color: #fff;
-      box-shadow: 0 4px 16px rgba(245, 158, 11, .3)
-    }
-
-    .badge-vegan {
-      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-      color: #fff;
-      box-shadow: 0 4px 16px rgba(16, 185, 129, .3)
-    }
-
-    .badge-limited {
-      background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-      color: #1a1a1a;
-      box-shadow: 0 4px 16px rgba(251, 191, 36, .3)
-    }
-
-    .badge-organic {
-      background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
-      color: #fff;
-      box-shadow: 0 4px 16px rgba(236, 72, 153, .3)
-    }
+    /* === END MODIFIED BUTTON STYLES === */
 
     .filter-btn {
       padding: 12px 24px;
@@ -1125,10 +1087,6 @@
         padding: 2rem
       }
 
-      .product-card-pro {
-        border-radius: 10px
-      }
-
       .filter-btn {
         padding: 10px 20px;
         font-size: 13px
@@ -1331,6 +1289,8 @@
 </head>
 
 <body>
+  <!-- ... (rest of the body HTML remains the same up to the bestsellers section) ... -->
+
   <div class="loader" id="loader">
     <div class="loader-content">
       <div class="loader-logo">KOALAW</div>
@@ -1550,7 +1510,7 @@
           data-filter="makeup"><span>آرایش</span></button><button class="filter-btn"
           data-filter="fragrance"><span>عطر</span></button><button class="filter-btn"
           data-filter="bestseller"><span>پرفروش‌ترین‌ها</span></button></div>
-      <div id="product-grid" class="columns-1 sm:columns-2 lg:columns-4 gap-4 space-y-4 mb-16"></div>
+      <div id="product-grid" class="columns-1 sm:columns-2 lg:columns-4 gap-6 space-y-6 mb-16"></div>
       <div class="text-center" data-aos="fade-up" data-aos-delay="100"><a href="#"
           class="inline-flex items-center px-10 py-5 border-2 border-gray-900 text-gray-900 rounded-full hover:bg-gray-900 hover:text-white transition-all duration-500 group text-lg font-semibold tracking-wide"><i
             data-feather="arrow-left"
@@ -1560,6 +1520,8 @@
       </div>
     </div>
   </section>
+  
+  <!-- ... (rest of the body HTML remains the same) ... -->
   <section class="py-24 bg-gradient-to-b from-gray-50 to-white overflow-hidden">
     <div class="container mx-auto px-6">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
@@ -1705,9 +1667,70 @@
       const cloudContainer = document.querySelector(".cloud-animation"), particleContainer = document.querySelector(".particle-overlay"), productGrid = document.getElementById("product-grid"), testimonialGrid = document.getElementById("testimonial-grid"), instagramGrid = document.getElementById("instagram-grid"), footerLinksContainer = document.getElementById("footer-links");
       for (let i = 1; i <= 10; i++)cloudContainer.innerHTML += `<div class="cloud cloud-${i}"></div>`;
       for (let i = 0; i < 9; i++)particleContainer.innerHTML += `<div class="particle" style="left:${10 + i * 10}%;animation-duration:${25 + Math.random() * 10}s;animation-delay:${Math.random() * 15}s"></div>`;
+      
+      // ==========================================================
+      // === MODIFIED: NEW PRODUCT CARD GENERATION LOGIC ===
+      // ==========================================================
+      if (productGrid) {
+          productGrid.innerHTML = ''; // Clear original content
 
-      const products = [{ d: "100", c: "skincare bestseller", b: "discount", bt: "۲۵٪ تخفیف", i: "1617897903246-719242758050", cat: "سرم صورت", t: "اکسیر درخشش طلایی", p: "۴۸.۰۰ $", op: "۶۴.۰۰ $" }, { d: "200", c: "makeup", b: "vegan", bt: "وگان", i: "1586495777744-4413f21062fa", cat: "رژ لب", t: "بوسه مخملی مات", p: "۳۲.۰۰ $" }, { d: "300", c: "makeup", b: "new", bt: "جدید", i: "1631730486572-226d1f595b68", cat: "کرم پودر", t: "پایه ابریشمی بی‌نقص", p: "۴۲.۰۰ $" }, { d: "400", c: "fragrance bestseller", b: "bestseller", bt: "پرفروش", i: "1541643600914-78b084683601", cat: "عطر زنانه", t: "راز نیمه‌شب", p: "۷۸.۰۰ $" }, { d: "100", c: "skincare", bs: "right:16px;left:auto;background:linear-gradient(135deg,#38bdf8 0%,#0ea5e9 100%);box-shadow:0 4px 16px rgba(56,189,248,.3);color:#fff", bt: "آبرسان", i: "1590152868212-2d131b643ff2", cat: "مرطوب کننده", t: "کرم ابریشمی هیدرا", p: "۵۵.۰۰ $" }, { d: "200", c: "makeup", i: "1557205465-f374a4a49cde", cat: "پالت سایه چشم", t: "رؤیاهای صحرا", p: "۴۹.۰۰ $" }, { d: "300", c: "skincare", b: "limited", bt: "نسخه محدود", i: "1620916566398-39f168a27e20", cat: "کرم دور چشم", t: "احیاگر چشم روشن", p: "۶۲.۰۰ $" }, { d: "400", c: "skincare", b: "organic", bt: "بدون سولفات", i: "1611059142868-84b5a452c9d8", cat: "پاک کننده", t: "فوم پاک کننده ملایم", p: "۲۸.۰۰ $" }];
-      products.forEach(p => { productGrid.innerHTML += `<div class="product-card-pro break-inside-avoid" data-aos="fade-up" data-aos-delay="${p.d}" data-category="${p.c}"><div class="product-image-container">${p.bt ? `<div class="product-badge ${p.b ? 'badge-' + p.b : ''}" ${p.bs ? `style="${p.bs}"` : ''}><span>${p.bt}</span></div>` : ""}<img src="https://images.unsplash.com/photo-${p.i}?w=400&h=500&fit=crop" alt="${p.t}"><div class="product-action-overlay"><button class="action-btn" title="مشاهده سریع"><i data-feather="eye" class="w-6 h-6"></i></button><button class="action-btn" title="افزودن به علاقه‌مندی‌ها"><i data-feather="heart" class="w-6 h-6"></i></button></div><div class="product-info-pro"><p class="product-category-pro">${p.cat}</p><h3 class="product-title-pro">${p.t}</h3><div class="product-footer-pro"><div class="product-price-pro"><span>${p.p}</span>${p.op ? `<span class="original-price">${p.op}</span>` : ""}</div><button class="add-to-cart-btn-pro"><i data-feather="shopping-bag" class="w-5 h-5"></i><span>افزودن</span></button></div></div></div></div>` });
+          const pastelColors = [
+              'linear-gradient(135deg, #a8e6cf, #dcedc1)', // Minty Green
+              'linear-gradient(135deg, #ffd3b6, #ffaaa5)', // Peach
+              'linear-gradient(135deg, #c3aed6, #d2c2e0)', // Lavender
+              'linear-gradient(135deg, #ffc0cb, #f7cce4)', // Pink
+              'linear-gradient(135deg, #bde4f4, #d3eaf2)', // Baby Blue
+              'linear-gradient(135deg, #fdfd96, #fffda8)', // Pastel Yellow
+              'linear-gradient(135deg, #f5d5b7, #f7e0cb)', // Creamy Orange
+              'linear-gradient(135deg, #b2e2f2, #c8e8f5)', // Light Sky
+          ];
+
+          const products = [
+              { d: "100", c: "skincare bestseller", i: "1617897903246-719242758050", t: "اکسیر درخشش طلایی", p: 480000, rating: 4.8, desc: "سرم مغذی برای بازگرداندن درخشش طبیعی پوست شما." },
+              { d: "200", c: "makeup", i: "1586495777744-4413f21062fa", t: "بوسه مخملی مات", p: 320000, rating: 4.5, desc: "رژ لب مات با ماندگاری بالا و بافتی بسیار نرم و سبک." },
+              { d: "300", c: "makeup", i: "1631730486572-226d1f595b68", t: "پایه ابریشمی بی‌نقص", p: 420000, rating: 4.9, desc: "کرم پودری سبک با پوشش کامل و ظاهری طبیعی." },
+              { d: "400", c: "fragrance bestseller", i: "1541643600914-78b084683601", t: "راز نیمه‌شب", p: 780000, rating: 4.7, desc: "عطری فریبنده و مرموز برای شب‌های خاص و به‌یادماندنی." },
+              { d: "100", c: "skincare", i: "1590152868212-2d131b643ff2", t: "کرم ابریشمی هیدرا", p: 550000, rating: 4.6, desc: "مرطوب‌کننده عمیق برای پوستی نرم، لطیف و شاداب." },
+              { d: "200", c: "makeup", i: "1557205465-f374a4a49cde", t: "رؤیاهای صحرا", p: 490000, rating: 4.4, desc: "پالت سایه چشم با رنگ‌های گرم و الهام‌بخش از طبیعت." },
+              { d: "300", c: "skincare", i: "1620916566398-39f168a27e20", t: "احیاگر چشم روشن", p: 620000, rating: 4.8, desc: "کرم دور چشم موثر برای کاهش تیرگی، پف و چین و چروک." },
+              { d: "400", c: "skincare", i: "1611059142868-84b5a452c9d8", t: "فوم پاک کننده ملایم", p: 280000, rating: 4.9, desc: "پاک‌کننده روزانه ملایم و موثر برای انواع پوست." }
+          ];
+
+          products.forEach((p, index) => {
+              const formattedPrice = p.p.toLocaleString('fa-IR') + ' تومان';
+              const bgColor = pastelColors[index % pastelColors.length];
+              const ratingPersian = p.rating.toLocaleString('fa-IR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+
+              productGrid.innerHTML += `
+                <div class="product-card-v2 break-inside-avoid" data-aos="fade-up" data-aos-delay="${p.d}" data-category="${p.c}">
+                  <div class="product-card-v2-bg" style="background: ${bgColor};"></div>
+                  <div class="product-card-v2-content">
+                    <div class="product-card-v2-header">
+                      <!-- MODIFICATION 1: Layout Changed. Title/Desc is now first -->
+                      <div class="product-card-v2-title-desc">
+                        <h3 class="product-card-v2-title">${p.t}</h3>
+                        <p class="product-card-v2-desc">${p.desc}</p>
+                      </div>
+                      <div class="product-card-v2-price">${formattedPrice}</div>
+                    </div>
+                    <div class="product-card-v2-footer">
+                      <div class="product-card-v2-rating">
+                        <span>${ratingPersian}</span>
+                        <i data-feather="star" class="w-4 h-4 star-icon-filled"></i>
+                      </div>
+                      <button class="add-to-cart-btn-v2">
+                        <span>افزودن به سبد</span>
+                        <i data-feather="shopping-bag" class="w-5 h-5"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="product-card-v2-image-wrapper">
+                    <!-- MODIFICATION 3: Image source changed -->
+                    <img src="./image/product.png" alt="${p.t}" class="product-card-v2-image">
+                  </div>
+                </div>`;
+          });
+      }
 
       const testimonials = [{ d: 100, i: "1438761681033-6461ffad8d80", t: "«اکسیر درخشش طلایی پوست من را کاملاً متحول کرده. هرگز اینقدر از پوستم تعریف نشنیده بودم. انگار یک فیلتر در زندگی واقعی دارم!»", n: "سوفیا چن", s: "خریدار تایید شده • ۳ ماه پیش" }, { d: 200, i: "1494790108377-be9c29b29330", t: "«به عنوان یک میکاپ آرتیست، من در مورد محصولات بسیار سخت‌گیر هستم. کرم پودر کوالا یک تغییر بزرگ است. مشتریانم عاشقش شده‌اند!»", n: "اِما رودریگز", s: "میکاپ آرتیست حرفه‌ای • ۱ ماه پیش" }, { d: 300, i: "1507003211169-0a1dd7228f2d", t: "«عطر راز نیمه‌شب حالا عطر امضای من است. شیک، ماندگار و هر روز از من می‌پرسند چه عطری زده‌ام. تجمل خالص در یک بطری!»", n: "مایکل پارک", s: "مشتری وفادار • ۲ هفته پیش" }];
       testimonials.forEach(t => { testimonialGrid.innerHTML += `<div class="testimonial-card" data-aos="fade-up" data-aos-delay="${t.d}"><div class="flex mb-6"><div class="flex text-yellow-400">${'<i data-feather="star" class="w-5 h-5 fill-current"></i>'.repeat(5)}</div></div><p class="text-gray-600 mb-8 italic leading-relaxed">${t.t}</p><div class="flex items-center"><img src="https://images.unsplash.com/photo-${t.i}?w=100&h=100&fit=crop" alt="مشتری" class="w-14 h-14 rounded-full object-cover ml-4"><div><h4 class="font-semibold text-gray-800">${t.n}</h4><p class="text-sm text-gray-500">${t.s}</p></div></div></div>` });
@@ -1719,67 +1742,50 @@
       for (const title in footerLinks) { let linksHTML = ""; footerLinks[title].forEach(link => linksHTML += `<li><a href="#" class="text-gray-400 hover:text-white transition duration-300">${link}</a></li>`); footerLinksContainer.innerHTML += `<div><h4 class="font-semibold text-lg mb-6">${title}</h4><ul class="space-y-3">${linksHTML}</ul></div>` }
       
       // --- INFINITE BRANDS MARQUEE (seamless, no gaps) ---
-function setupBrandsMarquee() {
-  const container = document.querySelector('.brands-container');
-  const marquee = container?.querySelector('.brands-marquee');
-  if (!container || !marquee) return;
+      function setupBrandsMarquee() {
+        const container = document.querySelector('.brands-container');
+        const marquee = container?.querySelector('.brands-marquee');
+        if (!container || !marquee) return;
 
-  // Remove previous clones
-  marquee.querySelectorAll('[data-clone="true"]').forEach(n => n.remove());
+        marquee.querySelectorAll('[data-clone="true"]').forEach(n => n.remove());
+        const originals = Array.from(marquee.children);
+        if (!originals.length) return;
 
-  // Base items (original set)
-  const originals = Array.from(marquee.children);
-  if (!originals.length) return;
+        const baseWidth = marquee.scrollWidth;
+        const containerWidth = container.clientWidth;
+        let sets = 1;
+        while (marquee.scrollWidth < containerWidth * 2) {
+          const frag = document.createDocumentFragment();
+          originals.forEach(el => {
+            const clone = el.cloneNode(true);
+            clone.setAttribute('data-clone', 'true');
+            frag.appendChild(clone);
+          });
+          marquee.appendChild(frag);
+          sets++;
+        }
+        if (sets % 2 !== 0) {
+          const frag = document.createDocumentFragment();
+          originals.forEach(el => {
+            const clone = el.cloneNode(true);
+            clone.setAttribute('data-clone', 'true');
+            frag.appendChild(clone);
+          });
+          marquee.appendChild(frag);
+        }
+        marquee.style.setProperty('--marquee-shift', `-${baseWidth}px`);
+        const pxPerSec = 60;
+        marquee.style.animationDuration = `${baseWidth / pxPerSec}s`;
+        feather.replace();
+      }
+      setupBrandsMarquee();
+      new ResizeObserver(() => setupBrandsMarquee()).observe(document.querySelector('.brands-container'));
 
-  // Measure base set width BEFORE cloning
-  const baseWidth = marquee.scrollWidth;
-  const containerWidth = container.clientWidth;
-
-  // Clone until the track is at least 2x container width
-  let sets = 1; // original set already there
-  while (marquee.scrollWidth < containerWidth * 2) {
-    const frag = document.createDocumentFragment();
-    originals.forEach(el => {
-      const clone = el.cloneNode(true);
-      clone.setAttribute('data-clone', 'true');
-      frag.appendChild(clone);
-    });
-    marquee.appendChild(frag);
-    sets++;
-  }
-
-  // Make total sets even so translateX(-50%) lands on a seam
-  if (sets % 2 !== 0) {
-    const frag = document.createDocumentFragment();
-    originals.forEach(el => {
-      const clone = el.cloneNode(true);
-      clone.setAttribute('data-clone', 'true');
-      frag.appendChild(clone);
-    });
-    marquee.appendChild(frag);
-    sets++;
-  }
-
-  // Shift exactly one base set width
-  marquee.style.setProperty('--marquee-shift', `-${baseWidth}px`);
-
-  // Keep a constant speed (px/sec), independent of content length
-  const pxPerSec = 60; // tweak to your liking
-  marquee.style.animationDuration = `${baseWidth / pxPerSec}s`;
-
-  // Replace icons inside newly added clones
-  feather.replace();
-}
-
-// Initialize and keep it responsive
-setupBrandsMarquee();
-new ResizeObserver(() => setupBrandsMarquee()).observe(document.querySelector('.brands-container'));
-
-      feather.replace(); // This needs to be called after dynamic content is added.
+      feather.replace();
 
       // --- CURSOR SCRIPT ---
       const cursor = document.querySelector(".cursor"), cursorFace = document.querySelector(".cursor-face"), cursorFollower = document.querySelector(".cursor-follower"); let cursorX = 0, cursorY = 0, followerX = 0, followerY = 0, speed = .5;
-      if (window.innerWidth > 768) { document.addEventListener("mousemove", e => { cursorX = e.clientX; cursorY = e.clientY }); (function animateCursor() { cursor.style.left = cursorX + "px"; cursor.style.top = cursorY + "px"; cursorFace.style.left = cursorX + "px"; cursorFace.style.top = cursorY + "px"; followerX += (cursorX - followerX) * speed; followerY += (cursorY - followerY) * speed; cursorFollower.style.left = followerX + "px"; cursorFollower.style.top = followerY + "px"; requestAnimationFrame(animateCursor) })(); document.querySelectorAll("a,button,.product-card-pro,.collection-card-new").forEach(e => { e.addEventListener("mouseenter", () => { cursor.classList.add("hover"); cursorFollower.style.transform = "translate(-50%,-50%) scale(1.5)" }); e.addEventListener("mouseleave", () => { cursor.classList.remove("hover"); cursorFollower.style.transform = "translate(-50%,-50%) scale(1)" }) }) } else[cursor, cursorFace, cursorFollower].forEach(e => e.style.display = "none");
+      if (window.innerWidth > 768) { document.addEventListener("mousemove", e => { cursorX = e.clientX; cursorY = e.clientY }); (function animateCursor() { cursor.style.left = cursorX + "px"; cursor.style.top = cursorY + "px"; cursorFace.style.left = cursorX + "px"; cursorFace.style.top = cursorY + "px"; followerX += (cursorX - followerX) * speed; followerY += (cursorY - followerY) * speed; cursorFollower.style.left = followerX + "px"; cursorFollower.style.top = followerY + "px"; requestAnimationFrame(animateCursor) })(); document.querySelectorAll("a,button,.product-card-v2,.collection-card-new").forEach(e => { e.addEventListener("mouseenter", () => { cursor.classList.add("hover"); cursorFollower.style.transform = "translate(-50%,-50%) scale(1.5)" }); e.addEventListener("mouseleave", () => { cursor.classList.remove("hover"); cursorFollower.style.transform = "translate(-50%,-50%) scale(1)" }) }) } else[cursor, cursorFace, cursorFollower].forEach(e => e.style.display = "none");
 
       // --- PAGE SCRIPTS ---
       window.addEventListener("load", () => setTimeout(() => { const e = document.getElementById("loader"); e.style.opacity = "0"; setTimeout(() => e.style.display = "none", 500) }, 2e3));
@@ -1787,8 +1793,8 @@ new ResizeObserver(() => setupBrandsMarquee()).observe(document.querySelector('.
       window.addEventListener("scroll", () => { const e = window.pageYOffset; navbar.style.background = e > 100 ? "rgba(250,248,243,.95)" : "rgba(250,248,243,.85)"; navbar.style.boxShadow = e > 100 ? "0 4px 30px rgba(0,0,0,.1)" : "0 1px 20px rgba(0,0,0,.05)"; navbar.style.transform = e > lastScroll && e > 500 ? "translateY(-100%)" : "translateY(0)"; lastScroll = e; if (e > 500) { backToTop.style.opacity = "1"; backToTop.style.visibility = "visible" } else { backToTop.style.opacity = "0"; backToTop.style.visibility = "hidden" } });
       backToTop.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
 
-      const filterButtons = document.querySelectorAll(".filter-btn"), allProductCards = document.querySelectorAll(".product-card-pro");
-      filterButtons.forEach(button => { button.addEventListener("click", () => { filterButtons.forEach(btn => btn.classList.remove("active")); button.classList.add("active"); const filterValue = button.getAttribute("data-filter"); allProductCards.forEach(card => { const categories = card.getAttribute("data-category").split(" "); card.style.display = filterValue === "all" || categories.includes(filterValue) ? "block" : "none" }) }) });
+      const filterButtons = document.querySelectorAll(".filter-btn"), allProductCards = document.querySelectorAll(".product-card-v2");
+      filterButtons.forEach(button => { button.addEventListener("click", () => { filterButtons.forEach(btn => btn.classList.remove("active")); button.classList.add("active"); const filterValue = button.getAttribute("data-filter"); allProductCards.forEach(card => { const categories = card.getAttribute("data-category").split(" "); card.style.display = filterValue === "all" || categories.includes(filterValue) ? "flex" : "none" }) }) });
 
       // --- GSAP & ANIMATIONS ---
       gsap.registerPlugin(ScrollTrigger);
