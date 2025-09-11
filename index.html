@@ -477,6 +477,7 @@
         justify-content: space-between;
         align-items: flex-start;
         gap: 1rem;
+        padding-top: 2px;
     }
 
     .product-card-v2-price {
@@ -704,6 +705,85 @@
         min-height: 500px
       }
     }
+    
+    /* === MODIFICATION: NEW STYLES FOR RESPONSIVENESS === */
+    .product-scroll-wrapper {
+        /* This container enables horizontal scrolling on mobile */
+    }
+
+    @media (max-width: 768px) { /* Applies to phone and small tablets */
+        /* Change product grid to horizontal scroll */
+        .product-scroll-wrapper {
+            overflow-x: auto;
+            direction: rtl; /* Ensures RTL scrolling behavior */
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+            /* Use padding and negative margin to make scroll area bleed to screen edges */
+            padding: 0 1rem; 
+            margin: 0 -1rem;
+        }
+        .product-scroll-wrapper::-webkit-scrollbar {
+            display: none;
+        }
+        #product-grid {
+            columns: auto !important; /* Disable masonry layout on mobile */
+            display: flex;
+            flex-wrap: nowrap;
+            width: max-content; /* Allow the flex container to grow with its content */
+        }
+        /* Tailwind's space-y utility adds margin-top. We must reset it for flex layout. */
+        #product-grid > .product-card-v2 {
+            margin-top: 0 !important;
+            width: 70vw; /* Card takes up 70% of the viewport width */
+            max-width: 280px; /* But not more than 280px */
+            flex-shrink: 0;
+        }
+
+        /* Make product card content smaller */
+        .product-card-v2 {
+            aspect-ratio: 3 / 4.6; /* Taller to prevent content overflow */
+        }
+        .product-card-v2-content {
+            padding: 1rem;
+        }
+        .product-card-v2-title {
+            font-size: 1rem;
+        }
+        .product-card-v2-price {
+            font-size: 0.9rem;
+            padding: 0.2rem 0.5rem;
+        }
+        .product-card-v2-desc {
+            font-size: 0.7rem;
+            height: 4.2em; /* 3 lines of smaller text */
+        }
+        .add-to-cart-btn-v2 {
+            padding: 0.6rem 1rem;
+            font-size: 0.8rem;
+        }
+        .product-card-v2-rating {
+            width: 44px;
+            height: 44px;
+            font-size: 0.8rem;
+        }
+        .product-card-v2-image-wrapper {
+            width: clamp(100px, 40%, 140px);
+        }
+
+        /* Make category card content smaller */
+        .category-card {
+            padding: 1rem;
+        }
+        .category-card-icon {
+            width: 44px;
+            height: 44px;
+            margin-bottom: 0.75rem;
+        }
+        .category-card-title {
+            font-size: 1.1rem;
+        }
+    }
+    /* === END NEW STYLES === */
 
     .collection-card-new:hover {
       transform: translateY(-8px);
@@ -1544,8 +1624,8 @@
       <div class="category-scroll-container" data-aos="fade-up" data-aos-delay="200">
         <div class="flex flex-nowrap gap-6 lg:gap-8">
         
-          <!-- Category Card 1: Skincare -->
-          <a href="/shop?category=skincare" class="category-card w-60 md:w-64 flex-shrink-0">
+          <!-- MODIFICATION: Card width changed from w-60 to w-52 for smaller size on phones -->
+          <a href="/shop?category=skincare" class="category-card w-52 md:w-64 flex-shrink-0">
             <img src="./image/skin.png" alt="مراقبت از پوست" class="category-card-bg">
             <div class="category-card-overlay"></div>
             <div class="category-card-content">
@@ -1556,8 +1636,8 @@
             </div>
           </a>
 
-          <!-- Category Card 2: Makeup -->
-          <a href="/shop?category=makeup" class="category-card w-60 md:w-64 flex-shrink-0">
+          <!-- MODIFICATION: Card width changed from w-60 to w-52 for smaller size on phones -->
+          <a href="/shop?category=makeup" class="category-card w-52 md:w-64 flex-shrink-0">
             <img src="./image/cosmetic.png" alt="آرایش" class="category-card-bg">
             <div class="category-card-overlay"></div>
             <div class="category-card-content">
@@ -1568,8 +1648,8 @@
             </div>
           </a>
 
-          <!-- Category Card 3: Fragrance -->
-          <a href="/shop?category=fragrance" class="category-card w-60 md:w-64 flex-shrink-0">
+          <!-- MODIFICATION: Card width changed from w-60 to w-52 for smaller size on phones -->
+          <a href="/shop?category=fragrance" class="category-card w-52 md:w-64 flex-shrink-0">
             <img src="./image/perfume.png" alt="عطر" class="category-card-bg">
             <div class="category-card-overlay"></div>
             <div class="category-card-content">
@@ -1580,8 +1660,8 @@
             </div>
           </a>
 
-          <!-- Category Card 4: Haircare -->
-          <a href="/shop?category=haircare" class="category-card w-60 md:w-64 flex-shrink-0">
+          <!-- MODIFICATION: Card width changed from w-60 to w-52 for smaller size on phones -->
+          <a href="/shop?category=haircare" class="category-card w-52 md:w-64 flex-shrink-0">
             <img src="./image/hair.png" alt="مراقبت از مو" class="category-card-bg">
             <div class="category-card-overlay"></div>
             <div class="category-card-content">
@@ -1592,8 +1672,8 @@
             </div>
           </a>
 
-          <!-- Category Card 5: Body & Bath -->
-          <a href="/shop?category=body-bath" class="category-card w-60 md:w-64 flex-shrink-0">
+          <!-- MODIFICATION: Card width changed from w-60 to w-52 for smaller size on phones -->
+          <a href="/shop?category=body-bath" class="category-card w-52 md:w-64 flex-shrink-0">
             <img src="./image/body.png" alt="بدن و حمام" class="category-card-bg">
             <div class="category-card-overlay"></div>
             <div class="category-card-content">
@@ -1683,8 +1763,13 @@
           data-filter="makeup"><span>آرایش</span></button><button class="filter-btn"
           data-filter="fragrance"><span>عطر</span></button><button class="filter-btn"
           data-filter="bestseller"><span>پرفروش‌ترین‌ها</span></button></div>
-      <div id="product-grid" class="columns-1 sm:columns-2 lg:columns-4 gap-6 space-y-6 mb-16"></div>
-      <div class="text-center" data-aos="fade-up" data-aos-delay="100"><a href="#"
+      
+      <!-- MODIFICATION: Added a wrapper for horizontal scrolling on mobile -->
+      <div class="product-scroll-wrapper">
+        <div id="product-grid" class="columns-1 sm:columns-2 lg:columns-4 gap-6 space-y-6"></div>
+      </div>
+      
+      <div class="text-center mt-16" data-aos="fade-up" data-aos-delay="100"><a href="#"
           class="inline-flex items-center px-10 py-5 border-2 border-gray-900 text-gray-900 rounded-full hover:bg-gray-900 hover:text-white transition-all duration-500 group text-lg font-semibold tracking-wide"><i
             data-feather="arrow-left"
             class="ml-3 w-5 h-5 group-hover:-translate-x-2 transition-transform duration-300"></i><span>کاوش کامل
@@ -1879,7 +1964,6 @@
                   <div class="product-card-v2-bg" style="background: ${bgColor};"></div>
                   <div class="product-card-v2-content">
                     <div class="product-card-v2-header">
-                      <!-- MODIFICATION 1: Layout Changed. Title/Desc is now first -->
                       <div class="product-card-v2-title-desc">
                         <h3 class="product-card-v2-title">${p.t}</h3>
                         <p class="product-card-v2-desc">${p.desc}</p>
@@ -1898,7 +1982,6 @@
                     </div>
                   </div>
                   <div class="product-card-v2-image-wrapper">
-                    <!-- MODIFICATION 3: Image source changed -->
                     <img src="./image/product.png" alt="${p.t}" class="product-card-v2-image">
                   </div>
                 </div>`;
