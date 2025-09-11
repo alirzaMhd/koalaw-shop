@@ -1236,6 +1236,97 @@
       align-items: center;
       gap: .35rem
     }
+
+    /* === CSS FOR BRAND ITEMS (MODIFIED) === */
+    .brands-container {
+      direction: ltr;
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+      -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+      mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+    }
+
+    .brands-marquee {
+      display: flex;
+      flex-shrink: 0;
+      align-items: center;
+      flex-wrap: nowrap;
+      gap: 1.5rem;
+      animation: scroll-brands var(--duration, 40s) linear infinite;
+      will-change: transform;
+    }
+
+    .brands-container:hover .brands-marquee {
+      animation-play-state: paused;
+    }
+
+    @keyframes scroll-brands {
+      from {
+        transform: translateX(0);
+      }
+      to {
+        transform: translateX(var(--marquee-shift, -50%));
+      }
+    }
+
+    .brand-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 1.5rem;
+      background-color: #ffffff;
+      border: 1px solid rgba(227, 154, 180, 0.25);
+      border-radius: 16px;
+      transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+      box-shadow: 0 4px 15px -5px rgba(227, 154, 180, 0.1);
+      text-decoration: none;
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+
+    .brand-item:hover {
+      transform: translateY(-6px) scale(1.05) rotate(-2deg);
+      box-shadow: 0 15px 30px -10px rgba(227, 154, 180, 0.35);
+      border-color: var(--primary);
+    }
+    
+    .brand-logo {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--accent);
+        color: var(--primary);
+        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        flex-shrink: 0;
+    }
+    
+    .brand-item:hover .brand-logo {
+        background-color: var(--primary);
+        color: #fff;
+        transform: scale(1.1);
+    }
+    
+    .brand-logo i {
+        width: 24px;
+        height: 24px;
+    }
+
+    .brand-name {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--deep-brown);
+      font-family: 'IRANSans', serif;
+      white-space: nowrap;
+      transition: color 0.4s ease;
+    }
+    
+    .brand-item:hover .brand-name {
+        color: var(--primary);
+    }
   </style>
 </head>
 
@@ -1386,6 +1477,62 @@
       </div>
     </div>
   </section>
+
+  <!-- =============================================== -->
+  <!-- BRANDS SECTION START (MODIFIED) -->
+  <!-- =============================================== -->
+  <section class="py-20 bg-cream/50 overflow-hidden">
+    <div class="container mx-auto px-6">
+      <div class="text-center mb-16" data-aos="fade-up">
+        <span class="text-sm font-medium text-rose-800 tracking-wider uppercase mb-4 block">مجموعه‌ای منتخب</span>
+        <h2 class="text-4xl lg:text-5xl font-serif font-bold text-gray-800 mb-6">خرید بر اساس برند</h2>
+        <div class="cute-divider"><span class="star">✦</span></div>
+        <p class="text-gray-600 max-w-2xl mx-auto text-lg mt-4">برترین برندهای زیبایی جهان را که به خاطر کیفیت و نوآوری بی‌نظیرشان انتخاب شده‌اند، کاوش کنید.</p>
+      </div>
+  
+      <div class="brands-container" data-aos="fade-up" data-aos-delay="200">
+        <div class="brands-marquee py-4">
+          <!-- The script will automatically duplicate these items for a seamless loop -->
+          <a href="#" class="brand-item">
+            <div class="brand-logo"><i data-feather="droplet"></i></div>
+            <span class="brand-name">LuxeElixir</span>
+          </a>
+          <a href="#" class="brand-item">
+            <div class="brand-logo"><i data-feather="feather"></i></div>
+            <span class="brand-name">Aetheria</span>
+          </a>
+          <a href="#" class="brand-item">
+            <div class="brand-logo"><i data-feather="wind"></i></div>
+            <span class="brand-name">Bloom & Bare</span>
+          </a>
+          <a href="#" class="brand-item">
+            <div class="brand-logo"><i data-feather="star"></i></div>
+            <span class="brand-name">Celeste</span>
+          </a>
+          <a href="#" class="brand-item">
+            <div class="brand-logo"><i data-feather="sun"></i></div>
+            <span class="brand-name">Solstice Glow</span>
+          </a>
+          <a href="#" class="brand-item">
+            <div class="brand-logo"><i data-feather="shield"></i></div>
+            <span class="brand-name">Seraphina</span>
+          </a>
+          <a href="#" class="brand-item">
+            <div class="brand-logo"><i data-feather="box"></i></div>
+            <span class="brand-name">Veridia Labs</span>
+          </a>
+          <a href="#" class="brand-item">
+            <div class="brand-logo"><i data-feather="gift"></i></div>
+            <span class="brand-name">PetalPure</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- =============================================== -->
+  <!-- BRANDS SECTION END -->
+  <!-- =============================================== -->
+  
   <section class="py-32 bestsellers-section relative">
     <div class="container mx-auto px-6 relative z-10">
       <div class="text-center mb-20" data-aos="fade-up"><span
@@ -1553,7 +1700,6 @@
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       AOS.init({ duration: 800, easing: "ease-out-cubic", once: !0, offset: 50 });
-      feather.replace();
 
       // --- DYNAMIC CONTENT GENERATION ---
       const cloudContainer = document.querySelector(".cloud-animation"), particleContainer = document.querySelector(".particle-overlay"), productGrid = document.getElementById("product-grid"), testimonialGrid = document.getElementById("testimonial-grid"), instagramGrid = document.getElementById("instagram-grid"), footerLinksContainer = document.getElementById("footer-links");
@@ -1571,8 +1717,65 @@
 
       const footerLinks = { فروشگاه: ["تازه‌ها", "پرفروش‌ترین‌ها", "مراقبت از پوست", "آرایش", "عطر", "ست‌های هدیه"], "درباره ما": ["داستان ما", "ترکیبات", "توسعه پایدار", "رسانه‌ها", "فرصت‌های شغلی", "فروشگاه‌ها"], "خدمات مشتریان": ["تماس با ما", "سوالات متداول", "اطلاعات ارسال", "مرجوعی", "پیگیری سفارش", "راهنمای سایز"] };
       for (const title in footerLinks) { let linksHTML = ""; footerLinks[title].forEach(link => linksHTML += `<li><a href="#" class="text-gray-400 hover:text-white transition duration-300">${link}</a></li>`); footerLinksContainer.innerHTML += `<div><h4 class="font-semibold text-lg mb-6">${title}</h4><ul class="space-y-3">${linksHTML}</ul></div>` }
+      
+      // --- INFINITE BRANDS MARQUEE (seamless, no gaps) ---
+function setupBrandsMarquee() {
+  const container = document.querySelector('.brands-container');
+  const marquee = container?.querySelector('.brands-marquee');
+  if (!container || !marquee) return;
 
-      feather.replace();
+  // Remove previous clones
+  marquee.querySelectorAll('[data-clone="true"]').forEach(n => n.remove());
+
+  // Base items (original set)
+  const originals = Array.from(marquee.children);
+  if (!originals.length) return;
+
+  // Measure base set width BEFORE cloning
+  const baseWidth = marquee.scrollWidth;
+  const containerWidth = container.clientWidth;
+
+  // Clone until the track is at least 2x container width
+  let sets = 1; // original set already there
+  while (marquee.scrollWidth < containerWidth * 2) {
+    const frag = document.createDocumentFragment();
+    originals.forEach(el => {
+      const clone = el.cloneNode(true);
+      clone.setAttribute('data-clone', 'true');
+      frag.appendChild(clone);
+    });
+    marquee.appendChild(frag);
+    sets++;
+  }
+
+  // Make total sets even so translateX(-50%) lands on a seam
+  if (sets % 2 !== 0) {
+    const frag = document.createDocumentFragment();
+    originals.forEach(el => {
+      const clone = el.cloneNode(true);
+      clone.setAttribute('data-clone', 'true');
+      frag.appendChild(clone);
+    });
+    marquee.appendChild(frag);
+    sets++;
+  }
+
+  // Shift exactly one base set width
+  marquee.style.setProperty('--marquee-shift', `-${baseWidth}px`);
+
+  // Keep a constant speed (px/sec), independent of content length
+  const pxPerSec = 60; // tweak to your liking
+  marquee.style.animationDuration = `${baseWidth / pxPerSec}s`;
+
+  // Replace icons inside newly added clones
+  feather.replace();
+}
+
+// Initialize and keep it responsive
+setupBrandsMarquee();
+new ResizeObserver(() => setupBrandsMarquee()).observe(document.querySelector('.brands-container'));
+
+      feather.replace(); // This needs to be called after dynamic content is added.
 
       // --- CURSOR SCRIPT ---
       const cursor = document.querySelector(".cursor"), cursorFace = document.querySelector(".cursor-face"), cursorFollower = document.querySelector(".cursor-follower"); let cursorX = 0, cursorY = 0, followerX = 0, followerY = 0, speed = .5;
@@ -1581,7 +1784,7 @@
       // --- PAGE SCRIPTS ---
       window.addEventListener("load", () => setTimeout(() => { const e = document.getElementById("loader"); e.style.opacity = "0"; setTimeout(() => e.style.display = "none", 500) }, 2e3));
       const navbar = document.getElementById("navbar"), backToTop = document.getElementById("backToTop"); let lastScroll = 0;
-      window.addEventListener("scroll", () => { const e = window.pageYOffset; navbar.style.background = e > 100 ? "rgba(250,248,243,.95)" : "rgba(250,248,243,.85)"; navbar.style.boxShadow = e > 100 ? "0 4px 30px rgba(0,0,0,.1)" : "0 1px 20px rgba(0,0,0,.05)"; navbar.style.transform = e > lastScroll && e > 500 ? "translateY(-100%)" : "translateY(0)"; lastScroll = e; if (e > 500) { backToTop.style.opacity = "1"; backToTop.style.visibility = "visible" } else { backToTop.style.opacity = "0"; backTotop.style.visibility = "hidden" } });
+      window.addEventListener("scroll", () => { const e = window.pageYOffset; navbar.style.background = e > 100 ? "rgba(250,248,243,.95)" : "rgba(250,248,243,.85)"; navbar.style.boxShadow = e > 100 ? "0 4px 30px rgba(0,0,0,.1)" : "0 1px 20px rgba(0,0,0,.05)"; navbar.style.transform = e > lastScroll && e > 500 ? "translateY(-100%)" : "translateY(0)"; lastScroll = e; if (e > 500) { backToTop.style.opacity = "1"; backToTop.style.visibility = "visible" } else { backToTop.style.opacity = "0"; backToTop.style.visibility = "hidden" } });
       backToTop.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
 
       const filterButtons = document.querySelectorAll(".filter-btn"), allProductCards = document.querySelectorAll(".product-card-pro");
