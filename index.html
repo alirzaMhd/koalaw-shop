@@ -1,85 +1,1600 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KOALAW | لوازم آرایشی لوکس</title>
-<link rel="icon" type="image/x-icon" href="/static/favicon.ico">
-<script src="https://cdn.tailwindcss.com"></script>
-<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-<style>
-@import url("https://font-face.ir/css/iransans/");:root{--primary:#e39ab4;--secondary:#1a1a1a;--accent:#ffe9f2;--rose-gold:#f0b7c4;--rose-cream:#e3d1d6;--cream:#faf8f3;--deep-brown:#3d2914;--blush:#ffd7e5;--lavender:#eae2ff;--mint:#dff8ef;--butter:#fff3bf}*{margin:0;padding:0;box-sizing:border-box;cursor:none!important}body{font-family:"IRANSans",sans-serif;background-color:var(--cream);color:#333;overflow-x:hidden;cursor:none}.font-serif{font-family:"IRANSans",serif}.cloud-animation{position:absolute;inset:0;overflow:hidden;z-index:5}.cloud{position:absolute;background:radial-gradient(ellipse at center,rgba(227,154,180,.8) 0%,transparent 70%);border-radius:100%;opacity:0;filter:blur(30px);animation:float-cloud linear infinite;will-change:transform,opacity}.cloud-1{width:600px;height:200px;top:10%;left:-300px;animation-duration:8s;animation-delay:0s}.cloud-2{width:800px;height:250px;top:30%;left:-400px;animation-duration:12s;animation-delay:2s}.cloud-3{width:500px;height:180px;top:50%;left:-250px;animation-duration:10s;animation-delay:4s}.cloud-4,.cloud-5,.cloud-7,.cloud-8,.cloud-9,.cloud-10{display:none}@media (min-width:769px){.cloud-4{display:block;width:700px;height:220px;top:70%;left:-350px;animation-duration:12s;animation-delay:2s}.cloud-5{display:block;width:550px;height:190px;top:20%;left:-275px;animation-duration:12s;animation-delay:8s}.cloud-6{display:block;width:450px;height:170px;top:85%;left:-225px;animation-duration:8s;animation-delay:2s}.cloud-7{display:block;width:750px;height:240px;top:5%;left:-375px;animation-duration:8.3s;animation-delay:5s}.cloud-8{display:block;width:650px;height:210px;top:60%;left:-325px;animation-duration:11.7s;animation-delay:6s}.cloud-9{display:block;width:580px;height:200px;top:40%;left:-290px;animation-duration:13.3s;animation-delay:4s}.cloud-10{display:block;width:820px;height:260px;top:75%;left:-410px;animation-duration:8.3s;animation-delay:2s}}@keyframes float-cloud{0%{transform:translateX(0) translateY(0);opacity:0}10%,90%{opacity:.9}100%{transform:translateX(calc(100vw + 800px)) translateY(-30px);opacity:0}}.particle-overlay{position:absolute;inset:0;overflow:hidden;z-index:6;pointer-events:none}.particle{position:absolute;width:4px;height:4px;background:rgba(255,255,255,.6);border-radius:50%;animation:float-particle linear infinite;filter:blur(1px)}@keyframes float-particle{0%{transform:translateY(100vh) rotate(0);opacity:0}10%,90%{opacity:1}100%{transform:translateY(-10vh) rotate(360deg);opacity:0}}@media (prefers-reduced-motion:reduce){.cloud,.particle,.sprinkle,.floating-heart,#backToTop:hover,body [class*="animation"]{animation:none!important}}.cloud-animation,.particle-overlay{transform:translateZ(0);backface-visibility:hidden;perspective:1000px}.cursor{width:30px;height:30px;border:2px solid #666;background:0 0;border-radius:50% 50% 45% 45%;position:fixed;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:border-color .2s ease,transform .2s ease}.cursor::after,.cursor::before{content:"";position:absolute;width:14px;height:14px;border:2px solid #666;background:0 0;border-radius:50%;top:-8px;transition:border-color .2s ease}.cursor::before{right:-2px}.cursor::after{left:-2px}.cursor-face{position:fixed;width:30px;height:30px;pointer-events:none;z-index:10000;transform:translate(-50%,-50%)}.cursor-face::before{content:"";position:absolute;width:8px;height:6px;border:1.5px solid #333;background:0 0;border-radius:50%;top:14px;left:50%;transform:translateX(-50%)}.cursor-eyes{position:absolute;width:100%;height:100%;top:0;left:0}.cursor-eyes::after,.cursor-eyes::before{content:"";position:absolute;width:3px;height:3px;border:1.5px solid #333;background:0 0;border-radius:50%;top:10px}.cursor-eyes::before{right:8px}.cursor-eyes::after{left:8px}.cursor.hover{border-color:var(--primary);transform:translate(-50%,-50%) scale(1.2)}.cursor.hover::after,.cursor.hover::before{border-color:var(--primary)}.cursor-follower{width:50px;height:50px;background:rgba(227,154,180,.1);border-radius:50%;position:fixed;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:background .3s ease,transform .3s ease}nav{backdrop-filter:blur(20px);background:rgba(250,248,243,.85);box-shadow:0 1px 20px rgba(0,0,0,.05)}.nav-link{position:relative;font-weight:500;letter-spacing:.5px;transition:all .3s ease}.nav-link::before{content:"";position:absolute;bottom:-5px;right:0;width:0;height:2px;background:linear-gradient(90deg,var(--primary),var(--rose-gold));transition:width .3s ease}.nav-link:hover::before{width:100%}.hero-title-creative{background:linear-gradient(135deg,#fff 70%,#ffe9f2 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-fill-color:transparent;text-shadow:0 2px 15px rgba(0,0,0,.3)}.magnetic-btn{position:relative;transition:all .3s cubic-bezier(.175,.885,.32,1.275);overflow:hidden}.magnetic-btn::before{content:"";position:absolute;top:50%;left:50%;width:0;height:0;border-radius:50%;background:rgba(0,0,0,.1);transform:translate(-50%,-50%);transition:width .6s,height .6s}.magnetic-btn:hover::before{width:300px;height:300px}.break-inside-avoid{break-inside:avoid}.product-card-pro{border-radius:10px;box-shadow:0 10px 40px -10px rgba(0,0,0,.04),0 5px 20px -15px rgba(227,154,180,.1);transition:all .4s cubic-bezier(.175,.885,.32,1.275);overflow:hidden}.product-card-pro:hover{transform:translateY(-12px);box-shadow:0 20px 50px -15px rgba(0,0,0,.1),0 10px 30px -10px rgba(227,154,180,.25)}.product-image-container{position:relative;overflow:hidden;border-radius:10px}.product-image-container img{width:100%;height:auto;aspect-ratio:4 / 5;object-fit:cover;display:block;transition:transform .6s cubic-bezier(.165,.84,.44,1)}.product-card-pro:hover .product-image-container img{transform:scale(1.08)}.product-action-overlay{position:absolute;inset:0;background:rgba(255,255,255,.2);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;gap:1rem;opacity:0;transition:opacity .4s ease}.product-card-pro:hover .product-action-overlay{opacity:1}.action-btn{width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.8);border:1px solid rgba(0,0,0,.05);display:flex;align-items:center;justify-content:center;color:var(--secondary);box-shadow:0 4px 15px rgba(0,0,0,.08);transform:translateY(20px);transition:all .4s cubic-bezier(.165,.84,.44,1)}.product-card-pro:hover .action-btn{transform:translateY(0)}.product-card-pro:hover .action-btn:first-child{transition-delay:.05s}.product-card-pro:hover .action-btn:nth-child(2){transition-delay:.1s}.action-btn:hover{transform:scale(1.1)!important;background:var(--primary);color:#fff}.product-info-pro{position:absolute;bottom:0;left:0;right:0;padding:1.25rem;text-align:right;background:rgba(255,233,242,.6);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);transition:background .4s ease,backdrop-filter .4s ease;border-radius:0 0 4px 4px}.product-card-pro:active .product-info-pro,.product-card-pro:focus-within .product-info-pro,.product-card-pro:hover .product-info-pro{background:#fff;backdrop-filter:blur(0)}.product-category-pro{font-size:.75rem;font-weight:600;color:var(--cream);letter-spacing:.5px;text-transform:uppercase;margin-bottom:.5rem;transition:color .4s ease}.product-card-pro:active .product-category-pro,.product-card-pro:focus-within .product-category-pro,.product-card-pro:hover .product-category-pro{color:var(--primary)}.product-title-pro{font-size:1.15rem;font-weight:700;color:var(--secondary);line-height:1.4;margin-bottom:1rem;flex-grow:1}.product-footer-pro{display:flex;justify-content:space-between;align-items:center;margin-top:auto}.product-price-pro{font-size:1.15rem;font-weight:800;color:var(--secondary);font-family:"IRANSans",serif;display:flex;align-items:baseline;gap:.5rem}.product-price-pro .original-price{font-size:.9rem;color:#9ca3af;text-decoration:line-through;font-weight:500}.add-to-cart-btn-pro{background:var(--secondary);color:#fff;border:none;border-radius:50px;display:flex;align-items:center;justify-content:center;height:48px;width:48px;padding:0 14px;overflow:hidden;transition:width .4s cubic-bezier(.65,0,.35,1)}.product-card-pro:hover .add-to-cart-btn-pro{width:140px}.add-to-cart-btn-pro span{font-weight:600;font-size:.9rem;white-space:nowrap;opacity:0;max-width:0;margin-left:0;transition:max-width .4s cubic-bezier(.65,0,.35,1),opacity .2s ease .1s,margin-left .4s cubic-bezier(.65,0,.35,1)}.product-card-pro:hover .add-to-cart-btn-pro span{opacity:1;max-width:100px;margin-right:.5rem}.product-badge{position:absolute;top:16px;right:16px;z-index:3;padding:6px 12px;border-radius:8px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;backdrop-filter:blur(10px);border:1px solid hsla(0,0%,100%,.2);box-shadow:0 4px 16px rgba(0,0,0,.1);display:flex;align-items:center;gap:6px}.badge-discount{background:linear-gradient(135deg,#ef4444 0%,#dc2626 100%);color:#fff;box-shadow:0 4px 16px rgba(239,68,68,.3)}.badge-new{background:linear-gradient(135deg,#8b5cf6 0%,#7c3aed 100%);color:#fff;box-shadow:0 4px 16px rgba(139,92,246,.3)}.badge-bestseller{background:linear-gradient(135deg,#f59e0b 0%,#d97706 100%);color:#fff;box-shadow:0 4px 16px rgba(245,158,11,.3)}.badge-vegan{background:linear-gradient(135deg,#10b981 0%,#059669 100%);color:#fff;box-shadow:0 4px 16px rgba(16,185,129,.3)}.badge-limited{background:linear-gradient(135deg,#fbbf24 0%,#f59e0b 100%);color:#1a1a1a;box-shadow:0 4px 16px rgba(251,191,36,.3)}.badge-organic{background:linear-gradient(135deg,#ec4899 0%,#db2777 100%);color:#fff;box-shadow:0 4px 16px rgba(236,72,153,.3)}.filter-btn{padding:12px 24px;border-radius:50px;font-weight:600;font-size:14px;letter-spacing:.5px;transition:all .4s cubic-bezier(.165,.84,.44,1);border:2px solid transparent;cursor:none;position:relative;overflow:hidden;backdrop-filter:blur(10px)}.filter-btn::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,var(--primary) 0%,var(--rose-gold) 100%);opacity:0;transition:opacity .3s ease}.filter-btn span{position:relative;z-index:1}.filter-btn.active,.filter-btn:hover{color:#fff;transform:translateY(-2px)}.filter-btn.active::before,.filter-btn:hover::before{opacity:1}.filter-btn:not(.active){background:linear-gradient(145deg,#fff 0%,#f8f9fa 100%);color:#1a1a1a;border-color:rgba(227,154,180,.2)}.bestsellers-section{background:linear-gradient(135deg,#fff 0%,#fefefe 25%,#f8f9fa 50%,#fefefe 75%,#fff 100%);position:relative;overflow:hidden}.bestsellers-section::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 20% 20%,rgba(227,154,180,.03) 0%,transparent 50%),radial-gradient(circle at 80% 80%,rgba(240,183,196,.04) 0%,transparent 50%),radial-gradient(circle at 40% 60%,rgba(255,233,242,.02) 0%,transparent 50%);pointer-events:none}.section-title-enhanced{position:relative;display:inline-block}.collection-card-new{position:relative;overflow:hidden;border-radius:30px;background-color:var(--accent);transition:all .4s cubic-bezier(.175,.885,.32,1.275);cursor:none;min-height:304px;display:flex;flex-direction:column}.collection-card-new.large{min-height:640px}@media (max-width:1024px){.collection-card-new.large{min-height:500px}}.collection-card-new:hover{transform:translateY(-8px);box-shadow:0 20px 40px -15px rgba(0,0,0,.15)}.collection-visuals-container{position:relative;flex-grow:1;display:flex;align-items:center;justify-content:center;min-height:200px}.large .collection-visuals-container{min-height:350px}.card-bg-shapes{position:absolute;inset:0;z-index:1}.card-bg-shape{position:absolute;border-radius:50%;transition:all .8s cubic-bezier(.165,.84,.44,1);animation:float-shape 15s ease-in-out infinite alternate}.shape-1{width:250px;height:250px;background:linear-gradient(135deg,var(--primary),var(--rose-gold));top:-80px;right:-80px;opacity:.5;animation-duration:18s}.shape-2{width:180px;height:180px;background:var(--rose-cream);bottom:-50px;left:-50px;opacity:.7;border-radius:40% 60% 70% 30%/40% 50% 60% 50%;animation-duration:22s}.shape-3{width:120px;height:120px;background:var(--blush);bottom:120px;right:40px;opacity:.6;border-radius:70% 30% 50% 50%/60% 40% 60% 40%;animation-duration:20s}@keyframes float-shape{from{transform:translateY(0) rotate(0)}to{transform:translateY(20px) rotate(45deg)}}.collection-glob{position:absolute;z-index:3;top:50%;left:50%;width:55%;padding-bottom:55%;max-width:240px;max-height:240px;border-radius:48% 52% 55% 45%/62% 58% 42% 38%;overflow:hidden;filter:drop-shadow(0 15px 25px rgba(0,0,0,.1));transition:transform .6s cubic-bezier(.165,.84,.44,1)}.large .collection-glob{width:45%;padding-bottom:45%;max-width:280px;max-height:280px}.collection-product-image{position:absolute;width:100%;height:100%;object-fit:cover;transition:transform .6s cubic-bezier(.165,.84,.44,1)}.collection-glob-inner{position:absolute;inset:0;background:radial-gradient(circle at 30% 30%,hsla(0,0%,100%,.7),transparent 60%);border-radius:inherit;pointer-events:none}.collection-card-new:hover .collection-glob{animation-play-state:paused;transform:translate(-50%,-55%)!important}.collection-card-new:hover .collection-product-image{transform:scale(1.05)}.collection-content-new{position:relative;z-index:2;text-align:right;color:var(--deep-brown);padding:0 2.5rem 2.5rem}.collection-content-new .collection-category{font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--primary)}.collection-content-new .collection-title{font-family:"IRANSans",serif;font-size:1.75rem;font-weight:700;margin:.25rem 0 .75rem;line-height:1.2}.large .collection-content-new .collection-title{font-size:2.25rem}.collection-content-new .collection-desc{font-size:.9rem;color:var(--secondary);opacity:.8;margin-bottom:1.25rem;max-width:320px;line-height:1.6}.collection-content-new .collection-link{font-weight:600;display:inline-flex;align-items:center;gap:.5rem;color:var(--secondary);position:relative;padding-bottom:4px}.collection-content-new .collection-link::after{content:"";position:absolute;bottom:0;right:0;width:0;height:2px;background-color:var(--primary);transition:width .4s ease}.collection-card-new:hover .collection-link::after{width:100%}.collection-card-new.animating .card-bg-shape{transform:scale(3) rotate(180deg);opacity:0;border-radius:50%}.testimonial-card{background:#fff;border-radius:30px;padding:3rem;position:relative;overflow:hidden;transition:all .4s ease;border:1px solid rgba(212,165,116,.1)}.testimonial-card::before{content:'"';position:absolute;top:20px;right:30px;font-size:100px;font-family:"IRANSans",serif;color:rgba(212,165,116,.1);line-height:1}.testimonial-card:hover{transform:translateY(-10px);box-shadow:0 30px 50px -20px rgba(0,0,0,.15);border-color:rgba(212,165,116,.3)}.float-animation{animation:float 6s ease-in-out infinite}@keyframes float{0%,to{transform:translate(-50%,-50%) translateY(0) rotate(0)}33%{transform:translate(-50%,-50%) translateY(-20px) rotate(-2deg)}66%{transform:translate(-50%,-50%) translateY(-10px) rotate(2deg)}}.pulse-animation{animation:pulse 2s ease-in-out infinite}@keyframes pulse{0%,to{transform:scale(1);opacity:1}50%{transform:scale(1.05);opacity:.8}}.scroll-indicator{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);width:30px;height:50px;border:2px solid #fff;border-radius:25px;cursor:none;z-index:20}.scroll-indicator::before{content:"";position:absolute;top:8px;left:50%;width:6px;height:6px;background:#fff;border-radius:50%;transform:translateX(-50%);animation:scroll-down 2s infinite}@keyframes scroll-down{0%{transform:translate(-50%,0);opacity:0}40%{opacity:1}80%{transform:translate(-50%,20px);opacity:0}to{opacity:0}}.newsletter-bg{background:linear-gradient(135deg,var(--deep-brown) 0%,var(--primary) 100%);position:relative;overflow:hidden}.newsletter-bg::before{content:"";position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle,hsla(0,0%,100%,.1) 0%,transparent 70%);animation:rotate 30s linear infinite}@keyframes rotate{from{transform:rotate(0)}to{transform:rotate(30deg)}}.loader{position:fixed;top:0;left:0;width:100%;height:100%;background:var(--cream);display:flex;align-items:center;justify-content:center;z-index:10000;transition:opacity .5s ease}.loader-content{text-align:center}.loader-logo{font-size:3rem;font-family:"IRANSans",serif;color:var(--primary);margin-bottom:2rem;animation:pulse 1.5s ease-in-out infinite}.loader-bar{width:200px;height:2px;background:rgba(212,165,116,.2);border-radius:2px;overflow:hidden}.loader-progress{height:100%;background:var(--primary);width:0;animation:load 2s ease-in-out forwards}@keyframes load{to{width:100%}}@media (max-width:768px){.hero-title-creative{font-size:2.5rem}.testimonial-card{padding:2rem}.product-card-pro{border-radius:10px}.filter-btn{padding:10px 20px;font-size:13px}}.loader-logo::after{content:" ✧";animation:twinkle 2.2s ease-in-out infinite;opacity:.7}@keyframes twinkle{0%,to{opacity:.25;transform:scale(.95)}50%{opacity:1;transform:scale(1)}}.cute-divider{display:flex;align-items:center;justify-content:center;gap:.5rem;margin:.5rem 0 0;opacity:.65}.cute-divider::after,.cute-divider::before{content:"";height:1px;width:36px;background:linear-gradient(90deg,transparent,var(--rose-gold),transparent)}.cute-divider .star{font-size:12px;color:var(--rose-gold)}.floating-heart{position:fixed;left:0;top:0;transform:translate(-50%,-50%);font-size:16px;pointer-events:none;z-index:10000;opacity:0;animation:heartFloat 1.2s ease-out forwards;filter:drop-shadow(0 2px 0 rgba(0,0,0,.02))}@keyframes heartFloat{0%{transform:translate(-50%,-50%) scale(.8);opacity:0}15%{opacity:.95}60%{transform:translate(-50%,-140%) scale(1.15)}to{transform:translate(-50%,-200%) scale(1);opacity:0}}#backToTop:hover{animation:cute-wiggle .7s ease both}@keyframes cute-wiggle{0%,50%,to{transform:scale(1.1) rotate(0)}25%{transform:scale(1.1) rotate(-6deg)}75%{transform:scale(1.1) rotate(6deg)}}.badge-cute{display:inline-flex;align-items:center;gap:.35rem}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KOALAW | لوازم آرایشی لوکس</title>
+  <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <style>
+    @import url("https://font-face.ir/css/iransans/");
+
+    :root {
+      --primary: #e39ab4;
+      --secondary: #1a1a1a;
+      --accent: #ffe9f2;
+      --rose-gold: #f0b7c4;
+      --rose-cream: #e3d1d6;
+      --cream: #faf8f3;
+      --deep-brown: #3d2914;
+      --blush: #ffd7e5;
+      --lavender: #eae2ff;
+      --mint: #dff8ef;
+      --butter: #fff3bf
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      cursor: none !important
+    }
+
+    body {
+      font-family: "IRANSans", sans-serif;
+      background-color: var(--cream);
+      color: #333;
+      overflow-x: hidden;
+      cursor: none
+    }
+
+    .font-serif {
+      font-family: "IRANSans", serif
+    }
+
+    .cloud-animation {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      z-index: 5
+    }
+
+    .cloud {
+      position: absolute;
+      background: radial-gradient(ellipse at center, rgba(227, 154, 180, .8) 0%, transparent 70%);
+      border-radius: 100%;
+      opacity: 0;
+      filter: blur(30px);
+      animation: float-cloud linear infinite;
+      will-change: transform, opacity
+    }
+
+    .cloud-1 {
+      width: 600px;
+      height: 200px;
+      top: 10%;
+      left: -300px;
+      animation-duration: 8s;
+      animation-delay: 0s
+    }
+
+    .cloud-2 {
+      width: 800px;
+      height: 250px;
+      top: 30%;
+      left: -400px;
+      animation-duration: 12s;
+      animation-delay: 2s
+    }
+
+    .cloud-3 {
+      width: 500px;
+      height: 180px;
+      top: 50%;
+      left: -250px;
+      animation-duration: 10s;
+      animation-delay: 4s
+    }
+
+    .cloud-4,
+    .cloud-5,
+    .cloud-7,
+    .cloud-8,
+    .cloud-9,
+    .cloud-10 {
+      display: none
+    }
+
+    @media (min-width:769px) {
+      .cloud-4 {
+        display: block;
+        width: 700px;
+        height: 220px;
+        top: 70%;
+        left: -350px;
+        animation-duration: 12s;
+        animation-delay: 2s
+      }
+
+      .cloud-5 {
+        display: block;
+        width: 550px;
+        height: 190px;
+        top: 20%;
+        left: -275px;
+        animation-duration: 12s;
+        animation-delay: 8s
+      }
+
+      .cloud-6 {
+        display: block;
+        width: 450px;
+        height: 170px;
+        top: 85%;
+        left: -225px;
+        animation-duration: 8s;
+        animation-delay: 2s
+      }
+
+      .cloud-7 {
+        display: block;
+        width: 750px;
+        height: 240px;
+        top: 5%;
+        left: -375px;
+        animation-duration: 8.3s;
+        animation-delay: 5s
+      }
+
+      .cloud-8 {
+        display: block;
+        width: 650px;
+        height: 210px;
+        top: 60%;
+        left: -325px;
+        animation-duration: 11.7s;
+        animation-delay: 6s
+      }
+
+      .cloud-9 {
+        display: block;
+        width: 580px;
+        height: 200px;
+        top: 40%;
+        left: -290px;
+        animation-duration: 13.3s;
+        animation-delay: 4s
+      }
+
+      .cloud-10 {
+        display: block;
+        width: 820px;
+        height: 260px;
+        top: 75%;
+        left: -410px;
+        animation-duration: 8.3s;
+        animation-delay: 2s
+      }
+    }
+
+    @keyframes float-cloud {
+      0% {
+        transform: translateX(0) translateY(0);
+        opacity: 0
+      }
+
+      10%,
+      90% {
+        opacity: .9
+      }
+
+      100% {
+        transform: translateX(calc(100vw + 800px)) translateY(-30px);
+        opacity: 0
+      }
+    }
+
+    .particle-overlay {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      z-index: 6;
+      pointer-events: none
+    }
+
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: rgba(255, 255, 255, .6);
+      border-radius: 50%;
+      animation: float-particle linear infinite;
+      filter: blur(1px)
+    }
+
+    @keyframes float-particle {
+      0% {
+        transform: translateY(100vh) rotate(0);
+        opacity: 0
+      }
+
+      10%,
+      90% {
+        opacity: 1
+      }
+
+      100% {
+        transform: translateY(-10vh) rotate(360deg);
+        opacity: 0
+      }
+    }
+
+    @media (prefers-reduced-motion:reduce) {
+
+      .cloud,
+      .particle,
+      .sprinkle,
+      .floating-heart,
+      #backToTop:hover,
+      body [class*="animation"] {
+        animation: none !important
+      }
+    }
+
+    .cloud-animation,
+    .particle-overlay {
+      transform: translateZ(0);
+      backface-visibility: hidden;
+      perspective: 1000px
+    }
+
+    .cursor {
+      width: 30px;
+      height: 30px;
+      border: 2px solid #666;
+      background: 0 0;
+      border-radius: 50% 50% 45% 45%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: border-color .2s ease, transform .2s ease
+    }
+
+    .cursor::after,
+    .cursor::before {
+      content: "";
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      border: 2px solid #666;
+      background: 0 0;
+      border-radius: 50%;
+      top: -8px;
+      transition: border-color .2s ease
+    }
+
+    .cursor::before {
+      right: -2px
+    }
+
+    .cursor::after {
+      left: -2px
+    }
+
+    .cursor-face {
+      position: fixed;
+      width: 30px;
+      height: 30px;
+      pointer-events: none;
+      z-index: 10000;
+      transform: translate(-50%, -50%)
+    }
+
+    .cursor-face::before {
+      content: "";
+      position: absolute;
+      width: 8px;
+      height: 6px;
+      border: 1.5px solid #333;
+      background: 0 0;
+      border-radius: 50%;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%)
+    }
+
+    .cursor-eyes {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0
+    }
+
+    .cursor-eyes::after,
+    .cursor-eyes::before {
+      content: "";
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      border: 1.5px solid #333;
+      background: 0 0;
+      border-radius: 50%;
+      top: 10px
+    }
+
+    .cursor-eyes::before {
+      right: 8px
+    }
+
+    .cursor-eyes::after {
+      left: 8px
+    }
+
+    .cursor.hover {
+      border-color: var(--primary);
+      transform: translate(-50%, -50%) scale(1.2)
+    }
+
+    .cursor.hover::after,
+    .cursor.hover::before {
+      border-color: var(--primary)
+    }
+
+    .cursor-follower {
+      width: 50px;
+      height: 50px;
+      background: rgba(227, 154, 180, .1);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: background .3s ease, transform .3s ease
+    }
+
+    nav {
+      backdrop-filter: blur(20px);
+      background: rgba(250, 248, 243, .85);
+      box-shadow: 0 1px 20px rgba(0, 0, 0, .05)
+    }
+
+    .nav-link {
+      position: relative;
+      font-weight: 500;
+      letter-spacing: .5px;
+      transition: all .3s ease
+    }
+
+    .nav-link::before {
+      content: "";
+      position: absolute;
+      bottom: -5px;
+      right: 0;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--primary), var(--rose-gold));
+      transition: width .3s ease
+    }
+
+    .nav-link:hover::before {
+      width: 100%
+    }
+
+    .hero-title-creative {
+      background: linear-gradient(135deg, #fff 70%, #ffe9f2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-fill-color: transparent;
+      text-shadow: 0 2px 15px rgba(0, 0, 0, .3)
+    }
+
+    .magnetic-btn {
+      position: relative;
+      transition: all .3s cubic-bezier(.175, .885, .32, 1.275);
+      overflow: hidden
+    }
+
+    .magnetic-btn::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, .1);
+      transform: translate(-50%, -50%);
+      transition: width .6s, height .6s
+    }
+
+    .magnetic-btn:hover::before {
+      width: 300px;
+      height: 300px
+    }
+
+    .break-inside-avoid {
+      break-inside: avoid
+    }
+
+    .product-card-pro {
+      border-radius: 10px;
+      box-shadow: 0 10px 40px -10px rgba(0, 0, 0, .04), 0 5px 20px -15px rgba(227, 154, 180, .1);
+      transition: all .4s cubic-bezier(.175, .885, .32, 1.275);
+      overflow: hidden
+    }
+
+    .product-card-pro:hover {
+      transform: translateY(-12px);
+      box-shadow: 0 20px 50px -15px rgba(0, 0, 0, .1), 0 10px 30px -10px rgba(227, 154, 180, .25)
+    }
+
+    .product-image-container {
+      position: relative;
+      overflow: hidden;
+      border-radius: 10px
+    }
+
+    .product-image-container img {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 4 / 5;
+      object-fit: cover;
+      display: block;
+      transition: transform .6s cubic-bezier(.165, .84, .44, 1)
+    }
+
+    .product-card-pro:hover .product-image-container img {
+      transform: scale(1.08)
+    }
+
+    .product-action-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(255, 255, 255, .2);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      opacity: 0;
+      transition: opacity .4s ease
+    }
+
+    .product-card-pro:hover .product-action-overlay {
+      opacity: 1
+    }
+
+    .action-btn {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .8);
+      border: 1px solid rgba(0, 0, 0, .05);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--secondary);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, .08);
+      transform: translateY(20px);
+      transition: all .4s cubic-bezier(.165, .84, .44, 1)
+    }
+
+    .product-card-pro:hover .action-btn {
+      transform: translateY(0)
+    }
+
+    .product-card-pro:hover .action-btn:first-child {
+      transition-delay: .05s
+    }
+
+    .product-card-pro:hover .action-btn:nth-child(2) {
+      transition-delay: .1s
+    }
+
+    .action-btn:hover {
+      transform: scale(1.1) !important;
+      background: var(--primary);
+      color: #fff
+    }
+
+    .product-info-pro {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 1.25rem;
+      text-align: right;
+      background: rgba(255, 233, 242, .6);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      transition: background .4s ease, backdrop-filter .4s ease;
+      border-radius: 0 0 4px 4px
+    }
+
+    .product-card-pro:active .product-info-pro,
+    .product-card-pro:focus-within .product-info-pro,
+    .product-card-pro:hover .product-info-pro {
+      background: #fff;
+      backdrop-filter: blur(0)
+    }
+
+    .product-category-pro {
+      font-size: .75rem;
+      font-weight: 600;
+      color: var(--cream);
+      letter-spacing: .5px;
+      text-transform: uppercase;
+      margin-bottom: .5rem;
+      transition: color .4s ease
+    }
+
+    .product-card-pro:active .product-category-pro,
+    .product-card-pro:focus-within .product-category-pro,
+    .product-card-pro:hover .product-category-pro {
+      color: var(--primary)
+    }
+
+    .product-title-pro {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--secondary);
+      line-height: 1.4;
+      margin-bottom: 1rem;
+      flex-grow: 1
+    }
+
+    .product-footer-pro {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: auto
+    }
+
+    .product-price-pro {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--secondary);
+      font-family: "IRANSans", serif;
+      display: flex;
+      align-items: baseline;
+      gap: .5rem
+    }
+
+    .product-price-pro .original-price {
+      font-size: .9rem;
+      color: #9ca3af;
+      text-decoration: line-through;
+      font-weight: 500
+    }
+
+    .add-to-cart-btn-pro {
+      background: var(--secondary);
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 48px;
+      width: 48px;
+      padding: 0 14px;
+      overflow: hidden;
+      transition: width .4s cubic-bezier(.65, 0, .35, 1)
+    }
+
+    .product-card-pro:hover .add-to-cart-btn-pro {
+      width: 140px
+    }
+
+    .add-to-cart-btn-pro span {
+      font-weight: 600;
+      font-size: .9rem;
+      white-space: nowrap;
+      opacity: 0;
+      max-width: 0;
+      margin-left: 0;
+      transition: max-width .4s cubic-bezier(.65, 0, .35, 1), opacity .2s ease .1s, margin-left .4s cubic-bezier(.65, 0, .35, 1)
+    }
+
+    .product-card-pro:hover .add-to-cart-btn-pro span {
+      opacity: 1;
+      max-width: 100px;
+      margin-right: .5rem
+    }
+
+    .product-badge {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      z-index: 3;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .8px;
+      backdrop-filter: blur(10px);
+      border: 1px solid hsla(0, 0%, 100%, .2);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, .1);
+      display: flex;
+      align-items: center;
+      gap: 6px
+    }
+
+    .badge-discount {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(239, 68, 68, .3)
+    }
+
+    .badge-new {
+      background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(139, 92, 246, .3)
+    }
+
+    .badge-bestseller {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(245, 158, 11, .3)
+    }
+
+    .badge-vegan {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(16, 185, 129, .3)
+    }
+
+    .badge-limited {
+      background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+      color: #1a1a1a;
+      box-shadow: 0 4px 16px rgba(251, 191, 36, .3)
+    }
+
+    .badge-organic {
+      background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(236, 72, 153, .3)
+    }
+
+    .filter-btn {
+      padding: 12px 24px;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 14px;
+      letter-spacing: .5px;
+      transition: all .4s cubic-bezier(.165, .84, .44, 1);
+      border: 2px solid transparent;
+      cursor: none;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(10px)
+    }
+
+    .filter-btn::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--rose-gold) 100%);
+      opacity: 0;
+      transition: opacity .3s ease
+    }
+
+    .filter-btn span {
+      position: relative;
+      z-index: 1
+    }
+
+    .filter-btn.active,
+    .filter-btn:hover {
+      color: #fff;
+      transform: translateY(-2px)
+    }
+
+    .filter-btn.active::before,
+    .filter-btn:hover::before {
+      opacity: 1
+    }
+
+    .filter-btn:not(.active) {
+      background: linear-gradient(145deg, #fff 0%, #f8f9fa 100%);
+      color: #1a1a1a;
+      border-color: rgba(227, 154, 180, .2)
+    }
+
+    .bestsellers-section {
+      background: linear-gradient(135deg, #fff 0%, #fefefe 25%, #f8f9fa 50%, #fefefe 75%, #fff 100%);
+      position: relative;
+      overflow: hidden
+    }
+
+    .bestsellers-section::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 20% 20%, rgba(227, 154, 180, .03) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(240, 183, 196, .04) 0%, transparent 50%), radial-gradient(circle at 40% 60%, rgba(255, 233, 242, .02) 0%, transparent 50%);
+      pointer-events: none
+    }
+
+    .section-title-enhanced {
+      position: relative;
+      display: inline-block
+    }
+
+    .collection-card-new {
+      position: relative;
+      overflow: hidden;
+      border-radius: 30px;
+      background-color: var(--accent);
+      transition: all .4s cubic-bezier(.175, .885, .32, 1.275);
+      cursor: none;
+      min-height: 304px;
+      display: flex;
+      flex-direction: column
+    }
+
+    .collection-card-new.large {
+      min-height: 640px
+    }
+
+    @media (max-width:1024px) {
+      .collection-card-new.large {
+        min-height: 500px
+      }
+    }
+
+    .collection-card-new:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, .15)
+    }
+
+    .collection-visuals-container {
+      position: relative;
+      flex-grow: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 200px
+    }
+
+    .large .collection-visuals-container {
+      min-height: 350px
+    }
+
+    .card-bg-shapes {
+      position: absolute;
+      inset: 0;
+      z-index: 1
+    }
+
+    .card-bg-shape {
+      position: absolute;
+      border-radius: 50%;
+      transition: all .8s cubic-bezier(.165, .84, .44, 1);
+      animation: float-shape 15s ease-in-out infinite alternate
+    }
+
+    .shape-1 {
+      width: 250px;
+      height: 250px;
+      background: linear-gradient(135deg, var(--primary), var(--rose-gold));
+      top: -80px;
+      right: -80px;
+      opacity: .5;
+      animation-duration: 18s
+    }
+
+    .shape-2 {
+      width: 180px;
+      height: 180px;
+      background: var(--rose-cream);
+      bottom: -50px;
+      left: -50px;
+      opacity: .7;
+      border-radius: 40% 60% 70% 30%/40% 50% 60% 50%;
+      animation-duration: 22s
+    }
+
+    .shape-3 {
+      width: 120px;
+      height: 120px;
+      background: var(--blush);
+      bottom: 120px;
+      right: 40px;
+      opacity: .6;
+      border-radius: 70% 30% 50% 50%/60% 40% 60% 40%;
+      animation-duration: 20s
+    }
+
+    @keyframes float-shape {
+      from {
+        transform: translateY(0) rotate(0)
+      }
+
+      to {
+        transform: translateY(20px) rotate(45deg)
+      }
+    }
+
+    .collection-glob {
+      position: absolute;
+      z-index: 3;
+      top: 50%;
+      left: 50%;
+      width: 55%;
+      padding-bottom: 55%;
+      max-width: 240px;
+      max-height: 240px;
+      border-radius: 48% 52% 55% 45%/62% 58% 42% 38%;
+      overflow: hidden;
+      filter: drop-shadow(0 15px 25px rgba(0, 0, 0, .1));
+      transition: transform .6s cubic-bezier(.165, .84, .44, 1)
+    }
+
+    .large .collection-glob {
+      width: 45%;
+      padding-bottom: 45%;
+      max-width: 280px;
+      max-height: 280px
+    }
+
+    .collection-product-image {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform .6s cubic-bezier(.165, .84, .44, 1)
+    }
+
+    .collection-glob-inner {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 30% 30%, hsla(0, 0%, 100%, .7), transparent 60%);
+      border-radius: inherit;
+      pointer-events: none
+    }
+
+    .collection-card-new:hover .collection-glob {
+      animation-play-state: paused;
+      transform: translate(-50%, -55%) !important
+    }
+
+    .collection-card-new:hover .collection-product-image {
+      transform: scale(1.05)
+    }
+
+    .collection-content-new {
+      position: relative;
+      z-index: 2;
+      text-align: right;
+      color: var(--deep-brown);
+      padding: 0 2.5rem 2.5rem
+    }
+
+    .collection-content-new .collection-category {
+      font-size: .8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: var(--primary)
+    }
+
+    .collection-content-new .collection-title {
+      font-family: "IRANSans", serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin: .25rem 0 .75rem;
+      line-height: 1.2
+    }
+
+    .large .collection-content-new .collection-title {
+      font-size: 2.25rem
+    }
+
+    .collection-content-new .collection-desc {
+      font-size: .9rem;
+      color: var(--secondary);
+      opacity: .8;
+      margin-bottom: 1.25rem;
+      max-width: 320px;
+      line-height: 1.6
+    }
+
+    .collection-content-new .collection-link {
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      color: var(--secondary);
+      position: relative;
+      padding-bottom: 4px
+    }
+
+    .collection-content-new .collection-link::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 0;
+      height: 2px;
+      background-color: var(--primary);
+      transition: width .4s ease
+    }
+
+    .collection-card-new:hover .collection-link::after {
+      width: 100%
+    }
+
+    .collection-card-new.animating .card-bg-shape {
+      transform: scale(3) rotate(180deg);
+      opacity: 0;
+      border-radius: 50%
+    }
+
+    .testimonial-card {
+      background: #fff;
+      border-radius: 30px;
+      padding: 3rem;
+      position: relative;
+      overflow: hidden;
+      transition: all .4s ease;
+      border: 1px solid rgba(212, 165, 116, .1)
+    }
+
+    .testimonial-card::before {
+      content: '"';
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      font-size: 100px;
+      font-family: "IRANSans", serif;
+      color: rgba(212, 165, 116, .1);
+      line-height: 1
+    }
+
+    .testimonial-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 30px 50px -20px rgba(0, 0, 0, .15);
+      border-color: rgba(212, 165, 116, .3)
+    }
+
+    .float-animation {
+      animation: float 6s ease-in-out infinite
+    }
+
+    @keyframes float {
+
+      0%,
+      to {
+        transform: translate(-50%, -50%) translateY(0) rotate(0)
+      }
+
+      33% {
+        transform: translate(-50%, -50%) translateY(-20px) rotate(-2deg)
+      }
+
+      66% {
+        transform: translate(-50%, -50%) translateY(-10px) rotate(2deg)
+      }
+    }
+
+    .pulse-animation {
+      animation: pulse 2s ease-in-out infinite
+    }
+
+    @keyframes pulse {
+
+      0%,
+      to {
+        transform: scale(1);
+        opacity: 1
+      }
+
+      50% {
+        transform: scale(1.05);
+        opacity: .8
+      }
+    }
+
+    .scroll-indicator {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 30px;
+      height: 50px;
+      border: 2px solid #fff;
+      border-radius: 25px;
+      cursor: none;
+      z-index: 20
+    }
+
+    .scroll-indicator::before {
+      content: "";
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      width: 6px;
+      height: 6px;
+      background: #fff;
+      border-radius: 50%;
+      transform: translateX(-50%);
+      animation: scroll-down 2s infinite
+    }
+
+    @keyframes scroll-down {
+      0% {
+        transform: translate(-50%, 0);
+        opacity: 0
+      }
+
+      40% {
+        opacity: 1
+      }
+
+      80% {
+        transform: translate(-50%, 20px);
+        opacity: 0
+      }
+
+      to {
+        opacity: 0
+      }
+    }
+
+    .newsletter-bg {
+      background: linear-gradient(135deg, var(--deep-brown) 0%, var(--primary) 100%);
+      position: relative;
+      overflow: hidden
+    }
+
+    .newsletter-bg::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, hsla(0, 0%, 100%, .1) 0%, transparent 70%);
+      animation: rotate 30s linear infinite
+    }
+
+    @keyframes rotate {
+      from {
+        transform: rotate(0)
+      }
+
+      to {
+        transform: rotate(30deg)
+      }
+    }
+
+    .loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--cream);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      transition: opacity .5s ease
+    }
+
+    .loader-content {
+      text-align: center
+    }
+
+    .loader-logo {
+      font-size: 3rem;
+      font-family: "IRANSans", serif;
+      color: var(--primary);
+      margin-bottom: 2rem;
+      animation: pulse 1.5s ease-in-out infinite
+    }
+
+    .loader-bar {
+      width: 200px;
+      height: 2px;
+      background: rgba(212, 165, 116, .2);
+      border-radius: 2px;
+      overflow: hidden
+    }
+
+    .loader-progress {
+      height: 100%;
+      background: var(--primary);
+      width: 0;
+      animation: load 2s ease-in-out forwards
+    }
+
+    @keyframes load {
+      to {
+        width: 100%
+      }
+    }
+
+    @media (max-width:768px) {
+      .hero-title-creative {
+        font-size: 2.5rem
+      }
+
+      .testimonial-card {
+        padding: 2rem
+      }
+
+      .product-card-pro {
+        border-radius: 10px
+      }
+
+      .filter-btn {
+        padding: 10px 20px;
+        font-size: 13px
+      }
+    }
+
+    .loader-logo::after {
+      content: " ✧";
+      animation: twinkle 2.2s ease-in-out infinite;
+      opacity: .7
+    }
+
+    @keyframes twinkle {
+
+      0%,
+      to {
+        opacity: .25;
+        transform: scale(.95)
+      }
+
+      50% {
+        opacity: 1;
+        transform: scale(1)
+      }
+    }
+
+    .cute-divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .5rem;
+      margin: .5rem 0 0;
+      opacity: .65
+    }
+
+    .cute-divider::after,
+    .cute-divider::before {
+      content: "";
+      height: 1px;
+      width: 36px;
+      background: linear-gradient(90deg, transparent, var(--rose-gold), transparent)
+    }
+
+    .cute-divider .star {
+      font-size: 12px;
+      color: var(--rose-gold)
+    }
+
+    .floating-heart {
+      position: fixed;
+      left: 0;
+      top: 0;
+      transform: translate(-50%, -50%);
+      font-size: 16px;
+      pointer-events: none;
+      z-index: 10000;
+      opacity: 0;
+      animation: heartFloat 1.2s ease-out forwards;
+      filter: drop-shadow(0 2px 0 rgba(0, 0, 0, .02))
+    }
+
+    @keyframes heartFloat {
+      0% {
+        transform: translate(-50%, -50%) scale(.8);
+        opacity: 0
+      }
+
+      15% {
+        opacity: .95
+      }
+
+      60% {
+        transform: translate(-50%, -140%) scale(1.15)
+      }
+
+      to {
+        transform: translate(-50%, -200%) scale(1);
+        opacity: 0
+      }
+    }
+
+    #backToTop:hover {
+      animation: cute-wiggle .7s ease both
+    }
+
+    @keyframes cute-wiggle {
+
+      0%,
+      50%,
+      to {
+        transform: scale(1.1) rotate(0)
+      }
+
+      25% {
+        transform: scale(1.1) rotate(-6deg)
+      }
+
+      75% {
+        transform: scale(1.1) rotate(6deg)
+      }
+    }
+
+    .badge-cute {
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem
+    }
+  </style>
 </head>
+
 <body>
-<div class="loader" id="loader"><div class="loader-content"><div class="loader-logo">KOALAW</div><div class="loader-bar"><div class="loader-progress"></div></div></div></div>
-<div class="cursor"><div class="cursor-eyes"></div></div><div class="cursor-face"></div><div class="cursor-follower"></div>
-<div id="vanta-bg" style="position:fixed;width:100%;height:100%;z-index:-1;background:linear-gradient(to bottom, #faf8f3, #fff7fb)"></div>
-<nav class="fixed w-full z-50 transition-all duration-300" id="navbar"><div class="container mx-auto px-6 py-5"><div class="flex items-center justify-between" dir="ltr"><div class="flex items-center"><a href="#" class="text-3xl font-serif font-bold text-gray-800 tracking-wider">KOALAW</a></div><div class="flex items-center gap-x-10"><div class="hidden lg:flex items-center space-x-10"><a href="#" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">کالکشن‌ها</a><a href="#" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">پرفروش‌ترین‌ها</a><a href="#" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">درباره ما</a><a href="#" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">مجله</a><a href="#" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">توسعه پایدار</a></div><div class="flex items-center space-x-6"><button class="text-gray-700 hover:text-gray-900 transition-all duration-300 hover:scale-110"><i data-feather="search" class="w-5 h-5"></i></button><button class="text-gray-700 hover:text-gray-900 transition-all duration-300 hover:scale-110"><i data-feather="user" class="w-5 h-5"></i></button><button class="text-gray-700 hover:text-gray-900 relative transition-all duration-300 hover:scale-110"><i data-feather="shopping-bag" class="w-5 h-5"></i><span class="absolute -top-2 -right-2 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center pulse-animation">۳</span></button><button class="lg:hidden text-gray-700 hover:text-gray-900"><i data-feather="menu" class="w-6 h-6"></i></button></div></div></div></div></nav>
-<section class="min-h-screen relative flex items-center justify-center text-center overflow-hidden">
-<img id="hero-bg-image" src="https://images.unsplash.com/photo-1617897903246-719242758050?q=80&w=1887&auto=format&fit=crop" alt="زیبایی طبیعی" class="absolute inset-0 w-full h-full object-cover z-0">
-<div class="cloud-animation"></div><div class="particle-overlay"></div>
-<div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent z-10"></div>
-<div class="container mx-auto px-6 relative z-20 text-white"><div data-aos="fade-up" data-aos-duration="1200"><span class="block text-lg font-medium tracking-wider mb-4" style="text-shadow:0 1px 4px rgba(0,0,0,.5)">هنر زیبایی آگاهانه</span><h1 class="hero-title-creative text-4xl lg:text-6xl font-serif font-bold leading-tight mb-6">درخششی فراتر از طبیعت</h1><p class="text-lg text-gray-200 mb-10 max-w-2xl leading-relaxed mx-auto" style="text-shadow:0 1px 4px rgba(0,0,0,.5)">با کوالا، جایی که علم پیشرفته و خالص‌ترین ترکیبات طبیعی با هم ترکیب می‌شوند، زیبایی خود را بازتعریف کنید.</p><div class="flex justify-center"><button class="magnetic-btn group px-8 py-4 bg-white text-gray-900 rounded-full hover:shadow-2xl transition-all duration-300 flex items-center space-x-2 font-semibold"><span>کالکشن را کاوش کنید</span><i data-feather="arrow-left" class="w-5 h-5 group-hover:-translate-x-2 transition-transform duration-300"></i></button></div></div></div>
-<div class="scroll-indicator"></div>
-</section>
-<section class="py-24 bg-cream relative overflow-hidden"><div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vh] bg-rose-200/40 rounded-full blur-3xl opacity-50 z-0"></div><div class="container mx-auto px-6 relative z-10"><div class="text-center mb-16" data-aos="fade-up"><span class="text-sm font-medium text-rose-800 tracking-wider uppercase mb-4 block">دست‌چین شده برای شما</span><h2 class="text-4xl lg:text-5xl font-serif font-bold text-gray-800 mb-6">کالکشن‌های ویژه</h2><div class="cute-divider"><span class="star">✦</span></div><p class="text-gray-600 max-w-2xl mx-auto text-lg">سفری به دنیای زیبایی‌های ما. هر کالکشن داستانی منحصر به فرد را روایت می‌کند.</p></div><div class="grid grid-cols-1 lg:grid-cols-2 gap-8"><a href="#" class="collection-card-link group block"><div class="collection-card-new large h-full" data-aos="fade-right" data-aos-duration="1200"><div class="collection-visuals-container"><div class="card-bg-shapes"><div class="card-bg-shape shape-1"></div><div class="card-bg-shape shape-2"></div><div class="card-bg-shape shape-3"></div></div><div class="collection-glob float-animation"><img src="https://images.unsplash.com/photo-1617897903246-719242758050?q=80&w=1887&auto=format&fit=crop" alt="Skincare Product" class="collection-product-image"><div class="collection-glob-inner"></div></div></div><div class="collection-content-new"><span class="collection-category">مراقبت از پوست</span><h3 class="collection-title">پوست درخشان</h3><p class="collection-desc">پوست خود را با فرمول‌های گیاهی ما که برای تغذیه و جوانسازی طراحی شده‌اند، متحول کنید.</p><div class="collection-link"><span>کشف کنید</span><i data-feather="arrow-left" class="w-5 h-5 transition-transform duration-300 group-hover:-translate-x-2"></i></div></div></div></a><div class="flex flex-col gap-8"><a href="#" class="collection-card-link group block"><div class="collection-card-new" data-aos="fade-left" data-aos-duration="1200" data-aos-delay="200"><div class="collection-visuals-container"><div class="card-bg-shapes"><div class="card-bg-shape shape-1" style="background:linear-gradient(135deg,#a78bfa,#c4b5fd);animation-duration:21s"></div><div class="card-bg-shape shape-2" style="background:var(--lavender);animation-duration:17s"></div><div class="card-bg-shape shape-3" style="background:#ddd6fe;animation-duration:25s"></div></div><div class="collection-glob float-animation"><img src="https://images.unsplash.com/photo-1617897903246-719242758050?q=80&w=1887&auto=format&fit=crop" alt="Makeup Product" class="collection-product-image"><div class="collection-glob-inner"></div></div></div><div class="collection-content-new"><span class="collection-category" style="color:#8b5cf6">آرایش</span><h3 class="collection-title">آرایش هنرمندانه</h3><div class="collection-link"><span>کشف کنید</span><i data-feather="arrow-left" class="w-5 h-5 transition-transform duration-300 group-hover:-translate-x-2"></i></div></div></div></a><a href="#" class="collection-card-link group block"><div class="collection-card-new" data-aos="fade-left" data-aos-duration="1200" data-aos-delay="400"><div class="collection-visuals-container"><div class="card-bg-shapes"><div class="card-bg-shape shape-1" style="background:linear-gradient(135deg,#f59e0b,#fbbf24);animation-duration:19s"></div><div class="card-bg-shape shape-2" style="background:var(--butter);animation-duration:23s"></div><div class="card-bg-shape shape-3" style="background:#fef3c7;animation-duration:16s"></div></div><div class="collection-glob float-animation"><img src="https://images.unsplash.com/photo-1617897903246-719242758050?q=80&w=1887&auto=format&fit=crop" alt="Fragrance Product" class="collection-product-image"><div class="collection-glob-inner"></div></div></div><div class="collection-content-new"><span class="collection-category" style="color:#d97706">عطر</span><h3 class="collection-title">عطرهای فریبنده</h3><div class="collection-link"><span>کشف کنید</span><i data-feather="arrow-left" class="w-5 h-5 transition-transform duration-300 group-hover:-translate-x-2"></i></div></div></div></a></div></div></div></section>
-<section class="py-32 bestsellers-section relative"><div class="container mx-auto px-6 relative z-10"><div class="text-center mb-20" data-aos="fade-up"><span class="text-sm font-medium text-rose-800 tracking-wider uppercase mb-4 block opacity-90">محبوب‌ترین‌های مشتریان</span><h2 class="section-title-enhanced text-5xl lg:text-6xl font-serif font-bold text-gray-800 mb-8">زیبایی‌های پرفروش</h2><div class="cute-divider mb-6"><span class="star">✦</span></div><p class="text-gray-600 max-w-3xl mx-auto text-lg leading-relaxed">محصولاتی را کشف کنید که مشتریان ما نمی‌توانند بدون آن‌ها زندگی کنند. هر محصول داستان عشق و تحولی را روایت می‌کند.</p></div><div class="flex flex-wrap justify-center items-center gap-4 mb-16" data-aos="fade-up" data-aos-delay="100"><button class="filter-btn active" data-filter="all"><span>همه محصولات</span></button><button class="filter-btn" data-filter="skincare"><span>مراقبت از پوست</span></button><button class="filter-btn" data-filter="makeup"><span>آرایش</span></button><button class="filter-btn" data-filter="fragrance"><span>عطر</span></button><button class="filter-btn" data-filter="bestseller"><span>پرفروش‌ترین‌ها</span></button></div><div id="product-grid" class="columns-1 sm:columns-2 lg:columns-4 gap-4 space-y-4 mb-16"></div><div class="text-center" data-aos="fade-up" data-aos-delay="100"><a href="#" class="inline-flex items-center px-10 py-5 border-2 border-gray-900 text-gray-900 rounded-full hover:bg-gray-900 hover:text-white transition-all duration-500 group text-lg font-semibold tracking-wide"><i data-feather="arrow-left" class="ml-3 w-5 h-5 group-hover:-translate-x-2 transition-transform duration-300"></i><span>کاوش کامل کالکشن</span></a><p class="text-gray-500 text-sm mt-4">بیش از ۲۰۰ محصول منحصر به فرد در انتظار شماست</p></div></div></section>
-<section class="py-24 bg-gradient-to-b from-gray-50 to-white overflow-hidden"><div class="container mx-auto px-6"><div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center"><div class="relative" data-aos="fade-left" data-aos-duration="1000"><div class="relative z-10"><img src="https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=600&h=700&fit=crop" alt="داستان برند" class="rounded-3xl shadow-2xl w-full"><div class="absolute -bottom-10 -left-10 bg-gradient-to-br from-rose-100 to-pink-100 p-8 rounded-2xl shadow-xl"><h3 class="font-serif text-3xl font-bold text-amber-900 mb-2">+۱۲ سال</h3><p class="text-amber-800">نوآوری در زیبایی</p></div></div><div class="absolute top-0 right-0 w-72 h-72 bg-gradient-to-br from-rose-200 to-pink-200 rounded-full blur-3xl opacity-30 -z-10"></div></div><div data-aos="fade-right" data-aos-duration="1000"><span class="text-sm font-medium text-rose-800 tracking-wider uppercase mb-4 block">داستان ما</span><h2 class="text-4xl lg:text-5xl font-serif font-bold text-gray-800 mb-6">تعریفی نو از زیبایی</h2><p class="text-gray-600 mb-6 text-lg leading-relaxed">کوالا از شور و اشتیاق به زیبایی پاک و تجمل پایدار متولد شد و نماینده دوران جدیدی در لوازم آرایشی است. ما معتقدیم که زیبایی واقعی از هماهنگی سرچشمه می‌گیرد - هماهنگی میان طبیعت و علم، سنت و نوآوری، تجمل و آگاهی.</p><p class="text-gray-600 mb-8 leading-relaxed">هر محصول در کالکشن ما، گواهی بر تعهد ما به برتری است که با بهترین مواد اولیه گیاهی و فناوری پیشرفته فرموله شده تا نتایج تحول‌آفرینی را ارائه دهد.</p><div class="grid grid-cols-2 gap-6 mb-8"><div class="bg-gradient-to-br from-rose-50 to-pink-50 p-6 rounded-2xl"><div class="bg-white w-12 h-12 rounded-full flex items-center justify-center mb-4"><i data-feather="leaf" class="text-rose-800"></i></div><h4 class="font-semibold text-gray-800 mb-2">۹۸٪ طبیعی</h4><p class="text-sm text-gray-600">مواد گیاهی با منبع اخلاقی</p></div><div class="bg-gradient-to-br from-purple-50 to-pink-50 p-6 rounded-2xl"><div class="bg-white w-12 h-12 rounded-full flex items-center justify-center mb-4"><i data-feather="heart" class="text-purple-800"></i></div><h4 class="font-semibold text-gray-800 mb-2">بدون تست حیوانی</h4><p class="text-sm text-gray-600">هرگز روی حیوانات تست نشده</p></div></div><a href="#" class="inline-flex items-center text-amber-900 font-semibold hover:text-amber-700 transition duration-300 group"><span class="border-b-2 border-amber-900 group-hover:border-amber-700 pb-1">فلسفه ما را کشف کنید</span><i data-feather="arrow-left" class="mr-2 w-4 h-4 group-hover:-translate-x-2 transition-transform duration-300"></i></a></div></div></div></section>
-<section class="py-24 bg-gradient-to-b from-white to-gray-50"><div class="container mx-auto px-6"><div class="text-center mb-16" data-aos="fade-up"><span class="text-sm font-medium text-rose-800 tracking-wider uppercase mb-4 block">نظرات مشتریان</span><h2 class="text-4xl lg:text-5xl font-serif font-bold text-gray-800 mb-6">نامه‌های محبت‌آمیز ✧</h2><div class="cute-divider"><span class="star">✦</span></div><p class="text-gray-600 max-w-2xl mx-auto text-lg">داستان‌های واقعی از جامعه زیبای ما</p></div><div id="testimonial-grid" class="grid grid-cols-1 md:grid-cols-3 gap-8"></div></div></section>
-<section class="py-24 bg-white"><div class="container mx-auto px-6"><div class="text-center mb-16" data-aos="fade-up"><span class="text-sm font-medium text-rose-800 tracking-wider uppercase mb-4 block">ما را دنبال کنید</span><h2 class="text-4xl lg:text-5xl font-serif font-bold text-gray-800 mb-6" style="direction:ltr">@koalaw.beauty</h2><p class="text-gray-600 max-w-2xl mx-auto text-lg">به جامعه علاقه‌مندان به زیبایی ما بپیوندید</p></div><div id="instagram-grid" class="grid grid-cols-2 md:grid-cols-4 gap-4" data-aos="fade-up"></div><div class="text-center mt-12" data-aos="fade-up"><a href="#" class="inline-flex items-center text-rose-900 font-semibold hover:text-rose-700 transition duration-300 group"><i data-feather="instagram" class="ml-2 w-5 h-5"></i><span>ما را در اینستاگرام دنبال کنید</span><i data-feather="arrow-left" class="mr-2 w-4 h-4 group-hover:-translate-x-2 transition-transform duration-300"></i></a></div></div></section>
-<section class="py-24 newsletter-bg relative"><div class="container mx-auto px-6 relative z-10"><div class="max-w-4xl mx-auto text-center" data-aos="fade-up"><h2 class="text-4xl lg:text-5xl font-serif font-bold text-white mb-6">درخشان بمانید</h2><div class="cute-divider"><span class="star">✦</span></div><p class="text-rose-100 mb-10 text-lg max-w-2xl mx-auto">اولین کسی باشید که از کالکشن‌های جدید، پیشنهادات انحصاری و نکات زیبایی متخصصان ما باخبر می‌شود.</p><form class="flex flex-col sm:flex-row max-w-xl mx-auto gap-4"><input type="email" placeholder="ایمیل خود را وارد کنید" class="flex-grow px-6 py-4 rounded-full text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-rose-300/50 transition-all duration-300"><button type="submit" class="px-8 py-4 bg-white text-gray-900 rounded-full font-semibold hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 hover:shadow-xl">عضویت</button></form><p class="text-xs text-rose-200 mt-6">به بیش از ۵۰,۰۰۰ دوست‌دار زیبایی بپیوندید. لغو عضویت در هر زمان ممکن است.</p></div></div></section>
-<footer class="bg-gradient-to-b from-gray-900 to-black text-white py-20"><div class="container mx-auto px-6"><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-12"><div class="lg:col-span-2"><h3 class="text-3xl font-serif font-bold mb-6">KOALAW</h3><p class="text-gray-400 mb-8 leading-relaxed">ارتقای زیبایی از طریق تجمل آگاهانه. هر محصول جشنی از بهترین مواد طبیعی و علم نوآورانه است.</p><div class="flex space-x-4"><a href="#" class="bg-gray-800 p-3 rounded-full hover:bg-gray-700 transition-all duration-300 transform hover:scale-110"><i data-feather="instagram" class="w-5 h-5"></i></a><a href="#" class="bg-gray-800 p-3 rounded-full hover:bg-gray-700 transition-all duration-300 transform hover:scale-110"><i data-feather="facebook" class="w-5 h-5"></i></a><a href="#" class="bg-gray-800 p-3 rounded-full hover:bg-gray-700 transition-all duration-300 transform hover:scale-110"><i data-feather="twitter" class="w-5 h-5"></i></a><a href="#" class="bg-gray-800 p-3 rounded-full hover:bg-gray-700 transition-all duration-300 transform hover:scale-110"><i data-feather="youtube" class="w-5 h-5"></i></a></div></div><div id="footer-links"></div></div><div class="border-t border-gray-800 pt-8"><div class="flex flex-col md:flex-row justify-between items-center"><div class="flex flex-col md:flex-row items-center mb-4 md:mb-0"><p class="text-gray-400 text-sm mb-2 md:mb-0 md:ml-6">© ۲۰۲۴ کوالا بیوتی. تمام حقوق محفوظ است.</p><div class="flex space-x-6 text-sm"><a href="#" class="text-gray-400 hover:text-white transition duration-300">سیاست حفظ حریم خصوصی</a><a href="#" class="text-gray-400 hover:text-white transition duration-300">شرایط خدمات</a><a href="#" class="text-gray-400 hover:text-white transition duration-300">سیاست کوکی</a></div></div><div class="flex items-center space-x-4"><span class="text-gray-400 text-sm ml-2">پرداخت امن:</span><img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa" class="h-8 opacity-70 hover:opacity-100 transition-opacity duration-300"><img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" class="h-8 opacity-70 hover:opacity-100 transition-opacity duration-300"><img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal" class="h-6 opacity-70 hover:opacity-100 transition-opacity duration-300"><img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" alt="Apple Pay" class="h-8 opacity-70 hover:opacity-100 transition-opacity duration-300"></div></div></div></div></footer>
-<button id="backToTop" class="fixed bottom-8 left-8 bg-gradient-to-r from-gray-900 to-black text-white p-4 rounded-full shadow-lg opacity-0 invisible transition-all duration-300 hover:shadow-xl transform hover:scale-110 z-40"><i data-feather="arrow-up" class="w-5 h-5"></i></button>
+  <div class="loader" id="loader">
+    <div class="loader-content">
+      <div class="loader-logo">KOALAW</div>
+      <div class="loader-bar">
+        <div class="loader-progress"></div>
+      </div>
+    </div>
+  </div>
+  <div class="cursor">
+    <div class="cursor-eyes"></div>
+  </div>
+  <div class="cursor-face"></div>
+  <div class="cursor-follower"></div>
+  <div id="vanta-bg"
+    style="position:fixed;width:100%;height:100%;z-index:-1;background:linear-gradient(to bottom, #faf8f3, #fff7fb)">
+  </div>
+  <nav class="fixed w-full z-50 transition-all duration-300" id="navbar">
+    <div class="container mx-auto px-6 py-5">
+      <div class="flex items-center justify-between" dir="ltr">
+        <div class="flex items-center"><a href="#"
+            class="text-3xl font-serif font-bold text-gray-800 tracking-wider">KOALAW</a></div>
+        <div class="flex items-center gap-x-10">
+          <div class="hidden lg:flex items-center space-x-10"><a href="#"
+              class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">کالکشن‌ها</a><a href="#"
+              class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">پرفروش‌ترین‌ها</a><a href="#"
+              class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">درباره ما</a><a href="#"
+              class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">مجله</a><a href="#"
+              class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">توسعه پایدار</a></div>
+          <div class="flex items-center space-x-6"><button
+              class="text-gray-700 hover:text-gray-900 transition-all duration-300 hover:scale-110"><i
+                data-feather="search" class="w-5 h-5"></i></button><button
+              class="text-gray-700 hover:text-gray-900 transition-all duration-300 hover:scale-110"><i
+                data-feather="user" class="w-5 h-5"></i></button><button
+              class="text-gray-700 hover:text-gray-900 relative transition-all duration-300 hover:scale-110"><i
+                data-feather="shopping-bag" class="w-5 h-5"></i><span
+                class="absolute -top-2 -right-2 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center pulse-animation">۳</span></button><button
+              class="lg:hidden text-gray-700 hover:text-gray-900"><i data-feather="menu" class="w-6 h-6"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <section class="min-h-screen relative flex items-center justify-center text-center overflow-hidden">
+    <img id="hero-bg-image"
+      src="https://images.unsplash.com/photo-1617897903246-719242758050?q=80&w=1887&auto=format&fit=crop"
+      alt="زیبایی طبیعی" class="absolute inset-0 w-full h-full object-cover z-0">
+    <div class="cloud-animation"></div>
+    <div class="particle-overlay"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent z-10"></div>
+    <div class="container mx-auto px-6 relative z-20 text-white">
+      <div data-aos="fade-up" data-aos-duration="1200"><span class="block text-lg font-medium tracking-wider mb-4"
+          style="text-shadow:0 1px 4px rgba(0,0,0,.5)">هنر زیبایی آگاهانه</span>
+        <h1 class="hero-title-creative text-4xl lg:text-6xl font-serif font-bold leading-tight mb-6">درخششی فراتر از
+          طبیعت</h1>
+        <p class="text-lg text-gray-200 mb-10 max-w-2xl leading-relaxed mx-auto"
+          style="text-shadow:0 1px 4px rgba(0,0,0,.5)">با کوالا، جایی که علم پیشرفته و خالص‌ترین ترکیبات طبیعی با هم
+          ترکیب می‌شوند، زیبایی خود را بازتعریف کنید.</p>
+        <div class="flex justify-center"><button
+            class="magnetic-btn group px-8 py-4 bg-white text-gray-900 rounded-full hover:shadow-2xl transition-all duration-300 flex items-center space-x-2 font-semibold"><span>کالکشن
+              را کاوش کنید</span><i data-feather="arrow-left"
+              class="w-5 h-5 group-hover:-translate-x-2 transition-transform duration-300"></i></button></div>
+      </div>
+    </div>
+    <div class="scroll-indicator"></div>
+  </section>
+  <section class="py-24 bg-cream relative overflow-hidden">
+    <div
+      class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vh] bg-rose-200/40 rounded-full blur-3xl opacity-50 z-0">
+    </div>
+    <div class="container mx-auto px-6 relative z-10">
+      <div class="text-center mb-16" data-aos="fade-up"><span
+          class="text-sm font-medium text-rose-800 tracking-wider uppercase mb-4 block">دست‌چین شده برای شما</span>
+        <h2 class="text-4xl lg:text-5xl font-serif font-bold text-gray-800 mb-6">کالکشن‌های ویژه</h2>
+        <div class="cute-divider"><span class="star">✦</span></div>
+        <p class="text-gray-600 max-w-2xl mx-auto text-lg">سفری به دنیای زیبایی‌های ما. هر کالکشن داستانی منحصر به فرد
+          را روایت می‌کند.</p>
+      </div>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8"><a href="#" class="collection-card-link group block">
+          <div class="collection-card-new large h-full" data-aos="fade-right" data-aos-duration="1200">
+            <div class="collection-visuals-container">
+              <div class="card-bg-shapes">
+                <div class="card-bg-shape shape-1"></div>
+                <div class="card-bg-shape shape-2"></div>
+                <div class="card-bg-shape shape-3"></div>
+              </div>
+              <div class="collection-glob float-animation"><img
+                  src="https://images.unsplash.com/photo-1617897903246-719242758050?q=80&w=1887&auto=format&fit=crop"
+                  alt="Skincare Product" class="collection-product-image">
+                <div class="collection-glob-inner"></div>
+              </div>
+            </div>
+            <div class="collection-content-new"><span class="collection-category">مراقبت از پوست</span>
+              <h3 class="collection-title">پوست درخشان</h3>
+              <p class="collection-desc">پوست خود را با فرمول‌های گیاهی ما که برای تغذیه و جوانسازی طراحی شده‌اند، متحول
+                کنید.</p>
+              <div class="collection-link"><span>کشف کنید</span><i data-feather="arrow-left"
+                  class="w-5 h-5 transition-transform duration-300 group-hover:-translate-x-2"></i></div>
+            </div>
+          </div>
+        </a>
+        <div class="flex flex-col gap-8"><a href="#" class="collection-card-link group block">
+            <div class="collection-card-new" data-aos="fade-left" data-aos-duration="1200" data-aos-delay="200">
+              <div class="collection-visuals-container">
+                <div class="card-bg-shapes">
+                  <div class="card-bg-shape shape-1"
+                    style="background:linear-gradient(135deg,#a78bfa,#c4b5fd);animation-duration:21s"></div>
+                  <div class="card-bg-shape shape-2" style="background:var(--lavender);animation-duration:17s"></div>
+                  <div class="card-bg-shape shape-3" style="background:#ddd6fe;animation-duration:25s"></div>
+                </div>
+                <div class="collection-glob float-animation"><img
+                    src="https://images.unsplash.com/photo-1617897903246-719242758050?q=80&w=1887&auto=format&fit=crop"
+                    alt="Makeup Product" class="collection-product-image">
+                  <div class="collection-glob-inner"></div>
+                </div>
+              </div>
+              <div class="collection-content-new"><span class="collection-category" style="color:#8b5cf6">آرایش</span>
+                <h3 class="collection-title">آرایش هنرمندانه</h3>
+                <div class="collection-link"><span>کشف کنید</span><i data-feather="arrow-left"
+                    class="w-5 h-5 transition-transform duration-300 group-hover:-translate-x-2"></i></div>
+              </div>
+            </div>
+          </a><a href="#" class="collection-card-link group block">
+            <div class="collection-card-new" data-aos="fade-left" data-aos-duration="1200" data-aos-delay="400">
+              <div class="collection-visuals-container">
+                <div class="card-bg-shapes">
+                  <div class="card-bg-shape shape-1"
+                    style="background:linear-gradient(135deg,#f59e0b,#fbbf24);animation-duration:19s"></div>
+                  <div class="card-bg-shape shape-2" style="background:var(--butter);animation-duration:23s"></div>
+                  <div class="card-bg-shape shape-3" style="background:#fef3c7;animation-duration:16s"></div>
+                </div>
+                <div class="collection-glob float-animation"><img
+                    src="https://images.unsplash.com/photo-1617897903246-719242758050?q=80&w=1887&auto=format&fit=crop"
+                    alt="Fragrance Product" class="collection-product-image">
+                  <div class="collection-glob-inner"></div>
+                </div>
+              </div>
+              <div class="collection-content-new"><span class="collection-category" style="color:#d97706">عطر</span>
+                <h3 class="collection-title">عطرهای فریبنده</h3>
+                <div class="collection-link"><span>کشف کنید</span><i data-feather="arrow-left"
+                    class="w-5 h-5 transition-transform duration-300 group-hover:-translate-x-2"></i></div>
+              </div>
+            </div>
+          </a></div>
+      </div>
+    </div>
+  </section>
+  <section class="py-32 bestsellers-section relative">
+    <div class="container mx-auto px-6 relative z-10">
+      <div class="text-center mb-20" data-aos="fade-up"><span
+          class="text-sm font-medium text-rose-800 tracking-wider uppercase mb-4 block opacity-90">محبوب‌ترین‌های
+          مشتریان</span>
+        <h2 class="section-title-enhanced text-5xl lg:text-6xl font-serif font-bold text-gray-800 mb-8">زیبایی‌های
+          پرفروش</h2>
+        <div class="cute-divider mb-6"><span class="star">✦</span></div>
+        <p class="text-gray-600 max-w-3xl mx-auto text-lg leading-relaxed">محصولاتی را کشف کنید که مشتریان ما نمی‌توانند
+          بدون آن‌ها زندگی کنند. هر محصول داستان عشق و تحولی را روایت می‌کند.</p>
+      </div>
+      <div class="flex flex-wrap justify-center items-center gap-4 mb-16" data-aos="fade-up" data-aos-delay="100">
+        <button class="filter-btn active" data-filter="all"><span>همه محصولات</span></button><button class="filter-btn"
+          data-filter="skincare"><span>مراقبت از پوست</span></button><button class="filter-btn"
+          data-filter="makeup"><span>آرایش</span></button><button class="filter-btn"
+          data-filter="fragrance"><span>عطر</span></button><button class="filter-btn"
+          data-filter="bestseller"><span>پرفروش‌ترین‌ها</span></button></div>
+      <div id="product-grid" class="columns-1 sm:columns-2 lg:columns-4 gap-4 space-y-4 mb-16"></div>
+      <div class="text-center" data-aos="fade-up" data-aos-delay="100"><a href="#"
+          class="inline-flex items-center px-10 py-5 border-2 border-gray-900 text-gray-900 rounded-full hover:bg-gray-900 hover:text-white transition-all duration-500 group text-lg font-semibold tracking-wide"><i
+            data-feather="arrow-left"
+            class="ml-3 w-5 h-5 group-hover:-translate-x-2 transition-transform duration-300"></i><span>کاوش کامل
+            کالکشن</span></a>
+        <p class="text-gray-500 text-sm mt-4">بیش از ۲۰۰ محصول منحصر به فرد در انتظار شماست</p>
+      </div>
+    </div>
+  </section>
+  <section class="py-24 bg-gradient-to-b from-gray-50 to-white overflow-hidden">
+    <div class="container mx-auto px-6">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        <div class="relative" data-aos="fade-left" data-aos-duration="1000">
+          <div class="relative z-10"><img
+              src="https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=600&h=700&fit=crop" alt="داستان برند"
+              class="rounded-3xl shadow-2xl w-full">
+            <div
+              class="absolute -bottom-10 -left-10 bg-gradient-to-br from-rose-100 to-pink-100 p-8 rounded-2xl shadow-xl">
+              <h3 class="font-serif text-3xl font-bold text-amber-900 mb-2">+۱۲ سال</h3>
+              <p class="text-amber-800">نوآوری در زیبایی</p>
+            </div>
+          </div>
+          <div
+            class="absolute top-0 right-0 w-72 h-72 bg-gradient-to-br from-rose-200 to-pink-200 rounded-full blur-3xl opacity-30 -z-10">
+          </div>
+        </div>
+        <div data-aos="fade-right" data-aos-duration="1000"><span
+            class="text-sm font-medium text-rose-800 tracking-wider uppercase mb-4 block">داستان ما</span>
+          <h2 class="text-4xl lg:text-5xl font-serif font-bold text-gray-800 mb-6">تعریفی نو از زیبایی</h2>
+          <p class="text-gray-600 mb-6 text-lg leading-relaxed">کوالا از شور و اشتیاق به زیبایی پاک و تجمل پایدار متولد
+            شد و نماینده دوران جدیدی در لوازم آرایشی است. ما معتقدیم که زیبایی واقعی از هماهنگی سرچشمه می‌گیرد - هماهنگی
+            میان طبیعت و علم، سنت و نوآوری، تجمل و آگاهی.</p>
+          <p class="text-gray-600 mb-8 leading-relaxed">هر محصول در کالکشن ما، گواهی بر تعهد ما به برتری است که با
+            بهترین مواد اولیه گیاهی و فناوری پیشرفته فرموله شده تا نتایج تحول‌آفرینی را ارائه دهد.</p>
+          <div class="grid grid-cols-2 gap-6 mb-8">
+            <div class="bg-gradient-to-br from-rose-50 to-pink-50 p-6 rounded-2xl">
+              <div class="bg-white w-12 h-12 rounded-full flex items-center justify-center mb-4"><i data-feather="leaf"
+                  class="text-rose-800"></i></div>
+              <h4 class="font-semibold text-gray-800 mb-2">۹۸٪ طبیعی</h4>
+              <p class="text-sm text-gray-600">مواد گیاهی با منبع اخلاقی</p>
+            </div>
+            <div class="bg-gradient-to-br from-purple-50 to-pink-50 p-6 rounded-2xl">
+              <div class="bg-white w-12 h-12 rounded-full flex items-center justify-center mb-4"><i data-feather="heart"
+                  class="text-purple-800"></i></div>
+              <h4 class="font-semibold text-gray-800 mb-2">بدون تست حیوانی</h4>
+              <p class="text-sm text-gray-600">هرگز روی حیوانات تست نشده</p>
+            </div>
+          </div><a href="#"
+            class="inline-flex items-center text-amber-900 font-semibold hover:text-amber-700 transition duration-300 group"><span
+              class="border-b-2 border-amber-900 group-hover:border-amber-700 pb-1">فلسفه ما را کشف کنید</span><i
+              data-feather="arrow-left"
+              class="mr-2 w-4 h-4 group-hover:-translate-x-2 transition-transform duration-300"></i></a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="py-24 bg-gradient-to-b from-white to-gray-50">
+    <div class="container mx-auto px-6">
+      <div class="text-center mb-16" data-aos="fade-up"><span
+          class="text-sm font-medium text-rose-800 tracking-wider uppercase mb-4 block">نظرات مشتریان</span>
+        <h2 class="text-4xl lg:text-5xl font-serif font-bold text-gray-800 mb-6">نامه‌های محبت‌آمیز ✧</h2>
+        <div class="cute-divider"><span class="star">✦</span></div>
+        <p class="text-gray-600 max-w-2xl mx-auto text-lg">داستان‌های واقعی از جامعه زیبای ما</p>
+      </div>
+      <div id="testimonial-grid" class="grid grid-cols-1 md:grid-cols-3 gap-8"></div>
+    </div>
+  </section>
+  <section class="py-24 bg-white">
+    <div class="container mx-auto px-6">
+      <div class="text-center mb-16" data-aos="fade-up"><span
+          class="text-sm font-medium text-rose-800 tracking-wider uppercase mb-4 block">ما را دنبال کنید</span>
+        <h2 class="text-4xl lg:text-5xl font-serif font-bold text-gray-800 mb-6" style="direction:ltr">@koalaw.beauty
+        </h2>
+        <p class="text-gray-600 max-w-2xl mx-auto text-lg">به جامعه علاقه‌مندان به زیبایی ما بپیوندید</p>
+      </div>
+      <div id="instagram-grid" class="grid grid-cols-2 md:grid-cols-4 gap-4" data-aos="fade-up"></div>
+      <div class="text-center mt-12" data-aos="fade-up"><a href="#"
+          class="inline-flex items-center text-rose-900 font-semibold hover:text-rose-700 transition duration-300 group"><i
+            data-feather="instagram" class="ml-2 w-5 h-5"></i><span>ما را در اینستاگرام دنبال کنید</span><i
+            data-feather="arrow-left"
+            class="mr-2 w-4 h-4 group-hover:-translate-x-2 transition-transform duration-300"></i></a></div>
+    </div>
+  </section>
+  <section class="py-24 newsletter-bg relative">
+    <div class="container mx-auto px-6 relative z-10">
+      <div class="max-w-4xl mx-auto text-center" data-aos="fade-up">
+        <h2 class="text-4xl lg:text-5xl font-serif font-bold text-white mb-6">درخشان بمانید</h2>
+        <div class="cute-divider"><span class="star">✦</span></div>
+        <p class="text-rose-100 mb-10 text-lg max-w-2xl mx-auto">اولین کسی باشید که از کالکشن‌های جدید، پیشنهادات
+          انحصاری و نکات زیبایی متخصصان ما باخبر می‌شود.</p>
+        <form class="flex flex-col sm:flex-row max-w-xl mx-auto gap-4"><input type="email"
+            placeholder="ایمیل خود را وارد کنید"
+            class="flex-grow px-6 py-4 rounded-full text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-rose-300/50 transition-all duration-300"><button
+            type="submit"
+            class="px-8 py-4 bg-white text-gray-900 rounded-full font-semibold hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 hover:shadow-xl">عضویت</button>
+        </form>
+        <p class="text-xs text-rose-200 mt-6">به بیش از ۵۰,۰۰۰ دوست‌دار زیبایی بپیوندید. لغو عضویت در هر زمان ممکن است.
+        </p>
+      </div>
+    </div>
+  </section>
+  <footer class="bg-gradient-to-b from-gray-900 to-black text-white py-20">
+    <div class="container mx-auto px-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-12">
+        <div class="lg:col-span-2">
+          <h3 class="text-3xl font-serif font-bold mb-6">KOALAW</h3>
+          <p class="text-gray-400 mb-8 leading-relaxed">ارتقای زیبایی از طریق تجمل آگاهانه. هر محصول جشنی از بهترین مواد
+            طبیعی و علم نوآورانه است.</p>
+          <div class="flex space-x-4"><a href="#"
+              class="bg-gray-800 p-3 rounded-full hover:bg-gray-700 transition-all duration-300 transform hover:scale-110"><i
+                data-feather="instagram" class="w-5 h-5"></i></a><a href="#"
+              class="bg-gray-800 p-3 rounded-full hover:bg-gray-700 transition-all duration-300 transform hover:scale-110"><i
+                data-feather="facebook" class="w-5 h-5"></i></a><a href="#"
+              class="bg-gray-800 p-3 rounded-full hover:bg-gray-700 transition-all duration-300 transform hover:scale-110"><i
+                data-feather="twitter" class="w-5 h-5"></i></a><a href="#"
+              class="bg-gray-800 p-3 rounded-full hover:bg-gray-700 transition-all duration-300 transform hover:scale-110"><i
+                data-feather="youtube" class="w-5 h-5"></i></a></div>
+        </div>
+        <div id="footer-links"></div>
+      </div>
+      <div class="border-t border-gray-800 pt-8">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+          <div class="flex flex-col md:flex-row items-center mb-4 md:mb-0">
+            <p class="text-gray-400 text-sm mb-2 md:mb-0 md:ml-6">© ۲۰۲۴ کوالا بیوتی. تمام حقوق محفوظ است.</p>
+            <div class="flex space-x-6 text-sm"><a href="#"
+                class="text-gray-400 hover:text-white transition duration-300">سیاست حفظ حریم خصوصی</a><a href="#"
+                class="text-gray-400 hover:text-white transition duration-300">شرایط خدمات</a><a href="#"
+                class="text-gray-400 hover:text-white transition duration-300">سیاست کوکی</a></div>
+          </div>
+          <div class="flex items-center space-x-4"><span class="text-gray-400 text-sm ml-2">پرداخت امن:</span><img
+              src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa"
+              class="h-8 opacity-70 hover:opacity-100 transition-opacity duration-300"><img
+              src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard"
+              class="h-8 opacity-70 hover:opacity-100 transition-opacity duration-300"><img
+              src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal"
+              class="h-6 opacity-70 hover:opacity-100 transition-opacity duration-300"><img
+              src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" alt="Apple Pay"
+              class="h-8 opacity-70 hover:opacity-100 transition-opacity duration-300"></div>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <button id="backToTop"
+    class="fixed bottom-8 left-8 bg-gradient-to-r from-gray-900 to-black text-white p-4 rounded-full shadow-lg opacity-0 invisible transition-all duration-300 hover:shadow-xl transform hover:scale-110 z-40"><i
+      data-feather="arrow-up" class="w-5 h-5"></i></button>
 
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    AOS.init({duration:800,easing:"ease-out-cubic",once:!0,offset:50});
-    feather.replace();
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      AOS.init({ duration: 800, easing: "ease-out-cubic", once: !0, offset: 50 });
+      feather.replace();
 
-    // --- DYNAMIC CONTENT GENERATION ---
-    const cloudContainer=document.querySelector(".cloud-animation"),particleContainer=document.querySelector(".particle-overlay"),productGrid=document.getElementById("product-grid"),testimonialGrid=document.getElementById("testimonial-grid"),instagramGrid=document.getElementById("instagram-grid"),footerLinksContainer=document.getElementById("footer-links");
-    for(let i=1;i<=10;i++)cloudContainer.innerHTML+=`<div class="cloud cloud-${i}"></div>`;
-    for(let i=0;i<9;i++)particleContainer.innerHTML+=`<div class="particle" style="left:${10+i*10}%;animation-duration:${25+Math.random()*10}s;animation-delay:${Math.random()*15}s"></div>`;
-    
-    const products=[{d:"100",c:"skincare bestseller",b:"discount",bt:"۲۵٪ تخفیف",i:"1617897903246-719242758050",cat:"سرم صورت",t:"اکسیر درخشش طلایی",p:"۴۸.۰۰ $",op:"۶۴.۰۰ $"},{d:"200",c:"makeup",b:"vegan",bt:"وگان",i:"1586495777744-4413f21062fa",cat:"رژ لب",t:"بوسه مخملی مات",p:"۳۲.۰۰ $"},{d:"300",c:"makeup",b:"new",bt:"جدید",i:"1631730486572-226d1f595b68",cat:"کرم پودر",t:"پایه ابریشمی بی‌نقص",p:"۴۲.۰۰ $"},{d:"400",c:"fragrance bestseller",b:"bestseller",bt:"پرفروش",i:"1541643600914-78b084683601",cat:"عطر زنانه",t:"راز نیمه‌شب",p:"۷۸.۰۰ $"},{d:"100",c:"skincare",bs:"right:16px;left:auto;background:linear-gradient(135deg,#38bdf8 0%,#0ea5e9 100%);box-shadow:0 4px 16px rgba(56,189,248,.3);color:#fff",bt:"آبرسان",i:"1590152868212-2d131b643ff2",cat:"مرطوب کننده",t:"کرم ابریشمی هیدرا",p:"۵۵.۰۰ $"},{d:"200",c:"makeup",i:"1557205465-f374a4a49cde",cat:"پالت سایه چشم",t:"رؤیاهای صحرا",p:"۴۹.۰۰ $"},{d:"300",c:"skincare",b:"limited",bt:"نسخه محدود",i:"1620916566398-39f168a27e20",cat:"کرم دور چشم",t:"احیاگر چشم روشن",p:"۶۲.۰۰ $"},{d:"400",c:"skincare",b:"organic",bt:"بدون سولفات",i:"1611059142868-84b5a452c9d8",cat:"پاک کننده",t:"فوم پاک کننده ملایم",p:"۲۸.۰۰ $"}];
-    products.forEach(p=>{productGrid.innerHTML+=`<div class="product-card-pro break-inside-avoid" data-aos="fade-up" data-aos-delay="${p.d}" data-category="${p.c}"><div class="product-image-container">${p.bt?`<div class="product-badge ${p.b?'badge-'+p.b:''}" ${p.bs?`style="${p.bs}"`:''}><span>${p.bt}</span></div>`:""}<img src="https://images.unsplash.com/photo-${p.i}?w=400&h=500&fit=crop" alt="${p.t}"><div class="product-action-overlay"><button class="action-btn" title="مشاهده سریع"><i data-feather="eye" class="w-6 h-6"></i></button><button class="action-btn" title="افزودن به علاقه‌مندی‌ها"><i data-feather="heart" class="w-6 h-6"></i></button></div><div class="product-info-pro"><p class="product-category-pro">${p.cat}</p><h3 class="product-title-pro">${p.t}</h3><div class="product-footer-pro"><div class="product-price-pro"><span>${p.p}</span>${p.op?`<span class="original-price">${p.op}</span>`:""}</div><button class="add-to-cart-btn-pro"><i data-feather="shopping-bag" class="w-5 h-5"></i><span>افزودن</span></button></div></div></div></div>`});
+      // --- DYNAMIC CONTENT GENERATION ---
+      const cloudContainer = document.querySelector(".cloud-animation"), particleContainer = document.querySelector(".particle-overlay"), productGrid = document.getElementById("product-grid"), testimonialGrid = document.getElementById("testimonial-grid"), instagramGrid = document.getElementById("instagram-grid"), footerLinksContainer = document.getElementById("footer-links");
+      for (let i = 1; i <= 10; i++)cloudContainer.innerHTML += `<div class="cloud cloud-${i}"></div>`;
+      for (let i = 0; i < 9; i++)particleContainer.innerHTML += `<div class="particle" style="left:${10 + i * 10}%;animation-duration:${25 + Math.random() * 10}s;animation-delay:${Math.random() * 15}s"></div>`;
 
-    const testimonials=[{d:100,i:"1438761681033-6461ffad8d80",t:"«اکسیر درخشش طلایی پوست من را کاملاً متحول کرده. هرگز اینقدر از پوستم تعریف نشنیده بودم. انگار یک فیلتر در زندگی واقعی دارم!»",n:"سوفیا چن",s:"خریدار تایید شده • ۳ ماه پیش"},{d:200,i:"1494790108377-be9c29b29330",t:"«به عنوان یک میکاپ آرتیست، من در مورد محصولات بسیار سخت‌گیر هستم. کرم پودر کوالا یک تغییر بزرگ است. مشتریانم عاشقش شده‌اند!»",n:"اِما رودریگز",s:"میکاپ آرتیست حرفه‌ای • ۱ ماه پیش"},{d:300,i:"1507003211169-0a1dd7228f2d",t:"«عطر راز نیمه‌شب حالا عطر امضای من است. شیک، ماندگار و هر روز از من می‌پرسند چه عطری زده‌ام. تجمل خالص در یک بطری!»",n:"مایکل پارک",s:"مشتری وفادار • ۲ هفته پیش"}];
-    testimonials.forEach(t=>{testimonialGrid.innerHTML+=`<div class="testimonial-card" data-aos="fade-up" data-aos-delay="${t.d}"><div class="flex mb-6"><div class="flex text-yellow-400">${'<i data-feather="star" class="w-5 h-5 fill-current"></i>'.repeat(5)}</div></div><p class="text-gray-600 mb-8 italic leading-relaxed">${t.t}</p><div class="flex items-center"><img src="https://images.unsplash.com/photo-${t.i}?w=100&h=100&fit=crop" alt="مشتری" class="w-14 h-14 rounded-full object-cover ml-4"><div><h4 class="font-semibold text-gray-800">${t.n}</h4><p class="text-sm text-gray-500">${t.s}</p></div></div></div>`});
+      const products = [{ d: "100", c: "skincare bestseller", b: "discount", bt: "۲۵٪ تخفیف", i: "1617897903246-719242758050", cat: "سرم صورت", t: "اکسیر درخشش طلایی", p: "۴۸.۰۰ $", op: "۶۴.۰۰ $" }, { d: "200", c: "makeup", b: "vegan", bt: "وگان", i: "1586495777744-4413f21062fa", cat: "رژ لب", t: "بوسه مخملی مات", p: "۳۲.۰۰ $" }, { d: "300", c: "makeup", b: "new", bt: "جدید", i: "1631730486572-226d1f595b68", cat: "کرم پودر", t: "پایه ابریشمی بی‌نقص", p: "۴۲.۰۰ $" }, { d: "400", c: "fragrance bestseller", b: "bestseller", bt: "پرفروش", i: "1541643600914-78b084683601", cat: "عطر زنانه", t: "راز نیمه‌شب", p: "۷۸.۰۰ $" }, { d: "100", c: "skincare", bs: "right:16px;left:auto;background:linear-gradient(135deg,#38bdf8 0%,#0ea5e9 100%);box-shadow:0 4px 16px rgba(56,189,248,.3);color:#fff", bt: "آبرسان", i: "1590152868212-2d131b643ff2", cat: "مرطوب کننده", t: "کرم ابریشمی هیدرا", p: "۵۵.۰۰ $" }, { d: "200", c: "makeup", i: "1557205465-f374a4a49cde", cat: "پالت سایه چشم", t: "رؤیاهای صحرا", p: "۴۹.۰۰ $" }, { d: "300", c: "skincare", b: "limited", bt: "نسخه محدود", i: "1620916566398-39f168a27e20", cat: "کرم دور چشم", t: "احیاگر چشم روشن", p: "۶۲.۰۰ $" }, { d: "400", c: "skincare", b: "organic", bt: "بدون سولفات", i: "1611059142868-84b5a452c9d8", cat: "پاک کننده", t: "فوم پاک کننده ملایم", p: "۲۸.۰۰ $" }];
+      products.forEach(p => { productGrid.innerHTML += `<div class="product-card-pro break-inside-avoid" data-aos="fade-up" data-aos-delay="${p.d}" data-category="${p.c}"><div class="product-image-container">${p.bt ? `<div class="product-badge ${p.b ? 'badge-' + p.b : ''}" ${p.bs ? `style="${p.bs}"` : ''}><span>${p.bt}</span></div>` : ""}<img src="https://images.unsplash.com/photo-${p.i}?w=400&h=500&fit=crop" alt="${p.t}"><div class="product-action-overlay"><button class="action-btn" title="مشاهده سریع"><i data-feather="eye" class="w-6 h-6"></i></button><button class="action-btn" title="افزودن به علاقه‌مندی‌ها"><i data-feather="heart" class="w-6 h-6"></i></button></div><div class="product-info-pro"><p class="product-category-pro">${p.cat}</p><h3 class="product-title-pro">${p.t}</h3><div class="product-footer-pro"><div class="product-price-pro"><span>${p.p}</span>${p.op ? `<span class="original-price">${p.op}</span>` : ""}</div><button class="add-to-cart-btn-pro"><i data-feather="shopping-bag" class="w-5 h-5"></i><span>افزودن</span></button></div></div></div></div>` });
 
-    const instaPosts=[{i:"1522335789203-aabd1fc54bc9",l:"۲.۳"},{i:"1512207736890-6ffca8dad650",l:"۳.۱"},{i:"1516975080664-ed2fc6a32937",l:"۱.۸"},{i:"1519699047748-de8e457a634e",l:"۴.۲"}];
-    instaPosts.forEach(p=>{instagramGrid.innerHTML+=`<div class="relative group overflow-hidden rounded-2xl"><img src="https://images.unsplash.com/photo-${p.i}?w=400&h=400&fit=crop" alt="اینستاگرام" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"><div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4"><div class="text-white"><i data-feather="heart" class="w-5 h-5 mb-1"></i><p class="text-sm">${p.l} هزار لایک</p></div></div></div>`});
+      const testimonials = [{ d: 100, i: "1438761681033-6461ffad8d80", t: "«اکسیر درخشش طلایی پوست من را کاملاً متحول کرده. هرگز اینقدر از پوستم تعریف نشنیده بودم. انگار یک فیلتر در زندگی واقعی دارم!»", n: "سوفیا چن", s: "خریدار تایید شده • ۳ ماه پیش" }, { d: 200, i: "1494790108377-be9c29b29330", t: "«به عنوان یک میکاپ آرتیست، من در مورد محصولات بسیار سخت‌گیر هستم. کرم پودر کوالا یک تغییر بزرگ است. مشتریانم عاشقش شده‌اند!»", n: "اِما رودریگز", s: "میکاپ آرتیست حرفه‌ای • ۱ ماه پیش" }, { d: 300, i: "1507003211169-0a1dd7228f2d", t: "«عطر راز نیمه‌شب حالا عطر امضای من است. شیک، ماندگار و هر روز از من می‌پرسند چه عطری زده‌ام. تجمل خالص در یک بطری!»", n: "مایکل پارک", s: "مشتری وفادار • ۲ هفته پیش" }];
+      testimonials.forEach(t => { testimonialGrid.innerHTML += `<div class="testimonial-card" data-aos="fade-up" data-aos-delay="${t.d}"><div class="flex mb-6"><div class="flex text-yellow-400">${'<i data-feather="star" class="w-5 h-5 fill-current"></i>'.repeat(5)}</div></div><p class="text-gray-600 mb-8 italic leading-relaxed">${t.t}</p><div class="flex items-center"><img src="https://images.unsplash.com/photo-${t.i}?w=100&h=100&fit=crop" alt="مشتری" class="w-14 h-14 rounded-full object-cover ml-4"><div><h4 class="font-semibold text-gray-800">${t.n}</h4><p class="text-sm text-gray-500">${t.s}</p></div></div></div>` });
 
-    const footerLinks={فروشگاه:["تازه‌ها","پرفروش‌ترین‌ها","مراقبت از پوست","آرایش","عطر","ست‌های هدیه"],"درباره ما":["داستان ما","ترکیبات","توسعه پایدار","رسانه‌ها","فرصت‌های شغلی","فروشگاه‌ها"],"خدمات مشتریان":["تماس با ما","سوالات متداول","اطلاعات ارسال","مرجوعی","پیگیری سفارش","راهنمای سایز"]};
-    for(const title in footerLinks){let linksHTML="";footerLinks[title].forEach(link=>linksHTML+=`<li><a href="#" class="text-gray-400 hover:text-white transition duration-300">${link}</a></li>`);footerLinksContainer.innerHTML+=`<div><h4 class="font-semibold text-lg mb-6">${title}</h4><ul class="space-y-3">${linksHTML}</ul></div>`}
-    
-    feather.replace();
+      const instaPosts = [{ i: "1522335789203-aabd1fc54bc9", l: "۲.۳" }, { i: "1512207736890-6ffca8dad650", l: "۳.۱" }, { i: "1516975080664-ed2fc6a32937", l: "۱.۸" }, { i: "1519699047748-de8e457a634e", l: "۴.۲" }];
+      instaPosts.forEach(p => { instagramGrid.innerHTML += `<div class="relative group overflow-hidden rounded-2xl"><img src="https://images.unsplash.com/photo-${p.i}?w=400&h=400&fit=crop" alt="اینستاگرام" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"><div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4"><div class="text-white"><i data-feather="heart" class="w-5 h-5 mb-1"></i><p class="text-sm">${p.l} هزار لایک</p></div></div></div>` });
 
-    // --- CURSOR SCRIPT ---
-    const cursor=document.querySelector(".cursor"),cursorFace=document.querySelector(".cursor-face"),cursorFollower=document.querySelector(".cursor-follower");let cursorX=0,cursorY=0,followerX=0,followerY=0,speed=.5;
-    if(window.innerWidth>768){document.addEventListener("mousemove",e=>{cursorX=e.clientX;cursorY=e.clientY});(function animateCursor(){cursor.style.left=cursorX+"px";cursor.style.top=cursorY+"px";cursorFace.style.left=cursorX+"px";cursorFace.style.top=cursorY+"px";followerX+=(cursorX-followerX)*speed;followerY+=(cursorY-followerY)*speed;cursorFollower.style.left=followerX+"px";cursorFollower.style.top=followerY+"px";requestAnimationFrame(animateCursor)})();document.querySelectorAll("a,button,.product-card-pro,.collection-card-new").forEach(e=>{e.addEventListener("mouseenter",()=>{cursor.classList.add("hover");cursorFollower.style.transform="translate(-50%,-50%) scale(1.5)"});e.addEventListener("mouseleave",()=>{cursor.classList.remove("hover");cursorFollower.style.transform="translate(-50%,-50%) scale(1)"})})}else[cursor,cursorFace,cursorFollower].forEach(e=>e.style.display="none");
-    
-    // --- PAGE SCRIPTS ---
-    window.addEventListener("load",()=>setTimeout(()=>{const e=document.getElementById("loader");e.style.opacity="0";setTimeout(()=>e.style.display="none",500)},2e3));
-    const navbar=document.getElementById("navbar"),backToTop=document.getElementById("backToTop");let lastScroll=0;
-    window.addEventListener("scroll",()=>{const e=window.pageYOffset;navbar.style.background=e>100?"rgba(250,248,243,.95)":"rgba(250,248,243,.85)";navbar.style.boxShadow=e>100?"0 4px 30px rgba(0,0,0,.1)":"0 1px 20px rgba(0,0,0,.05)";navbar.style.transform=e>lastScroll&&e>500?"translateY(-100%)":"translateY(0)";lastScroll=e;if(e>500){backToTop.style.opacity="1";backToTop.style.visibility="visible"}else{backToTop.style.opacity="0";backTotop.style.visibility="hidden"}});
-    backToTop.addEventListener("click",()=>window.scrollTo({top:0,behavior:"smooth"}));
+      const footerLinks = { فروشگاه: ["تازه‌ها", "پرفروش‌ترین‌ها", "مراقبت از پوست", "آرایش", "عطر", "ست‌های هدیه"], "درباره ما": ["داستان ما", "ترکیبات", "توسعه پایدار", "رسانه‌ها", "فرصت‌های شغلی", "فروشگاه‌ها"], "خدمات مشتریان": ["تماس با ما", "سوالات متداول", "اطلاعات ارسال", "مرجوعی", "پیگیری سفارش", "راهنمای سایز"] };
+      for (const title in footerLinks) { let linksHTML = ""; footerLinks[title].forEach(link => linksHTML += `<li><a href="#" class="text-gray-400 hover:text-white transition duration-300">${link}</a></li>`); footerLinksContainer.innerHTML += `<div><h4 class="font-semibold text-lg mb-6">${title}</h4><ul class="space-y-3">${linksHTML}</ul></div>` }
 
-    const filterButtons=document.querySelectorAll(".filter-btn"),allProductCards=document.querySelectorAll(".product-card-pro");
-    filterButtons.forEach(button=>{button.addEventListener("click",()=>{filterButtons.forEach(btn=>btn.classList.remove("active"));button.classList.add("active");const filterValue=button.getAttribute("data-filter");allProductCards.forEach(card=>{const categories=card.getAttribute("data-category").split(" ");card.style.display=filterValue==="all"||categories.includes(filterValue)?"block":"none"})})});
-    
-    // --- GSAP & ANIMATIONS ---
-    gsap.registerPlugin(ScrollTrigger);
-    gsap.to("#hero-bg-image",{y:"20vh",ease:"none",scrollTrigger:{trigger:"body",start:"top top",end:"bottom top",scrub:1.5}});
-    document.querySelectorAll(".magnetic-btn").forEach(btn=>{btn.addEventListener("mousemove",e=>{const t=btn.getBoundingClientRect(),o=e.clientX-t.left-t.width/2,r=e.clientY-t.top-t.height/2;gsap.to(btn,{x:.15*o,y:.15*r,duration:.3})});btn.addEventListener("mouseleave",()=>gsap.to(btn,{x:0,y:0,duration:.3,ease:"power3.out"}))});
-    document.querySelectorAll(".collection-card-link").forEach(link=>{link.addEventListener("click",function(e){e.preventDefault();const destination=this.href;this.querySelector(".collection-card-new").classList.add("animating");setTimeout(()=>window.location.href=destination,800)})});
-    (function(){if(!window.matchMedia("(prefers-reduced-motion:reduce)").matches){document.addEventListener("click",e=>{if(e.target.closest("input,textarea,select,button,a"))return;const t=document.createElement("span");t.className="floating-heart";t.textContent=["❤","✦","✧","❀","❣","★"][Math.floor(6*Math.random())];t.style.left=e.clientX+"px";t.style.top=e.clientY+"px";t.style.color=["#f7bcd6","#c9c2ff","#bcefe1","#ffe3a4","#ffcfe0","#d6f0ff"][Math.floor(6*Math.random())];t.style.transform+=` rotate(${30*Math.random()-15}deg)`;document.body.appendChild(t);setTimeout(()=>t.remove(),1300)},{passive:!0})}})();
-});
-</script>
+      feather.replace();
+
+      // --- CURSOR SCRIPT ---
+      const cursor = document.querySelector(".cursor"), cursorFace = document.querySelector(".cursor-face"), cursorFollower = document.querySelector(".cursor-follower"); let cursorX = 0, cursorY = 0, followerX = 0, followerY = 0, speed = .5;
+      if (window.innerWidth > 768) { document.addEventListener("mousemove", e => { cursorX = e.clientX; cursorY = e.clientY }); (function animateCursor() { cursor.style.left = cursorX + "px"; cursor.style.top = cursorY + "px"; cursorFace.style.left = cursorX + "px"; cursorFace.style.top = cursorY + "px"; followerX += (cursorX - followerX) * speed; followerY += (cursorY - followerY) * speed; cursorFollower.style.left = followerX + "px"; cursorFollower.style.top = followerY + "px"; requestAnimationFrame(animateCursor) })(); document.querySelectorAll("a,button,.product-card-pro,.collection-card-new").forEach(e => { e.addEventListener("mouseenter", () => { cursor.classList.add("hover"); cursorFollower.style.transform = "translate(-50%,-50%) scale(1.5)" }); e.addEventListener("mouseleave", () => { cursor.classList.remove("hover"); cursorFollower.style.transform = "translate(-50%,-50%) scale(1)" }) }) } else[cursor, cursorFace, cursorFollower].forEach(e => e.style.display = "none");
+
+      // --- PAGE SCRIPTS ---
+      window.addEventListener("load", () => setTimeout(() => { const e = document.getElementById("loader"); e.style.opacity = "0"; setTimeout(() => e.style.display = "none", 500) }, 2e3));
+      const navbar = document.getElementById("navbar"), backToTop = document.getElementById("backToTop"); let lastScroll = 0;
+      window.addEventListener("scroll", () => { const e = window.pageYOffset; navbar.style.background = e > 100 ? "rgba(250,248,243,.95)" : "rgba(250,248,243,.85)"; navbar.style.boxShadow = e > 100 ? "0 4px 30px rgba(0,0,0,.1)" : "0 1px 20px rgba(0,0,0,.05)"; navbar.style.transform = e > lastScroll && e > 500 ? "translateY(-100%)" : "translateY(0)"; lastScroll = e; if (e > 500) { backToTop.style.opacity = "1"; backToTop.style.visibility = "visible" } else { backToTop.style.opacity = "0"; backTotop.style.visibility = "hidden" } });
+      backToTop.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+
+      const filterButtons = document.querySelectorAll(".filter-btn"), allProductCards = document.querySelectorAll(".product-card-pro");
+      filterButtons.forEach(button => { button.addEventListener("click", () => { filterButtons.forEach(btn => btn.classList.remove("active")); button.classList.add("active"); const filterValue = button.getAttribute("data-filter"); allProductCards.forEach(card => { const categories = card.getAttribute("data-category").split(" "); card.style.display = filterValue === "all" || categories.includes(filterValue) ? "block" : "none" }) }) });
+
+      // --- GSAP & ANIMATIONS ---
+      gsap.registerPlugin(ScrollTrigger);
+      gsap.to("#hero-bg-image", { y: "20vh", ease: "none", scrollTrigger: { trigger: "body", start: "top top", end: "bottom top", scrub: 1.5 } });
+      document.querySelectorAll(".magnetic-btn").forEach(btn => { btn.addEventListener("mousemove", e => { const t = btn.getBoundingClientRect(), o = e.clientX - t.left - t.width / 2, r = e.clientY - t.top - t.height / 2; gsap.to(btn, { x: .15 * o, y: .15 * r, duration: .3 }) }); btn.addEventListener("mouseleave", () => gsap.to(btn, { x: 0, y: 0, duration: .3, ease: "power3.out" })) });
+      document.querySelectorAll(".collection-card-link").forEach(link => { link.addEventListener("click", function (e) { e.preventDefault(); const destination = this.href; this.querySelector(".collection-card-new").classList.add("animating"); setTimeout(() => window.location.href = destination, 800) }) });
+      (function () { if (!window.matchMedia("(prefers-reduced-motion:reduce)").matches) { document.addEventListener("click", e => { if (e.target.closest("input,textarea,select,button,a")) return; const t = document.createElement("span"); t.className = "floating-heart"; t.textContent = ["❤", "✦", "✧", "❀", "❣", "★"][Math.floor(6 * Math.random())]; t.style.left = e.clientX + "px"; t.style.top = e.clientY + "px"; t.style.color = ["#f7bcd6", "#c9c2ff", "#bcefe1", "#ffe3a4", "#ffcfe0", "#d6f0ff"][Math.floor(6 * Math.random())]; t.style.transform += ` rotate(${30 * Math.random() - 15}deg)`; document.body.appendChild(t); setTimeout(() => t.remove(), 1300) }, { passive: !0 }) } })();
+    });
+  </script>
 </body>
+
 </html>
