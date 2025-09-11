@@ -1285,6 +1285,77 @@
     .brand-item:hover .brand-name {
         color: var(--primary);
     }
+
+    /* === NEW: CATEGORY CARD STYLES === */
+    .category-card {
+      position: relative;
+      overflow: hidden;
+      border-radius: 24px;
+      aspect-ratio: 1 / 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 1.5rem;
+      text-decoration: none;
+      color: white;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    }
+    .category-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.15);
+    }
+    .category-card-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+      z-index: 1;
+    }
+    .category-card:hover .category-card-bg {
+      transform: scale(1.1);
+    }
+    .category-card-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.1) 60%, transparent 100%);
+      z-index: 2;
+      transition: background 0.4s ease;
+    }
+    .category-card:hover .category-card-overlay {
+        background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 60%, transparent 100%);
+    }
+    .category-card-content {
+      position: relative;
+      z-index: 3;
+      text-align: right;
+    }
+    .category-card-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 16px;
+      background-color: rgba(255,255,255,0.15);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+      transition: all 0.4s ease;
+    }
+    .category-card:hover .category-card-icon {
+      background-color: var(--primary);
+      border-color: transparent;
+      transform: rotate(-10deg) scale(1.1);
+    }
+    .category-card-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      text-shadow: 0 2px 5px rgba(0,0,0,0.5);
+    }
   </style>
 </head>
 
@@ -1437,6 +1508,86 @@
       </div>
     </div>
   </section>
+
+  <!-- =============================================== -->
+  <!-- NEW: CATEGORIES SECTION START                   -->
+  <!-- =============================================== -->
+  <section class="py-24 bg-gray-50/50">
+    <div class="container mx-auto px-6">
+      <div class="text-center mb-16" data-aos="fade-up">
+        <span class="text-sm font-medium text-rose-800 tracking-wider uppercase mb-4 block">راهنمای شما</span>
+        <h2 class="text-4xl lg:text-5xl font-serif font-bold text-gray-800 mb-6">خرید بر اساس دسته‌بندی</h2>
+        <div class="cute-divider"><span class="star">✦</span></div>
+        <p class="text-gray-600 max-w-2xl mx-auto text-lg mt-4">محصولات مورد علاقه خود را در مجموعه‌های منتخب ما بیابید. از مراقبت‌های ضروری پوست تا آرایش‌های جذاب.</p>
+      </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 lg:gap-8" data-aos="fade-up" data-aos-delay="200">
+        
+        <!-- Category Card 1: Skincare -->
+        <a href="/shop?category=skincare" class="category-card">
+          <img src="./image/skin.png" alt="مراقبت از پوست" class="category-card-bg">
+          <div class="category-card-overlay"></div>
+          <div class="category-card-content">
+            <div class="category-card-icon">
+              <i data-feather="shield" class="w-6 h-6"></i>
+            </div>
+            <h3 class="category-card-title">مراقبت از پوست</h3>
+          </div>
+        </a>
+
+        <!-- Category Card 2: Makeup -->
+        <a href="/shop?category=makeup" class="category-card">
+          <img src="./image/cosmetic.png" alt="آرایش" class="category-card-bg">
+          <div class="category-card-overlay"></div>
+          <div class="category-card-content">
+            <div class="category-card-icon">
+              <i data-feather="pen-tool" class="w-6 h-6"></i>
+            </div>
+            <h3 class="category-card-title">آرایش</h3>
+          </div>
+        </a>
+
+        <!-- Category Card 3: Fragrance -->
+        <a href="/shop?category=fragrance" class="category-card">
+          <img src="./image/perfume.png" alt="عطر" class="category-card-bg">
+          <div class="category-card-overlay"></div>
+          <div class="category-card-content">
+            <div class="category-card-icon">
+              <i data-feather="wind" class="w-6 h-6"></i>
+            </div>
+            <h3 class="category-card-title">عطر</h3>
+          </div>
+        </a>
+
+        <!-- Category Card 4: Haircare -->
+        <a href="/shop?category=haircare" class="category-card">
+          <img src="./image/hair.png" alt="مراقبت از مو" class="category-card-bg">
+          <div class="category-card-overlay"></div>
+          <div class="category-card-content">
+            <div class="category-card-icon">
+              <i data-feather="git-branch" class="w-6 h-6"></i>
+            </div>
+            <h3 class="category-card-title">مراقبت از مو</h3>
+          </div>
+        </a>
+
+        <!-- Category Card 5: Body & Bath -->
+        <a href="/shop?category=body-bath" class="category-card">
+          <img src="./image/body.png" alt="بدن و حمام" class="category-card-bg">
+          <div class="category-card-overlay"></div>
+          <div class="category-card-content">
+            <div class="category-card-icon">
+              <i data-feather="droplet" class="w-6 h-6"></i>
+            </div>
+            <h3 class="category-card-title">بدن و حمام</h3>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+  <!-- =============================================== -->
+  <!-- CATEGORIES SECTION END                          -->
+  <!-- =============================================== -->
 
   <!-- =============================================== -->
   <!-- BRANDS SECTION START (MODIFIED) -->
@@ -1785,7 +1936,7 @@
 
       // --- CURSOR SCRIPT ---
       const cursor = document.querySelector(".cursor"), cursorFace = document.querySelector(".cursor-face"), cursorFollower = document.querySelector(".cursor-follower"); let cursorX = 0, cursorY = 0, followerX = 0, followerY = 0, speed = .5;
-      if (window.innerWidth > 768) { document.addEventListener("mousemove", e => { cursorX = e.clientX; cursorY = e.clientY }); (function animateCursor() { cursor.style.left = cursorX + "px"; cursor.style.top = cursorY + "px"; cursorFace.style.left = cursorX + "px"; cursorFace.style.top = cursorY + "px"; followerX += (cursorX - followerX) * speed; followerY += (cursorY - followerY) * speed; cursorFollower.style.left = followerX + "px"; cursorFollower.style.top = followerY + "px"; requestAnimationFrame(animateCursor) })(); document.querySelectorAll("a,button,.product-card-v2,.collection-card-new").forEach(e => { e.addEventListener("mouseenter", () => { cursor.classList.add("hover"); cursorFollower.style.transform = "translate(-50%,-50%) scale(1.5)" }); e.addEventListener("mouseleave", () => { cursor.classList.remove("hover"); cursorFollower.style.transform = "translate(-50%,-50%) scale(1)" }) }) } else[cursor, cursorFace, cursorFollower].forEach(e => e.style.display = "none");
+      if (window.innerWidth > 768) { document.addEventListener("mousemove", e => { cursorX = e.clientX; cursorY = e.clientY }); (function animateCursor() { cursor.style.left = cursorX + "px"; cursor.style.top = cursorY + "px"; cursorFace.style.left = cursorX + "px"; cursorFace.style.top = cursorY + "px"; followerX += (cursorX - followerX) * speed; followerY += (cursorY - followerY) * speed; cursorFollower.style.left = followerX + "px"; cursorFollower.style.top = followerY + "px"; requestAnimationFrame(animateCursor) })(); document.querySelectorAll("a,button,.product-card-v2,.collection-card-new, .category-card").forEach(e => { e.addEventListener("mouseenter", () => { cursor.classList.add("hover"); cursorFollower.style.transform = "translate(-50%,-50%) scale(1.5)" }); e.addEventListener("mouseleave", () => { cursor.classList.remove("hover"); cursorFollower.style.transform = "translate(-50%,-50%) scale(1)" }) }) } else[cursor, cursorFace, cursorFollower].forEach(e => e.style.display = "none");
 
       // --- PAGE SCRIPTS ---
       window.addEventListener("load", () => setTimeout(() => { const e = document.getElementById("loader"); e.style.opacity = "0"; setTimeout(() => e.style.display = "none", 500) }, 2e3));
