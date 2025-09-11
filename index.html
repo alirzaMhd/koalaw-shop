@@ -21,8 +21,13 @@
         --secondary: #1a1a1a;
         --accent: #ffe9f2;
         --rose-gold: #f0b7c4;
+        --rose-cream: #e3d1d6;
         --cream: #faf8f3;
         --deep-brown: #3d2914;
+        --blush: #ffd7e5;
+        --lavender: #eae2ff;
+        --mint: #dff8ef;
+        --butter: #fff3bf;
       }
 
       * {
@@ -174,7 +179,7 @@
           opacity: 0.9;
         }
 
-      100% {
+        100% {
           transform: translateX(calc(100vw + 800px)) translateY(-30px);
           opacity: 0;
         }
@@ -408,22 +413,20 @@
         width: 300px;
         height: 300px;
       }
-      
+
       /* Utility for new layout */
       .break-inside-avoid {
         break-inside: avoid;
       }
 
-      /* --- START: PROFESSIONAL & CREATIVE PRODUCT CARD DESIGN (CORRECTED) --- */
+      /* --- START: PROFESSIONAL & CREATIVE PRODUCT CARD DESIGN (MODIFIED FOR OVERLAY) --- */
       .product-card-pro {
-        background: #ffffff;
-        border-radius: 16px; /* MODIFIED: Sharper radius */
+        border-radius: 10px; /* MODIFIED: Sharper radius as requested */
         box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.04),
           0 5px 20px -15px rgba(227, 154, 180, 0.1);
         transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         overflow: hidden;
-        display: flex;
-        flex-direction: column;
+        /* display: flex and flex-direction removed to support overlay */
       }
 
       .product-card-pro:hover {
@@ -435,13 +438,13 @@
       .product-image-container {
         position: relative;
         overflow: hidden;
-        border-radius: 16px 16px 0 0; /* MODIFIED: Matched card radius */
+        border-radius: 10px; /* MODIFIED: Radius on all corners */
       }
 
       .product-image-container img {
         width: 100%;
-        height: auto; /* Changed to auto for masonry layout */
-        aspect-ratio: 4 / 5; /* Maintain aspect ratio */
+        height: auto;
+        aspect-ratio: 4 / 5;
         object-fit: cover;
         display: block;
         transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
@@ -502,23 +505,49 @@
         color: white;
       }
 
+      /* --- NEW OVERLAY STYLES FOR PRODUCT INFO --- */
       .product-info-pro {
-        padding: 1.5rem;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 1.25rem;
         text-align: right;
-        border-top: 1px solid #f0f0f0;
-        background: #fff;
-        flex-grow: 1;
-        display: flex;
-        flex-direction: column;
+        background: rgba(
+          255,
+          233,
+          242,
+          0.6
+        ); /* MODIFIED: Transparent pink for see-through */
+        backdrop-filter: blur(12px); /* MODIFIED: Added blur */
+        -webkit-backdrop-filter: blur(12px);
+        transition: background 0.4s ease, backdrop-filter 0.4s ease; /* MODIFIED: Added transition */
+        border-radius: 0 0 4px 4px;
+      }
+
+      /* Hover/Active state for product info */
+      .product-card-pro:hover .product-info-pro,
+      .product-card-pro:active .product-info-pro,
+      .product-card-pro:focus-within .product-info-pro {
+        background: #ffffff; /* MODIFIED: Solid white on hover/click */
+        backdrop-filter: blur(0px); /* Remove blur on hover */
       }
 
       .product-category-pro {
         font-size: 0.75rem;
         font-weight: 600;
-        color: var(--primary);
+        color: var(--cream); /* MODIFIED: Darker color for readability on image */
         letter-spacing: 0.5px;
         text-transform: uppercase;
         margin-bottom: 0.5rem;
+        transition: color 0.4s ease;
+      }
+
+      /* Revert category color on hover/active */
+      .product-card-pro:hover .product-category-pro,
+      .product-card-pro:active .product-category-pro,
+      .product-card-pro:focus-within .product-category-pro {
+        color: var(--primary);
       }
 
       .product-title-pro {
@@ -538,7 +567,7 @@
       }
 
       .product-price-pro {
-        font-size: 1.15rem; /* MODIFIED: Font size reduced */
+        font-size: 1.15rem;
         font-weight: 800;
         color: var(--secondary);
         font-family: "IRANSans", serif;
@@ -564,7 +593,6 @@
         justify-content: center;
         height: 48px;
         width: 48px;
-        /* Initial width for icon only */
         padding: 0 14px;
         overflow: hidden;
         transition: width 0.4s cubic-bezier(0.65, 0, 0.35, 1);
@@ -572,19 +600,15 @@
 
       .product-card-pro:hover .add-to-cart-btn-pro {
         width: 140px;
-        /* Expanded width */
       }
 
-      /* ** CORRECTED SPAN STYLES ** */
       .add-to-cart-btn-pro span {
         font-weight: 600;
         font-size: 0.9rem;
         white-space: nowrap;
         opacity: 0;
         max-width: 0;
-        /* Initially hidden and takes no space */
         margin-left: 0;
-        /* No margin when hidden */
         transition: max-width 0.4s cubic-bezier(0.65, 0, 0.35, 1),
           opacity 0.2s ease 0.1s,
           margin-left 0.4s cubic-bezier(0.65, 0, 0.35, 1);
@@ -593,19 +617,17 @@
       .product-card-pro:hover .add-to-cart-btn-pro span {
         opacity: 1;
         max-width: 100px;
-        /* Reveal text */
         margin-right: 0.5rem;
-        /* Add space between icon and text */
       }
 
       .product-badge {
         position: absolute;
         top: 16px;
-        right: 16px; /* MODIFIED: Always on the right */
+        right: 16px;
         z-index: 3;
-        padding: 6px 12px; /* MODIFIED: Adjusted padding */
-        border-radius: 8px; /* MODIFIED: Sharper "tag" shape */
-        font-size: 10px; /* MODIFIED: Smaller font */
+        padding: 6px 12px;
+        border-radius: 8px;
+        font-size: 10px;
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.8px;
@@ -629,8 +651,8 @@
       .badge-new {
         background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
         color: white;
-        right: 16px; /* MODIFIED */
-        left: auto; /* MODIFIED */
+        right: 16px;
+        left: auto;
         box-shadow: 0 4px 16px rgba(139, 92, 246, 0.3);
       }
 
@@ -643,16 +665,16 @@
       .badge-vegan {
         background: linear-gradient(135deg, #10b981 0%, #059669 100%);
         color: white;
-        right: 16px; /* MODIFIED */
-        left: auto; /* MODIFIED */
+        right: 16px;
+        left: auto;
         box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3);
       }
 
       .badge-limited {
         background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
         color: #1a1a1a;
-        right: 16px; /* MODIFIED */
-        left: auto; /* MODIFIED */
+        right: 16px;
+        left: auto;
         box-shadow: 0 4px 16px rgba(251, 191, 36, 0.3);
       }
 
@@ -703,7 +725,7 @@
       .filter-btn.active,
       .filter-btn:hover {
         color: white;
-        transform: translateY(-2px) ک;
+        transform: translateY(-2px);
       }
 
       .filter-btn:not(.active) {
@@ -752,94 +774,213 @@
         position: relative;
         display: inline-block;
       }
-
-      /* NEW COLLECTION STYLES */
-      .collection-card {
+      
+      /* --- START: REVISED COLLECTION CARD STYLES --- */
+      .collection-card-new {
         position: relative;
         overflow: hidden;
         border-radius: 30px;
+        background-color: var(--accent);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         cursor: none;
-        transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        min-height: 304px; 
+        /* Flexbox layout to prevent overlap */
+        display: flex;
+        flex-direction: column;
       }
 
-      .collection-card::after {
-        content: "";
+      .collection-card-new.large {
+        min-height: 640px;
+      }
+
+      @media (max-width: 1024px) {
+        .collection-card-new.large {
+          min-height: 500px;
+        }
+      }
+
+      .collection-card-new:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.15);
+      }
+
+      .collection-visuals-container {
+          position: relative;
+          flex-grow: 1; /* This is key: it takes up all available space */
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          min-height: 200px; /* Ensure there's always space for the visual */
+      }
+      
+      .large .collection-visuals-container {
+        min-height: 350px;
+      }
+
+      .card-bg-shapes {
         position: absolute;
         inset: 0;
-        background: linear-gradient(
-          180deg,
-          transparent 40%,
-          rgba(0, 0, 0, 0.9) 100%
-        );
-        transition: opacity 0.7s ease;
-        opacity: 0;
-        z-index: 5;
+        z-index: 1;
       }
 
-      .collection-card:hover::after {
-        opacity: 1;
+      .card-bg-shape {
+        position: absolute;
+        border-radius: 50%;
+        transition: all 0.8s cubic-bezier(0.165, 0.84, 0.44, 1);
+        animation: float-shape 15s ease-in-out infinite alternate;
       }
 
-      .collection-card:hover {
-        transform: scale(1.02);
-        box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.3);
+      .shape-1 {
+        width: 250px;
+        height: 250px;
+        background: linear-gradient(135deg, var(--primary), var(--rose-gold));
+        top: -80px;
+        right: -80px;
+        opacity: 0.5;
+        animation-duration: 18s;
+      }
+      .shape-2 {
+        width: 180px;
+        height: 180px;
+        background: var(--rose-cream);
+        bottom: -50px;
+        left: -50px;
+        opacity: 0.7;
+        border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+        animation-duration: 22s;
+      }
+      .shape-3 {
+        width: 120px;
+        height: 120px;
+        background: var(--blush);
+        bottom: 120px;
+        right: 40px;
+        opacity: 0.6;
+        border-radius: 70% 30% 50% 50% / 60% 40% 60% 40%;
+        animation-duration: 20s;
       }
 
-      .collection-card:hover img {
-        transform: scale(1.1);
+      @keyframes float-shape {
+        from {
+          transform: translateY(0) rotate(0deg);
+        }
+        to {
+          transform: translateY(20px) rotate(45deg);
+        }
+      }
+      
+      .collection-glob {
+          position: absolute;
+          z-index: 3;
+          top: 50%;
+          left: 50%;
+          width: 55%;
+          padding-bottom: 55%;
+          max-width: 240px;
+          max-height: 240px;
+          border-radius: 48% 52% 55% 45% / 62% 58% 42% 38%;
+          overflow: hidden;
+          filter: drop-shadow(0 15px 25px rgba(0,0,0,0.1));
+          transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+      }
+      
+      .large .collection-glob {
+          width: 45%;
+          padding-bottom: 45%;
+          max-width: 280px;
+          max-height: 280px;
       }
 
-      .collection-card img {
-        transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      .collection-product-image {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+      }
+      
+      .collection-glob-inner {
+          position: absolute;
+          inset: 0;
+          background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.7), transparent 60%);
+          border-radius: inherit;
+          pointer-events: none;
+      }
+      
+      .collection-card-new:hover .collection-glob {
+          animation-play-state: paused;
+          transform: translate(-50%, -55%) !important;
+      }
+      
+      .collection-card-new:hover .collection-product-image {
+          transform: scale(1.05);
       }
 
-      .collection-content > * {
-        opacity: 0;
-        transform: translateY(20px);
-        transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-      }
-
-      .collection-card:hover .collection-content > * {
-        opacity: 1;
-        transform: translateY(0);
-      }
-
-      .collection-card:hover .collection-category {
-        transition-delay: 0.1s;
-      }
-
-      .collection-card:hover .collection-title {
-        transition-delay: 0.2s;
-      }
-
-      .collection-card:hover .collection-desc {
-        transition-delay: 0.3s;
-      }
-
-      .collection-card:hover .collection-link {
-        transition-delay: 0.4s;
-      }
-
-      .collection-link {
+      .collection-content-new {
         position: relative;
-        width: fit-content;
+        z-index: 2;
+        text-align: right;
+        color: var(--deep-brown);
+        padding: 0 2.5rem 2.5rem; /* Padding only on sides and bottom */
       }
 
-      .collection-link::before {
+      .collection-content-new .collection-category {
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--primary);
+      }
+      .collection-content-new .collection-title {
+        font-family: "IRANSans", serif;
+        font-size: 1.75rem; /* Smaller font size */
+        font-weight: 700;
+        margin: 0.25rem 0 0.75rem;
+        line-height: 1.2;
+      }
+      .large .collection-content-new .collection-title {
+        font-size: 2.25rem;
+      }
+      .collection-content-new .collection-desc {
+        font-size: 0.9rem; /* Smaller font size */
+        color: var(--secondary);
+        opacity: 0.8;
+        margin-bottom: 1.25rem;
+        max-width: 320px;
+        line-height: 1.6;
+      }
+
+      .collection-content-new .collection-link {
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--secondary);
+        position: relative;
+        padding-bottom: 4px;
+      }
+
+      .collection-content-new .collection-link::after {
         content: "";
         position: absolute;
-        bottom: -2px;
+        bottom: 0;
         right: 0;
         width: 0;
-        height: 1px;
-        background-color: white;
+        height: 2px;
+        background-color: var(--primary);
         transition: width 0.4s ease;
       }
 
-      .collection-card:hover .collection-link::before {
+      .collection-card-new:hover .collection-link::after {
         width: 100%;
-        transition-delay: 0.5s;
       }
+
+      .collection-card-new.animating .card-bg-shape {
+        transform: scale(3) rotate(180deg);
+        opacity: 0;
+        border-radius: 50%;
+      }
+      /* --- END: REVISED COLLECTION CARD STYLES --- */
 
       /* Testimonial Cards */
       .testimonial-card {
@@ -877,15 +1018,15 @@
       @keyframes float {
         0%,
         100% {
-          transform: translateY(0px) rotate(0deg);
+          transform: translate(-50%, -50%) translateY(0px) rotate(0deg);
         }
 
         33% {
-          transform: translateY(-20px) rotate(-2deg);
+          transform: translate(-50%, -50%) translateY(-20px) rotate(-2deg);
         }
 
         66% {
-          transform: translateY(-10px) rotate(2deg);
+          transform: translate(-50%, -50%) translateY(-10px) rotate(2deg);
         }
       }
 
@@ -1057,7 +1198,7 @@
         }
 
         .product-card-pro {
-          border-radius: 20px;
+          border-radius: 10px;
         }
 
         .filter-btn {
@@ -1067,12 +1208,6 @@
       }
 
       /* 5% CUTE */
-      :root {
-        --blush: #ffd7e5;
-        --lavender: #eae2ff;
-        --mint: #dff8ef;
-        --butter: #fff3bf;
-      }
 
       .loader-logo::after {
         content: " ✧";
@@ -1395,119 +1530,157 @@
             می‌کند.
           </p>
         </div>
+        <!-- START: New Collection Cards -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div
-            class="collection-card h-[500px] md:h-[600px] lg:h-[640px] group"
-            data-aos="fade-right"
-            data-aos-duration="1200"
-          >
-            <img
-              src="https://images.unsplash.com/photo-1552046122-03184de85e08?w=800&h=1000&fit=cover"
-              alt="مراقبت از پوست"
-              class="w-full h-full object-cover block"
-            />
+          <!-- Card 1 (Large) -->
+          <a href="#" class="collection-card-link group block">
             <div
-              class="absolute inset-0 z-10 flex flex-col justify-end p-10 text-white"
+              class="collection-card-new large h-full"
+              data-aos="fade-right"
+              data-aos-duration="1200"
             >
-              <div class="collection-content">
-                <span
-                  class="collection-category block text-sm font-medium uppercase tracking-widest mb-2"
-                  >مراقبت از پوست</span
-                >
-                <h3 class="collection-title text-4xl font-serif font-bold mb-4">
-                  پوست درخشان
-                </h3>
-                <p class="collection-desc mb-6 max-w-sm">
+              <div class="collection-visuals-container">
+                <div class="card-bg-shapes">
+                  <div class="card-bg-shape shape-1"></div>
+                  <div class="card-bg-shape shape-2"></div>
+                  <div class="card-bg-shape shape-3"></div>
+                </div>
+                <div class="collection-glob float-animation">
+                  <img
+                    src="https://images.unsplash.com/photo-1617897903246-719242758050?q=80&w=1887&auto=format&fit=crop"
+                    alt="Skincare Product"
+                    class="collection-product-image"
+                  />
+                  <div class="collection-glob-inner"></div>
+                </div>
+              </div>
+              <div class="collection-content-new">
+                <span class="collection-category">مراقبت از پوست</span>
+                <h3 class="collection-title">پوست درخشان</h3>
+                <p class="collection-desc">
                   پوست خود را با فرمول‌های گیاهی ما که برای تغذیه و جوانسازی
                   طراحی شده‌اند، متحول کنید.
                 </p>
-                <a
-                  href="#"
-                  class="collection-link inline-flex items-center text-white font-semibold"
-                  ><span>کشف کنید</span
-                  ><i
+                <div class="collection-link">
+                  <span>کشف کنید</span>
+                  <i
                     data-feather="arrow-left"
-                    class="mr-2 w-5 h-5 transition-transform duration-300 group-hover:-translate-x-2"
-                  ></i
-                ></a>
+                    class="w-5 h-5 transition-transform duration-300 group-hover:-translate-x-2"
+                  ></i>
+                </div>
               </div>
             </div>
-          </div>
+          </a>
+
+          <!-- Container for the two smaller cards -->
           <div class="flex flex-col gap-8">
-            <div
-              class="collection-card h-[400px] lg:h-[304px] group"
-              data-aos="fade-left"
-              data-aos-duration="1200"
-              data-aos-delay="200"
-            >
-              <img
-                src="https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=800&h=600&fit=crop"
-                alt="آرایش"
-                class="w-full h-full object-cover"
-              />
+            <!-- Card 2 (Small) -->
+            <a href="#" class="collection-card-link group block">
               <div
-                class="absolute inset-0 z-10 flex flex-col justify-end p-10 text-white"
+                class="collection-card-new"
+                data-aos="fade-left"
+                data-aos-duration="1200"
+                data-aos-delay="200"
               >
-                <div class="collection-content">
-                  <span
-                    class="collection-category block text-sm font-medium uppercase tracking-widest mb-2"
+                <div class="collection-visuals-container">
+                    <div class="card-bg-shapes">
+                    <div
+                        class="card-bg-shape shape-1"
+                        style="
+                        background: linear-gradient(135deg, #a78bfa, #c4b5fd);
+                        animation-duration: 21s;
+                        "
+                    ></div>
+                    <div
+                        class="card-bg-shape shape-2"
+                        style="
+                        background: var(--lavender);
+                        animation-duration: 17s;
+                        "
+                    ></div>
+                    <div
+                        class="card-bg-shape shape-3"
+                        style="background: #ddd6fe; animation-duration: 25s"
+                    ></div>
+                    </div>
+                    <div class="collection-glob float-animation">
+                    <img
+                        src="https://images.unsplash.com/photo-1617897903246-719242758050?q=80&w=1887&auto=format&fit=crop"
+                        alt="Makeup Product"
+                        class="collection-product-image"
+                    />
+                    <div class="collection-glob-inner"></div>
+                    </div>
+                </div>
+                <div class="collection-content-new">
+                  <span class="collection-category" style="color: #8b5cf6"
                     >آرایش</span
                   >
-                  <h3
-                    class="collection-title text-3xl font-serif font-bold mb-4"
-                  >
-                    آرایش هنرمندانه
-                  </h3>
-                  <a
-                    href="#"
-                    class="collection-link inline-flex items-center text-white font-semibold"
-                    ><span>کشف کنید</span
-                    ><i
+                  <h3 class="collection-title">آرایش هنرمندانه</h3>
+                  <div class="collection-link">
+                    <span>کشف کنید</span>
+                    <i
                       data-feather="arrow-left"
-                      class="mr-2 w-5 h-5 transition-transform duration-300 group-hover:-translate-x-2"
-                    ></i
-                  ></a>
+                      class="w-5 h-5 transition-transform duration-300 group-hover:-translate-x-2"
+                    ></i>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div
-              class="collection-card h-[400px] lg:h-[304px] group"
-              data-aos="fade-left"
-              data-aos-duration="1200"
-              data-aos-delay="400"
-            >
-              <img
-                src="https://images.unsplash.com/photo-1594035900144-17151c9910af?w=800&h=600&fit=crop"
-                alt="عطر"
-                class="w-full h-full object-cover"
-              />
+            </a>
+
+            <!-- Card 3 (Small) -->
+            <a href="#" class="collection-card-link group block">
               <div
-                class="absolute inset-0 z-10 flex flex-col justify-end p-10 text-white"
+                class="collection-card-new"
+                data-aos="fade-left"
+                data-aos-duration="1200"
+                data-aos-delay="400"
               >
-                <div class="collection-content">
-                  <span
-                    class="collection-category block text-sm font-medium uppercase tracking-widest mb-2"
+                <div class="collection-visuals-container">
+                    <div class="card-bg-shapes">
+                        <div
+                            class="card-bg-shape shape-1"
+                            style="
+                            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+                            animation-duration: 19s;
+                            "
+                        ></div>
+                        <div
+                            class="card-bg-shape shape-2"
+                            style="background: var(--butter); animation-duration: 23s"
+                        ></div>
+                        <div
+                            class="card-bg-shape shape-3"
+                            style="background: #fef3c7; animation-duration: 16s"
+                        ></div>
+                    </div>
+                    <div class="collection-glob float-animation">
+                    <img
+                        src="https://images.unsplash.com/photo-1617897903246-719242758050?q=80&w=1887&auto=format&fit=crop"
+                        alt="Fragrance Product"
+                        class="collection-product-image"
+                    />
+                    <div class="collection-glob-inner"></div>
+                    </div>
+                </div>
+                <div class="collection-content-new">
+                  <span class="collection-category" style="color: #d97706"
                     >عطر</span
                   >
-                  <h3
-                    class="collection-title text-3xl font-serif font-bold mb-4"
-                  >
-                    عطرهای فریبنده
-                  </h3>
-                  <a
-                    href="#"
-                    class="collection-link inline-flex items-center text-white font-semibold"
-                    ><span>کشف کنید</span
-                    ><i
+                  <h3 class="collection-title">عطرهای فریبنده</h3>
+                  <div class="collection-link">
+                    <span>کشف کنید</span>
+                    <i
                       data-feather="arrow-left"
-                      class="mr-2 w-5 h-5 transition-transform duration-300 group-hover:-translate-x-2"
-                    ></i
-                  ></a>
+                      class="w-5 h-5 transition-transform duration-300 group-hover:-translate-x-2"
+                    ></i>
+                  </div>
                 </div>
               </div>
-            </div>
+            </a>
           </div>
         </div>
+        <!-- END: New Collection Cards -->
       </div>
     </section>
 
@@ -1552,8 +1725,8 @@
           </button>
         </div>
 
-        <!-- START: NEW PROFESSIONAL PRODUCT GRID (MODIFIED LAYOUT) -->
-        <div class="columns-1 sm:columns-2 lg:columns-4 gap-8 space-y-8 mb-16">
+        <!-- START: NEW PROFESSIONAL PRODUCT GRID (MODIFIED LAYOUT & STRUCTURE) -->
+        <div class="columns-1 sm:columns-2 lg:columns-4 gap-4 space-y-4 mb-16">
           <!-- محصول ۱ - اکسیر درخشش طلایی -->
           <div
             class="product-card-pro break-inside-avoid"
@@ -1577,19 +1750,20 @@
                   <i data-feather="heart" class="w-6 h-6"></i>
                 </button>
               </div>
-            </div>
-            <div class="product-info-pro">
-              <p class="product-category-pro">سرم صورت</p>
-              <h3 class="product-title-pro">اکسیر درخشش طلایی</h3>
-              <div class="product-footer-pro">
-                <div class="product-price-pro">
-                  <span>۴۸.۰۰ $</span>
-                  <span class="original-price">۶۴.۰۰ $</span>
+              <!-- PRODUCT INFO MOVED INSIDE IMAGE CONTAINER -->
+              <div class="product-info-pro">
+                <p class="product-category-pro">سرم صورت</p>
+                <h3 class="product-title-pro">اکسیر درخشش طلایی</h3>
+                <div class="product-footer-pro">
+                  <div class="product-price-pro">
+                    <span>۴۸.۰۰ $</span>
+                    <span class="original-price">۶۴.۰۰ $</span>
+                  </div>
+                  <button class="add-to-cart-btn-pro">
+                    <i data-feather="shopping-bag" class="w-5 h-5"></i>
+                    <span>افزودن</span>
+                  </button>
                 </div>
-                <button class="add-to-cart-btn-pro">
-                  <i data-feather="shopping-bag" class="w-5 h-5"></i>
-                  <span>افزودن</span>
-                </button>
               </div>
             </div>
           </div>
@@ -1617,16 +1791,17 @@
                   <i data-feather="heart" class="w-6 h-6"></i>
                 </button>
               </div>
-            </div>
-            <div class="product-info-pro">
-              <p class="product-category-pro">رژ لب</p>
-              <h3 class="product-title-pro">بوسه مخملی مات</h3>
-              <div class="product-footer-pro">
-                <div class="product-price-pro"><span>۳۲.۰۰ $</span></div>
-                <button class="add-to-cart-btn-pro">
-                  <i data-feather="shopping-bag" class="w-5 h-5"></i>
-                  <span>افزودن</span>
-                </button>
+              <!-- PRODUCT INFO MOVED INSIDE IMAGE CONTAINER -->
+              <div class="product-info-pro">
+                <p class="product-category-pro">رژ لب</p>
+                <h3 class="product-title-pro">بوسه مخملی مات</h3>
+                <div class="product-footer-pro">
+                  <div class="product-price-pro"><span>۳۲.۰۰ $</span></div>
+                  <button class="add-to-cart-btn-pro">
+                    <i data-feather="shopping-bag" class="w-5 h-5"></i>
+                    <span>افزودن</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -1654,16 +1829,17 @@
                   <i data-feather="heart" class="w-6 h-6"></i>
                 </button>
               </div>
-            </div>
-            <div class="product-info-pro">
-              <p class="product-category-pro">کرم پودر</p>
-              <h3 class="product-title-pro">پایه ابریشمی بی‌نقص</h3>
-              <div class="product-footer-pro">
-                <div class="product-price-pro"><span>۴۲.۰۰ $</span></div>
-                <button class="add-to-cart-btn-pro">
-                  <i data-feather="shopping-bag" class="w-5 h-5"></i>
-                  <span>افزودن</span>
-                </button>
+              <!-- PRODUCT INFO MOVED INSIDE IMAGE CONTAINER -->
+              <div class="product-info-pro">
+                <p class="product-category-pro">کرم پودر</p>
+                <h3 class="product-title-pro">پایه ابریشمی بی‌نقص</h3>
+                <div class="product-footer-pro">
+                  <div class="product-price-pro"><span>۴۲.۰۰ $</span></div>
+                  <button class="add-to-cart-btn-pro">
+                    <i data-feather="shopping-bag" class="w-5 h-5"></i>
+                    <span>افزودن</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -1691,16 +1867,17 @@
                   <i data-feather="heart" class="w-6 h-6"></i>
                 </button>
               </div>
-            </div>
-            <div class="product-info-pro">
-              <p class="product-category-pro">عطر زنانه</p>
-              <h3 class="product-title-pro">راز نیمه‌شب</h3>
-              <div class="product-footer-pro">
-                <div class="product-price-pro"><span>۷۸.۰۰ $</span></div>
-                <button class="add-to-cart-btn-pro">
-                  <i data-feather="shopping-bag" class="w-5 h-5"></i>
-                  <span>افزودن</span>
-                </button>
+              <!-- PRODUCT INFO MOVED INSIDE IMAGE CONTAINER -->
+              <div class="product-info-pro">
+                <p class="product-category-pro">عطر زنانه</p>
+                <h3 class="product-title-pro">راز نیمه‌شب</h3>
+                <div class="product-footer-pro">
+                  <div class="product-price-pro"><span>۷۸.۰۰ $</span></div>
+                  <button class="add-to-cart-btn-pro">
+                    <i data-feather="shopping-bag" class="w-5 h-5"></i>
+                    <span>افزودن</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -1716,7 +1893,8 @@
               <div
                 class="product-badge"
                 style="
-                  right: 16px; left: auto; /* MODIFIED */
+                  right: 16px;
+                  left: auto; /* MODIFIED */
                   background: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%);
                   box-shadow: 0 4px 16px rgba(56, 189, 248, 0.3);
                   color: white;
@@ -1736,16 +1914,17 @@
                   <i data-feather="heart" class="w-6 h-6"></i>
                 </button>
               </div>
-            </div>
-            <div class="product-info-pro">
-              <p class="product-category-pro">مرطوب کننده</p>
-              <h3 class="product-title-pro">کرم ابریشمی هیدرا</h3>
-              <div class="product-footer-pro">
-                <div class="product-price-pro"><span>۵۵.۰۰ $</span></div>
-                <button class="add-to-cart-btn-pro">
-                  <i data-feather="shopping-bag" class="w-5 h-5"></i>
-                  <span>افزودن</span>
-                </button>
+              <!-- PRODUCT INFO MOVED INSIDE IMAGE CONTAINER -->
+              <div class="product-info-pro">
+                <p class="product-category-pro">مرطوب کننده</p>
+                <h3 class="product-title-pro">کرم ابریشمی هیدرا</h3>
+                <div class="product-footer-pro">
+                  <div class="product-price-pro"><span>۵۵.۰۰ $</span></div>
+                  <button class="add-to-cart-btn-pro">
+                    <i data-feather="shopping-bag" class="w-5 h-5"></i>
+                    <span>افزودن</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -1770,16 +1949,17 @@
                   <i data-feather="heart" class="w-6 h-6"></i>
                 </button>
               </div>
-            </div>
-            <div class="product-info-pro">
-              <p class="product-category-pro">پالت سایه چشم</p>
-              <h3 class="product-title-pro">رؤیاهای صحرا</h3>
-              <div class="product-footer-pro">
-                <div class="product-price-pro"><span>۴۹.۰۰ $</span></div>
-                <button class="add-to-cart-btn-pro">
-                  <i data-feather="shopping-bag" class="w-5 h-5"></i>
-                  <span>افزودن</span>
-                </button>
+              <!-- PRODUCT INFO MOVED INSIDE IMAGE CONTAINER -->
+              <div class="product-info-pro">
+                <p class="product-category-pro">پالت سایه چشم</p>
+                <h3 class="product-title-pro">رؤیاهای صحرا</h3>
+                <div class="product-footer-pro">
+                  <div class="product-price-pro"><span>۴۹.۰۰ $</span></div>
+                  <button class="add-to-cart-btn-pro">
+                    <i data-feather="shopping-bag" class="w-5 h-5"></i>
+                    <span>افزودن</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -1807,16 +1987,17 @@
                   <i data-feather="heart" class="w-6 h-6"></i>
                 </button>
               </div>
-            </div>
-            <div class="product-info-pro">
-              <p class="product-category-pro">کرم دور چشم</p>
-              <h3 class="product-title-pro">احیاگر چشم روشن</h3>
-              <div class="product-footer-pro">
-                <div class="product-price-pro"><span>۶۲.۰۰ $</span></div>
-                <button class="add-to-cart-btn-pro">
-                  <i data-feather="shopping-bag" class="w-5 h-5"></i>
-                  <span>افزودن</span>
-                </button>
+              <!-- PRODUCT INFO MOVED INSIDE IMAGE CONTAINER -->
+              <div class="product-info-pro">
+                <p class="product-category-pro">کرم دور چشم</p>
+                <h3 class="product-title-pro">احیاگر چشم روشن</h3>
+                <div class="product-footer-pro">
+                  <div class="product-price-pro"><span>۶۲.۰۰ $</span></div>
+                  <button class="add-to-cart-btn-pro">
+                    <i data-feather="shopping-bag" class="w-5 h-5"></i>
+                    <span>افزودن</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -1844,16 +2025,17 @@
                   <i data-feather="heart" class="w-6 h-6"></i>
                 </button>
               </div>
-            </div>
-            <div class="product-info-pro">
-              <p class="product-category-pro">پاک کننده</p>
-              <h3 class="product-title-pro">فوم پاک کننده ملایم</h3>
-              <div class="product-footer-pro">
-                <div class="product-price-pro"><span>۲۸.۰۰ $</span></div>
-                <button class="add-to-cart-btn-pro">
-                  <i data-feather="shopping-bag" class="w-5 h-5"></i>
-                  <span>افزودن</span>
-                </button>
+              <!-- PRODUCT INFO MOVED INSIDE IMAGE CONTAINER -->
+              <div class="product-info-pro">
+                <p class="product-category-pro">پاک کننده</p>
+                <h3 class="product-title-pro">فوم پاک کننده ملایم</h3>
+                <div class="product-footer-pro">
+                  <div class="product-price-pro"><span>۲۸.۰۰ $</span></div>
+                  <button class="add-to-cart-btn-pro">
+                    <i data-feather="shopping-bag" class="w-5 h-5"></i>
+                    <span>افزودن</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -2456,7 +2638,7 @@
       }
       animateCursor();
       const hoverElements = document.querySelectorAll(
-        "a, button, .product-card-pro, .collection-card"
+        "a, button, .product-card-pro, .collection-card-new"
       );
       hoverElements.forEach((element) => {
         element.addEventListener("mouseenter", () => {
@@ -2529,7 +2711,7 @@
           productCards.forEach((card) => {
             const categories = card.getAttribute("data-category").split(" ");
             if (filterValue === "all" || categories.includes(filterValue)) {
-              card.style.display = "flex";
+              card.style.display = "block"; /* Changed to block for masonry */
             } else {
               card.style.display = "none";
             }
@@ -2569,6 +2751,23 @@
       });
       newsletterInput.addEventListener("blur", () => {
         gsap.to(newsletterInput, { scale: 1, duration: 0.3 });
+      });
+
+      // --- New Collection Card Click Animation ---
+      document.querySelectorAll(".collection-card-link").forEach((cardLink) => {
+        cardLink.addEventListener("click", function (e) {
+          e.preventDefault();
+          const destination = this.href;
+          const card = this.querySelector(".collection-card-new");
+
+          // Add animating class
+          card.classList.add("animating");
+
+          // Wait for animation to finish, then navigate
+          setTimeout(() => {
+            window.location.href = destination;
+          }, 800); // This duration should match the CSS transition duration for .card-bg-shape
+        });
       });
 
       // Floating hearts/sparkles on click
