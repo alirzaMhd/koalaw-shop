@@ -923,6 +923,21 @@
     }
 
     @media (max-width: 768px) {
+      /* MODIFICATION START: Reduce vertical spacing between sections on mobile */
+      section.py-32 {
+        padding-top: 5rem;    /* 80px, was py-32 (128px) */
+        padding-bottom: 5rem; /* 80px, was py-32 (128px) */
+      }
+      section.py-24 {
+        padding-top: 4rem;    /* 64px, was py-24 (96px) */
+        padding-bottom: 4rem; /* 64px, was py-24 (96px) */
+      }
+      section.py-20 {
+        padding-top: 3.5rem;  /* 56px, was py-20 (80px) */
+        padding-bottom: 3.5rem;/* 56px, was py-20 (80px) */
+      }
+      /* MODIFICATION END */
+
       body {
         font-size: 14px;
       }
