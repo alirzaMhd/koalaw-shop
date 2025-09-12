@@ -925,17 +925,26 @@
     @media (max-width: 768px) {
       /* MODIFICATION START: Reduce vertical spacing between sections on mobile */
       section.py-32 {
-        padding-top: 5rem;    /* 80px, was py-32 (128px) */
-        padding-bottom: 5rem; /* 80px, was py-32 (128px) */
+        padding-top: 5rem;
+        /* 80px, was py-32 (128px) */
+        padding-bottom: 5rem;
+        /* 80px, was py-32 (128px) */
       }
+
       section.py-24 {
-        padding-top: 4rem;    /* 64px, was py-24 (96px) */
-        padding-bottom: 4rem; /* 64px, was py-24 (96px) */
+        padding-top: 4rem;
+        /* 64px, was py-24 (96px) */
+        padding-bottom: 4rem;
+        /* 64px, was py-24 (96px) */
       }
+
       section.py-20 {
-        padding-top: 3.5rem;  /* 56px, was py-20 (80px) */
-        padding-bottom: 3.5rem;/* 56px, was py-20 (80px) */
+        padding-top: 3.5rem;
+        /* 56px, was py-20 (80px) */
+        padding-bottom: 3.5rem;
+        /* 56px, was py-20 (80px) */
       }
+
       /* MODIFICATION END */
 
       body {
@@ -1376,6 +1385,9 @@
       }
     }
 
+    /* ===================================== */
+    /* START: New Koala Loader Styles        */
+    /* ===================================== */
     .loader {
       position: fixed;
       top: 0;
@@ -1390,58 +1402,170 @@
       transition: opacity .5s ease
     }
 
-    .loader-content {
-      text-align: center
+    .koala-loader {
+      position: relative;
+      width: 150px;
+      height: 150px;
+    }
+    
+    /* MODIFICATION START: Moved ear styles here to prevent clipping issues */
+    .koala-loader::after,
+    .koala-loader::before {
+      content: "";
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      border: 8px solid var(--primary);
+      background: transparent;
+      border-radius: 50%;
+      top: -15px;
+      z-index: 5; /* ADDED: To place ears behind the head */
+    }
+    
+    .koala-loader::before {
+      right: -35px;
     }
 
-    .loader-logo {
-      font-size: 3rem;
-      font-family: "IRANSans", serif;
-      color: var(--primary);
-      margin-bottom: 2rem;
-      animation: pulse 1.5s ease-in-out infinite
+    .koala-loader::after {
+      left: -35px;
     }
+    /* MODIFICATION END */
 
-    .loader-bar {
-      width: 200px;
-      height: 2px;
-      background: rgba(212, 165, 116, .2);
-      border-radius: 2px;
-      overflow: hidden
-    }
-
-    .loader-progress {
+    .koala-loader-body {
+      width: 100%;
       height: 100%;
-      background: var(--primary);
-      width: 0;
-      animation: load 2s ease-in-out forwards
+      border: 8px solid var(--primary);
+      background: transparent;
+      border-radius: 50% 50% 45% 45%;
+      position: relative;
+      overflow: hidden;
+      animation: koala-pulse 2.5s ease-in-out infinite;
+      z-index: 10; /* MODIFIED: Ensures head is on top of ears */
+    }
+    
+    /* REMOVED: Old ear styles that were clipped */
+    /* .koala-loader-body::after, .koala-loader-body::before { ... } */
+
+    .koala-loader-eyes {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      z-index: 20;
     }
 
-    @keyframes load {
+    /* MODIFICATION: Changed eyes to outlines to match cursor */
+    .koala-loader-eyes::after,
+    .koala-loader-eyes::before {
+      content: "";
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border: 4px solid var(--primary); /* CHANGED */
+      box-sizing: border-box; /* ADDED */
+      border-radius: 50%;
+      top: 50px;
+      animation: koala-blink 3s ease-in-out infinite;
+    }
+
+    .koala-loader-eyes::before {
+      right: 30px;
+    }
+
+    .koala-loader-eyes::after {
+      left: 30px;
+    }
+
+    .koala-loader-nose {
+      position: absolute;
+      width: 20px;
+      height: 35px;
+      border: 6px solid var(--primary);
+      background: transparent;
+      border-radius: 50%;
+      top: 65px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+    }
+
+    .liquid,
+    .liquid-bg {
+      position: absolute;
+      bottom: -8px; /* Hide behind border */
+      left: -50%;
+      width: 200%;
+      height: 0;
+      border-radius: 40%;
+      animation-name: fill-up, wave;
+      animation-duration: 2.5s, 4s;
+      animation-timing-function: ease-out, linear;
+      animation-delay: 0s, 0s;
+      animation-iteration-count: 1, infinite;
+      animation-fill-mode: forwards, none;
+    }
+
+    .liquid-bg {
+      background-color: var(--rose-gold);
+      opacity: 0.5;
+      border-radius: 45%;
+      animation-duration: 2.5s, 6s;
+      animation-direction: normal, reverse;
+    }
+
+    .liquid {
+      background-color: var(--primary);
+      opacity: 0.7;
+      animation-delay: 0.2s, 0s;
+    }
+
+    @keyframes fill-up {
+      from {
+        height: 0;
+      }
+
       to {
-        width: 100%
+        height: 105%;
       }
     }
 
-    .loader-logo::after {
-      content: " ✧";
-      animation: twinkle 2.2s ease-in-out infinite;
-      opacity: .7
+    @keyframes wave {
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
     }
 
-    @keyframes twinkle {
-
+    @keyframes koala-pulse {
       0%,
-      to {
-        opacity: .25;
-        transform: scale(.95)
+      100% {
+        transform: scale(1);
       }
 
       50% {
-        opacity: 1;
-        transform: scale(1)
+        transform: scale(1.03);
       }
     }
+
+    @keyframes koala-blink {
+
+      0%,
+      90%,
+      100% {
+        transform: scaleY(1);
+      }
+
+      95% {
+        transform: scaleY(0.1);
+      }
+    }
+    /* ===================================== */
+    /* END: New Koala Loader Styles          */
+    /* ===================================== */
 
     .cute-divider {
       display: flex;
@@ -1717,13 +1841,18 @@
 
 <body>
   <div class="loader" id="loader">
-    <div class="loader-content">
-      <div class="loader-logo">KOALAW</div>
-      <div class="loader-bar">
-        <div class="loader-progress"></div>
+    <div class="koala-loader">
+      <div class="koala-loader-body">
+        <!-- Liquid Layers -->
+        <div class="liquid-bg"></div>
+        <div class="liquid"></div>
+        <!-- Face Features on Top -->
+        <div class="koala-loader-eyes"></div>
+        <div class="koala-loader-nose"></div>
       </div>
     </div>
   </div>
+
   <div class="cursor">
     <div class="cursor-eyes"></div>
   </div>
@@ -2463,7 +2592,7 @@
       // ===============================================
 
       // --- PAGE SCRIPTS ---
-      window.addEventListener("load", () => setTimeout(() => { const e = document.getElementById("loader"); e.style.opacity = "0"; setTimeout(() => e.style.display = "none", 500) }, 2e3));
+      window.addEventListener("load", () => setTimeout(() => { const e = document.getElementById("loader"); e.style.opacity = "0"; setTimeout(() => e.style.display = "none", 500) }, 3000)); // Increased duration to 3s to let the animation play out
       const navbar = document.getElementById("navbar"), backToTop = document.getElementById("backToTop"); let lastScroll = 0;
       window.addEventListener("scroll", () => { const e = window.pageYOffset; navbar.style.background = e > 100 ? "rgba(250,248,243,.95)" : "rgba(250,248,243,.85)"; navbar.style.boxShadow = e > 100 ? "0 4px 30px rgba(0,0,0,.1)" : "0 1px 20px rgba(0,0,0,.05)"; navbar.style.transform = e > lastScroll && e > 500 ? "translateY(-100%)" : "translateY(0)"; lastScroll = e; if (e > 500) { backToTop.style.opacity = "1"; backToTop.style.visibility = "visible" } else { backToTop.style.opacity = "0"; backToTop.style.visibility = "hidden" } });
       backToTop.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
