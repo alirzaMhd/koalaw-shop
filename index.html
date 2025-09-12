@@ -54,6 +54,7 @@
       -ms-overflow-style: none;
       scrollbar-width: none;
     }
+
     .hide-scrollbar::-webkit-scrollbar {
       display: none;
     }
@@ -98,8 +99,10 @@
       padding: 6rem 2rem 2rem;
       align-items: flex-end;
       gap: 1.25rem;
-      direction: ltr; /* LTR menu */
-      text-align: right; /* right aligned Persian text */
+      direction: ltr;
+      /* LTR menu */
+      text-align: right;
+      /* right aligned Persian text */
     }
 
     #mobile-menu.is-active {
@@ -936,31 +939,103 @@
 
     /* Mobile spacing, sizes */
     @media (max-width: 768px) {
-      section.py-32 { padding-top: 5rem; padding-bottom: 5rem; }
-      section.py-24 { padding-top: 4rem; padding-bottom: 4rem; }
-      section.py-20 { padding-top: 3.5rem; padding-bottom: 3.5rem; }
+      section.py-32 {
+        padding-top: 5rem;
+        padding-bottom: 5rem;
+      }
 
-      body { font-size: 14px; }
-      nav .font-serif { font-size: 1.5rem; }
-      .text-lg { font-size: 0.95rem; line-height: 1.6; }
-      h1.hero-title-creative { font-size: 2.3rem; }
-      h2.text-4xl, h2.text-5xl, h2.text-6xl { font-size: 2.1rem; }
+      section.py-24 {
+        padding-top: 4rem;
+        padding-bottom: 4rem;
+      }
 
-      .product-card-v2 { aspect-ratio: 3 / 4.6; }
-      .product-card-v2-content { padding: 1rem; }
-      .product-card-v2-title { font-size: 0.95rem; }
-      .product-card-v2-price { font-size: 0.85rem; padding: 0.2rem 0.5rem; }
-      .product-card-v2-desc { font-size: 0.7rem; height: 4.2em; }
-      .add-to-cart-btn-v2 { padding: 0.6rem 1rem; font-size: 0.75rem; }
-      .product-card-v2-rating { width: 44px; height: 44px; font-size: 0.8rem; }
-      .product-card-v2-image-wrapper { width: clamp(100px, 40%, 140px); }
+      section.py-20 {
+        padding-top: 3.5rem;
+        padding-bottom: 3.5rem;
+      }
 
-      .category-card { padding: 1rem; }
-      .category-card-icon { width: 44px; height: 44px; margin-bottom: 0.75rem; }
-      .category-card-title { font-size: 1rem; }
+      body {
+        font-size: 14px;
+      }
 
-      .testimonial-card { padding: 2rem; }
-      .filter-btn { padding: 10px 20px; font-size: 12px; }
+      nav .font-serif {
+        font-size: 1.5rem;
+      }
+
+      .text-lg {
+        font-size: 0.95rem;
+        line-height: 1.6;
+      }
+
+      h1.hero-title-creative {
+        font-size: 2.3rem;
+      }
+
+      h2.text-4xl,
+      h2.text-5xl,
+      h2.text-6xl {
+        font-size: 2.1rem;
+      }
+
+      .product-card-v2 {
+        aspect-ratio: 3 / 4.6;
+      }
+
+      .product-card-v2-content {
+        padding: 1rem;
+      }
+
+      .product-card-v2-title {
+        font-size: 0.95rem;
+      }
+
+      .product-card-v2-price {
+        font-size: 0.85rem;
+        padding: 0.2rem 0.5rem;
+      }
+
+      .product-card-v2-desc {
+        font-size: 0.7rem;
+        height: 4.2em;
+      }
+
+      .add-to-cart-btn-v2 {
+        padding: 0.6rem 1rem;
+        font-size: 0.75rem;
+      }
+
+      .product-card-v2-rating {
+        width: 44px;
+        height: 44px;
+        font-size: 0.8rem;
+      }
+
+      .product-card-v2-image-wrapper {
+        width: clamp(100px, 40%, 140px);
+      }
+
+      .category-card {
+        padding: 1rem;
+      }
+
+      .category-card-icon {
+        width: 44px;
+        height: 44px;
+        margin-bottom: 0.75rem;
+      }
+
+      .category-card-title {
+        font-size: 1rem;
+      }
+
+      .testimonial-card {
+        padding: 2rem;
+      }
+
+      .filter-btn {
+        padding: 10px 20px;
+        font-size: 12px;
+      }
     }
 
     .collection-card-new:hover {
@@ -1036,13 +1111,21 @@
       }
     }
 
+    /* ============================= */
+    /* FIX: Collection glob sizing   */
+    /* Keeps square via aspect-ratio */
+    /* and prevents top clipping     */
+    /* ============================= */
     .collection-glob {
       position: absolute;
       z-index: 3;
       top: 50%;
       left: 50%;
+      /* square without padding hack */
+      aspect-ratio: 1 / 1.2;
+      margin-top: 5%;
+      /* base size (overridden below on variants) */
       width: 55%;
-      padding-bottom: 55%;
       max-width: 240px;
       max-height: 240px;
       border-radius: 48% 52% 55% 45%/62% 58% 42% 38%;
@@ -1052,11 +1135,28 @@
       transform: translate(-50%, -50%);
     }
 
+    /* Smaller cards (e.g., آرایش / عطر) — shrink glob to avoid clipping even during float */
+    .collection-card-new:not(.large) .collection-glob {
+      width: clamp(120px, 38%, 150px);
+      max-width: 150px;
+      max-height: 150px;
+    }
+
+    /* Large feature card keeps a bigger glob */
     .large .collection-glob {
       width: 45%;
-      padding-bottom: 45%;
       max-width: 280px;
-      max-height: 280px
+      max-height: 280px;
+    }
+
+    /* Hover lift: softer on small cards to avoid hitting the top edge */
+    .collection-card-new:hover .collection-glob {
+      animation-play-state: paused;
+      transform: translate(-50%, -55%) !important;
+    }
+
+    .collection-card-new:not(.large):hover .collection-glob {
+      transform: translate(-50%, -52%) !important;
     }
 
     .collection-product-image {
@@ -1073,11 +1173,6 @@
       background: radial-gradient(circle at 30% 30%, hsla(0, 0%, 100%, .7), transparent 60%);
       border-radius: inherit;
       pointer-events: none
-    }
-
-    .collection-card-new:hover .collection-glob {
-      animation-play-state: paused;
-      transform: translate(-50%, -55%) !important
     }
 
     .collection-card-new:hover .collection-product-image {
@@ -1244,10 +1339,23 @@
     }
 
     @keyframes scroll-down {
-      0% { transform: translate(-50%, 0); opacity: 0 }
-      40% { opacity: 1 }
-      80% { transform: translate(-50%, 20px); opacity: 0 }
-      to { opacity: 0 }
+      0% {
+        transform: translate(-50%, 0);
+        opacity: 0
+      }
+
+      40% {
+        opacity: 1
+      }
+
+      80% {
+        transform: translate(-50%, 20px);
+        opacity: 0
+      }
+
+      to {
+        opacity: 0
+      }
     }
 
     .newsletter-bg {
@@ -1268,8 +1376,13 @@
     }
 
     @keyframes rotate {
-      from { transform: rotate(0) }
-      to { transform: rotate(30deg) }
+      from {
+        transform: rotate(0)
+      }
+
+      to {
+        transform: rotate(30deg)
+      }
     }
 
     /* ===================================== */
@@ -1308,8 +1421,13 @@
       z-index: 5;
     }
 
-    .koala-loader::before { right: -35px; }
-    .koala-loader::after { left: -35px; }
+    .koala-loader::before {
+      right: -35px;
+    }
+
+    .koala-loader::after {
+      left: -35px;
+    }
 
     .koala-loader-body {
       width: 100%;
@@ -1345,8 +1463,13 @@
       animation: koala-blink 3s ease-in-out infinite;
     }
 
-    .koala-loader-eyes::before { right: 30px; }
-    .koala-loader-eyes::after { left: 30px; }
+    .koala-loader-eyes::before {
+      right: 30px;
+    }
+
+    .koala-loader-eyes::after {
+      left: 30px;
+    }
 
     .koala-loader-nose {
       position: absolute;
@@ -1361,7 +1484,8 @@
       z-index: 20;
     }
 
-    .liquid, .liquid-bg {
+    .liquid,
+    .liquid-bg {
       position: absolute;
       bottom: -8px;
       left: -50%;
@@ -1384,12 +1508,57 @@
       animation-direction: normal, reverse;
     }
 
-    .liquid { background-color: var(--primary); opacity: 0.7; animation-delay: 0.15s, 0s; }
+    .liquid {
+      background-color: var(--primary);
+      opacity: 0.7;
+      animation-delay: 0.15s, 0s;
+    }
 
-    @keyframes fill-up { from { height: 0; } to { height: 105%; } }
-    @keyframes wave { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-    @keyframes koala-pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.03); } }
-    @keyframes koala-blink { 0%,90%,100% { transform: scaleY(1); } 95% { transform: scaleY(0.1); } }
+    @keyframes fill-up {
+      from {
+        height: 0;
+      }
+
+      to {
+        height: 105%;
+      }
+    }
+
+    @keyframes wave {
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes koala-pulse {
+
+      0%,
+      100% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.03);
+      }
+    }
+
+    @keyframes koala-blink {
+
+      0%,
+      90%,
+      100% {
+        transform: scaleY(1);
+      }
+
+      95% {
+        transform: scaleY(0.1);
+      }
+    }
+
     /* ===================================== */
     /* END: New Koala Loader Styles          */
     /* ===================================== */
@@ -1411,7 +1580,10 @@
       background: linear-gradient(90deg, transparent, var(--rose-gold), transparent)
     }
 
-    .cute-divider .star { font-size: 12px; color: var(--rose-gold) }
+    .cute-divider .star {
+      font-size: 12px;
+      color: var(--rose-gold)
+    }
 
     .floating-heart {
       position: fixed;
@@ -1427,20 +1599,51 @@
     }
 
     @keyframes heartFloat {
-      0% { transform: translate(-50%, -50%) scale(.8); opacity: 0 }
-      15% { opacity: .95 }
-      60% { transform: translate(-50%, -140%) scale(1.15) }
-      to { transform: translate(-50%, -200%) scale(1); opacity: 0 }
+      0% {
+        transform: translate(-50%, -50%) scale(.8);
+        opacity: 0
+      }
+
+      15% {
+        opacity: .95
+      }
+
+      60% {
+        transform: translate(-50%, -140%) scale(1.15)
+      }
+
+      to {
+        transform: translate(-50%, -200%) scale(1);
+        opacity: 0
+      }
     }
 
-    #backToTop:hover { animation: cute-wiggle .7s ease both }
+    #backToTop:hover {
+      animation: cute-wiggle .7s ease both
+    }
+
     @keyframes cute-wiggle {
-      0%,50%,to { transform: scale(1.1) rotate(0) }
-      25% { transform: scale(1.1) rotate(-6deg) }
-      75% { transform: scale(1.1) rotate(6deg) }
+
+      0%,
+      50%,
+      to {
+        transform: scale(1.1) rotate(0)
+      }
+
+      25% {
+        transform: scale(1.1) rotate(-6deg)
+      }
+
+      75% {
+        transform: scale(1.1) rotate(6deg)
+      }
     }
 
-    .badge-cute { display: inline-flex; align-items: center; gap: .35rem }
+    .badge-cute {
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem
+    }
 
     .brands-container {
       direction: ltr;
@@ -1461,11 +1664,18 @@
       will-change: transform;
     }
 
-    .brands-container:hover .brands-marquee { animation-play-state: paused; }
+    .brands-container:hover .brands-marquee {
+      animation-play-state: paused;
+    }
 
     @keyframes scroll-brands {
-      from { transform: translateX(0); }
-      to { transform: translateX(var(--marquee-shift, -50%)); }
+      from {
+        transform: translateX(0);
+      }
+
+      to {
+        transform: translateX(var(--marquee-shift, -50%));
+      }
     }
 
     .brand-item {
@@ -1502,9 +1712,16 @@
       flex-shrink: 0;
     }
 
-    .brand-item:hover .brand-logo { background-color: var(--primary); color: #fff; transform: scale(1.1); }
+    .brand-item:hover .brand-logo {
+      background-color: var(--primary);
+      color: #fff;
+      transform: scale(1.1);
+    }
 
-    .brand-logo i { width: 24px; height: 24px; }
+    .brand-logo i {
+      width: 24px;
+      height: 24px;
+    }
 
     .brand-name {
       font-size: 1.05rem;
@@ -1515,7 +1732,9 @@
       transition: color 0.4s ease;
     }
 
-    .brand-item:hover .brand-name { color: var(--primary); }
+    .brand-item:hover .brand-name {
+      color: var(--primary);
+    }
 
     .category-scroll-container {
       direction: rtl;
@@ -1527,8 +1746,13 @@
       scrollbar-width: none;
     }
 
-    .category-scroll-container::-webkit-scrollbar { display: none; }
-    .category-scroll-container>div>a { scroll-snap-align: start; }
+    .category-scroll-container::-webkit-scrollbar {
+      display: none;
+    }
+
+    .category-scroll-container>div>a {
+      scroll-snap-align: start;
+    }
 
     .category-card {
       position: relative;
@@ -1545,7 +1769,10 @@
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
     }
 
-    .category-card:hover { transform: translateY(-10px); box-shadow: 0 16px 40px rgba(0, 0, 0, 0.15); }
+    .category-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.15);
+    }
 
     .category-card-bg {
       position: absolute;
@@ -1557,7 +1784,9 @@
       z-index: 1;
     }
 
-    .category-card:hover .category-card-bg { transform: scale(1.1); }
+    .category-card:hover .category-card-bg {
+      transform: scale(1.1);
+    }
 
     .category-card-overlay {
       position: absolute;
@@ -1571,7 +1800,11 @@
       background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.2) 60%, transparent 100%);
     }
 
-    .category-card-content { position: relative; z-index: 3; text-align: right; }
+    .category-card-content {
+      position: relative;
+      z-index: 3;
+      text-align: right;
+    }
 
     .category-card-icon {
       width: 52px;
@@ -1588,9 +1821,17 @@
       transition: all 0.4s ease;
     }
 
-    .category-card:hover .category-card-icon { background-color: var(--primary); border-color: transparent; transform: rotate(-10deg) scale(1.1); }
+    .category-card:hover .category-card-icon {
+      background-color: var(--primary);
+      border-color: transparent;
+      transform: rotate(-10deg) scale(1.1);
+    }
 
-    .category-card-title { font-size: 1.2rem; font-weight: 700; text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5); }
+    .category-card-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+    }
 
     /* Horizontal scroll for product cards: mobile + tablet */
     @media (max-width: 768px) {
@@ -1602,7 +1843,10 @@
         padding: 0 0 1rem 0;
         margin: 0 -1rem;
       }
-      .product-scroll-wrapper::-webkit-scrollbar { display: none; }
+
+      .product-scroll-wrapper::-webkit-scrollbar {
+        display: none;
+      }
 
       #product-grid {
         columns: auto !important;
@@ -1610,7 +1854,8 @@
         flex-wrap: nowrap;
         width: max-content;
       }
-      #product-grid > .product-card-v2 {
+
+      #product-grid>.product-card-v2 {
         margin-top: 0 !important;
         width: 70vw;
         max-width: 280px;
@@ -1627,7 +1872,10 @@
         scrollbar-width: none;
         padding-bottom: 1rem;
       }
-      .product-scroll-wrapper::-webkit-scrollbar { display: none; }
+
+      .product-scroll-wrapper::-webkit-scrollbar {
+        display: none;
+      }
 
       #product-grid {
         columns: auto !important;
@@ -1635,9 +1883,11 @@
         flex-wrap: nowrap;
         width: max-content;
       }
-      #product-grid > .product-card-v2 {
+
+      #product-grid>.product-card-v2 {
         margin-top: 0 !important;
-        width: 48vw;         /* show ~2 cards on tablet viewport */
+        width: 48vw;
+        /* show ~2 cards on tablet viewport */
         max-width: 360px;
         flex-shrink: 0;
       }
@@ -1678,7 +1928,8 @@
         <div class="hidden lg:flex items-center gap-x-10 flex-row-reverse">
           <!-- Rightmost -> left order: فروشگاه، کالکشن ها، برندها، مجله، درباره ما -->
           <a href="/shop" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">فروشگاه</a>
-          <a href="#collections" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">کالکشن ها</a>
+          <a href="#collections" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">کالکشن
+            ها</a>
           <a href="#brands" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">برندها</a>
           <a href="#magazine" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">مجله</a>
           <a href="#about" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">درباره ما</a>
@@ -2076,7 +2327,9 @@
       </div>
 
       <!-- Horizontal scroll on mobile + tablet, grid on lg+ -->
-      <div class="flex lg:grid lg:grid-cols-3 gap-6 lg:gap-8 overflow-x-auto lg:overflow-visible snap-x snap-mandatory -mx-6 px-6 hide-scrollbar" data-aos="fade-up" data-aos-delay="100">
+      <div
+        class="flex lg:grid lg:grid-cols-3 gap-6 lg:gap-8 overflow-x-auto lg:overflow-visible snap-x snap-mandatory -mx-6 px-6 hide-scrollbar"
+        data-aos="fade-up" data-aos-delay="100">
         <a href="/magazine/night-routine"
           class="group relative block h-72 rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 w-72 sm:w-80 md:w-96 lg:w-auto flex-shrink-0 snap-start">
           <img src="https://images.unsplash.com/photo-1600180758890-6b94519a8ba6?q=80&w=1640&auto=format&fit=crop"
@@ -2172,7 +2425,9 @@
         <p class="text-gray-600 max-w-2xl mx-auto text-lg">داستان‌های واقعی از جامعه زیبای ما</p>
       </div>
       <!-- Horizontal scroll on mobile + tablet, grid on lg+ -->
-      <div id="testimonial-grid" class="flex lg:grid lg:grid-cols-3 gap-6 lg:gap-8 overflow-x-auto lg:overflow-visible snap-x snap-mandatory -mx-6 px-6 hide-scrollbar"></div>
+      <div id="testimonial-grid"
+        class="flex lg:grid lg:grid-cols-3 gap-6 lg:gap-8 overflow-x-auto lg:overflow-visible snap-x snap-mandatory -mx-6 px-6 hide-scrollbar">
+      </div>
     </div>
   </section>
 
@@ -2229,9 +2484,8 @@
               </address>
             </div>
             <div class="rounded-xl overflow-hidden ring-1 ring-white/10">
-              <iframe
-                title="Iran Hamedan Madani Blvd Map"
-                width="100%" height="160" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"
+              <iframe title="Iran Hamedan Madani Blvd Map" width="100%" height="160" frameborder="0" scrolling="no"
+                marginheight="0" marginwidth="0"
                 src="https://www.openstreetmap.org/export/embed.html?bbox=48.482%2C34.755%2C48.575%2C34.815&layer=mapnik&marker=34.785%2C48.528"
                 style="filter: grayscale(20%);"></iframe>
             </div>
@@ -2284,11 +2538,11 @@
 
       // --- DYNAMIC CONTENT GENERATION ---
       const cloudContainer = document.querySelector(".cloud-animation"),
-            particleContainer = document.querySelector(".particle-overlay"),
-            productGrid = document.getElementById("product-grid"),
-            testimonialGrid = document.getElementById("testimonial-grid"),
-            instagramGrid = document.getElementById("instagram-grid"),
-            footerLinksContainer = document.getElementById("footer-links");
+        particleContainer = document.querySelector(".particle-overlay"),
+        productGrid = document.getElementById("product-grid"),
+        testimonialGrid = document.getElementById("testimonial-grid"),
+        instagramGrid = document.getElementById("instagram-grid"),
+        footerLinksContainer = document.getElementById("footer-links");
 
       for (let i = 1; i <= 10; i++) cloudContainer.innerHTML += `<div class="cloud cloud-${i}"></div>`;
       for (let i = 0; i < 9; i++) particleContainer.innerHTML += `<div class="particle" style="left:${10 + i * 10}%;animation-duration:${25 + Math.random() * 10}s;animation-delay:${Math.random() * 15}s"></div>`;
@@ -2454,7 +2708,7 @@
           e.addEventListener("mouseenter", () => { cursor.classList.add("hover"); cursorFollower.style.transform = "translate(-50%,-50%) scale(1.5)" });
           e.addEventListener("mouseleave", () => { cursor.classList.remove("hover"); cursorFollower.style.transform = "translate(-50%,-50%) scale(1)" })
         })
-      } else [cursor, cursorFace, cursorFollower].forEach(e => e.style.display = "none");
+      } else[cursor, cursorFace, cursorFollower].forEach(e => e.style.display = "none");
 
       // ===============================================
       // START: Professional Hamburger Menu Logic
@@ -2501,7 +2755,7 @@
       backToTop.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
 
       const filterButtons = document.querySelectorAll(".filter-btn"),
-            allProductCards = document.querySelectorAll(".product-card-v2");
+        allProductCards = document.querySelectorAll(".product-card-v2");
       filterButtons.forEach(button => {
         button.addEventListener("click", () => {
           filterButtons.forEach(btn => btn.classList.remove("active"));
