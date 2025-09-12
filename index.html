@@ -49,6 +49,15 @@
       font-family: "IRANSans", serif
     }
 
+    /* Hide scrollbar utility */
+    .hide-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .hide-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+
     /* MODIFICATION: Body scroll lock class */
     body.mobile-menu-open {
       overflow: hidden;
@@ -87,8 +96,10 @@
       display: flex;
       flex-direction: column;
       padding: 6rem 2rem 2rem;
-      align-items: flex-start;
-      gap: 1.5rem;
+      align-items: flex-end;
+      gap: 1.25rem;
+      direction: ltr; /* LTR menu */
+      text-align: right; /* right aligned Persian text */
     }
 
     #mobile-menu.is-active {
@@ -96,9 +107,10 @@
     }
 
     #mobile-menu .nav-link {
-      font-size: 1.25rem;
-      font-weight: 600;
+      font-size: 1.15rem;
+      font-weight: 700;
       color: var(--deep-brown);
+      width: 100%;
     }
 
     .hamburger-button {
@@ -922,141 +934,33 @@
       }
     }
 
+    /* Mobile spacing, sizes */
     @media (max-width: 768px) {
-      /* MODIFICATION START: Reduce vertical spacing between sections on mobile */
-      section.py-32 {
-        padding-top: 5rem;
-        /* 80px, was py-32 (128px) */
-        padding-bottom: 5rem;
-        /* 80px, was py-32 (128px) */
-      }
+      section.py-32 { padding-top: 5rem; padding-bottom: 5rem; }
+      section.py-24 { padding-top: 4rem; padding-bottom: 4rem; }
+      section.py-20 { padding-top: 3.5rem; padding-bottom: 3.5rem; }
 
-      section.py-24 {
-        padding-top: 4rem;
-        /* 64px, was py-24 (96px) */
-        padding-bottom: 4rem;
-        /* 64px, was py-24 (96px) */
-      }
+      body { font-size: 14px; }
+      nav .font-serif { font-size: 1.5rem; }
+      .text-lg { font-size: 0.95rem; line-height: 1.6; }
+      h1.hero-title-creative { font-size: 2.3rem; }
+      h2.text-4xl, h2.text-5xl, h2.text-6xl { font-size: 2.1rem; }
 
-      section.py-20 {
-        padding-top: 3.5rem;
-        /* 56px, was py-20 (80px) */
-        padding-bottom: 3.5rem;
-        /* 56px, was py-20 (80px) */
-      }
+      .product-card-v2 { aspect-ratio: 3 / 4.6; }
+      .product-card-v2-content { padding: 1rem; }
+      .product-card-v2-title { font-size: 0.95rem; }
+      .product-card-v2-price { font-size: 0.85rem; padding: 0.2rem 0.5rem; }
+      .product-card-v2-desc { font-size: 0.7rem; height: 4.2em; }
+      .add-to-cart-btn-v2 { padding: 0.6rem 1rem; font-size: 0.75rem; }
+      .product-card-v2-rating { width: 44px; height: 44px; font-size: 0.8rem; }
+      .product-card-v2-image-wrapper { width: clamp(100px, 40%, 140px); }
 
-      /* MODIFICATION END */
+      .category-card { padding: 1rem; }
+      .category-card-icon { width: 44px; height: 44px; margin-bottom: 0.75rem; }
+      .category-card-title { font-size: 1rem; }
 
-      body {
-        font-size: 14px;
-      }
-
-      /* MODIFICATION: Make KOALAW text smaller */
-      nav .font-serif {
-        font-size: 1.5rem;
-      }
-
-      .text-lg {
-        font-size: 0.95rem;
-        line-height: 1.6;
-      }
-
-      h1.hero-title-creative {
-        font-size: 2.3rem;
-      }
-
-      h2.text-4xl,
-      h2.text-5xl,
-      h2.text-6xl {
-        font-size: 2.1rem;
-      }
-
-      .product-scroll-wrapper {
-        overflow-x: auto;
-        direction: rtl;
-        -ms-overflow-style: none;
-        scrollbar-width: none;
-        padding: 0 0 1rem 0;
-        margin: 0 -1rem;
-      }
-
-      .product-scroll-wrapper::-webkit-scrollbar {
-        display: none;
-      }
-
-      #product-grid {
-        columns: auto !important;
-        display: flex;
-        flex-wrap: nowrap;
-        width: max-content;
-      }
-
-      #product-grid>.product-card-v2 {
-        margin-top: 0 !important;
-        width: 70vw;
-        max-width: 280px;
-        flex-shrink: 0;
-      }
-
-      .product-card-v2 {
-        aspect-ratio: 3 / 4.6;
-      }
-
-      .product-card-v2-content {
-        padding: 1rem;
-      }
-
-      .product-card-v2-title {
-        font-size: 0.95rem;
-      }
-
-      .product-card-v2-price {
-        font-size: 0.85rem;
-        padding: 0.2rem 0.5rem;
-      }
-
-      .product-card-v2-desc {
-        font-size: 0.7rem;
-        height: 4.2em;
-      }
-
-      .add-to-cart-btn-v2 {
-        padding: 0.6rem 1rem;
-        font-size: 0.75rem;
-      }
-
-      .product-card-v2-rating {
-        width: 44px;
-        height: 44px;
-        font-size: 0.8rem;
-      }
-
-      .product-card-v2-image-wrapper {
-        width: clamp(100px, 40%, 140px);
-      }
-
-      .category-card {
-        padding: 1rem;
-      }
-
-      .category-card-icon {
-        width: 44px;
-        height: 44px;
-        margin-bottom: 0.75rem;
-      }
-
-      .category-card-title {
-        font-size: 1rem;
-      }
-
-      .testimonial-card {
-        padding: 2rem;
-      }
-
-      .filter-btn {
-        padding: 10px 20px;
-        font-size: 12px;
-      }
+      .testimonial-card { padding: 2rem; }
+      .filter-btn { padding: 10px 20px; font-size: 12px; }
     }
 
     .collection-card-new:hover {
@@ -1144,7 +1048,8 @@
       border-radius: 48% 52% 55% 45%/62% 58% 42% 38%;
       overflow: hidden;
       filter: drop-shadow(0 15px 25px rgba(0, 0, 0, .1));
-      transition: transform .6s cubic-bezier(.165, .84, .44, 1)
+      transition: transform .6s cubic-bezier(.165, .84, .44, 1);
+      transform: translate(-50%, -50%);
     }
 
     .large .collection-glob {
@@ -1339,23 +1244,10 @@
     }
 
     @keyframes scroll-down {
-      0% {
-        transform: translate(-50%, 0);
-        opacity: 0
-      }
-
-      40% {
-        opacity: 1
-      }
-
-      80% {
-        transform: translate(-50%, 20px);
-        opacity: 0
-      }
-
-      to {
-        opacity: 0
-      }
+      0% { transform: translate(-50%, 0); opacity: 0 }
+      40% { opacity: 1 }
+      80% { transform: translate(-50%, 20px); opacity: 0 }
+      to { opacity: 0 }
     }
 
     .newsletter-bg {
@@ -1376,13 +1268,8 @@
     }
 
     @keyframes rotate {
-      from {
-        transform: rotate(0)
-      }
-
-      to {
-        transform: rotate(30deg)
-      }
+      from { transform: rotate(0) }
+      to { transform: rotate(30deg) }
     }
 
     /* ===================================== */
@@ -1399,7 +1286,7 @@
       align-items: center;
       justify-content: center;
       z-index: 10000;
-      transition: opacity .5s ease
+      transition: opacity .4s ease
     }
 
     .koala-loader {
@@ -1407,8 +1294,7 @@
       width: 150px;
       height: 150px;
     }
-    
-    /* MODIFICATION START: Moved ear styles here to prevent clipping issues */
+
     .koala-loader::after,
     .koala-loader::before {
       content: "";
@@ -1419,17 +1305,11 @@
       background: transparent;
       border-radius: 50%;
       top: -15px;
-      z-index: 5; /* ADDED: To place ears behind the head */
-    }
-    
-    .koala-loader::before {
-      right: -35px;
+      z-index: 5;
     }
 
-    .koala-loader::after {
-      left: -35px;
-    }
-    /* MODIFICATION END */
+    .koala-loader::before { right: -35px; }
+    .koala-loader::after { left: -35px; }
 
     .koala-loader-body {
       width: 100%;
@@ -1440,11 +1320,8 @@
       position: relative;
       overflow: hidden;
       animation: koala-pulse 2.5s ease-in-out infinite;
-      z-index: 10; /* MODIFIED: Ensures head is on top of ears */
+      z-index: 10;
     }
-    
-    /* REMOVED: Old ear styles that were clipped */
-    /* .koala-loader-body::after, .koala-loader-body::before { ... } */
 
     .koala-loader-eyes {
       position: absolute;
@@ -1455,27 +1332,21 @@
       z-index: 20;
     }
 
-    /* MODIFICATION: Changed eyes to outlines to match cursor */
     .koala-loader-eyes::after,
     .koala-loader-eyes::before {
       content: "";
       position: absolute;
       width: 12px;
       height: 12px;
-      border: 4px solid var(--primary); /* CHANGED */
-      box-sizing: border-box; /* ADDED */
+      border: 4px solid var(--primary);
+      box-sizing: border-box;
       border-radius: 50%;
       top: 50px;
       animation: koala-blink 3s ease-in-out infinite;
     }
 
-    .koala-loader-eyes::before {
-      right: 30px;
-    }
-
-    .koala-loader-eyes::after {
-      left: 30px;
-    }
+    .koala-loader-eyes::before { right: 30px; }
+    .koala-loader-eyes::after { left: 30px; }
 
     .koala-loader-nose {
       position: absolute;
@@ -1490,16 +1361,15 @@
       z-index: 20;
     }
 
-    .liquid,
-    .liquid-bg {
+    .liquid, .liquid-bg {
       position: absolute;
-      bottom: -8px; /* Hide behind border */
+      bottom: -8px;
       left: -50%;
       width: 200%;
       height: 0;
       border-radius: 40%;
       animation-name: fill-up, wave;
-      animation-duration: 2.5s, 4s;
+      animation-duration: 2.0s, 4s;
       animation-timing-function: ease-out, linear;
       animation-delay: 0s, 0s;
       animation-iteration-count: 1, infinite;
@@ -1510,59 +1380,16 @@
       background-color: var(--rose-gold);
       opacity: 0.5;
       border-radius: 45%;
-      animation-duration: 2.5s, 6s;
+      animation-duration: 2.0s, 6s;
       animation-direction: normal, reverse;
     }
 
-    .liquid {
-      background-color: var(--primary);
-      opacity: 0.7;
-      animation-delay: 0.2s, 0s;
-    }
+    .liquid { background-color: var(--primary); opacity: 0.7; animation-delay: 0.15s, 0s; }
 
-    @keyframes fill-up {
-      from {
-        height: 0;
-      }
-
-      to {
-        height: 105%;
-      }
-    }
-
-    @keyframes wave {
-      from {
-        transform: rotate(0deg);
-      }
-
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
-    @keyframes koala-pulse {
-      0%,
-      100% {
-        transform: scale(1);
-      }
-
-      50% {
-        transform: scale(1.03);
-      }
-    }
-
-    @keyframes koala-blink {
-
-      0%,
-      90%,
-      100% {
-        transform: scaleY(1);
-      }
-
-      95% {
-        transform: scaleY(0.1);
-      }
-    }
+    @keyframes fill-up { from { height: 0; } to { height: 105%; } }
+    @keyframes wave { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    @keyframes koala-pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.03); } }
+    @keyframes koala-blink { 0%,90%,100% { transform: scaleY(1); } 95% { transform: scaleY(0.1); } }
     /* ===================================== */
     /* END: New Koala Loader Styles          */
     /* ===================================== */
@@ -1584,10 +1411,7 @@
       background: linear-gradient(90deg, transparent, var(--rose-gold), transparent)
     }
 
-    .cute-divider .star {
-      font-size: 12px;
-      color: var(--rose-gold)
-    }
+    .cute-divider .star { font-size: 12px; color: var(--rose-gold) }
 
     .floating-heart {
       position: fixed;
@@ -1603,51 +1427,20 @@
     }
 
     @keyframes heartFloat {
-      0% {
-        transform: translate(-50%, -50%) scale(.8);
-        opacity: 0
-      }
-
-      15% {
-        opacity: .95
-      }
-
-      60% {
-        transform: translate(-50%, -140%) scale(1.15)
-      }
-
-      to {
-        transform: translate(-50%, -200%) scale(1);
-        opacity: 0
-      }
+      0% { transform: translate(-50%, -50%) scale(.8); opacity: 0 }
+      15% { opacity: .95 }
+      60% { transform: translate(-50%, -140%) scale(1.15) }
+      to { transform: translate(-50%, -200%) scale(1); opacity: 0 }
     }
 
-    #backToTop:hover {
-      animation: cute-wiggle .7s ease both
-    }
-
+    #backToTop:hover { animation: cute-wiggle .7s ease both }
     @keyframes cute-wiggle {
-
-      0%,
-      50%,
-      to {
-        transform: scale(1.1) rotate(0)
-      }
-
-      25% {
-        transform: scale(1.1) rotate(-6deg)
-      }
-
-      75% {
-        transform: scale(1.1) rotate(6deg)
-      }
+      0%,50%,to { transform: scale(1.1) rotate(0) }
+      25% { transform: scale(1.1) rotate(-6deg) }
+      75% { transform: scale(1.1) rotate(6deg) }
     }
 
-    .badge-cute {
-      display: inline-flex;
-      align-items: center;
-      gap: .35rem
-    }
+    .badge-cute { display: inline-flex; align-items: center; gap: .35rem }
 
     .brands-container {
       direction: ltr;
@@ -1668,18 +1461,11 @@
       will-change: transform;
     }
 
-    .brands-container:hover .brands-marquee {
-      animation-play-state: paused;
-    }
+    .brands-container:hover .brands-marquee { animation-play-state: paused; }
 
     @keyframes scroll-brands {
-      from {
-        transform: translateX(0);
-      }
-
-      to {
-        transform: translateX(var(--marquee-shift, -50%));
-      }
+      from { transform: translateX(0); }
+      to { transform: translateX(var(--marquee-shift, -50%)); }
     }
 
     .brand-item {
@@ -1716,16 +1502,9 @@
       flex-shrink: 0;
     }
 
-    .brand-item:hover .brand-logo {
-      background-color: var(--primary);
-      color: #fff;
-      transform: scale(1.1);
-    }
+    .brand-item:hover .brand-logo { background-color: var(--primary); color: #fff; transform: scale(1.1); }
 
-    .brand-logo i {
-      width: 24px;
-      height: 24px;
-    }
+    .brand-logo i { width: 24px; height: 24px; }
 
     .brand-name {
       font-size: 1.05rem;
@@ -1736,9 +1515,7 @@
       transition: color 0.4s ease;
     }
 
-    .brand-item:hover .brand-name {
-      color: var(--primary);
-    }
+    .brand-item:hover .brand-name { color: var(--primary); }
 
     .category-scroll-container {
       direction: rtl;
@@ -1750,13 +1527,8 @@
       scrollbar-width: none;
     }
 
-    .category-scroll-container::-webkit-scrollbar {
-      display: none;
-    }
-
-    .category-scroll-container>div>a {
-      scroll-snap-align: start;
-    }
+    .category-scroll-container::-webkit-scrollbar { display: none; }
+    .category-scroll-container>div>a { scroll-snap-align: start; }
 
     .category-card {
       position: relative;
@@ -1773,10 +1545,7 @@
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
     }
 
-    .category-card:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.15);
-    }
+    .category-card:hover { transform: translateY(-10px); box-shadow: 0 16px 40px rgba(0, 0, 0, 0.15); }
 
     .category-card-bg {
       position: absolute;
@@ -1788,9 +1557,7 @@
       z-index: 1;
     }
 
-    .category-card:hover .category-card-bg {
-      transform: scale(1.1);
-    }
+    .category-card:hover .category-card-bg { transform: scale(1.1); }
 
     .category-card-overlay {
       position: absolute;
@@ -1804,11 +1571,7 @@
       background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.2) 60%, transparent 100%);
     }
 
-    .category-card-content {
-      position: relative;
-      z-index: 3;
-      text-align: right;
-    }
+    .category-card-content { position: relative; z-index: 3; text-align: right; }
 
     .category-card-icon {
       width: 52px;
@@ -1825,16 +1588,59 @@
       transition: all 0.4s ease;
     }
 
-    .category-card:hover .category-card-icon {
-      background-color: var(--primary);
-      border-color: transparent;
-      transform: rotate(-10deg) scale(1.1);
+    .category-card:hover .category-card-icon { background-color: var(--primary); border-color: transparent; transform: rotate(-10deg) scale(1.1); }
+
+    .category-card-title { font-size: 1.2rem; font-weight: 700; text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5); }
+
+    /* Horizontal scroll for product cards: mobile + tablet */
+    @media (max-width: 768px) {
+      .product-scroll-wrapper {
+        overflow-x: auto;
+        direction: rtl;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+        padding: 0 0 1rem 0;
+        margin: 0 -1rem;
+      }
+      .product-scroll-wrapper::-webkit-scrollbar { display: none; }
+
+      #product-grid {
+        columns: auto !important;
+        display: flex;
+        flex-wrap: nowrap;
+        width: max-content;
+      }
+      #product-grid > .product-card-v2 {
+        margin-top: 0 !important;
+        width: 70vw;
+        max-width: 280px;
+        flex-shrink: 0;
+      }
     }
 
-    .category-card-title {
-      font-size: 1.2rem;
-      font-weight: 700;
-      text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+    /* Tablet: keep horizontal scroll too */
+    @media (min-width: 769px) and (max-width: 1024px) {
+      .product-scroll-wrapper {
+        overflow-x: auto;
+        direction: rtl;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+        padding-bottom: 1rem;
+      }
+      .product-scroll-wrapper::-webkit-scrollbar { display: none; }
+
+      #product-grid {
+        columns: auto !important;
+        display: flex;
+        flex-wrap: nowrap;
+        width: max-content;
+      }
+      #product-grid > .product-card-v2 {
+        margin-top: 0 !important;
+        width: 48vw;         /* show ~2 cards on tablet viewport */
+        max-width: 360px;
+        flex-shrink: 0;
+      }
     }
   </style>
 </head>
@@ -1843,10 +1649,8 @@
   <div class="loader" id="loader">
     <div class="koala-loader">
       <div class="koala-loader-body">
-        <!-- Liquid Layers -->
         <div class="liquid-bg"></div>
         <div class="liquid"></div>
-        <!-- Face Features on Top -->
         <div class="koala-loader-eyes"></div>
         <div class="koala-loader-nose"></div>
       </div>
@@ -1867,18 +1671,20 @@
   <!-- =============================================== -->
   <nav class="fixed w-full z-50 transition-all duration-300" id="navbar">
     <div class="container mx-auto px-6 py-5">
+      <!-- LTR container with RTL visual order using row-reverse -->
       <div class="flex items-center justify-between" dir="ltr">
         <a href="#" class="text-3xl font-serif font-bold text-gray-800 tracking-wider z-50">KOALAW</a>
 
-        <div class="hidden lg:flex items-center gap-x-10">
-          <a href="#" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">کالکشن‌ها</a>
-          <a href="#" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">پرفروش‌ترین‌ها</a>
-          <a href="#" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">درباره ما</a>
+        <div class="hidden lg:flex items-center gap-x-10 flex-row-reverse">
+          <!-- Rightmost -> left order: فروشگاه، کالکشن ها، برندها، مجله، درباره ما -->
+          <a href="/shop" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">فروشگاه</a>
+          <a href="#collections" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">کالکشن ها</a>
+          <a href="#brands" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">برندها</a>
           <a href="#magazine" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">مجله</a>
-          <a href="#" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">توسعه پایدار</a>
+          <a href="#about" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">درباره ما</a>
         </div>
 
-        <div class="flex items-center space-x-6">
+        <div class="flex items-center gap-x-6">
           <button class="text-gray-700 hover:text-gray-900 transition-all duration-300 hover:scale-110"><i
               data-feather="search" class="w-5 h-5"></i></button>
           <button class="text-gray-700 hover:text-gray-900 transition-all duration-300 hover:scale-110"><i
@@ -1901,11 +1707,11 @@
 
   <!-- Mobile Menu Panel -->
   <div id="mobile-menu">
-    <a href="#" class="nav-link">کالکشن‌ها</a>
-    <a href="#" class="nav-link">پرفروش‌ترین‌ها</a>
-    <a href="#" class="nav-link">درباره ما</a>
+    <a href="/shop" class="nav-link">فروشگاه</a>
+    <a href="#collections" class="nav-link">کالکشن ها</a>
+    <a href="#brands" class="nav-link">برندها</a>
     <a href="#magazine" class="nav-link">مجله</a>
-    <a href="#" class="nav-link">توسعه پایدار</a>
+    <a href="#about" class="nav-link">درباره ما</a>
   </div>
 
   <!-- Mobile Menu Overlay -->
@@ -1922,7 +1728,7 @@
     <div class="particle-overlay"></div>
     <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent z-10"></div>
     <div class="container mx-auto px-6 relative z-20 text-white">
-      <div data-aos="fade-up" data-aos-duration="1200"><span class="block text-lg font-medium tracking-wider mb-4"
+      <div data-aos="fade-up" data-aos-duration="700"><span class="block text-lg font-medium tracking-wider mb-4"
           style="text-shadow:0 1px 4px rgba(0,0,0,.5)">هنر زیبایی آگاهانه</span>
         <h1 class="hero-title-creative text-4xl lg:text-6xl font-serif font-bold leading-tight mb-6">درخششی فراتر از
           طبیعت</h1>
@@ -1937,7 +1743,8 @@
     </div>
     <div class="scroll-indicator"></div>
   </section>
-  <section class="py-24 bg-cream relative overflow-hidden">
+
+  <section id="collections" class="py-24 bg-cream relative overflow-hidden">
     <div
       class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vh] bg-rose-200/40 rounded-full blur-3xl opacity-50 z-0">
     </div>
@@ -1950,7 +1757,7 @@
           را روایت می‌کند.</p>
       </div>
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8"><a href="#" class="collection-card-link group block">
-          <div class="collection-card-new large h-full" data-aos="fade-right" data-aos-duration="1200">
+          <div class="collection-card-new large h-full" data-aos="fade-right" data-aos-duration="700">
             <div class="collection-visuals-container">
               <div class="card-bg-shapes">
                 <div class="card-bg-shape shape-1"></div>
@@ -1973,7 +1780,7 @@
           </div>
         </a>
         <div class="flex flex-col gap-8"><a href="#" class="collection-card-link group block">
-            <div class="collection-card-new" data-aos="fade-left" data-aos-duration="1200" data-aos-delay="200">
+            <div class="collection-card-new" data-aos="fade-left" data-aos-duration="700" data-aos-delay="200">
               <div class="collection-visuals-container">
                 <div class="card-bg-shapes">
                   <div class="card-bg-shape shape-1"
@@ -1994,7 +1801,7 @@
               </div>
             </div>
           </a><a href="#" class="collection-card-link group block">
-            <div class="collection-card-new" data-aos="fade-left" data-aos-duration="1200" data-aos-delay="400">
+            <div class="collection-card-new" data-aos="fade-left" data-aos-duration="700" data-aos-delay="200">
               <div class="collection-visuals-container">
                 <div class="card-bg-shapes">
                   <div class="card-bg-shape shape-1"
@@ -2018,8 +1825,6 @@
       </div>
     </div>
   </section>
-
-  <!-- (The rest of the body HTML remains exactly the same) -->
 
   <section class="py-24 bg-gray-50/50 overflow-hidden">
     <div class="container mx-auto px-6">
@@ -2087,7 +1892,7 @@
     </div>
   </section>
 
-  <section class="py-20 bg-cream/50 overflow-hidden">
+  <section id="brands" class="py-20 bg-cream/50 overflow-hidden">
     <div class="container mx-auto px-6">
       <div class="text-center mb-16" data-aos="fade-up">
         <span class="text-sm font-medium text-rose-800 tracking-wider uppercase mb-4 block">مجموعه‌ای منتخب</span>
@@ -2148,25 +1953,24 @@
           بدون آن‌ها زندگی کنند. هر محصول داستان عشق و تحولی را روایت می‌کند.</p>
       </div>
       <div class="flex flex-wrap justify-center items-center gap-4 mb-16" data-aos="fade-up" data-aos-delay="100">
-        <button class="filter-btn active" data-filter="all"><span>همه محصولات</span></button><button class="filter-btn"
-          data-filter="skincare"><span>مراقبت از پوست</span></button><button class="filter-btn"
-          data-filter="makeup"><span>آرایش</span></button><button class="filter-btn"
-          data-filter="fragrance"><span>عطر</span></button><button class="filter-btn"
-          data-filter="bestseller"><span>پرفروش‌ترین‌ها</span></button>
+        <button class="filter-btn active" data-filter="all"><span>همه محصولات</span></button>
+        <button class="filter-btn" data-filter="skincare"><span>مراقبت از پوست</span></button>
+        <button class="filter-btn" data-filter="makeup"><span>آرایش</span></button>
+        <button class="filter-btn" data-filter="fragrance"><span>عطر</span></button>
+        <button class="filter-btn" data-filter="bestseller"><span>پرفروش‌ترین‌ها</span></button>
       </div>
 
-      <div class="product-scroll-wrapper">
+      <div class="product-scroll-wrapper hide-scrollbar">
         <div id="product-grid" class="columns-1 sm:columns-2 lg:columns-4 gap-6 space-y-6"></div>
       </div>
 
       <div class="text-center mt-16" data-aos="fade-up" data-aos-delay="100">
-        <!-- MODIFICATION START: Added responsive classes to make the button smaller on mobile -->
         <a href="#"
-          class="inline-flex items-center px-6 md:px-10 py-3 md:py-5 border-2 border-gray-900 text-gray-900 rounded-full hover:bg-gray-900 hover:text-white transition-all duration-500 group text-base md:text-lg font-semibold tracking-wide"><i
-            data-feather="arrow-left"
-            class="ml-3 w-5 h-5 group-hover:-translate-x-2 transition-transform duration-300"></i><span>کاوش کامل
-            کالکشن</span></a>
-        <!-- MODIFICATION END -->
+          class="inline-flex items-center px-6 md:px-10 py-3 md:py-5 border-2 border-gray-900 text-gray-900 rounded-full hover:bg-gray-900 hover:text-white transition-all duration-500 group text-base md:text-lg font-semibold tracking-wide">
+          <i data-feather="arrow-left"
+            class="ml-3 w-5 h-5 group-hover:-translate-x-2 transition-transform duration-300"></i>
+          <span>کاوش کامل کالکشن</span>
+        </a>
         <p class="text-gray-500 text-sm mt-4">بیش از ۲۰۰ محصول منحصر به فرد در انتظار شماست</p>
       </div>
     </div>
@@ -2185,7 +1989,7 @@
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
-        <div class="lg:col-span-2" data-aos="fade-right" data-aos-duration="1000">
+        <div class="lg:col-span-2" data-aos="fade-right" data-aos-duration="700">
           <a href="#" class="campaign-featured-card group">
             <div class="campaign-featured-image-wrapper">
               <img src="./image/skin.png" alt="محصول ویژه بهاری" class="campaign-featured-image">
@@ -2220,7 +2024,7 @@
           </a>
         </div>
 
-        <div class="flex flex-col gap-8" data-aos="fade-left" data-aos-duration="1000" data-aos-delay="200">
+        <div class="flex flex-col gap-8" data-aos="fade-left" data-aos-duration="700" data-aos-delay="200">
           <a href="#" class="campaign-side-card group">
             <img src="./image/hair.png" alt="عطر موی بهاری" class="campaign-side-image">
             <div class="campaign-side-content">
@@ -2271,9 +2075,10 @@
           آگاهانه.</p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" data-aos="fade-up" data-aos-delay="100">
+      <!-- Horizontal scroll on mobile + tablet, grid on lg+ -->
+      <div class="flex lg:grid lg:grid-cols-3 gap-6 lg:gap-8 overflow-x-auto lg:overflow-visible snap-x snap-mandatory -mx-6 px-6 hide-scrollbar" data-aos="fade-up" data-aos-delay="100">
         <a href="/magazine/night-routine"
-          class="group relative block h-72 rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500">
+          class="group relative block h-72 rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 w-72 sm:w-80 md:w-96 lg:w-auto flex-shrink-0 snap-start">
           <img src="https://images.unsplash.com/photo-1600180758890-6b94519a8ba6?q=80&w=1640&auto=format&fit=crop"
             alt="روتین مراقبت شبانه"
             class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
@@ -2297,7 +2102,7 @@
         </a>
 
         <a href="/magazine/minimal-makeup"
-          class="group relative block h-72 rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500">
+          class="group relative block h-72 rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 w-72 sm:w-80 md:w-96 lg:w-auto flex-shrink-0 snap-start">
           <img src="https://images.unsplash.com/photo-1512496015851-a90fb38ba796?q=80&w=1640&auto=format&fit=crop"
             alt="مییکاپ مینیمال"
             class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
@@ -2321,7 +2126,7 @@
         </a>
 
         <a href="/magazine/fragrance-layers"
-          class="group relative block h-72 rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500">
+          class="group relative block h-72 rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 w-72 sm:w-80 md:w-96 lg:w-auto flex-shrink-0 snap-start">
           <img src="https://images.unsplash.com/photo-1512496015851-a90fb38ba796?q=80&w=1640&auto=format&fit=crop"
             alt="لایه‌بندی عطر"
             class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
@@ -2366,9 +2171,11 @@
         <div class="cute-divider"><span class="star">✦</span></div>
         <p class="text-gray-600 max-w-2xl mx-auto text-lg">داستان‌های واقعی از جامعه زیبای ما</p>
       </div>
-      <div id="testimonial-grid" class="grid grid-cols-1 md:grid-cols-3 gap-8"></div>
+      <!-- Horizontal scroll on mobile + tablet, grid on lg+ -->
+      <div id="testimonial-grid" class="flex lg:grid lg:grid-cols-3 gap-6 lg:gap-8 overflow-x-auto lg:overflow-visible snap-x snap-mandatory -mx-6 px-6 hide-scrollbar"></div>
     </div>
   </section>
+
   <section class="py-24 bg-white">
     <div class="container mx-auto px-6">
       <div class="text-center mb-16" data-aos="fade-up"><span
@@ -2385,6 +2192,7 @@
             class="mr-2 w-4 h-4 group-hover:-translate-x-2 transition-transform duration-300"></i></a></div>
     </div>
   </section>
+
   <section class="py-24 newsletter-bg relative">
     <div class="container mx-auto px-6 relative z-10">
       <div class="max-w-4xl mx-auto text-center" data-aos="fade-up">
@@ -2403,35 +2211,54 @@
       </div>
     </div>
   </section>
-  <footer class="bg-gradient-to-b from-gray-900 to-black text-white py-20">
+
+  <footer id="about" class="bg-gradient-to-b from-gray-900 to-black text-white py-20">
     <div class="container mx-auto px-6">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-12">
         <div class="lg:col-span-2">
           <h3 class="text-3xl font-serif font-bold mb-6">KOALAW</h3>
-          <p class="text-gray-400 mb-8 leading-relaxed">ارتقای زیبایی از طریق تجمل آگاهانه. هر محصول جشنی از بهترین مواد
+          <p class="text-gray-400 mb-6 leading-relaxed">ارتقای زیبایی از طریق تجمل آگاهانه. هر محصول جشنی از بهترین مواد
             طبیعی و علم نوآورانه است.</p>
-          <div class="flex space-x-4"><a href="#"
+
+          <!-- Address + Small Map -->
+          <div class="space-y-3 mb-8">
+            <div class="flex items-start gap-2 text-gray-300">
+              <i data-feather="map-pin" class="w-5 h-5 flex-shrink-0 mt-0.5"></i>
+              <address class="not-italic leading-relaxed">
+                ایران، همدان، بلوار معدنی
+              </address>
+            </div>
+            <div class="rounded-xl overflow-hidden ring-1 ring-white/10">
+              <iframe
+                title="Iran Hamedan Madani Blvd Map"
+                width="100%" height="160" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"
+                src="https://www.openstreetmap.org/export/embed.html?bbox=48.482%2C34.755%2C48.575%2C34.815&layer=mapnik&marker=34.785%2C48.528"
+                style="filter: grayscale(20%);"></iframe>
+            </div>
+          </div>
+
+          <!-- Socials: Only Instagram -->
+          <div class="flex gap-3"><a href="#"
               class="bg-gray-800 p-3 rounded-full hover:bg-gray-700 transition-all duration-300 transform hover:scale-110"><i
-                data-feather="instagram" class="w-5 h-5"></i></a><a href="#"
-              class="bg-gray-800 p-3 rounded-full hover:bg-gray-700 transition-all duration-300 transform hover:scale-110"><i
-                data-feather="facebook" class="w-5 h-5"></i></a><a href="#"
-              class="bg-gray-800 p-3 rounded-full hover:bg-gray-700 transition-all duration-300 transform hover:scale-110"><i
-                data-feather="twitter" class="w-5 h-5"></i></a><a href="#"
-              class="bg-gray-800 p-3 rounded-full hover:bg-gray-700 transition-all duration-300 transform hover:scale-110"><i
-                data-feather="youtube" class="w-5 h-5"></i></a></div>
+                data-feather="instagram" class="w-5 h-5"></i></a></div>
         </div>
-        <div id="footer-links"></div>
+
+        <!-- Footer links container -->
+        <div id="footer-links" class="lg:col-span-3 grid grid-cols-2 md:grid-cols-3 gap-8"></div>
       </div>
+
       <div class="border-t border-gray-800 pt-8">
         <div class="flex flex-col md:flex-row justify-between items-center">
           <div class="flex flex-col md:flex-row items-center mb-4 md:mb-0">
-            <p class="text-gray-400 text-sm mb-2 md:mb-0 md:ml-6">© ۲۰۲۴ کوالا بیوتی. تمام حقوق محفوظ است.</p>
-            <div class="flex space-x-6 text-sm"><a href="#"
-                class="text-gray-400 hover:text-white transition duration-300">سیاست حفظ حریم خصوصی</a><a href="#"
-                class="text-gray-400 hover:text-white transition duration-300">شرایط خدمات</a><a href="#"
-                class="text-gray-400 hover:text-white transition duration-300">سیاست کوکی</a></div>
+            <p class="text-gray-400 text-sm mb-2 md:mb-0 md:ml-6">© ۲۰۲۴ D.AI — تمام حقوق محفوظ است.</p>
+            <!-- Proper gaps between legal links on desktop -->
+            <div class="flex items-center gap-x-6 md:gap-x-8 text-sm flex-wrap">
+              <a href="#" class="text-gray-400 hover:text-white transition duration-300">سیاست حفظ حریم خصوصی</a>
+              <a href="#" class="text-gray-400 hover:text-white transition duration-300">شرایط خدمات</a>
+              <a href="#" class="text-gray-400 hover:text-white transition duration-300">سیاست کوکی</a>
+            </div>
           </div>
-          <div class="flex items-center space-x-4"><span class="text-gray-400 text-sm ml-2">پرداخت امن:</span><img
+          <div class="flex items-center gap-x-4"><span class="text-gray-400 text-sm ml-2">پرداخت امن:</span><img
               src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa"
               class="h-8 opacity-70 hover:opacity-100 transition-opacity duration-300"><img
               src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard"
@@ -2444,23 +2271,40 @@
       </div>
     </div>
   </footer>
+
   <button id="backToTop"
     class="fixed bottom-8 left-8 bg-gradient-to-r from-gray-900 to-black text-white p-4 rounded-full shadow-lg opacity-0 invisible transition-all duration-300 hover:shadow-xl transform hover:scale-110 z-40"><i
       data-feather="arrow-up" class="w-5 h-5"></i></button>
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      AOS.init({ duration: 800, easing: "ease-out-cubic", once: !0, offset: 50 });
+      // AOS lighter
+      AOS.init({ duration: 600, easing: "ease-out-cubic", once: true, offset: 40 });
+      document.querySelectorAll('[data-aos-duration]').forEach(el => el.setAttribute('data-aos-duration', '600'));
 
       // --- DYNAMIC CONTENT GENERATION ---
-      const cloudContainer = document.querySelector(".cloud-animation"), particleContainer = document.querySelector(".particle-overlay"), productGrid = document.getElementById("product-grid"), testimonialGrid = document.getElementById("testimonial-grid"), instagramGrid = document.getElementById("instagram-grid"), footerLinksContainer = document.getElementById("footer-links");
-      for (let i = 1; i <= 10; i++)cloudContainer.innerHTML += `<div class="cloud cloud-${i}"></div>`;
-      for (let i = 0; i < 9; i++)particleContainer.innerHTML += `<div class="particle" style="left:${10 + i * 10}%;animation-duration:${25 + Math.random() * 10}s;animation-delay:${Math.random() * 15}s"></div>`;
+      const cloudContainer = document.querySelector(".cloud-animation"),
+            particleContainer = document.querySelector(".particle-overlay"),
+            productGrid = document.getElementById("product-grid"),
+            testimonialGrid = document.getElementById("testimonial-grid"),
+            instagramGrid = document.getElementById("instagram-grid"),
+            footerLinksContainer = document.getElementById("footer-links");
+
+      for (let i = 1; i <= 10; i++) cloudContainer.innerHTML += `<div class="cloud cloud-${i}"></div>`;
+      for (let i = 0; i < 9; i++) particleContainer.innerHTML += `<div class="particle" style="left:${10 + i * 10}%;animation-duration:${25 + Math.random() * 10}s;animation-delay:${Math.random() * 15}s"></div>`;
 
       if (productGrid) {
         productGrid.innerHTML = '';
-
-        const pastelColors = ['linear-gradient(135deg, #a8e6cf, #dcedc1)', 'linear-gradient(135deg, #ffd3b6, #ffaaa5)', 'linear-gradient(135deg, #c3aed6, #d2c2e0)', 'linear-gradient(135deg, #ffc0cb, #f7cce4)', 'linear-gradient(135deg, #bde4f4, #d3eaf2)', 'linear-gradient(135deg, #fdfd96, #fffda8)', 'linear-gradient(135deg, #f5d5b7, #f7e0cb)', 'linear-gradient(135deg, #b2e2f2, #c8e8f5)'];
+        const pastelColors = [
+          'linear-gradient(135deg, #a8e6cf, #dcedc1)',
+          'linear-gradient(135deg, #ffd3b6, #ffaaa5)',
+          'linear-gradient(135deg, #c3aed6, #d2c2e0)',
+          'linear-gradient(135deg, #ffc0cb, #f7cce4)',
+          'linear-gradient(135deg, #bde4f4, #d3eaf2)',
+          'linear-gradient(135deg, #fdfd96, #fffda8)',
+          'linear-gradient(135deg, #f5d5b7, #f7e0cb)',
+          'linear-gradient(135deg, #b2e2f2, #c8e8f5)'
+        ];
 
         const products = [
           { d: "100", c: "skincare bestseller", i: "1617897903246-719242758050", t: "اکسیر درخشش طلایی", p: 480000, rating: 4.8, desc: "سرم مغذی برای بازگرداندن درخشش طبیعی پوست شما." },
@@ -2479,42 +2323,80 @@
           const ratingPersian = p.rating.toLocaleString('fa-IR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 
           productGrid.innerHTML += `
-                <div class="product-card-v2 break-inside-avoid" data-aos="fade-up" data-aos-delay="${p.d}" data-category="${p.c}">
-                  <div class="product-card-v2-bg" style="background: ${bgColor};"></div>
-                  <div class="product-card-v2-content">
-                    <div class="product-card-v2-header">
-                      <div class="product-card-v2-title-desc">
-                        <h3 class="product-card-v2-title">${p.t}</h3>
-                        <p class="product-card-v2-desc">${p.desc}</p>
-                      </div>
-                      <div class="product-card-v2-price">${formattedPrice}</div>
-                    </div>
-                    <div class="product-card-v2-footer">
-                      <button class="add-to-cart-btn-v2">
-                        <span>افزودن به سبد</span>
-                        <i data-feather="shopping-bag" class="w-5 h-5"></i>
-                      </button>
-                      <div class="product-card-v2-rating">
-                        <span>${ratingPersian}</span>
-                        <i data-feather="star" class="w-4 h-4 star-icon-filled"></i>
-                      </div>
-                    </div>
+            <div class="product-card-v2 break-inside-avoid" data-aos="fade-up" data-aos-delay="${p.d}" data-category="${p.c}">
+              <div class="product-card-v2-bg" style="background: ${bgColor};"></div>
+              <div class="product-card-v2-content">
+                <div class="product-card-v2-header">
+                  <div class="product-card-v2-title-desc">
+                    <h3 class="product-card-v2-title">${p.t}</h3>
+                    <p class="product-card-v2-desc">${p.desc}</p>
                   </div>
-                  <div class="product-card-v2-image-wrapper">
-                    <img src="./image/product.png" alt="${p.t}" class="product-card-v2-image">
+                  <div class="product-card-v2-price">${formattedPrice}</div>
+                </div>
+                <div class="product-card-v2-footer">
+                  <button class="add-to-cart-btn-v2">
+                    <span>افزودن به سبد</span>
+                    <i data-feather="shopping-bag" class="w-5 h-5"></i>
+                  </button>
+                  <div class="product-card-v2-rating">
+                    <span>${ratingPersian}</span>
+                    <i data-feather="star" class="w-4 h-4 star-icon-filled"></i>
                   </div>
-                </div>`;
+                </div>
+              </div>
+              <div class="product-card-v2-image-wrapper">
+                <img src="./image/product.png" alt="${p.t}" class="product-card-v2-image">
+              </div>
+            </div>`;
         });
       }
 
-      const testimonials = [{ d: 100, i: "1438761681033-6461ffad8d80", t: "«اکسیر درخشش طلایی پوست من را کاملاً متحول کرده. هرگز اینقدر از پوستم تعریف نشنیده بودم. انگار یک فیلتر در زندگی واقعی دارم!»", n: "سوفیا چن", s: "خریدار تایید شده • ۳ ماه پیش" }, { d: 200, i: "1494790108377-be9c29b29330", t: "«به عنوان یک میکاپ آرتیست، من در مورد محصولات بسیار سخت‌گیر هستم. کرم پودر کوالا یک تغییر بزرگ است. مشتریانم عاشقش شده‌اند!»", n: "اِما رودریگز", s: "میکاپ آرتیست حرفه‌ای • ۱ ماه پیش" }, { d: 300, i: "1507003211169-0a1dd7228f2d", t: "«عطر راز نیمه‌شب حالا عطر امضای من است. شیک، ماندگار و هر روز از من می‌پرسند چه عطری زده‌ام. تجمل خالص در یک بطری!»", n: "مایکل پارک", s: "مشتری وفادار • ۲ هفته پیش" }];
-      testimonials.forEach(t => { testimonialGrid.innerHTML += `<div class="testimonial-card" data-aos="fade-up" data-aos-delay="${t.d}"><div class="flex mb-6"><div class="flex text-yellow-400">${'<i data-feather="star" class="w-5 h-5 fill-current"></i>'.repeat(5)}</div></div><p class="text-gray-600 mb-8 italic leading-relaxed">${t.t}</p><div class="flex items-center"><img src="https://images.unsplash.com/photo-${t.i}?w=100&h=100&fit=crop" alt="مشتری" class="w-14 h-14 rounded-full object-cover ml-4"><div><h4 class="font-semibold text-gray-800">${t.n}</h4><p class="text-sm text-gray-500">${t.s}</p></div></div></div>` });
+      const testimonials = [
+        { d: 100, i: "1438761681033-6461ffad8d80", t: "«اکسیر درخشش طلایی پوست من را کاملاً متحول کرده. هرگز اینقدر از پوستم تعریف نشنیده بودم. انگار یک فیلتر در زندگی واقعی دارم!»", n: "سوفیا چن", s: "خریدار تایید شده • ۳ ماه پیش" },
+        { d: 200, i: "1494790108377-be9c29b29330", t: "«به عنوان یک میکاپ آرتیست، من در مورد محصولات بسیار سخت‌گیر هستم. کرم پودر کوالا یک تغییر بزرگ است. مشتریانم عاشقش شده‌اند!»", n: "اِما رودریگز", s: "میکاپ آرتیست حرفه‌ای • ۱ ماه پیش" },
+        { d: 300, i: "1507003211169-0a1dd7228f2d", t: "«عطر راز نیمه‌شب حالا عطر امضای من است. شیک، ماندگار و هر روز از من می‌پرسند چه عطری زده‌ام. تجمل خالص در یک بطری!»", n: "مایکل پارک", s: "مشتری وفادار • ۲ هفته پیش" }
+      ];
+      testimonials.forEach(t => {
+        testimonialGrid.innerHTML += `
+          <div class="testimonial-card w-80 sm:w-96 lg:w-auto flex-shrink-0 snap-start" data-aos="fade-up" data-aos-delay="${t.d}">
+            <div class="flex mb-6"><div class="flex text-yellow-400">${'<i data-feather="star" class="w-5 h-5 fill-current"></i>'.repeat(5)}</div></div>
+            <p class="text-gray-600 mb-8 italic leading-relaxed">${t.t}</p>
+            <div class="flex items-center">
+              <img src="https://images.unsplash.com/photo-${t.i}?w=100&h=100&fit=crop" alt="مشتری" class="w-14 h-14 rounded-full object-cover ml-4">
+              <div><h4 class="font-semibold text-gray-800">${t.n}</h4><p class="text-sm text-gray-500">${t.s}</p></div>
+            </div>
+          </div>`;
+      });
 
-      const instaPosts = [{ i: "1522335789203-aabd1fc54bc9", l: "۲.۳" }, { i: "1512207736890-6ffca8dad650", l: "۳.۱" }, { i: "1516975080664-ed2fc6a32937", l: "۱.۸" }, { i: "1519699047748-de8e457a634e", l: "۴.۲" }];
-      instaPosts.forEach(p => { instagramGrid.innerHTML += `<div class="relative group overflow-hidden rounded-2xl"><img src="https://images.unsplash.com/photo-${p.i}?w=400&h=400&fit=crop" alt="اینستاگرام" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"><div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items=end p-4"><div class="text-white"><i data-feather="heart" class="w-5 h-5 mb-1"></i><p class="text-sm">${p.l} هزار لایک</p></div></div></div>` });
+      const instaPosts = [
+        { i: "1522335789203-aabd1fc54bc9", l: "۲.۳" },
+        { i: "1512207736890-6ffca8dad650", l: "۳.۱" },
+        { i: "1516975080664-ed2fc6a32937", l: "۱.۸" },
+        { i: "1519699047748-de8e457a634e", l: "۴.۲" }
+      ];
+      instaPosts.forEach(p => {
+        instagramGrid.innerHTML += `
+          <div class="relative group overflow-hidden rounded-2xl">
+            <img src="https://images.unsplash.com/photo-${p.i}?w=400&h=400&fit=crop" alt="اینستاگرام" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items=end p-4">
+              <div class="text-white">
+                <i data-feather="heart" class="w-5 h-5 mb-1"></i>
+                <p class="text-sm">${p.l} هزار لایک</p>
+              </div>
+            </div>
+          </div>`;
+      });
 
-      const footerLinks = { فروشگاه: ["تازه‌ها", "پرفروش‌ترین‌ها", "مراقبت از پوست", "آرایش", "عطر", "ست‌های هدیه"], "درباره ما": ["داستان ما", "ترکیبات", "توسعه پایدار", "رسانه‌ها", "فرصت‌های شغلی", "فروشگاه‌ها"], "خدمات مشتریان": ["تماس با ما", "سوالات متداول", "اطلاعات ارسال", "مرجوعی", "پیگیری سفارش", "راهنمای سایز"] };
-      for (const title in footerLinks) { let linksHTML = ""; footerLinks[title].forEach(link => linksHTML += `<li><a href="#" class="text-gray-400 hover:text-white transition duration-300">${link}</a></li>`); footerLinksContainer.innerHTML += `<div><h4 class="font-semibold text-lg mb-6">${title}</h4><ul class="space-y-3">${linksHTML}</ul></div>` }
+      // Footer links (About removed, Size Guide removed)
+      const footerLinks = {
+        "فروشگاه": ["تازه‌ها", "پرفروش‌ترین‌ها", "مراقبت از پوست", "آرایش", "عطر", "ست‌های هدیه"],
+        "خدمات مشتریان": ["تماس با ما", "سوالات متداول", "اطلاعات ارسال", "مرجوعی", "پیگیری سفارش"]
+      };
+      for (const title in footerLinks) {
+        let linksHTML = "";
+        footerLinks[title].forEach(link => linksHTML += `<li><a href="#" class="text-gray-400 hover:text-white transition duration-300">${link}</a></li>`);
+        footerLinksContainer.innerHTML += `<div><h4 class="font-semibold text-lg mb-6">${title}</h4><ul class="space-y-3">${linksHTML}</ul></div>`
+      }
 
       function setupBrandsMarquee() {
         const container = document.querySelector('.brands-container');
@@ -2559,7 +2441,20 @@
 
       // --- CURSOR SCRIPT ---
       const cursor = document.querySelector(".cursor"), cursorFace = document.querySelector(".cursor-face"), cursorFollower = document.querySelector(".cursor-follower"); let cursorX = 0, cursorY = 0, followerX = 0, followerY = 0, speed = .5;
-      if (window.innerWidth > 768) { document.addEventListener("mousemove", e => { cursorX = e.clientX; cursorY = e.clientY }); (function animateCursor() { cursor.style.left = cursorX + "px"; cursor.style.top = cursorY + "px"; cursorFace.style.left = cursorX + "px"; cursorFace.style.top = cursorY + "px"; followerX += (cursorX - followerX) * speed; followerY += (cursorY - followerY) * speed; cursorFollower.style.left = followerX + "px"; cursorFollower.style.top = followerY + "px"; requestAnimationFrame(animateCursor) })(); document.querySelectorAll("a,button,.product-card-v2,.collection-card-new, .category-card, .campaign-featured-card, .campaign-side-card").forEach(e => { e.addEventListener("mouseenter", () => { cursor.classList.add("hover"); cursorFollower.style.transform = "translate(-50%,-50%) scale(1.5)" }); e.addEventListener("mouseleave", () => { cursor.classList.remove("hover"); cursorFollower.style.transform = "translate(-50%,-50%) scale(1)" }) }) } else[cursor, cursorFace, cursorFollower].forEach(e => e.style.display = "none");
+      if (window.innerWidth > 768) {
+        document.addEventListener("mousemove", e => { cursorX = e.clientX; cursorY = e.clientY });
+        (function animateCursor() {
+          cursor.style.left = cursorX + "px"; cursor.style.top = cursorY + "px";
+          cursorFace.style.left = cursorX + "px"; cursorFace.style.top = cursorY + "px";
+          followerX += (cursorX - followerX) * speed; followerY += (cursorY - followerY) * speed;
+          cursorFollower.style.left = followerX + "px"; cursorFollower.style.top = followerY + "px";
+          requestAnimationFrame(animateCursor)
+        })();
+        document.querySelectorAll("a,button,.product-card-v2,.collection-card-new, .category-card, .campaign-featured-card, .campaign-side-card").forEach(e => {
+          e.addEventListener("mouseenter", () => { cursor.classList.add("hover"); cursorFollower.style.transform = "translate(-50%,-50%) scale(1.5)" });
+          e.addEventListener("mouseleave", () => { cursor.classList.remove("hover"); cursorFollower.style.transform = "translate(-50%,-50%) scale(1)" })
+        })
+      } else [cursor, cursorFace, cursorFollower].forEach(e => e.style.display = "none");
 
       // ===============================================
       // START: Professional Hamburger Menu Logic
@@ -2592,20 +2487,67 @@
       // ===============================================
 
       // --- PAGE SCRIPTS ---
-      window.addEventListener("load", () => setTimeout(() => { const e = document.getElementById("loader"); e.style.opacity = "0"; setTimeout(() => e.style.display = "none", 500) }, 3000)); // Increased duration to 3s to let the animation play out
+      window.addEventListener("load", () => setTimeout(() => { const e = document.getElementById("loader"); e.style.opacity = "0"; setTimeout(() => e.style.display = "none", 400) }, 1200));
       const navbar = document.getElementById("navbar"), backToTop = document.getElementById("backToTop"); let lastScroll = 0;
-      window.addEventListener("scroll", () => { const e = window.pageYOffset; navbar.style.background = e > 100 ? "rgba(250,248,243,.95)" : "rgba(250,248,243,.85)"; navbar.style.boxShadow = e > 100 ? "0 4px 30px rgba(0,0,0,.1)" : "0 1px 20px rgba(0,0,0,.05)"; navbar.style.transform = e > lastScroll && e > 500 ? "translateY(-100%)" : "translateY(0)"; lastScroll = e; if (e > 500) { backToTop.style.opacity = "1"; backToTop.style.visibility = "visible" } else { backToTop.style.opacity = "0"; backToTop.style.visibility = "hidden" } });
+      window.addEventListener("scroll", () => {
+        const e = window.pageYOffset;
+        navbar.style.background = e > 100 ? "rgba(250,248,243,.95)" : "rgba(250,248,243,.85)";
+        navbar.style.boxShadow = e > 100 ? "0 4px 30px rgba(0,0,0,.1)" : "0 1px 20px rgba(0,0,0,.05)";
+        navbar.style.transform = e > lastScroll && e > 500 ? "translateY(-100%)" : "translateY(0)";
+        lastScroll = e;
+        if (e > 500) { backToTop.style.opacity = "1"; backToTop.style.visibility = "visible" }
+        else { backToTop.style.opacity = "0"; backToTop.style.visibility = "hidden" }
+      });
       backToTop.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
 
-      const filterButtons = document.querySelectorAll(".filter-btn"), allProductCards = document.querySelectorAll(".product-card-v2");
-      filterButtons.forEach(button => { button.addEventListener("click", () => { filterButtons.forEach(btn => btn.classList.remove("active")); button.classList.add("active"); const filterValue = button.getAttribute("data-filter"); allProductCards.forEach(card => { const categories = card.getAttribute("data-category").split(" "); card.style.display = filterValue === "all" || categories.includes(filterValue) ? "flex" : "none" }) }) });
+      const filterButtons = document.querySelectorAll(".filter-btn"),
+            allProductCards = document.querySelectorAll(".product-card-v2");
+      filterButtons.forEach(button => {
+        button.addEventListener("click", () => {
+          filterButtons.forEach(btn => btn.classList.remove("active"));
+          button.classList.add("active");
+          const filterValue = button.getAttribute("data-filter");
+          allProductCards.forEach(card => {
+            const categories = card.getAttribute("data-category").split(" ");
+            card.style.display = filterValue === "all" || categories.includes(filterValue) ? "flex" : "none"
+          })
+        })
+      });
 
       // --- GSAP & ANIMATIONS ---
       gsap.registerPlugin(ScrollTrigger);
-      gsap.to("#hero-bg-image", { y: "20vh", ease: "none", scrollTrigger: { trigger: "body", start: "top top", end: "bottom top", scrub: 1.5 } });
-      document.querySelectorAll(".magnetic-btn").forEach(btn => { btn.addEventListener("mousemove", e => { const t = btn.getBoundingClientRect(), o = e.clientX - t.left - t.width / 2, r = e.clientY - t.top - t.height / 2; gsap.to(btn, { x: .15 * o, y: .15 * r, duration: .3 }) }); btn.addEventListener("mouseleave", () => gsap.to(btn, { x: 0, y: 0, duration: .3, ease: "power3.out" })) });
-      document.querySelectorAll(".collection-card-link").forEach(link => { link.addEventListener("click", function (e) { e.preventDefault(); const destination = this.href; this.querySelector(".collection-card-new").classList.add("animating"); setTimeout(() => window.location.href = destination, 800) }) });
-      (function () { if (!window.matchMedia("(prefers-reduced-motion:reduce)").matches) { document.addEventListener("click", e => { if (e.target.closest("input,textarea,select,button,a")) return; const t = document.createElement("span"); t.className = "floating-heart"; t.textContent = ["❤", "✦", "✧", "❀", "❣", "★"][Math.floor(6 * Math.random())]; t.style.left = e.clientX + "px"; t.style.top = e.clientY + "px"; t.style.color = ["#f7bcd6", "#c9c2ff", "#bcefe1", "#ffe3a4", "#ffcfe0", "#d6f0ff"][Math.floor(6 * Math.random())]; t.style.transform += ` rotate(${30 * Math.random() - 15}deg)`; document.body.appendChild(t); setTimeout(() => t.remove(), 1300) }, { passive: !0 }) } })();
+      gsap.to("#hero-bg-image", { y: "8vh", ease: "none", scrollTrigger: { trigger: "body", start: "top top", end: "bottom top", scrub: 1.2 } });
+      document.querySelectorAll(".magnetic-btn").forEach(btn => {
+        btn.addEventListener("mousemove", e => {
+          const t = btn.getBoundingClientRect(), o = e.clientX - t.left - t.width / 2, r = e.clientY - t.top - t.height / 2;
+          gsap.to(btn, { x: .15 * o, y: .15 * r, duration: .3 })
+        });
+        btn.addEventListener("mouseleave", () => gsap.to(btn, { x: 0, y: 0, duration: .3, ease: "power3.out" }))
+      });
+      document.querySelectorAll(".collection-card-link").forEach(link => {
+        link.addEventListener("click", function (e) {
+          e.preventDefault();
+          const destination = this.href;
+          this.querySelector(".collection-card-new").classList.add("animating");
+          setTimeout(() => window.location.href = destination, 800)
+        })
+      });
+      (function () {
+        if (!window.matchMedia("(prefers-reduced-motion:reduce)").matches) {
+          document.addEventListener("click", e => {
+            if (e.target.closest("input,textarea,select,button,a")) return;
+            const t = document.createElement("span");
+            t.className = "floating-heart";
+            t.textContent = ["❤", "✦", "✧", "❀", "❣", "★"][Math.floor(6 * Math.random())];
+            t.style.left = e.clientX + "px";
+            t.style.top = e.clientY + "px";
+            t.style.color = ["#f7bcd6", "#c9c2ff", "#bcefe1", "#ffe3a4", "#ffcfe0", "#d6f0ff"][Math.floor(6 * Math.random())];
+            t.style.transform += ` rotate(${30 * Math.random() - 15}deg)`;
+            document.body.appendChild(t);
+            setTimeout(() => t.remove(), 1300)
+          }, { passive: !0 })
+        }
+      })();
     });
   </script>
 </body>
