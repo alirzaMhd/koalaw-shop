@@ -1624,7 +1624,7 @@
           <div class="hidden lg:flex items-center space-x-10"><a href="#"
               class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">کالکشن‌ها</a><a href="#"
               class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">پرفروش‌ترین‌ها</a><a href="#"
-              class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">درباره ما</a><a href="#"
+              class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">درباره ما</a><a href="#magazine"
               class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">مجله</a><a href="#"
               class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">توسعه پایدار</a></div>
           <div class="flex items-center space-x-6"><button
@@ -2015,53 +2015,98 @@
   <!-- SEASONAL / CAMPAIGN SECTION END                 -->
   <!-- =============================================== -->
 
-  <section class="py-24 bg-gradient-to-b from-gray-50 to-white overflow-hidden">
+  <!-- =============================================== -->
+  <!-- NEW: MAGAZINE / BLOG SECTION START              -->
+  <!-- =============================================== -->
+  <section id="magazine" class="py-24 bg-gradient-to-b from-gray-50 to-white overflow-hidden">
     <div class="container mx-auto px-6">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-        <div class="relative" data-aos="fade-left" data-aos-duration="1000">
-          <div class="relative z-10"><img
-              src="https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=600&h=700&fit=crop" alt="داستان برند"
-              class="rounded-3xl shadow-2xl w-full">
-            <div
-              class="absolute -bottom-10 -left-10 bg-gradient-to-br from-rose-100 to-pink-100 p-8 rounded-2xl shadow-xl">
-              <h3 class="font-serif text-3xl font-bold text-amber-900 mb-2">+۱۲ سال</h3>
-              <p class="text-amber-800">نوآوری در زیبایی</p>
+      <div class="text-center mb-16" data-aos="fade-up">
+        <span class="text-sm font-medium text-rose-800 tracking-wider uppercase mb-4 block">مجله</span>
+        <h2 class="text-4xl lg:text-5xl font-serif font-bold text-gray-800 mb-6">جایی برای خواندن و الهام گرفتن</h2>
+        <div class="cute-divider"><span class="star">✦</span></div>
+        <p class="text-gray-600 max-w-2xl mx-auto text-lg">نکات علمی، ترندها و آموزش‌ها؛ هر هفته مطالب تازه برای زیبایی آگاهانه.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" data-aos="fade-up" data-aos-delay="100">
+        <!-- Article 1 -->
+        <a href="/magazine/night-routine" class="group relative block h-72 rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500">
+          <img src="https://images.unsplash.com/photo-1600180758890-6b94519a8ba6?q=80&w=1640&auto=format&fit=crop" alt="روتین مراقبت شبانه" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
+          <div class="relative z-10 p-6 h-full flex flex-col justify-end text-white">
+            <div class="flex items-center gap-2 text-sm text-rose-200">
+              <i data-feather="tag" class="w-4 h-4"></i>
+              <span>راهنما</span>
+            </div>
+            <h3 class="mt-2 text-xl font-bold leading-8">راهنمای کامل روتین مراقبت شبانه</h3>
+            <div class="mt-3 flex items-center gap-4 text-sm text-rose-100/90">
+              <span class="inline-flex items-center gap-1"><i data-feather="clock" class="w-4 h-4"></i>۵ دقیقه</span>
+              <span>۱۴ شهریور ۱۴۰۴</span>
+            </div>
+            <div class="mt-4 inline-flex items-center gap-2 text-sm font-semibold">
+              <span>ادامه مطلب</span>
+              <i data-feather="arrow-left" class="w-4 h-4 transition-transform duration-300 group-hover:-translate-x-1"></i>
             </div>
           </div>
-          <div
-            class="absolute top-0 right-0 w-72 h-72 bg-gradient-to-br from-rose-200 to-pink-200 rounded-full blur-3xl opacity-30 -z-10">
+        </a>
+
+        <!-- Article 2 -->
+        <a href="/magazine/minimal-makeup" class="group relative block h-72 rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500">
+          <img src="https://images.unsplash.com/photo-1512496015851-a90fb38ba796?q=80&w=1640&auto=format&fit=crop" alt="مییکاپ مینیمال" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
+          <div class="relative z-10 p-6 h-full flex flex-col justify-end text-white">
+            <div class="flex items-center gap-2 text-sm text-rose-200">
+              <i data-feather="tag" class="w-4 h-4"></i>
+              <span>آموزش</span>
+            </div>
+            <h3 class="mt-2 text-xl font-bold leading-8">مییکاپ مینیمال در ۱۰ دقیقه: راهنمای قدم‌به‌قدم</h3>
+            <div class="mt-3 flex items-center gap-4 text-sm text-rose-100/90">
+              <span class="inline-flex items-center gap-1"><i data-feather="clock" class="w-4 h-4"></i>۷ دقیقه</span>
+              <span>۱۰ شهریور ۱۴۰۴</span>
+            </div>
+            <div class="mt-4 inline-flex items-center gap-2 text-sm font-semibold">
+              <span>ادامه مطلب</span>
+              <i data-feather="arrow-left" class="w-4 h-4 transition-transform duration-300 group-hover:-translate-x-1"></i>
+            </div>
           </div>
-        </div>
-        <div data-aos="fade-right" data-aos-duration="1000"><span
-            class="text-sm font-medium text-rose-800 tracking-wider uppercase mb-4 block">داستان ما</span>
-          <h2 class="text-4xl lg:text-5xl font-serif font-bold text-gray-800 mb-6">تعریفی نو از زیبایی</h2>
-          <p class="text-gray-600 mb-6 text-lg leading-relaxed">کوالا از شور و اشتیاق به زیبایی پاک و تجمل پایدار متولد
-            شد و نماینده دوران جدیدی در لوازم آرایشی است. ما معتقدیم که زیبایی واقعی از هماهنگی سرچشمه می‌گیرد - هماهنگی
-            میان طبیعت و علم، سنت و نوآوری، تجمل و آگاهی.</p>
-          <p class="text-gray-600 mb-8 leading-relaxed">هر محصول در کالکشن ما، گواهی بر تعهد ما به برتری است که با
-            بهترین مواد اولیه گیاهی و فناوری پیشرفته فرموله شده تا نتایج تحول‌آفرینی را ارائه دهد.</p>
-          <div class="grid grid-cols-2 gap-6 mb-8">
-            <div class="bg-gradient-to-br from-rose-50 to-pink-50 p-6 rounded-2xl">
-              <div class="bg-white w-12 h-12 rounded-full flex items-center justify-center mb-4"><i data-feather="leaf"
-                  class="text-rose-800"></i></div>
-              <h4 class="font-semibold text-gray-800 mb-2">۹۸٪ طبیعی</h4>
-              <p class="text-sm text-gray-600">مواد گیاهی با منبع اخلاقی</p>
+        </a>
+
+        <!-- Article 3 -->
+        <a href="/magazine/fragrance-layers" class="group relative block h-72 rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500">
+          <img src="https://images.unsplash.com/photo-1547887537-6158d64c3d8a?q=80&w=1640&auto=format&fit=crop" alt="لایه‌بندی عطر" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
+          <div class="relative z-10 p-6 h-full flex flex-col justify-end text-white">
+            <div class="flex items-center gap-2 text-sm text-rose-200">
+              <i data-feather="tag" class="w-4 h-4"></i>
+              <span>لایف‌استایل</span>
             </div>
-            <div class="bg-gradient-to-br from-purple-50 to-pink-50 p-6 rounded-2xl">
-              <div class="bg-white w-12 h-12 rounded-full flex items-center justify-center mb-4"><i data-feather="heart"
-                  class="text-purple-800"></i></div>
-              <h4 class="font-semibold text-gray-800 mb-2">بدون تست حیوانی</h4>
-              <p class="text-sm text-gray-600">هرگز روی حیوانات تست نشده</p>
+            <h3 class="mt-2 text-xl font-bold leading-8">هنر لایه‌بندی عطر: رایحه امضای خود را بسازید</h3>
+            <div class="mt-3 flex items-center gap-4 text-sm text-rose-100/90">
+              <span class="inline-flex items-center gap-1"><i data-feather="clock" class="w-4 h-4"></i>۶ دقیقه</span>
+              <span>۸ شهریور ۱۴۰۴</span>
             </div>
-          </div><a href="#"
-            class="inline-flex items-center text-amber-900 font-semibold hover:text-amber-700 transition duration-300 group"><span
-              class="border-b-2 border-amber-900 group-hover:border-amber-700 pb-1">فلسفه ما را کشف کنید</span><i
-              data-feather="arrow-left"
-              class="mr-2 w-4 h-4 group-hover:-translate-x-2 transition-transform duration-300"></i></a>
-        </div>
+            <div class="mt-4 inline-flex items-center gap-2 text-sm font-semibold">
+              <span>ادامه مطلب</span>
+              <i data-feather="arrow-left" class="w-4 h-4 transition-transform duration-300 group-hover:-translate-x-1"></i>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <div class="text-center mt-12" data-aos="fade-up" data-aos-delay="150">
+        <a href="/magazine"
+           class="inline-flex items-center px-8 py-4 border-2 border-gray-900 text-gray-900 rounded-full hover:bg-gray-900 hover:text-white transition-all duration-300 group font-semibold">
+          <i data-feather="book-open" class="ml-3 w-5 h-5"></i>
+          <span>مشاهده همه مطالب مجله</span>
+          <i data-feather="arrow-left" class="mr-3 w-5 h-5 transition-transform duration-300 group-hover:-translate-x-2"></i>
+        </a>
+        <p class="text-gray-500 text-sm mt-4">هر هفته مقالات جدید منتشر می‌کنیم</p>
       </div>
     </div>
   </section>
+  <!-- =============================================== -->
+  <!-- MAGAZINE / BLOG SECTION END                     -->
+  <!-- =============================================== -->
+
   <section class="py-24 bg-gradient-to-b from-white to-gray-50">
     <div class="container mx-auto px-6">
       <div class="text-center mb-16" data-aos="fade-up"><span
@@ -2227,7 +2272,7 @@
       testimonials.forEach(t => { testimonialGrid.innerHTML += `<div class="testimonial-card" data-aos="fade-up" data-aos-delay="${t.d}"><div class="flex mb-6"><div class="flex text-yellow-400">${'<i data-feather="star" class="w-5 h-5 fill-current"></i>'.repeat(5)}</div></div><p class="text-gray-600 mb-8 italic leading-relaxed">${t.t}</p><div class="flex items-center"><img src="https://images.unsplash.com/photo-${t.i}?w=100&h=100&fit=crop" alt="مشتری" class="w-14 h-14 rounded-full object-cover ml-4"><div><h4 class="font-semibold text-gray-800">${t.n}</h4><p class="text-sm text-gray-500">${t.s}</p></div></div></div>` });
 
       const instaPosts = [{ i: "1522335789203-aabd1fc54bc9", l: "۲.۳" }, { i: "1512207736890-6ffca8dad650", l: "۳.۱" }, { i: "1516975080664-ed2fc6a32937", l: "۱.۸" }, { i: "1519699047748-de8e457a634e", l: "۴.۲" }];
-      instaPosts.forEach(p => { instagramGrid.innerHTML += `<div class="relative group overflow-hidden rounded-2xl"><img src="https://images.unsplash.com/photo-${p.i}?w=400&h=400&fit=crop" alt="اینستاگرام" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"><div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4"><div class="text-white"><i data-feather="heart" class="w-5 h-5 mb-1"></i><p class="text-sm">${p.l} هزار لایک</p></div></div></div>` });
+      instaPosts.forEach(p => { instagramGrid.innerHTML += `<div class="relative group overflow-hidden rounded-2xl"><img src="https://images.unsplash.com/photo-${p.i}?w=400&h=400&fit=crop" alt="اینستاگرام" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"><div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items=end p-4"><div class="text-white"><i data-feather="heart" class="w-5 h-5 mb-1"></i><p class="text-sm">${p.l} هزار لایک</p></div></div></div>` });
 
       const footerLinks = { فروشگاه: ["تازه‌ها", "پرفروش‌ترین‌ها", "مراقبت از پوست", "آرایش", "عطر", "ست‌های هدیه"], "درباره ما": ["داستان ما", "ترکیبات", "توسعه پایدار", "رسانه‌ها", "فرصت‌های شغلی", "فروشگاه‌ها"], "خدمات مشتریان": ["تماس با ما", "سوالات متداول", "اطلاعات ارسال", "مرجوعی", "پیگیری سفارش", "راهنمای سایز"] };
       for (const title in footerLinks) { let linksHTML = ""; footerLinks[title].forEach(link => linksHTML += `<li><a href="#" class="text-gray-400 hover:text-white transition duration-300">${link}</a></li>`); footerLinksContainer.innerHTML += `<div><h4 class="font-semibold text-lg mb-6">${title}</h4><ul class="space-y-3">${linksHTML}</ul></div>` }
