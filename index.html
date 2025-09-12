@@ -2,7 +2,7 @@
 <html lang="fa" dir="rtl">
 
 <head>
-  <meta charset="UTF-g">
+  <meta charset="UTF-8"> <!-- Corrected from UTF-g -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>KOALAW | لوازم آرایشی لوکس</title>
   <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
@@ -38,6 +38,7 @@
 
     body {
       font-family: "IRANSans", sans-serif;
+      font-size: 15px;
       background-color: var(--cream);
       color: #333;
       overflow-x: hidden;
@@ -47,6 +48,91 @@
     .font-serif {
       font-family: "IRANSans", serif
     }
+    
+    /* MODIFICATION: Body scroll lock class */
+    body.mobile-menu-open {
+        overflow: hidden;
+    }
+
+    /* ============================================== */
+    /* START: Professional Hamburger Menu Styles      */
+    /* ============================================== */
+    .mobile-menu-overlay {
+        position: fixed;
+        inset: 0;
+        background-color: rgba(0, 0, 0, 0.6);
+        z-index: 55;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.4s ease, visibility 0.4s ease;
+    }
+    .mobile-menu-overlay.is-active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    #mobile-menu {
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 80%;
+        max-width: 320px;
+        height: 100%;
+        background-color: var(--cream);
+        box-shadow: -10px 0 30px rgba(0, 0, 0, 0.1);
+        z-index: 60;
+        transform: translateX(100%);
+        transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        display: flex;
+        flex-direction: column;
+        padding: 6rem 2rem 2rem;
+        align-items: flex-start;
+        gap: 1.5rem;
+    }
+    #mobile-menu.is-active {
+        transform: translateX(0);
+    }
+    #mobile-menu .nav-link {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--deep-brown);
+    }
+
+    .hamburger-button {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 5px;
+        position: relative;
+        z-index: 65;
+        background: transparent;
+        border: none;
+    }
+    .hamburger-button span {
+        display: block;
+        width: 24px;
+        height: 2px;
+        background-color: var(--deep-brown);
+        border-radius: 2px;
+        transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+        transform-origin: center;
+    }
+    .hamburger-button.is-active span:nth-child(1) {
+        transform: translateY(7px) rotate(45deg);
+    }
+    .hamburger-button.is-active span:nth-child(2) {
+        opacity: 0;
+        transform: scaleX(0);
+    }
+    .hamburger-button.is-active span:nth-child(3) {
+        transform: translateY(-7px) rotate(-45deg);
+    }
+    /* ============================================== */
+    /* END: Professional Hamburger Menu Styles        */
+    /* ============================================== */
 
     .cloud-animation {
       position: absolute;
@@ -414,26 +500,12 @@
     .break-inside-avoid {
       break-inside: avoid
     }
-    
-    /* === Old Product Card Styles (Unused) === */
-    .product-card-pro {
-      border-radius: 10px;
-      box-shadow: 0 10px 40px -10px rgba(0, 0, 0, .04), 0 5px 20px -15px rgba(227, 154, 180, .1);
-      transition: all .4s cubic-bezier(.175, .885, .32, 1.275);
-      overflow: hidden
-    }
 
-    /* ... other old styles ... */
-
-
-    /* ========================================= */
-    /* === NEW PRODUCT CARD DESIGN (MODIFIED) === */
-    /* ========================================= */
     .product-card-v2 {
         position: relative;
         width: 100%;
         aspect-ratio: 3 / 4.2;
-        background-color: var(--accent); /* Pinkish bottom part */
+        background-color: var(--accent);
         border-radius: 24px;
         overflow: hidden;
         font-family: 'IRANSans', sans-serif;
@@ -454,7 +526,7 @@
         left: 0;
         right: 0;
         height: 65%;
-        clip-path: polygon(0 0, 100% 0, 100% 70%, 0 100%); /* Slanted bottom edge */
+        clip-path: polygon(0 0, 100% 0, 100% 70%, 0 100%);
         z-index: 1;
         transition: clip-path 0.4s ease;
     }
@@ -481,7 +553,7 @@
     }
 
     .product-card-v2-price {
-        font-size: 1.1rem;
+        font-size: 1.05rem;
         font-weight: 700;
         color: var(--deep-brown);
         background-color: rgba(255,255,255,0.5);
@@ -495,7 +567,7 @@
     }
 
     .product-card-v2-title {
-        font-size: 1.2rem;
+        font-size: 1.15rem;
         font-weight: 700;
         color: #fff;
         text-shadow: 0 1px 4px rgba(0,0,0,0.15);
@@ -504,10 +576,10 @@
     }
 
     .product-card-v2-desc {
-        font-size: 0.8rem;
+        font-size: 0.75rem;
         color: rgba(255, 255, 255, 0.9);
         line-height: 1.5;
-        height: 4.5em; /* 3 lines of text */
+        height: 4.5em;
         overflow: hidden;
     }
 
@@ -568,13 +640,12 @@
     }
 
     .star-icon-filled {
-      color: #f59e0b; /* Amber/Gold color */
+      color: #f59e0b;
     }
     .star-icon-filled svg {
       fill: currentColor;
     }
 
-    /* === MODIFIED BUTTON STYLES === */
     .add-to-cart-btn-v2 {
         background-color: var(--deep-brown);
         color: #fff;
@@ -582,7 +653,7 @@
         border-radius: 50px;
         padding: 0.8rem 1.6rem;
         font-weight: 600;
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         display: flex;
         align-items: center;
         gap: 0.5rem;
@@ -618,13 +689,12 @@
     .add-to-cart-btn-v2:hover::before {
         left: 100%;
     }
-    /* === END MODIFIED BUTTON STYLES === */
 
     .filter-btn {
       padding: 12px 24px;
       border-radius: 50px;
       font-weight: 600;
-      font-size: 14px;
+      font-size: 13px;
       letter-spacing: .5px;
       transition: all .4s cubic-bezier(.165, .84, .44, 1);
       border: 2px solid transparent;
@@ -679,11 +749,8 @@
       pointer-events: none
     }
 
-    /* ========================================= */
-    /* === SEASONAL / CAMPAIGN SECTION STYLES === */
-    /* ========================================= */
     .campaign-section {
-      background-color: #fff7fb; /* Light Pink */
+      background-color: #fff7fb;
       background-image: 
         radial-gradient(circle at 10% 20%, rgba(240, 183, 196, 0.3), transparent 40%),
         radial-gradient(circle at 90% 80%, rgba(227, 154, 180, 0.2), transparent 50%);
@@ -691,14 +758,14 @@
 
     .campaign-featured-card {
       display: flex;
-      flex-direction: column; /* Mobile-first: stacked layout */
-      background: linear-gradient(135deg, #e784a2, #c73771); /* Pink Gradient */
+      flex-direction: column;
+      background: linear-gradient(135deg, #e784a2, #c73771);
       border-radius: 30px;
       overflow: hidden;
       height: 100%;
       box-shadow: 0 20px 50px -20px rgba(199, 55, 113, 0.4);
       transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-      position: relative; /* For the background image */
+      position: relative;
       min-height: 500px;
     }
     
@@ -798,7 +865,6 @@
         color: #fff;
     }
     
-    /* On large screens, change to a side-by-side layout */
     @media (min-width: 1024px) {
         .campaign-featured-card {
             flex-direction: row;
@@ -809,7 +875,7 @@
           padding: 3rem;
         }
         .campaign-featured-image-wrapper {
-          position: relative; /* Bring it back into the layout flow */
+          position: relative;
           opacity: 1;
           flex-basis: 45%;
           clip-path: polygon(20% 0, 100% 0, 100% 100%, 0% 100%);
@@ -844,19 +910,25 @@
       }
     }
     
-    /* === MODIFICATION: NEW STYLES FOR RESPONSIVENESS === */
-    .product-scroll-wrapper {
-        /* This container enables horizontal scrolling on mobile */
-    }
+    @media (max-width: 768px) {
+        body {
+            font-size: 14px;
+        }
+        
+        /* MODIFICATION: Make KOALAW text smaller */
+        nav .font-serif {
+            font-size: 1.5rem;
+        }
 
-    @media (max-width: 768px) { /* Applies to phone and small tablets */
-        /* Change product grid to horizontal scroll */
+        .text-lg { font-size: 0.95rem; line-height: 1.6; }
+        h1.hero-title-creative { font-size: 2.3rem; }
+        h2.text-4xl, h2.text-5xl, h2.text-6xl { font-size: 2.1rem; }
+        
         .product-scroll-wrapper {
             overflow-x: auto;
-            direction: rtl; /* Ensures RTL scrolling behavior */
+            direction: rtl;
             -ms-overflow-style: none;
             scrollbar-width: none;
-            /* Use padding and negative margin to make scroll area bleed to screen edges */
             padding: 0 1rem; 
             margin: 0 -1rem;
         }
@@ -864,64 +936,34 @@
             display: none;
         }
         #product-grid {
-            columns: auto !important; /* Disable masonry layout on mobile */
+            columns: auto !important;
             display: flex;
             flex-wrap: nowrap;
-            width: max-content; /* Allow the flex container to grow with its content */
+            width: max-content;
         }
-        /* Tailwind's space-y utility adds margin-top. We must reset it for flex layout. */
         #product-grid > .product-card-v2 {
             margin-top: 0 !important;
-            width: 70vw; /* Card takes up 70% of the viewport width */
-            max-width: 280px; /* But not more than 280px */
+            width: 70vw;
+            max-width: 280px;
             flex-shrink: 0;
         }
 
-        /* Make product card content smaller */
-        .product-card-v2 {
-            aspect-ratio: 3 / 4.6; /* Taller to prevent content overflow */
-        }
-        .product-card-v2-content {
-            padding: 1rem;
-        }
-        .product-card-v2-title {
-            font-size: 1rem;
-        }
-        .product-card-v2-price {
-            font-size: 0.9rem;
-            padding: 0.2rem 0.5rem;
-        }
-        .product-card-v2-desc {
-            font-size: 0.7rem;
-            height: 4.2em; /* 3 lines of smaller text */
-        }
-        .add-to-cart-btn-v2 {
-            padding: 0.6rem 1rem;
-            font-size: 0.8rem;
-        }
-        .product-card-v2-rating {
-            width: 44px;
-            height: 44px;
-            font-size: 0.8rem;
-        }
-        .product-card-v2-image-wrapper {
-            width: clamp(100px, 40%, 140px);
-        }
+        .product-card-v2 { aspect-ratio: 3 / 4.6; }
+        .product-card-v2-content { padding: 1rem; }
+        .product-card-v2-title { font-size: 0.95rem; }
+        .product-card-v2-price { font-size: 0.85rem; padding: 0.2rem 0.5rem; }
+        .product-card-v2-desc { font-size: 0.7rem; height: 4.2em; }
+        .add-to-cart-btn-v2 { padding: 0.6rem 1rem; font-size: 0.75rem; }
+        .product-card-v2-rating { width: 44px; height: 44px; font-size: 0.8rem; }
+        .product-card-v2-image-wrapper { width: clamp(100px, 40%, 140px); }
 
-        /* Make category card content smaller */
-        .category-card {
-            padding: 1rem;
-        }
-        .category-card-icon {
-            width: 44px;
-            height: 44px;
-            margin-bottom: 0.75rem;
-        }
-        .category-card-title {
-            font-size: 1.1rem;
-        }
+        .category-card { padding: 1rem; }
+        .category-card-icon { width: 44px; height: 44px; margin-bottom: 0.75rem; }
+        .category-card-title { font-size: 1rem; }
+
+        .testimonial-card { padding: 2rem; }
+        .filter-btn { padding: 10px 20px; font-size: 12px; }
     }
-    /* === END NEW STYLES === */
 
     .collection-card-new:hover {
       transform: translateY(-8px);
@@ -1061,14 +1103,14 @@
 
     .collection-content-new .collection-title {
       font-family: "IRANSans", serif;
-      font-size: 1.75rem;
+      font-size: 1.65rem;
       font-weight: 700;
       margin: .25rem 0 .75rem;
       line-height: 1.2
     }
 
     .large .collection-content-new .collection-title {
-      font-size: 2.25rem
+      font-size: 2.1rem;
     }
 
     .collection-content-new .collection-desc {
@@ -1296,21 +1338,6 @@
       }
     }
 
-    @media (max-width:768px) {
-      .hero-title-creative {
-        font-size: 2.5rem
-      }
-
-      .testimonial-card {
-        padding: 2rem
-      }
-
-      .filter-btn {
-        padding: 10px 20px;
-        font-size: 13px
-      }
-    }
-
     .loader-logo::after {
       content: " ✧";
       animation: twinkle 2.2s ease-in-out infinite;
@@ -1413,7 +1440,6 @@
       gap: .35rem
     }
 
-    /* === CSS FOR BRAND ITEMS (MODIFIED) === */
     .brands-container {
       direction: ltr;
       position: relative;
@@ -1492,7 +1518,7 @@
     }
 
     .brand-name {
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       font-weight: 600;
       color: var(--deep-brown);
       font-family: 'IRANSans', serif;
@@ -1504,26 +1530,22 @@
         color: var(--primary);
     }
 
-    /* === NEW: CATEGORY SCROLL STYLES (ADDED) === */
     .category-scroll-container {
-      direction: rtl; /* This forces the flex items to layout LTR */
-      overflow-x: auto; /* Enables horizontal scrolling */
-      scroll-snap-type: x mandatory; /* Adds smooth snapping */
-      padding: 0.5rem; /* Add some padding so shadows aren't clipped */
-      margin: -0.5rem; /* Compensate for the padding to maintain layout */
-      /* Hide the scrollbar across browsers */
-      -ms-overflow-style: none;  /* IE and Edge */
-      scrollbar-width: none;  /* Firefox */
+      direction: rtl;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      padding: 0.5rem;
+      margin: -0.5rem;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
     }
     .category-scroll-container::-webkit-scrollbar {
-      display: none; /* Chrome, Safari and Opera */
+      display: none;
     }
-    /* Target the direct children (the cards) for snapping */
     .category-scroll-container > div > a {
       scroll-snap-align: start;
     }
 
-    /* === NEW: CATEGORY CARD STYLES === */
     .category-card {
       position: relative;
       overflow: hidden;
@@ -1589,7 +1611,7 @@
       transform: rotate(-10deg) scale(1.1);
     }
     .category-card-title {
-      font-size: 1.25rem;
+      font-size: 1.2rem;
       font-weight: 700;
       text-shadow: 0 2px 5px rgba(0,0,0,0.5);
     }
@@ -1597,8 +1619,6 @@
 </head>
 
 <body>
-  <!-- ... (rest of the body HTML remains the same up to the bestsellers section) ... -->
-
   <div class="loader" id="loader">
     <div class="loader-content">
       <div class="loader-logo">KOALAW</div>
@@ -1615,32 +1635,56 @@
   <div id="vanta-bg"
     style="position:fixed;width:100%;height:100%;z-index:-1;background:linear-gradient(to bottom, #faf8f3, #fff7fb)">
   </div>
+  
+  <!-- =============================================== -->
+  <!-- START: Professional Hamburger Menu              -->
+  <!-- =============================================== -->
   <nav class="fixed w-full z-50 transition-all duration-300" id="navbar">
     <div class="container mx-auto px-6 py-5">
       <div class="flex items-center justify-between" dir="ltr">
-        <div class="flex items-center"><a href="#"
-            class="text-3xl font-serif font-bold text-gray-800 tracking-wider">KOALAW</a></div>
-        <div class="flex items-center gap-x-10">
-          <div class="hidden lg:flex items-center space-x-10"><a href="#"
-              class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">کالکشن‌ها</a><a href="#"
-              class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">پرفروش‌ترین‌ها</a><a href="#"
-              class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">درباره ما</a><a href="#magazine"
-              class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">مجله</a><a href="#"
-              class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">توسعه پایدار</a></div>
-          <div class="flex items-center space-x-6"><button
-              class="text-gray-700 hover:text-gray-900 transition-all duration-300 hover:scale-110"><i
-                data-feather="search" class="w-5 h-5"></i></button><button
-              class="text-gray-700 hover:text-gray-900 transition-all duration-300 hover:scale-110"><i
-                data-feather="user" class="w-5 h-5"></i></button><button
-              class="text-gray-700 hover:text-gray-900 relative transition-all duration-300 hover:scale-110"><i
-                data-feather="shopping-bag" class="w-5 h-5"></i><span
-                class="absolute -top-2 -right-2 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center pulse-animation">۳</span></button><button
-              class="lg:hidden text-gray-700 hover:text-gray-900"><i data-feather="menu" class="w-6 h-6"></i></button>
-          </div>
+        <a href="#" class="text-3xl font-serif font-bold text-gray-800 tracking-wider z-50">KOALAW</a>
+        
+        <div class="hidden lg:flex items-center gap-x-10">
+          <a href="#" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">کالکشن‌ها</a>
+          <a href="#" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">پرفروش‌ترین‌ها</a>
+          <a href="#" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">درباره ما</a>
+          <a href="#magazine" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">مجله</a>
+          <a href="#" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">توسعه پایدار</a>
+        </div>
+          
+        <div class="flex items-center space-x-6">
+          <button class="text-gray-700 hover:text-gray-900 transition-all duration-300 hover:scale-110"><i data-feather="search" class="w-5 h-5"></i></button>
+          <button class="text-gray-700 hover:text-gray-900 transition-all duration-300 hover:scale-110"><i data-feather="user" class="w-5 h-5"></i></button>
+          <button class="text-gray-700 hover:text-gray-900 relative transition-all duration-300 hover:scale-110">
+            <i data-feather="shopping-bag" class="w-5 h-5"></i>
+            <span class="absolute -top-2 -right-2 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center pulse-animation">۳</span>
+          </button>
+          
+          <button id="mobile-menu-button" class="hamburger-button lg:hidden">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
         </div>
       </div>
     </div>
   </nav>
+
+  <!-- Mobile Menu Panel -->
+  <div id="mobile-menu">
+    <a href="#" class="nav-link">کالکشن‌ها</a>
+    <a href="#" class="nav-link">پرفروش‌ترین‌ها</a>
+    <a href="#" class="nav-link">درباره ما</a>
+    <a href="#magazine" class="nav-link">مجله</a>
+    <a href="#" class="nav-link">توسعه پایدار</a>
+  </div>
+  
+  <!-- Mobile Menu Overlay -->
+  <div id="mobile-menu-overlay" class="mobile-menu-overlay"></div>
+  <!-- =============================================== -->
+  <!-- END: Professional Hamburger Menu                -->
+  <!-- =============================================== -->
+
   <section class="min-h-screen relative flex items-center justify-center text-center overflow-hidden">
     <img id="hero-bg-image"
       src="https://images.unsplash.com/photo-1617897903246-719242758050?q=80&w=1887&auto=format&fit=crop"
@@ -1746,9 +1790,8 @@
     </div>
   </section>
 
-  <!-- =============================================== -->
-  <!-- NEW: CATEGORIES SECTION START (MODIFIED)        -->
-  <!-- =============================================== -->
+  <!-- (The rest of the body HTML remains exactly the same) -->
+
   <section class="py-24 bg-gray-50/50 overflow-hidden">
     <div class="container mx-auto px-6">
       <div class="text-center mb-16" data-aos="fade-up">
@@ -1757,12 +1800,8 @@
         <div class="cute-divider"><span class="star">✦</span></div>
         <p class="text-gray-600 max-w-2xl mx-auto text-lg mt-4">محصولات مورد علاقه خود را در مجموعه‌های منتخب ما بیابید. از مراقبت‌های ضروری پوست تا آرایش‌های جذاب.</p>
       </div>
-
-      <!-- Wrapper for LTR horizontal scrolling -->
       <div class="category-scroll-container" data-aos="fade-up" data-aos-delay="200">
         <div class="flex flex-nowrap gap-6 lg:gap-8">
-        
-          <!-- MODIFICATION: Card width changed from w-60 to w-52 for smaller size on phones -->
           <a href="/shop?category=skincare" class="category-card w-52 md:w-64 flex-shrink-0">
             <img src="./image/skin.png" alt="مراقبت از پوست" class="category-card-bg">
             <div class="category-card-overlay"></div>
@@ -1773,8 +1812,6 @@
               <h3 class="category-card-title">مراقبت از پوست</h3>
             </div>
           </a>
-
-          <!-- MODIFICATION: Card width changed from w-60 to w-52 for smaller size on phones -->
           <a href="/shop?category=makeup" class="category-card w-52 md:w-64 flex-shrink-0">
             <img src="./image/cosmetic.png" alt="آرایش" class="category-card-bg">
             <div class="category-card-overlay"></div>
@@ -1785,8 +1822,6 @@
               <h3 class="category-card-title">آرایش</h3>
             </div>
           </a>
-
-          <!-- MODIFICATION: Card width changed from w-60 to w-52 for smaller size on phones -->
           <a href="/shop?category=fragrance" class="category-card w-52 md:w-64 flex-shrink-0">
             <img src="./image/perfume.png" alt="عطر" class="category-card-bg">
             <div class="category-card-overlay"></div>
@@ -1797,8 +1832,6 @@
               <h3 class="category-card-title">عطر</h3>
             </div>
           </a>
-
-          <!-- MODIFICATION: Card width changed from w-60 to w-52 for smaller size on phones -->
           <a href="/shop?category=haircare" class="category-card w-52 md:w-64 flex-shrink-0">
             <img src="./image/hair.png" alt="مراقبت از مو" class="category-card-bg">
             <div class="category-card-overlay"></div>
@@ -1809,8 +1842,6 @@
               <h3 class="category-card-title">مراقبت از مو</h3>
             </div>
           </a>
-
-          <!-- MODIFICATION: Card width changed from w-60 to w-52 for smaller size on phones -->
           <a href="/shop?category=body-bath" class="category-card w-52 md:w-64 flex-shrink-0">
             <img src="./image/body.png" alt="بدن و حمام" class="category-card-bg">
             <div class="category-card-overlay"></div>
@@ -1825,13 +1856,7 @@
       </div>
     </div>
   </section>
-  <!-- =============================================== -->
-  <!-- CATEGORIES SECTION END                          -->
-  <!-- =============================================== -->
 
-  <!-- =============================================== -->
-  <!-- BRANDS SECTION START (MODIFIED) -->
-  <!-- =============================================== -->
   <section class="py-20 bg-cream/50 overflow-hidden">
     <div class="container mx-auto px-6">
       <div class="text-center mb-16" data-aos="fade-up">
@@ -1843,7 +1868,6 @@
   
       <div class="brands-container" data-aos="fade-up" data-aos-delay="200">
         <div class="brands-marquee py-4">
-          <!-- The script will automatically duplicate these items for a seamless loop -->
           <a href="#" class="brand-item">
             <div class="brand-logo"><i data-feather="droplet"></i></div>
             <span class="brand-name">LuxeElixir</span>
@@ -1880,9 +1904,6 @@
       </div>
     </div>
   </section>
-  <!-- =============================================== -->
-  <!-- BRANDS SECTION END -->
-  <!-- =============================================== -->
   
   <section class="py-32 bestsellers-section relative">
     <div class="container mx-auto px-6 relative z-10">
@@ -1902,7 +1923,6 @@
           data-filter="fragrance"><span>عطر</span></button><button class="filter-btn"
           data-filter="bestseller"><span>پرفروش‌ترین‌ها</span></button></div>
       
-      <!-- MODIFICATION: Added a wrapper for horizontal scrolling on mobile -->
       <div class="product-scroll-wrapper">
         <div id="product-grid" class="columns-1 sm:columns-2 lg:columns-4 gap-6 space-y-6"></div>
       </div>
@@ -1917,12 +1937,8 @@
     </div>
   </section>
   
-  <!-- =============================================== -->
-  <!-- NEW: SEASONAL / CAMPAIGN SECTION START (Pink Theme) -->
-  <!-- =============================================== -->
   <section class="py-24 campaign-section relative overflow-hidden">
     <div class="container mx-auto px-6 relative z-10">
-      <!-- Section Header -->
       <div class="text-center mb-20" data-aos="fade-up">
         <span class="text-sm font-medium text-rose-800 tracking-wider uppercase mb-4 block">نسخه محدود</span>
         <h2 class="section-title-enhanced text-5xl lg:text-6xl font-serif font-bold text-gray-800 mb-8">کالکشن شکوفه‌های بهاری</h2>
@@ -1932,9 +1948,7 @@
         </p>
       </div>
   
-      <!-- Main Content Grid -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
-        <!-- Featured Product Card (Left Side) -->
         <div class="lg:col-span-2" data-aos="fade-right" data-aos-duration="1000">
           <a href="#" class="campaign-featured-card group">
             <div class="campaign-featured-image-wrapper">
@@ -1967,9 +1981,7 @@
           </a>
         </div>
   
-        <!-- Side Products (Right Side) -->
         <div class="flex flex-col gap-8" data-aos="fade-left" data-aos-duration="1000" data-aos-delay="200">
-          <!-- Smaller Product 1 -->
           <a href="#" class="campaign-side-card group">
             <img src="./image/hair.png" alt="عطر موی بهاری" class="campaign-side-image">
             <div class="campaign-side-content">
@@ -1982,7 +1994,6 @@
             </div>
           </a>
           
-          <!-- Smaller Product 2 -->
           <a href="#" class="campaign-side-card group">
             <img src="./image/cosmetic.png" alt="رژ لب گلبرگ" class="campaign-side-image">
             <div class="campaign-side-content">
@@ -1995,7 +2006,6 @@
             </div>
           </a>
   
-           <!-- Smaller Product 3 -->
           <a href="#" class="campaign-side-card group">
             <img src="./image/perfume.png" alt="بادی اسپلش شکوفه" class="campaign-side-image">
             <div class="campaign-side-content">
@@ -2011,13 +2021,7 @@
       </div>
     </div>
   </section>
-  <!-- =============================================== -->
-  <!-- SEASONAL / CAMPAIGN SECTION END                 -->
-  <!-- =============================================== -->
 
-  <!-- =============================================== -->
-  <!-- NEW: MAGAZINE / BLOG SECTION START              -->
-  <!-- =============================================== -->
   <section id="magazine" class="py-24 bg-gradient-to-b from-gray-50 to-white overflow-hidden">
     <div class="container mx-auto px-6">
       <div class="text-center mb-16" data-aos="fade-up">
@@ -2028,7 +2032,6 @@
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" data-aos="fade-up" data-aos-delay="100">
-        <!-- Article 1 -->
         <a href="/magazine/night-routine" class="group relative block h-72 rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500">
           <img src="https://images.unsplash.com/photo-1600180758890-6b94519a8ba6?q=80&w=1640&auto=format&fit=crop" alt="روتین مراقبت شبانه" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
           <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
@@ -2049,7 +2052,6 @@
           </div>
         </a>
 
-        <!-- Article 2 -->
         <a href="/magazine/minimal-makeup" class="group relative block h-72 rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500">
           <img src="https://images.unsplash.com/photo-1512496015851-a90fb38ba796?q=80&w=1640&auto=format&fit=crop" alt="مییکاپ مینیمال" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
           <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
@@ -2070,7 +2072,6 @@
           </div>
         </a>
 
-        <!-- Article 3 -->
         <a href="/magazine/fragrance-layers" class="group relative block h-72 rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500">
           <img src="https://images.unsplash.com/photo-1512496015851-a90fb38ba796?q=80&w=1640&auto=format&fit=crop" alt="لایه‌بندی عطر" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
           <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
@@ -2103,9 +2104,6 @@
       </div>
     </div>
   </section>
-  <!-- =============================================== -->
-  <!-- MAGAZINE / BLOG SECTION END                     -->
-  <!-- =============================================== -->
 
   <section class="py-24 bg-gradient-to-b from-white to-gray-50">
     <div class="container mx-auto px-6">
@@ -2206,22 +2204,10 @@
       for (let i = 1; i <= 10; i++)cloudContainer.innerHTML += `<div class="cloud cloud-${i}"></div>`;
       for (let i = 0; i < 9; i++)particleContainer.innerHTML += `<div class="particle" style="left:${10 + i * 10}%;animation-duration:${25 + Math.random() * 10}s;animation-delay:${Math.random() * 15}s"></div>`;
       
-      // ==========================================================
-      // === MODIFIED: NEW PRODUCT CARD GENERATION LOGIC ===
-      // ==========================================================
       if (productGrid) {
-          productGrid.innerHTML = ''; // Clear original content
+          productGrid.innerHTML = ''; 
 
-          const pastelColors = [
-              'linear-gradient(135deg, #a8e6cf, #dcedc1)', // Minty Green
-              'linear-gradient(135deg, #ffd3b6, #ffaaa5)', // Peach
-              'linear-gradient(135deg, #c3aed6, #d2c2e0)', // Lavender
-              'linear-gradient(135deg, #ffc0cb, #f7cce4)', // Pink
-              'linear-gradient(135deg, #bde4f4, #d3eaf2)', // Baby Blue
-              'linear-gradient(135deg, #fdfd96, #fffda8)', // Pastel Yellow
-              'linear-gradient(135deg, #f5d5b7, #f7e0cb)', // Creamy Orange
-              'linear-gradient(135deg, #b2e2f2, #c8e8f5)', // Light Sky
-          ];
+          const pastelColors = ['linear-gradient(135deg, #a8e6cf, #dcedc1)','linear-gradient(135deg, #ffd3b6, #ffaaa5)','linear-gradient(135deg, #c3aed6, #d2c2e0)','linear-gradient(135deg, #ffc0cb, #f7cce4)','linear-gradient(135deg, #bde4f4, #d3eaf2)','linear-gradient(135deg, #fdfd96, #fffda8)','linear-gradient(135deg, #f5d5b7, #f7e0cb)','linear-gradient(135deg, #b2e2f2, #c8e8f5)'];
 
           const products = [
               { d: "100", c: "skincare bestseller", i: "1617897903246-719242758050", t: "اکسیر درخشش طلایی", p: 480000, rating: 4.8, desc: "سرم مغذی برای بازگرداندن درخشش طبیعی پوست شما." },
@@ -2277,7 +2263,6 @@
       const footerLinks = { فروشگاه: ["تازه‌ها", "پرفروش‌ترین‌ها", "مراقبت از پوست", "آرایش", "عطر", "ست‌های هدیه"], "درباره ما": ["داستان ما", "ترکیبات", "توسعه پایدار", "رسانه‌ها", "فرصت‌های شغلی", "فروشگاه‌ها"], "خدمات مشتریان": ["تماس با ما", "سوالات متداول", "اطلاعات ارسال", "مرجوعی", "پیگیری سفارش", "راهنمای سایز"] };
       for (const title in footerLinks) { let linksHTML = ""; footerLinks[title].forEach(link => linksHTML += `<li><a href="#" class="text-gray-400 hover:text-white transition duration-300">${link}</a></li>`); footerLinksContainer.innerHTML += `<div><h4 class="font-semibold text-lg mb-6">${title}</h4><ul class="space-y-3">${linksHTML}</ul></div>` }
       
-      // --- INFINITE BRANDS MARQUEE (seamless, no gaps) ---
       function setupBrandsMarquee() {
         const container = document.querySelector('.brands-container');
         const marquee = container?.querySelector('.brands-marquee');
@@ -2322,6 +2307,36 @@
       // --- CURSOR SCRIPT ---
       const cursor = document.querySelector(".cursor"), cursorFace = document.querySelector(".cursor-face"), cursorFollower = document.querySelector(".cursor-follower"); let cursorX = 0, cursorY = 0, followerX = 0, followerY = 0, speed = .5;
       if (window.innerWidth > 768) { document.addEventListener("mousemove", e => { cursorX = e.clientX; cursorY = e.clientY }); (function animateCursor() { cursor.style.left = cursorX + "px"; cursor.style.top = cursorY + "px"; cursorFace.style.left = cursorX + "px"; cursorFace.style.top = cursorY + "px"; followerX += (cursorX - followerX) * speed; followerY += (cursorY - followerY) * speed; cursorFollower.style.left = followerX + "px"; cursorFollower.style.top = followerY + "px"; requestAnimationFrame(animateCursor) })(); document.querySelectorAll("a,button,.product-card-v2,.collection-card-new, .category-card, .campaign-featured-card, .campaign-side-card").forEach(e => { e.addEventListener("mouseenter", () => { cursor.classList.add("hover"); cursorFollower.style.transform = "translate(-50%,-50%) scale(1.5)" }); e.addEventListener("mouseleave", () => { cursor.classList.remove("hover"); cursorFollower.style.transform = "translate(-50%,-50%) scale(1)" }) }) } else[cursor, cursorFace, cursorFollower].forEach(e => e.style.display = "none");
+      
+      // ===============================================
+      // START: Professional Hamburger Menu Logic
+      // ===============================================
+      const menuButton = document.getElementById('mobile-menu-button');
+      const mobileMenu = document.getElementById('mobile-menu');
+      const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+      const menuLinks = mobileMenu.querySelectorAll('a');
+
+      const toggleMenu = () => {
+          menuButton.classList.toggle('is-active');
+          mobileMenu.classList.toggle('is-active');
+          mobileMenuOverlay.classList.toggle('is-active');
+          document.body.classList.toggle('mobile-menu-open');
+      };
+
+      if (menuButton) {
+          menuButton.addEventListener('click', toggleMenu);
+          mobileMenuOverlay.addEventListener('click', toggleMenu);
+          menuLinks.forEach(link => {
+              link.addEventListener('click', () => {
+                if (mobileMenu.classList.contains('is-active')) {
+                  toggleMenu();
+                }
+              });
+          });
+      }
+      // ===============================================
+      // END: Professional Hamburger Menu Logic
+      // ===============================================
 
       // --- PAGE SCRIPTS ---
       window.addEventListener("load", () => setTimeout(() => { const e = document.getElementById("loader"); e.style.opacity = "0"; setTimeout(() => e.style.display = "none", 500) }, 2e3));
