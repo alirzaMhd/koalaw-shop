@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>KOALAW | لوازم آرایشی لوکس</title>
+  <title>KOALAW | لوازم آرایش لوکس</title>
   <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
@@ -58,7 +58,8 @@
       display: none
     }
 
-    body.mobile-menu-open {
+    body.mobile-menu-open,
+    body.search-overlay-open {
       overflow: hidden
     }
 
@@ -517,7 +518,7 @@
     .break-inside-avoid {
       break-inside: avoid
     }
-    
+
     /* --- ✨ STATIC "DREAM DROP" PRODUCT CARD V3 ✨ --- */
     .product-card-v3 {
       --card-color-1: var(--blush);
@@ -528,51 +529,75 @@
       border-radius: 24px;
       overflow: hidden;
       text-decoration: none;
-      display: block; /* Ensure it behaves as a block element */
+      display: block;
+      /* Ensure it behaves as a block element */
       box-shadow: 0 8px 24px rgba(120, 80, 100, .05);
     }
+
     .card-bg {
-      position: absolute; inset: 0;
+      position: absolute;
+      inset: 0;
       background: linear-gradient(160deg, var(--card-color-2), #fff 70%);
       opacity: 0.5;
     }
+
     .card-blob {
-      position: absolute; top: -15%; right: -15%; width: 90%; height: auto;
+      position: absolute;
+      top: -15%;
+      right: -15%;
+      width: 90%;
+      height: auto;
       z-index: 1;
       animation: subtle-bob 12s ease-in-out infinite alternate;
     }
-    .card-blob svg { fill: var(--card-color-1); }
-    
-    @keyframes subtle-bob {
-      from { transform: translateY(0) rotate(0); }
-      to { transform: translateY(10px) rotate(15deg); }
+
+    .card-blob svg {
+      fill: var(--card-color-1);
     }
+
+    @keyframes subtle-bob {
+      from {
+        transform: translateY(0) rotate(0);
+      }
+
+      to {
+        transform: translateY(10px) rotate(15deg);
+      }
+    }
+
     .card-image-wrapper {
       position: absolute;
-      top: 28%; left: 50%;
+      top: 28%;
+      left: 50%;
       transform: translate(-50%, -50%);
       width: clamp(120px, 48%, 180px);
       aspect-ratio: 1/1;
       z-index: 3;
     }
+
     .card-image {
-      width: 100%; height: 100%;
+      width: 100%;
+      height: 100%;
       object-fit: contain;
-      filter: drop-shadow(0 15px 20px rgba(0,0,0,0.1));
+      filter: drop-shadow(0 15px 20px rgba(0, 0, 0, 0.1));
     }
+
     .card-content {
       position: absolute;
-      bottom: 0; right: 0; left: 0;
+      bottom: 0;
+      right: 0;
+      left: 0;
       padding: 1.5rem;
       z-index: 2;
       color: var(--deep-brown);
       text-align: center;
     }
+
     .card-category {
       display: inline-flex;
       align-items: center;
       gap: 0.35rem;
-      background-color: rgba(255,255,255,0.6);
+      background-color: rgba(255, 255, 255, 0.6);
       backdrop-filter: blur(5px);
       padding: 0.25rem 0.75rem;
       border-radius: 50px;
@@ -583,27 +608,59 @@
       letter-spacing: .5px;
       margin-bottom: 0.75rem;
     }
+
     .card-title {
       font-size: 1.1rem;
       font-weight: 700;
       line-height: 1.3;
       margin-bottom: 0.5rem;
     }
+
     .card-rating {
-      display: flex; align-items: center; justify-content: center;
-      gap: 0.25rem; color: #f59e0b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.25rem;
+      color: #f59e0b;
       margin-bottom: 0.75rem;
     }
-    .card-rating svg { fill: currentColor; width: 16px; height: 16px; }
-    .card-rating span { font-weight: 700; color: #a16207; font-size: 0.9rem;}
+
+    .card-rating svg {
+      fill: currentColor;
+      width: 16px;
+      height: 16px;
+    }
+
+    .card-rating span {
+      font-weight: 700;
+      color: #a16207;
+      font-size: 0.9rem;
+    }
+
     .card-price {
       font-size: 1.25rem;
       font-weight: 700;
     }
-    .product-card-v3.category-skincare { --card-color-1: var(--mint); --card-color-2: #c5f4e5; }
-    .product-card-v3.category-makeup { --card-color-1: var(--lavender); --card-color-2: #e0d9fe; }
-    .product-card-v3.category-fragrance { --card-color-1: var(--butter); --card-color-2: #fef9e3; }
-    .product-card-v3.category-default { --card-color-1: var(--blush); --card-color-2: #ffeef5; }
+
+    .product-card-v3.category-skincare {
+      --card-color-1: var(--mint);
+      --card-color-2: #c5f4e5;
+    }
+
+    .product-card-v3.category-makeup {
+      --card-color-1: var(--lavender);
+      --card-color-2: #e0d9fe;
+    }
+
+    .product-card-v3.category-fragrance {
+      --card-color-1: var(--butter);
+      --card-color-2: #fef9e3;
+    }
+
+    .product-card-v3.category-default {
+      --card-color-1: var(--blush);
+      --card-color-2: #ffeef5;
+    }
 
 
     .filter-btn {
@@ -867,9 +924,11 @@
       .card-title {
         font-size: .95rem
       }
+
       .card-price {
         font-size: 1rem;
       }
+
       .card-rating {
         font-size: .8rem;
       }
@@ -1732,6 +1791,185 @@
         flex-shrink: 0
       }
     }
+
+    /* --- Search Overlay Styles (Responsive) --- */
+    .search-overlay {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(250, 248, 243, 0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      z-index: 999;
+      display: flex;
+      justify-content: center;
+      /* Mobile: Align to the top */
+      align-items: flex-start;
+      padding: 15vh 5% 0 5%;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.4s ease, visibility 0.4s ease;
+    }
+
+    .search-overlay.is-active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .search-container {
+      position: relative;
+      width: 100%;
+      max-width: 600px;
+      padding: 20px;
+      transform: translateY(-20px);
+      transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    .search-overlay.is-active .search-container {
+      transform: translateY(0);
+    }
+
+    .close-search-button {
+      position: absolute;
+      /* Repositioned for all screens */
+      top: -10vh; 
+      right: 0;
+      color: var(--deep-brown);
+      background: none;
+      border: none;
+      padding: 10px;
+      transform: scale(1.2); /* Make icon larger */
+    }
+
+    .close-search-button:hover {
+      color: var(--primary);
+    }
+
+    .search-form {
+      position: relative;
+      width: 100%;
+    }
+
+    .search-input {
+      width: 100%;
+      border: 2px solid rgba(61, 41, 20, 0.2);
+      border-radius: 50px;
+      background-color: rgba(255, 255, 255, 0.7);
+      color: var(--deep-brown);
+      transition: all 0.3s ease;
+      outline: none;
+      /* Mobile styles */
+      padding: 1rem 1.25rem 1rem 3.5rem;
+      font-size: 1rem;
+    }
+
+    .search-input::placeholder {
+      color: rgba(61, 41, 20, 0.5);
+    }
+
+    .search-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(227, 154, 180, 0.3);
+    }
+
+    .search-submit-button {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--rose-gold));
+      color: white;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.3s ease;
+      /* Mobile styles */
+      width: 40px;
+      height: 40px;
+      left: 6px;
+    }
+
+    .search-submit-button:hover {
+      transform: translateY(-50%) scale(1.1);
+    }
+
+    .search-suggestions {
+      margin-top: 1rem;
+      text-align: center;
+      color: var(--deep-brown);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .search-suggestions p {
+      font-weight: 600;
+      opacity: 0.8;
+      font-size: 0.9rem;
+    }
+
+    .search-suggestions a {
+      display: inline-block;
+      background-color: rgba(227, 154, 180, 0.1);
+      border: 1px solid rgba(227, 154, 180, 0.2);
+      border-radius: 20px;
+      color: var(--deep-brown);
+      transition: all 0.3s ease;
+      text-decoration: none;
+      /* Mobile styles */
+      padding: 0.4rem 0.8rem;
+      font-size: 0.8rem;
+    }
+
+    .search-suggestions a:hover {
+      background-color: var(--primary);
+      color: white;
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    /* Tablet and Desktop adjustments */
+    @media (min-width: 768px) {
+      .search-overlay {
+        /* Re-center for larger screens */
+        align-items: center;
+        padding: 0 5%;
+      }
+
+      .close-search-button {
+        /* Position relative to the search container on larger screens */
+        top: -50px;
+        right: -10px;
+        transform: scale(1);
+      }
+
+      .search-input {
+        padding: 1.25rem 1.5rem 1.25rem 4rem;
+        font-size: 1.1rem;
+      }
+
+      .search-submit-button {
+        width: 48px;
+        height: 48px;
+        left: 8px;
+      }
+
+      .search-suggestions {
+        margin-top: 1.5rem;
+        gap: 0.75rem;
+      }
+      
+      .search-suggestions p {
+        font-size: 1rem;
+      }
+
+      .search-suggestions a {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+      }
+    }
   </style>
 </head>
 
@@ -1764,7 +2002,7 @@
             class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">برندها</a><a href="#magazine"
             class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">مجله</a><a href="#about"
             class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">درباره ما</a></div>
-        <div class="flex items-center gap-x-6"><button
+        <div class="flex items-center gap-x-6"><button id="search-button"
             class="text-gray-700 hover:text-gray-900 transition-all duration-300 hover:scale-110"><i
               data-feather="search" class="w-5 h-5"></i></button><button
             class="text-gray-700 hover:text-gray-900 transition-all duration-300 hover:scale-110"><i data-feather="user"
@@ -2177,6 +2415,30 @@
       </div>
     </div>
   </section>
+
+  <!-- Search Overlay -->
+  <div id="search-overlay" class="search-overlay">
+    <div class="search-container">
+      <button id="close-search-button" class="close-search-button">
+        <i data-feather="x" class="w-8 h-8"></i>
+      </button>
+      <form class="search-form">
+        <input type="search" id="search-input" placeholder="جستجو برای محصولات، برندها و..." class="search-input">
+        <button type="submit" class="search-submit-button">
+          <i data-feather="search"></i>
+        </button>
+      </form>
+      <div class="search-suggestions">
+        <p>پیشنهادات:</p>
+        <a href="#">سرم پوست</a>
+        <a href="#">رژ لب مات</a>
+        <a href="#">عطر Bloom</a>
+        <a href="#">کرم پودر</a>
+      </div>
+    </div>
+  </div>
+
+
   <footer id="about" class="bg-gradient-to-b from-gray-900 to-black text-white py-20">
     <div class="container mx-auto px-6">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-12">
@@ -2268,7 +2530,16 @@
       });[{ i: "1522335789203-aabd1fc54bc9", l: "۲.۳" }, { i: "1512207736890-6ffca8dad650", l: "۳.۱" }, { i: "1516975080664-ed2fc6a32937", l: "۱.۸" }, { i: "1519699047748-de8e457a634e", l: "۴.۲" }].forEach(p => {
         iG.innerHTML += `
 <div class="relative group overflow-hidden rounded-2xl"><img src="https://images.unsplash.com/photo-${p.i}?w=400&h=400&fit=crop" alt="اینستاگرام" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"><div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items=end p-4"><div class="text-white"><i data-feather="heart" class="w-5 h-5 mb-1"></i><p class="text-sm">${p.l} هزار لایک</p></div></div></div>`
-      }); const fL = { "فروشگاه": ["تازه‌ها", "پرفروش‌ترین‌ها", "مراقبت از پوست", "آرایش", "عطر", "ست‌های هدیه"], "خدمات مشتریان": ["تماس با ما", "سوالات متداول", "اطلاعات ارسال", "مرجوعی", "پیگیری سفارش"] }; for (const t in fL) { let l = ""; fL[t].forEach(t => l += `<li><a href="#" class="text-gray-400 hover:text-white transition duration-300">${t}</a></li>`), fLC.innerHTML += `<div><h4 class="font-semibold text-lg mb-6">${t}</h4><ul class="space-y-3">${l}</ul></div>` } function sBM() { const c = document.querySelector('.brands-container'), m = c?.querySelector('.brands-marquee'); if (!c || !m) return; m.querySelectorAll('[data-clone="true"]').forEach(n => n.remove()); const o = Array.from(m.children); if (!o.length) return; const b = m.scrollWidth, w = c.clientWidth; let s = 1; for (; m.scrollWidth < 2 * w;) { const f = document.createDocumentFragment(); o.forEach(e => { const c = e.cloneNode(!0); c.setAttribute('data-clone', 'true'), f.appendChild(c) }), m.appendChild(f), s++ } if (s % 2 != 0) { const f = document.createDocumentFragment(); o.forEach(e => { const c = e.cloneNode(!0); c.setAttribute('data-clone', 'true'), f.appendChild(c) }), m.appendChild(f) } m.style.setProperty('--marquee-shift', `-${b}px`), m.style.animationDuration = `${b / 60}s`, feather.replace() } sBM(), new ResizeObserver(() => sBM()).observe(document.querySelector('.brands-container')), feather.replace(); const cur = document.querySelector(".cursor"), cF = document.querySelector(".cursor-face"), cFol = document.querySelector(".cursor-follower"); let cX = 0, cY = 0, fX = 0, fY = 0, s = .5; window.innerWidth > 768 ? (document.addEventListener("mousemove", e => { cX = e.clientX, cY = e.clientY }), function a() { cur.style.left = cX + "px", cur.style.top = cY + "px", cF.style.left = cX + "px", cF.style.top = cY + "px", fX += (cX - fX) * s, fY += (cY - fY) * s, cFol.style.left = fX + "px", cFol.style.top = fY + "px", requestAnimationFrame(a) }(), document.querySelectorAll("a,button,.collection-card-new, .category-card, .campaign-featured-card, .campaign-side-card").forEach(e => { e.addEventListener("mouseenter", () => { cur.classList.add("hover"), cFol.style.transform = "translate(-50%,-50%) scale(1.5)" }), e.addEventListener("mouseleave", () => { cur.classList.remove("hover"), cFol.style.transform = "translate(-50%,-50%) scale(1)" }) })) : [cur, cF, cFol].forEach(e => e.style.display = "none"); const mB = document.getElementById('mobile-menu-button'), mM = document.getElementById('mobile-menu'), mO = document.getElementById('mobile-menu-overlay'), tM = () => { mB.classList.toggle('is-active'), mM.classList.toggle('is-active'), mO.classList.toggle('is-active'), document.body.classList.toggle('mobile-menu-open') }; mB && (mB.addEventListener('click', tM), mO.addEventListener('click', tM), mM.querySelectorAll('a').forEach(l => l.addEventListener('click', () => { mM.classList.contains('is-active') && tM() }))); window.addEventListener("load", () => setTimeout(() => { const e = document.getElementById("loader"); e.style.opacity = "0", setTimeout(() => e.style.display = "none", 400) }, 1200)); const nav = document.getElementById("navbar"), btt = document.getElementById("backToTop"); let lS = 0; window.addEventListener("scroll", () => { const e = window.pageYOffset; nav.style.background = e > 100 ? "rgba(250,248,243,.95)" : "rgba(250,248,243,.85)", nav.style.boxShadow = e > 100 ? "0 4px 30px rgba(0,0,0,.1)" : "0 1px 20px rgba(0,0,0,.05)", nav.style.transform = e > lS && e > 500 ? "translateY(-100%)" : "translateY(0)", lS = e, btt.style.opacity = e > 500 ? "1" : "0", btt.style.visibility = e > 500 ? "visible" : "hidden" }), btt.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" })); const fB = document.querySelectorAll(".filter-btn"), aPC = document.querySelectorAll(".product-card-v3"); fB.forEach(b => { b.addEventListener("click", () => { fB.forEach(b => b.classList.remove("active")), b.classList.add("active"); const f = b.getAttribute("data-filter"); aPC.forEach(c => { const s = c.getAttribute("data-category").split(" "); c.style.display = "all" === f || s.includes(f) ? "block" : "none" }) }) }), gsap.registerPlugin(ScrollTrigger), gsap.to("#hero-bg-image", { y: "8vh", ease: "none", scrollTrigger: { trigger: "body", start: "top top", end: "bottom top", scrub: 1.2 } }), document.querySelectorAll(".magnetic-btn").forEach(b => { b.addEventListener("mousemove", e => { const t = b.getBoundingClientRect(), o = e.clientX - t.left - t.width / 2, r = e.clientY - t.top - t.height / 2; gsap.to(b, { x: .15 * o, y: .15 * r, duration: .3 }) }), b.addEventListener("mouseleave", () => gsap.to(b, { x: 0, y: 0, duration: .3, ease: "power3.out" })) }), document.querySelectorAll(".collection-card-link").forEach(l => { l.addEventListener("click", function (e) { e.preventDefault(); const d = this.href; this.querySelector(".collection-card-new").classList.add("animating"), setTimeout(() => window.location.href = d, 800) }) }), function () { if (!window.matchMedia("(prefers-reduced-motion:reduce)").matches) document.addEventListener("click", e => { if (e.target.closest("input,textarea,select,button,a")) return; const t = document.createElement("span"); t.className = "floating-heart", t.textContent = ["❤", "✦", "✧", "❀", "❣", "★"][Math.floor(6 * Math.random())], t.style.left = e.clientX + "px", t.style.top = e.clientY + "px", t.style.color = ["#f7bcd6", "#c9c2ff", "#bcefe1", "#ffe3a4", "#ffcfe0", "#d6f0ff"][Math.floor(6 * Math.random())], t.style.transform += ` rotate(${30 * Math.random() - 15}deg)`, document.body.appendChild(t), setTimeout(() => t.remove(), 1300) }, { passive: !0 }) }()
+      }); const fL = { "فروشگاه": ["تازه‌ها", "پرفروش‌ترین‌ها", "مراقبت از پوست", "آرایش", "عطر", "ست‌های هدیه"], "خدمات مشتریان": ["تماس با ما", "سوالات متداول", "اطلاعات ارسال", "مرجوعی", "پیگیری سفارش"] }; for (const t in fL) { let l = ""; fL[t].forEach(t => l += `<li><a href="#" class="text-gray-400 hover:text-white transition duration-300">${t}</a></li>`), fLC.innerHTML += `<div><h4 class="font-semibold text-lg mb-6">${t}</h4><ul class="space-y-3">${l}</ul></div>` } function sBM() { const c = document.querySelector('.brands-container'), m = c?.querySelector('.brands-marquee'); if (!c || !m) return; m.querySelectorAll('[data-clone="true"]').forEach(n => n.remove()); const o = Array.from(m.children); if (!o.length) return; const b = m.scrollWidth, w = c.clientWidth; let s = 1; for (; m.scrollWidth < 2 * w;) { const f = document.createDocumentFragment(); o.forEach(e => { const c = e.cloneNode(!0); c.setAttribute('data-clone', 'true'), f.appendChild(c) }), m.appendChild(f), s++ } if (s % 2 != 0) { const f = document.createDocumentFragment(); o.forEach(e => { const c = e.cloneNode(!0); c.setAttribute('data-clone', 'true'), f.appendChild(c) }), m.appendChild(f) } m.style.setProperty('--marquee-shift', `-${b}px`), m.style.animationDuration = `${b / 60}s`, feather.replace() } sBM(), new ResizeObserver(() => sBM()).observe(document.querySelector('.brands-container')); feather.replace(); const cur = document.querySelector(".cursor"), cF = document.querySelector(".cursor-face"), cFol = document.querySelector(".cursor-follower"); let cX = 0, cY = 0, fX = 0, fY = 0, s = .5; window.innerWidth > 768 ? (document.addEventListener("mousemove", e => { cX = e.clientX, cY = e.clientY }), function a() { cur.style.left = cX + "px", cur.style.top = cY + "px", cF.style.left = cX + "px", cF.style.top = cY + "px", fX += (cX - fX) * s, fY += (cY - fY) * s, cFol.style.left = fX + "px", cFol.style.top = fY + "px", requestAnimationFrame(a) }(), document.querySelectorAll("a,button,.collection-card-new, .category-card, .campaign-featured-card, .campaign-side-card").forEach(e => { e.addEventListener("mouseenter", () => { cur.classList.add("hover"), cFol.style.transform = "translate(-50%,-50%) scale(1.5)" }), e.addEventListener("mouseleave", () => { cur.classList.remove("hover"), cFol.style.transform = "translate(-50%,-50%) scale(1)" }) })) : [cur, cF, cFol].forEach(e => e.style.display = "none"); const mB = document.getElementById('mobile-menu-button'), mM = document.getElementById('mobile-menu'), mO = document.getElementById('mobile-menu-overlay'), tM = () => { mB.classList.toggle('is-active'), mM.classList.toggle('is-active'), mO.classList.toggle('is-active'), document.body.classList.toggle('mobile-menu-open') }; mB && (mB.addEventListener('click', tM), mO.addEventListener('click', tM), mM.querySelectorAll('a').forEach(l => l.addEventListener('click', () => { mM.classList.contains('is-active') && tM() })));
+      
+      const searchButton = document.getElementById('search-button'), searchOverlay = document.getElementById('search-overlay'), closeSearchButton = document.getElementById('close-search-button'), searchInput = document.getElementById('search-input');
+      if (searchButton && searchOverlay && closeSearchButton && searchInput) {
+        const openSearch = () => { searchOverlay.classList.add('is-active'), document.body.classList.add('search-overlay-open'), setTimeout(() => searchInput.focus(), 400) };
+        const closeSearch = () => { searchOverlay.classList.remove('is-active'), document.body.classList.remove('search-overlay-open') };
+        searchButton.addEventListener('click', e => { e.preventDefault(), openSearch() }), closeSearchButton.addEventListener('click', closeSearch), searchOverlay.addEventListener('click', e => { e.target === searchOverlay && closeSearch() }), document.addEventListener('keydown', e => { "Escape" === e.key && searchOverlay.classList.contains('is-active') && closeSearch() });
+      }
+
+      window.addEventListener("load", () => setTimeout(() => { const e = document.getElementById("loader"); e.style.opacity = "0", setTimeout(() => e.style.display = "none", 400) }, 1200)); const nav = document.getElementById("navbar"), btt = document.getElementById("backToTop"); let lS = 0; window.addEventListener("scroll", () => { const e = window.pageYOffset; nav.style.background = e > 100 ? "rgba(250,248,243,.95)" : "rgba(250,248,243,.85)", nav.style.boxShadow = e > 100 ? "0 4px 30px rgba(0,0,0,.1)" : "0 1px 20px rgba(0,0,0,.05)", nav.style.transform = e > lS && e > 500 ? "translateY(-100%)" : "translateY(0)", lS = e, btt.style.opacity = e > 500 ? "1" : "0", btt.style.visibility = e > 500 ? "visible" : "hidden" }), btt.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" })); const fB = document.querySelectorAll(".filter-btn"), aPC = document.querySelectorAll(".product-card-v3"); fB.forEach(b => { b.addEventListener("click", () => { fB.forEach(b => b.classList.remove("active")), b.classList.add("active"); const f = b.getAttribute("data-filter"); aPC.forEach(c => { const s = c.getAttribute("data-category").split(" "); c.style.display = "all" === f || s.includes(f) ? "block" : "none" }) }) }), gsap.registerPlugin(ScrollTrigger), gsap.to("#hero-bg-image", { y: "8vh", ease: "none", scrollTrigger: { trigger: "body", start: "top top", end: "bottom top", scrub: 1.2 } }), document.querySelectorAll(".magnetic-btn").forEach(b => { b.addEventListener("mousemove", e => { const t = b.getBoundingClientRect(), o = e.clientX - t.left - t.width / 2, r = e.clientY - t.top - t.height / 2; gsap.to(b, { x: .15 * o, y: .15 * r, duration: .3 }) }), b.addEventListener("mouseleave", () => gsap.to(b, { x: 0, y: 0, duration: .3, ease: "power3.out" })) }), document.querySelectorAll(".collection-card-link").forEach(l => { l.addEventListener("click", function (e) { e.preventDefault(); const d = this.href; this.querySelector(".collection-card-new").classList.add("animating"), setTimeout(() => window.location.href = d, 800) }) }), function () { if (!window.matchMedia("(prefers-reduced-motion:reduce)").matches) document.addEventListener("click", e => { if (e.target.closest("input,textarea,select,button,a")) return; const t = document.createElement("span"); t.className = "floating-heart", t.textContent = ["❤", "✦", "✧", "❀", "❣", "★"][Math.floor(6 * Math.random())], t.style.left = e.clientX + "px", t.style.top = e.clientY + "px", t.style.color = ["#f7bcd6", "#c9c2ff", "#bcefe1", "#ffe3a4", "#ffcfe0", "#d6f0ff"][Math.floor(6 * Math.random())], t.style.transform += ` rotate(${30 * Math.random() - 15}deg)`, document.body.appendChild(t), setTimeout(() => t.remove(), 1300) }, { passive: !0 }) }()
     });</script>
 </body>
 
