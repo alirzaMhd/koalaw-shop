@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>فروشگاه | KOALAW لوازم آرایشی لوکس</title>
+  <title>فروشگاه | KOALAW - محصولات زیبایی رویایی</title>
   <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
@@ -12,22 +12,26 @@
   <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  
   <style>
-    /* --- ALL ORIGINAL STYLES FROM YOUR CODE --- */
     @import url("https://font-face.ir/css/iransans/");
 
     :root {
       --primary: #e39ab4;
+      /* ✨ NEW: A sharper, more vibrant pink for key UI elements */
+      --primary-sharp: #d96690; 
       --secondary: #1a1a1a;
       --accent: #ffe9f2;
       --rose-gold: #f0b7c4;
       --rose-cream: #e3d1d6;
       --cream: #faf8f3;
-      --deep-brown: #3d2914;
+      --deep-brown: #3d2114; /* Slightly darkened for better contrast */
       --blush: #ffd7e5;
       --lavender: #eae2ff;
       --mint: #dff8ef;
-      --butter: #fff3bf
+      --butter: #fff3bf;
+      /* ✨ NEW: A subtle border color derived from deep-brown */
+      --border-color: rgba(61, 33, 20, 0.1);
     }
 
     * {
@@ -41,7 +45,8 @@
       font-family: "IRANSans", sans-serif;
       font-size: 15px;
       background-color: var(--cream);
-      color: #333;
+      /* ✨ CHANGED: Default text color is now high-contrast deep-brown */
+      color: var(--deep-brown);
       overflow-x: hidden;
       cursor: none
     }
@@ -59,7 +64,8 @@
       display: none
     }
 
-    body.mobile-menu-open {
+    body.mobile-menu-open,
+    body.filter-menu-open {
       overflow: hidden
     }
 
@@ -146,47 +152,11 @@
     .hamburger-button.is-active span:nth-child(3) {
       transform: translateY(-7px) rotate(-45deg)
     }
-    
-    .particle-overlay {
-      position: absolute;
-      inset: 0;
-      overflow: hidden;
-      z-index: 6;
-      pointer-events: none
-    }
-
-    .particle {
-      position: absolute;
-      width: 4px;
-      height: 4px;
-      background: rgba(255, 255, 255, .6);
-      border-radius: 50%;
-      animation: float-particle linear infinite;
-      filter: blur(1px)
-    }
-
-    @keyframes float-particle {
-      0% {
-        transform: translateY(100vh) rotate(0);
-        opacity: 0
-      }
-
-      10%,
-      90% {
-        opacity: 1
-      }
-
-      100% {
-        transform: translateY(-10vh) rotate(360deg);
-        opacity: 0
-      }
-    }
 
     .cursor {
       width: 30px;
       height: 30px;
-      border: 2px solid #666;
-      background: 0 0;
+      border: 2px solid var(--deep-brown);
       border-radius: 50% 50% 45% 45%;
       position: fixed;
       pointer-events: none;
@@ -195,91 +165,14 @@
       transition: border-color .2s ease, transform .2s ease
     }
 
-    .cursor::after,
-    .cursor::before {
-      content: "";
-      position: absolute;
-      width: 12px;
-      height: 12px;
-      border: 2px solid #666;
-      background: 0 0;
-      border-radius: 50%;
-      top: -3px;
-      transition: border-color .2s ease
-    }
-
-    .cursor::before {
-      right: -9px
-    }
-
-    .cursor::after {
-      left: -9px
-    }
-
-    .cursor-face {
-      position: fixed;
-      width: 30px;
-      height: 30px;
-      pointer-events: none;
-      z-index: 10000;
-      transform: translate(-50%, -50%)
-    }
-
-    .cursor-face::before {
-      content: "";
-      position: absolute;
-      width: 4px;
-      height: 7px;
-      border: 1.5px solid #333;
-      background: 0 0;
-      border-radius: 50%;
-      top: 13px;
-      left: 50%;
-      transform: translateX(-50%)
-    }
-
-    .cursor-eyes {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      left: 0
-    }
-
-    .cursor-eyes::after,
-    .cursor-eyes::before {
-      content: "";
-      position: absolute;
-      width: 3px;
-      height: 3px;
-      border: 2px solid #333;
-      background: 0 0;
-      border-radius: 50%;
-      top: 10px
-    }
-
-    .cursor-eyes::before {
-      right: 6px
-    }
-
-    .cursor-eyes::after {
-      left: 6px
-    }
-
     .cursor.hover {
-      border-color: var(--primary);
-      transform: translate(-50%, -50%) scale(1.2)
-    }
-
-    .cursor.hover::after,
-    .cursor.hover::before {
-      border-color: var(--primary)
+      border-color: var(--primary-sharp)
     }
 
     .cursor-follower {
       width: 50px;
       height: 50px;
-      background: rgba(227, 154, 180, .1);
+      background: rgba(217, 102, 144, .1);
       border-radius: 50%;
       position: fixed;
       pointer-events: none;
@@ -308,337 +201,14 @@
       right: 0;
       width: 0;
       height: 2px;
-      background: linear-gradient(90deg, var(--primary), var(--rose-gold));
+      background: linear-gradient(90deg, var(--primary-sharp), var(--rose-gold));
       transition: width .3s ease
     }
 
     .nav-link:hover::before {
       width: 100%
     }
-
-    .filter-btn {
-      padding: 12px 24px;
-      border-radius: 50px;
-      font-weight: 600;
-      font-size: 13px;
-      letter-spacing: .5px;
-      transition: all .4s cubic-bezier(.165, .84, .44, 1);
-      border: 2px solid transparent;
-      cursor: none;
-      position: relative;
-      overflow: hidden;
-      backdrop-filter: blur(10px)
-    }
-
-    .filter-btn::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, var(--primary) 0, var(--rose-gold) 100%);
-      opacity: 0;
-      transition: opacity .3s ease
-    }
-
-    .filter-btn span {
-      position: relative;
-      z-index: 1
-    }
-
-    .filter-btn.active,
-    .filter-btn:hover {
-      color: #fff;
-      transform: translateY(-2px)
-    }
-
-    .filter-btn.active::before,
-    .filter-btn:hover::before {
-      opacity: 1
-    }
-
-    .filter-btn:not(.active) {
-      background: linear-gradient(145deg, #fff 0, #f8f9fa 100%);
-      color: #1a1a1a;
-      border-color: rgba(227, 154, 180, .2)
-    }
-
-    .pulse-animation {
-      animation: pulse 2s ease-in-out infinite
-    }
-
-    @keyframes pulse {
-
-      0%,
-      to {
-        transform: scale(1);
-        opacity: 1
-      }
-
-      50% {
-        transform: scale(1.05);
-        opacity: .8
-      }
-    }
-
-    .loader {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: var(--cream);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 10000;
-      transition: opacity .4s ease
-    }
-
-    .koala-loader {
-      position: relative;
-      width: 150px;
-      height: 150px
-    }
-
-    .koala-loader::after,
-    .koala-loader::before {
-      content: "";
-      position: absolute;
-      width: 60px;
-      height: 60px;
-      border: 8px solid var(--primary);
-      background: 0 0;
-      border-radius: 50%;
-      top: -15px;
-      z-index: 5
-    }
-
-    .koala-loader::before {
-      right: -35px
-    }
-
-    .koala-loader::after {
-      left: -35px
-    }
-
-    .koala-loader-body {
-      width: 100%;
-      height: 100%;
-      border: 8px solid var(--primary);
-      background: 0 0;
-      border-radius: 50% 50% 45% 45%;
-      position: relative;
-      overflow: hidden;
-      animation: koala-pulse 2.5s ease-in-out infinite;
-      z-index: 10
-    }
-
-    .koala-loader-eyes {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      left: 0;
-      z-index: 20
-    }
-
-    .koala-loader-eyes::after,
-    .koala-loader-eyes::before {
-      content: "";
-      position: absolute;
-      width: 12px;
-      height: 12px;
-      border: 4px solid var(--primary);
-      box-sizing: border-box;
-      border-radius: 50%;
-      top: 50px;
-      animation: koala-blink 2s ease-in-out infinite
-    }
-
-    .koala-loader-eyes::before {
-      right: 30px
-    }
-
-    .koala-loader-eyes::after {
-      left: 30px
-    }
-
-    .koala-loader-nose {
-      position: absolute;
-      width: 20px;
-      height: 35px;
-      border: 6px solid var(--primary);
-      background: 0 0;
-      border-radius: 50%;
-      top: 65px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 20
-    }
-
-    @keyframes koala-pulse {
-
-      0%,
-      100% {
-        transform: scale(1)
-      }
-
-      50% {
-        transform: scale(1.03)
-      }
-    }
-
-    @keyframes koala-blink {
-
-      0%,
-      90%,
-      100% {
-        transform: scaleY(1)
-      }
-
-      95% {
-        transform: scaleY(.1)
-      }
-    }
-
-    .cute-divider {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: .5rem;
-      margin: .5rem 0 0;
-      opacity: .65
-    }
-
-    .cute-divider::after,
-    .cute-divider::before {
-      content: "";
-      height: 1px;
-      width: 36px;
-      background: linear-gradient(90deg, transparent, var(--rose-gold), transparent)
-    }
-
-    .cute-divider .star {
-      font-size: 12px;
-      color: var(--rose-gold)
-    }
-
-    .floating-heart {
-      position: fixed;
-      left: 0;
-      top: 0;
-      transform: translate(-50%, -50%);
-      font-size: 16px;
-      pointer-events: none;
-      z-index: 10000;
-      opacity: 0;
-      animation: heartFloat 1.2s ease-out forwards;
-      filter: drop-shadow(0 2px 0 rgba(0, 0, 0, .02))
-    }
-
-    @keyframes heartFloat {
-      0% {
-        transform: translate(-50%, -50%) scale(.8);
-        opacity: 0
-      }
-
-      15% {
-        opacity: .95
-      }
-
-      60% {
-        transform: translate(-50%, -140%) scale(1.15)
-      }
-
-      to {
-        transform: translate(-50%, -200%) scale(1);
-        opacity: 0
-      }
-    }
-
-    #backToTop:hover {
-      animation: cute-wiggle .7s ease both
-    }
-
-    @keyframes cute-wiggle {
-
-      0%,
-      50%,
-      to {
-        transform: scale(1.1) rotate(0)
-      }
-
-      25% {
-        transform: scale(1.1) rotate(-6deg)
-      }
-
-      75% {
-        transform: scale(1.1) rotate(6deg)
-      }
-    }
-
-    @media (max-width:768px) {
-        section.py-24, section.pt-32, section.pt-48 {
-            padding-top: 5rem;
-            padding-bottom: 5rem;
-        }
-        h1.text-4xl, h1.text-5xl, h1.text-6xl { font-size: 2.3rem; }
-        .filter-btn { padding: 10px 20px; font-size: 12px; }
-    }
-
-
-    /* --- NEW, UNIQUE STYLES FOR THE MARKET PAGE --- */
-    .shop-hero {
-        padding-top: 12rem; /* Extra space for fixed nav */
-        padding-bottom: 6rem;
-        background-image: radial-gradient(circle at 10% 20%, rgba(240, 183, 196, 0.3), transparent 40%), radial-gradient(circle at 90% 80%, rgba(227, 154, 180, 0.2), transparent 50%);
-        position: relative;
-        overflow: hidden;
-    }
-
-    .cute-select-wrapper {
-        position: relative;
-        display: inline-flex;
-        align-items: center;
-    }
-    .cute-select-wrapper::after {
-        content: '▼';
-        font-size: 10px;
-        color: var(--primary);
-        position: absolute;
-        right: 1.25rem;
-        pointer-events: none;
-        transition: transform 0.3s ease;
-    }
-    .cute-select {
-        -webkit-appearance: none; appearance: none;
-        background: #fff;
-        border: 2px solid rgba(227, 154, 180, .2);
-        border-radius: 50px;
-        padding: 12px 48px 12px 24px;
-        font-weight: 600;
-        font-size: 13px;
-        color: var(--deep-brown);
-        transition: all .3s ease;
-        cursor: none;
-    }
-    .cute-select:hover { border-color: var(--primary); }
-
-    .pagination-cute {
-        display: flex; justify-content: center; align-items: center; gap: 0.75rem; list-style: none; padding: 0;
-    }
-    .pagination-cute a, .pagination-cute span {
-        display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 50%; font-weight: 600;
-        color: var(--deep-brown); background-color: #fff; border: 2px solid rgba(227, 154, 180, .2);
-        transition: all .3s cubic-bezier(.175, .885, .32, 1.275);
-    }
-    .pagination-cute a:hover {
-        transform: translateY(-4px) scale(1.05); background-color: var(--accent); border-color: var(--primary);
-    }
-    .pagination-cute .active {
-        background-color: var(--primary); border-color: var(--primary); color: #fff; transform: scale(1.1);
-    }
-
-    /* --- ✨ NEW "DREAM DROP" PRODUCT CARD V3 ✨ --- */
+    
     .product-card-v3 {
       --card-color-1: var(--blush);
       --card-color-2: var(--accent);
@@ -647,12 +217,20 @@
       aspect-ratio: 3/4;
       border-radius: 24px;
       overflow: hidden;
-      transition: transform .4s cubic-bezier(.175,.885,.32,1.275), box-shadow .4s ease;
       text-decoration: none;
+      display: block;
+      /* ✨ CHANGED: Added subtle border and slightly stronger shadow */
+      background-color: #fff;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 4px 15px rgba(120, 80, 100, .07);
+      transition: transform .4s cubic-bezier(.175, .885, .32, 1.275), box-shadow .4s cubic-bezier(.175, .885, .32, 1.275), border-color .4s ease;
     }
+
     .product-card-v3:hover {
-      transform: translateY(-12px) rotate(2deg);
-      box-shadow: 0 20px 45px -10px rgba(120, 80, 100, .15);
+      /* ✨ CHANGED: More lift and a more prominent shadow and border on hover */
+      transform: translateY(-10px);
+      box-shadow: 0 20px 40px rgba(120, 80, 100, .15);
+      border-color: var(--primary-sharp);
     }
     .card-bg {
       position: absolute; inset: 0;
@@ -663,12 +241,9 @@
       position: absolute; top: -15%; right: -15%; width: 90%; height: auto;
       z-index: 1;
       animation: subtle-bob 12s ease-in-out infinite alternate;
-      transition: transform .8s cubic-bezier(.165,.84,.44,1);
     }
     .card-blob svg { fill: var(--card-color-1); }
-    .product-card-v3:hover .card-blob {
-      transform: scale(1.3) rotate(20deg);
-    }
+    
     @keyframes subtle-bob {
       from { transform: translateY(0) rotate(0); }
       to { transform: translateY(10px) rotate(15deg); }
@@ -685,10 +260,10 @@
       width: 100%; height: 100%;
       object-fit: contain;
       filter: drop-shadow(0 15px 20px rgba(0,0,0,0.1));
-      transition: transform .6s cubic-bezier(.165,.84,.44,1);
+      transition: transform .5s cubic-bezier(.175, .885, .32, 1.275);
     }
     .product-card-v3:hover .card-image {
-      transform: scale(1.15) translateY(-5px) rotate(-3deg);
+        transform: scale(1.05) rotate(-3deg);
     }
     .card-content {
       position: absolute;
@@ -715,9 +290,10 @@
     }
     .card-title {
       font-size: 1.1rem;
-      font-weight: 700;
+      font-weight: 800;
       line-height: 1.3;
       margin-bottom: 0.5rem;
+      color: var(--deep-brown);
     }
     .card-rating {
       display: flex; align-items: center; justify-content: center;
@@ -730,216 +306,466 @@
       font-size: 1.25rem;
       font-weight: 700;
     }
-    .card-action-btn {
-      position: absolute;
-      bottom: 1.5rem;
-      left: 50%;
-      transform: translateX(-50%) translateY(10px);
-      background-color: var(--deep-brown);
-      color: #fff;
-      border: none;
-      border-radius: 50px;
-      padding: .8rem 1.6rem;
-      font-weight: 600;
-      font-size: .85rem;
-      display: flex; align-items: center; gap: .5rem;
-      box-shadow: 0 4px 15px rgba(61, 41, 20, .2);
-      opacity: 0;
-      transition: transform .4s ease, opacity .4s ease, box-shadow .3s ease;
-      z-index: 4;
-    }
-    .product-card-v3:hover .card-action-btn {
-      transform: translateX(-50%) translateY(0);
-      opacity: 1;
-    }
-    .product-card-v3:hover .card-content {
-      transform: translateY(2.5rem);
-      transition: transform .4s ease;
-    }
     .product-card-v3.category-skincare { --card-color-1: var(--mint); --card-color-2: #c5f4e5; }
     .product-card-v3.category-makeup { --card-color-1: var(--lavender); --card-color-2: #e0d9fe; }
     .product-card-v3.category-fragrance { --card-color-1: var(--butter); --card-color-2: #fef9e3; }
-    .product-card-v3.category-default { --card-color-1: var(--blush); --card-color-2: #ffeef5; }
+    .product-card-v3.category-haircare { --card-color-1: var(--rose-cream); --card-color-2: #fbe6eb; }
+    .product-card-v3.category-body-bath { --card-color-1: var(--blush); --card-color-2: #ffeef5; }
 
+
+    .cute-divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .5rem;
+      margin: .5rem 0 0;
+      opacity: .65
+    }
+
+    .cute-divider::after,
+    .cute-divider::before {
+      content: "";
+      height: 1px;
+      width: 36px;
+      background: linear-gradient(90deg, transparent, var(--rose-gold), transparent)
+    }
+
+    .cute-divider .star {
+      font-size: 12px;
+      color: var(--rose-gold)
+    }
+    
+    .loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--cream);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      transition: opacity .4s ease
+    }
+
+    /* --- ✨ SHARPER MARKET PAGE STYLES ✨ --- */
+    #shop-sidebar {
+        /* ✨ CHANGED: Using cream for a softer look that still contrasts with the white content area */
+        background-color: var(--cream);
+        border-left: 1px solid var(--border-color);
+        transition: transform .4s cubic-bezier(.23, 1, .32, 1);
+    }
+
+    @media (max-width: 1024px) {
+        #shop-sidebar {
+            position: fixed; top: 0; right: 0; width: 85%; max-width: 340px;
+            height: 100%; z-index: 70; transform: translateX(100%);
+            border-left: none; box-shadow: -10px 0 30px rgba(0, 0, 0, .1);
+        }
+        #shop-sidebar.is-active { transform: translateX(0); }
+    }
+
+    .filter-group-title {
+        display: flex; align-items: center; gap: 0.5rem; font-weight: 700;
+        font-size: 1.1rem; color: var(--deep-brown); padding-bottom: 0.75rem;
+        margin-bottom: 1rem; border-bottom: 1px solid var(--border-color);
+    }
+    .filter-group-title i { color: var(--primary-sharp); }
+
+    .cute-checkbox { display: flex; align-items: center; gap: 0.75rem; position: relative; }
+    .cute-checkbox input { position: absolute; opacity: 0; width: 0; height: 0; }
+    .cute-checkbox .checkmark {
+        width: 20px; height: 20px; border: 2px solid var(--rose-cream);
+        border-radius: 6px; background-color: #fff;
+        transition: all .3s ease;
+        display: flex; align-items: center; justify-content: center;
+    }
+    .cute-checkbox .checkmark svg {
+        width: 12px; height: 12px; color: white;
+        stroke-width: 3; opacity: 0; transform: scale(0.5);
+        transition: all .3s ease;
+    }
+    .cute-checkbox input:checked ~ .checkmark {
+        background-color: var(--primary-sharp); border-color: var(--primary-sharp);
+    }
+    .cute-checkbox input:checked ~ .checkmark svg { opacity: 1; transform: scale(1); }
+    .cute-checkbox:hover .checkmark { border-color: var(--primary-sharp); }
+    .cute-checkbox label { color: var(--deep-brown); opacity: 0.9; }
+
+    .price-range-slider { position: relative; height: 5px; background-color: var(--rose-cream); border-radius: 5px; margin: 1.5rem 0.5rem 1rem; }
+    .price-range-slider .progress { position: absolute; height: 100%; background-color: var(--primary-sharp); border-radius: 5px; right: 0; left: 0; }
+    .range-input { position: relative; }
+    .range-input input {
+        position: absolute; top: -5px; height: 5px; width: 100%;
+        -webkit-appearance: none; appearance: none;
+        background: none; pointer-events: none;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+        height: 18px; width: 18px; border-radius: 50%;
+        background: var(--primary-sharp); border: 3px solid #fff;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        -webkit-appearance: none; appearance: none; pointer-events: auto;
+    }
+    input[type="range"]::-moz-range-thumb {
+        height: 18px; width: 18px; border-radius: 50%;
+        background: var(--primary-sharp); border: 3px solid #fff;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        -moz-appearance: none; appearance: none; pointer-events: auto;
+    }
+
+    .pagination-cute {
+        display: flex; justify-content: center; align-items: center;
+        gap: 0.5rem; margin-top: 3rem;
+    }
+    .pagination-cute a, .pagination-cute span {
+        display: flex; align-items: center; justify-content: center;
+        width: 40px; height: 40px; border-radius: 12px;
+        font-weight: 600; text-decoration: none;
+        background: #fff; color: var(--deep-brown);
+        border: 1px solid var(--rose-cream);
+        transition: all .3s cubic-bezier(.175, .885, .32, 1.275);
+    }
+    .pagination-cute a:hover {
+        background: var(--accent); color: var(--primary-sharp);
+        transform: translateY(-3px); border-color: var(--primary-sharp);
+    }
+    .pagination-cute span.current {
+        /* ✨ CHANGED: Sharper active state */
+        background: var(--primary-sharp); color: #fff;
+        border-color: var(--primary-sharp); font-weight: 700;
+        box-shadow: 0 8px 20px -8px var(--primary-sharp);
+        transform: translateY(-2px);
+    }
+    .pagination-cute a.arrow { background: transparent; border: none; }
+    .pagination-cute a.arrow:hover { background: var(--accent); }
+
+    .sort-select {
+        -webkit-appearance: none; -moz-appearance: none; appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23d96690' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: left 0.75rem center;
+        padding-left: 2.5rem;
+    }
+
+    /* ✨ NEW: Sparkle animation for the hero */
+    .sparkle-container {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .sparkle {
+      position: absolute;
+      width: 3px; height: 3px;
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 50%;
+      animation: sparkle-float linear infinite;
+      filter: blur(0.5px);
+    }
+    @keyframes sparkle-float {
+      0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
+      10%, 90% { opacity: 1; }
+      100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+    }
   </style>
 </head>
 
 <body>
-  <!-- --- LOADER (from original code) --- -->
-  <div class="loader" id="loader">
-    <div class="koala-loader">
-      <div class="koala-loader-body">
-        <div class="koala-loader-eyes"></div><div class="koala-loader-nose"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- --- CURSOR & PARTICLES (from original code) --- -->
-  <div class="cursor"><div class="cursor-eyes"></div></div>
-  <div class="cursor-face"></div>
+  <div class="loader" id="loader"></div>
+  <div class="cursor"></div>
   <div class="cursor-follower"></div>
-  <div class="particle-overlay"></div>
-
-  <!-- --- NAVIGATION (from original code) --- -->
+  
   <nav class="fixed w-full z-50 transition-all duration-300" id="navbar">
     <div class="container mx-auto px-6 py-5">
-      <div class="flex items-center justify-between" dir="ltr"><a href="#"
-          class="text-3xl font-serif font-bold text-gray-800 tracking-wider z-50">KOALAW</a>
-        <div class="hidden lg:flex items-center gap-x-10 flex-row-reverse"><a href="/shop.html"
-            class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">فروشگاه</a><a href="/index.html#collections"
-            class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">کالکشن ها</a><a href="/index.html#brands"
-            class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">برندها</a></div>
-        <div class="flex items-center gap-x-6"><button
-            class="text-gray-700 hover:text-gray-900 transition-all duration-300 hover:scale-110"><i
-              data-feather="search" class="w-5 h-5"></i></button><button
-            class="text-gray-700 hover:text-gray-900 transition-all duration-300 hover:scale-110"><i data-feather="user"
-              class="w-5 h-5"></i></button><button
-            class="text-gray-700 hover:text-gray-900 relative transition-all duration-300 hover:scale-110"><i
-              data-feather="shopping-bag" class="w-5 h-5"></i><span
-              class="absolute -top-2 -right-2 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center pulse-animation">۳</span></button><button
-            id="mobile-menu-button" class="hamburger-button lg:hidden"><span></span><span></span><span></span></button>
+      <div class="flex items-center justify-between" dir="ltr">
+        <a href="/" class="text-3xl font-serif font-bold tracking-wider z-50">KOALAW</a>
+        <div class="hidden lg:flex items-center gap-x-10 flex-row-reverse">
+            <a href="/shop.html" class="nav-link">فروشگاه</a>
+            <a href="/#collections" class="nav-link">کالکشن ها</a>
+            <a href="/#brands" class="nav-link">برندها</a>
+            <a href="/#magazine" class="nav-link">مجله</a>
+            <a href="/#about" class="nav-link">درباره ما</a>
+        </div>
+        <div class="flex items-center gap-x-6">
+          <button class="transition-all duration-300 hover:scale-110"><i data-feather="search" class="w-5 h-5"></i></button>
+          <button class="transition-all duration-300 hover:scale-110"><i data-feather="user" class="w-5 h-5"></i></button>
+          <button class="relative transition-all duration-300 hover:scale-110">
+            <i data-feather="shopping-bag" class="w-5 h-5"></i>
+            <span class="absolute -top-2 -right-2 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">۳</span>
+          </button>
+          <button id="mobile-menu-button" class="hamburger-button lg:hidden"><span></span><span></span><span></span></button>
         </div>
       </div>
     </div>
   </nav>
-  <div id="mobile-menu"><a href="/shop.html" class="nav-link">فروشگاه</a><a href="/index.html#collections" class="nav-link">کالکشن ها</a><a href="/index.html#brands" class="nav-link">برندها</a></div>
+
+  <div id="mobile-menu">
+    <a href="/shop.html" class="nav-link">فروشگاه</a>
+    <a href="/#collections" class="nav-link">کالکشن ها</a>
+    <a href="/#brands" class="nav-link">برندها</a>
+    <a href="/#magazine" class="nav-link">مجله</a>
+    <a href="/#about" class="nav-link">درباره ما</a>
+  </div>
   <div id="mobile-menu-overlay" class="mobile-menu-overlay"></div>
-
-  <main>
-    <!-- --- SHOP HERO SECTION --- -->
-    <section class="shop-hero">
-        <div class="container mx-auto px-6 text-center relative z-10">
+  
+  <main class="pt-24">
+    <!-- Shop Hero Section -->
+    <section class="py-20 lg:py-28 relative text-center overflow-hidden bg-gradient-to-b from-rose-100 to-cream">
+        <div class="absolute inset-0 opacity-40">
+            <div class="absolute top-0 right-0 w-64 h-64 bg-rose-200 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-0 left-0 w-72 h-72 bg-lavender/80 rounded-full blur-3xl"></div>
+        </div>
+        <!-- ✨ NEW: Added sparkle container -->
+        <div class="sparkle-container" id="sparkle-container"></div>
+        <div class="container mx-auto px-6 relative z-10">
             <div data-aos="fade-up">
-                <span class="text-sm font-medium text-rose-800 tracking-wider uppercase mb-4 block">یک دنیای کامل از زیبایی</span>
-                <h1 class="text-5xl lg:text-6xl font-serif font-bold text-gray-800 mb-6">باغ زیبایی کوالا</h1>
-                <div class="cute-divider mb-6"><span class="star">✦</span></div>
-                <p class="text-gray-600 max-w-2xl mx-auto text-lg leading-relaxed">در میان گنجینه‌های دست‌چین شده ما قدم بزنید و جادوی بعدی خود را برای مراقبت از پوست و آرایش پیدا کنید.</p>
+                <h1 class="text-4xl lg:text-5xl font-serif font-bold mb-4">فروشگاه رویاها</h1>
+                <div class="cute-divider"><span class="star">✦</span></div>
+                <p class="text-gray-600 max-w-xl mx-auto text-lg mt-4">گنجینه زیبایی خود را بیابید. هر محصول با عشق و دقت برای درخشش شما انتخاب شده است.</p>
             </div>
         </div>
     </section>
 
-    <!-- --- PRODUCTS SECTION --- -->
-    <section class="py-24">
-        <div class="container mx-auto px-6">
-            <!-- Filters and Sorting -->
-            <div class="flex flex-col md:flex-row justify-between items-center gap-6 mb-12" data-aos="fade-up">
-                <div class="flex flex-wrap justify-center items-center gap-3">
-                    <button class="filter-btn active" data-filter="all"><span>همه محصولات</span></button>
-                    <button class="filter-btn" data-filter="skincare"><span>مراقبت از پوست</span></button>
-                    <button class="filter-btn" data-filter="makeup"><span>آرایش</span></button>
-                    <button class="filter-btn" data-filter="fragrance"><span>عطر</span></button>
-                </div>
-                <div class="cute-select-wrapper">
-                    <select class="cute-select" aria-label="مرتب‌سازی محصولات">
-                        <option>مرتب‌سازی بر اساس: جدیدترین</option>
-                        <option>قیمت: از کم به زیاد</option>
-                        <option>قیمت: از زیاد به کم</option>
-                        <option>محبوب‌ترین</option>
-                    </select>
-                </div>
-            </div>
+    <!-- ✨ NEW: Main content wrapper for a layered, sharper look -->
+    <div class="container mx-auto px-6 relative z-10 -mt-12">
+        <div class="bg-white rounded-3xl shadow-xl shadow-rose-100/50 border border-rose-100/50 p-4 sm:p-6 lg:p-8">
+            <div class="flex flex-row-reverse lg:gap-x-8">
 
-            <!-- Product Grid -->
-            <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8" data-aos="fade-up" data-aos-delay="200">
-                <!-- Products will be dynamically added here by JavaScript -->
-            </div>
+                <!-- Filter Sidebar -->
+                <aside id="shop-sidebar" class="w-full lg:w-1/4 lg:max-w-xs lg:sticky top-28 self-start h-screen lg:h-auto overflow-y-auto lg:overflow-visible pb-24 lg:pb-0 rounded-2xl">
+                    <div class="p-6">
+                        <div class="flex items-center justify-between lg:hidden mb-6">
+                            <h3 class="font-bold text-xl">فیلتر محصولات</h3>
+                            <button id="close-filter-btn" class="p-2 -m-2"><i data-feather="x" class="w-6 h-6"></i></button>
+                        </div>
+                        
+                        <!-- Category Filter -->
+                        <div class="mb-8">
+                            <h4 class="filter-group-title"><i data-feather="grid"></i><span>دسته‌بندی</span></h4>
+                            <div class="space-y-4">
+                                <label class="cute-checkbox"><input type="checkbox" name="category" value="skincare"><span class="checkmark"><i data-feather="check"></i></span><span>مراقبت از پوست</span></label>
+                                <label class="cute-checkbox"><input type="checkbox" name="category" value="makeup"><span class="checkmark"><i data-feather="check"></i></span><span>آرایش</span></label>
+                                <label class="cute-checkbox"><input type="checkbox" name="category" value="fragrance"><span class="checkmark"><i data-feather="check"></i></span><span>عطر</span></label>
+                                <label class="cute-checkbox"><input type="checkbox" name="category" value="haircare"><span class="checkmark"><i data-feather="check"></i></span><span>مراقبت از مو</span></label>
+                                <label class="cute-checkbox"><input type="checkbox" name="category" value="body-bath"><span class="checkmark"><i data-feather="check"></i></span><span>بدن و حمام</span></label>
+                            </div>
+                        </div>
 
-            <!-- Pagination -->
-            <div class="mt-16" data-aos="fade-up">
-                <nav aria-label="صفحه‌بندی محصولات">
-                    <ul class="pagination-cute">
-                        <li><a href="#" class="disabled"><i data-feather="chevron-right" class="w-5 h-5"></i></a></li>
-                        <li><a href="#" class="active" aria-current="page">۱</a></li>
-                        <li><a href="#">۲</a></li>
-                        <li><a href="#">۳</a></li>
-                        <li><span>...</span></li>
-                        <li><a href="#">۸</a></li>
-                        <li><a href="#"><i data-feather="chevron-left" class="w-5 h-5"></i></a></li>
-                    </ul>
-                </nav>
+                        <!-- Price Filter -->
+                        <div class="mb-8">
+                            <h4 class="filter-group-title"><i data-feather="dollar-sign"></i><span>محدوده قیمت</span></h4>
+                            <div class="price-range-slider">
+                                <div class="progress"></div>
+                            </div>
+                            <div class="range-input">
+                                <input type="range" class="range-min" min="0" max="1000000" value="100000" step="10000">
+                                <input type="range" class="range-max" min="0" max="1000000" value="800000" step="10000">
+                            </div>
+                            <div class="flex justify-between items-center mt-6 text-sm text-gray-600">
+                                <span id="price-min-display">۱۰۰,۰۰۰ تومان</span>
+                                <span id="price-max-display">۸۰۰,۰۰۰ تومان</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </aside>
+
+                <!-- Products Grid -->
+                <div class="w-full lg:w-3/4">
+                    <div class="flex items-center justify-between mb-8 px-4 py-3 rounded-2xl bg-cream/50 border border-rose-100">
+                        <button id="open-filter-btn" class="lg:hidden flex items-center gap-2 font-semibold text-sm">
+                            <i data-feather="filter" class="w-5 h-5 text-primary-sharp"></i><span>فیلتر</span>
+                        </button>
+                        <div class="hidden lg:block"><p class="text-sm text-gray-600">نمایش <span class="font-bold">۱۲</span> از <span class="font-bold">۷۴</span> محصول</p></div>
+                        <div class="relative">
+                            <select class="sort-select bg-transparent font-semibold text-sm border-none focus:ring-0">
+                                <option>مرتب‌سازی: جدیدترین</option>
+                                <option>محبوب‌ترین</option>
+                                <option>قیمت: کم به زیاد</option>
+                                <option>قیمت: زیاد به کم</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div id="shop-product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                        <!-- Product cards will be injected here by JavaScript -->
+                    </div>
+
+                    <!-- Pagination -->
+                    <nav aria-label="Pagination" class="pagination-cute">
+                        <a href="#" class="arrow"><i data-feather="chevron-right"></i></a>
+                        <a href="#">۱</a>
+                        <span class="current">۲</span>
+                        <a href="#">۳</a>
+                        <a href="#">۴</a>
+                        <span class="text-gray-400">...</span>
+                        <a href="#">۱۰</a>
+                        <a href="#" class="arrow"><i data-feather="chevron-left"></i></a>
+                    </nav>
+                </div>
             </div>
         </div>
-    </section>
-
+    </div>
+    
   </main>
 
-
-  <!-- --- FOOTER (from original code) --- -->
-  <footer id="about" class="bg-gradient-to-b from-gray-900 to-black text-white py-20">
-    <div class="container mx-auto px-6">
-      <p class="text-center text-gray-400 text-sm mb-4 md:mb-0">© ۲۰۲۴ D.AI — تمام حقوق محفوظ است.</p>
+  <footer class="bg-gradient-to-b from-gray-900 to-black text-white py-20 mt-24">
+    <div class="container mx-auto px-6 text-center text-gray-400">
+        <p class="text-sm">© ۲۰۲۴ D.AI — تمام حقوق محفوظ است.</p>
     </div>
   </footer>
-  <button id="backToTop"
-    class="fixed bottom-8 left-8 bg-gradient-to-r from-gray-900 to-black text-white p-4 rounded-full shadow-lg opacity-0 invisible transition-all duration-300 hover:shadow-xl transform hover:scale-110 z-40"><i
-      data-feather="arrow-up" class="w-5 h-5"></i></button>
+  <button id="backToTop" class="fixed bottom-8 left-8 bg-gradient-to-r from-gray-900 to-black text-white p-4 rounded-full shadow-lg opacity-0 invisible transition-all duration-300 hover:shadow-xl transform hover:scale-110 z-40"><i data-feather="arrow-up" class="w-5 h-5"></i></button>
 
-  <!-- --- SCRIPT (adapted from original code) --- -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      AOS.init({ duration: 600, easing: "ease-out-cubic", once: !0, offset: 40 });
+      // --- CORE & ORIGINAL SCRIPTS ---
+      AOS.init({ duration: 600, easing: "ease-out-cubic", once: true, offset: 40 });
       feather.replace();
-      
-      const productGrid = document.getElementById("product-grid");
-      const products = [
-        { c: "skincare", i: "shield", t: "اکسیر درخشش طلایی", p: 480000, r: 4.8 },
-        { c: "makeup", i: "pen-tool", t: "بوسه مخملی مات", p: 320000, r: 4.5 },
-        { c: "makeup", i: "pen-tool", t: "پایه ابریشمی بی‌نقص", p: 420000, r: 4.9 },
-        { c: "fragrance", i: "wind", t: "راز نیمه‌شب", p: 780000, r: 4.7 },
-        { c: "skincare", i: "droplet", t: "کرم ابریشمی هیدرا", p: 550000, r: 4.6 },
-        { c: "makeup", i: "pen-tool", t: "رؤیاهای صحرا", p: 490000, r: 4.4 },
-        { c: "skincare", i: "eye", t: "احیاگر چشم روشن", p: 620000, r: 4.8 },
-        { c: "skincare", i: "sun", t: "فوم پاک کننده ملایم", p: 280000, r: 4.9 },
-      ];
 
-      if (productGrid) {
-        productGrid.innerHTML = '';
-        products.forEach(p => {
-          const price = p.p.toLocaleString('fa-IR') + ' تومان';
-          const rating = p.r.toLocaleString('fa-IR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
-          productGrid.innerHTML += `
-            <a href="#" class="product-card-v3 category-${p.c}" data-category="${p.c}">
-              <div class="card-bg"></div>
-              <div class="card-blob">
-                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M48.1,-58.9C62.2,-51.9,73.4,-37.2,77,-21.2C80.6,-5.2,76.5,12.2,68.4,26.1C60.3,40,48.2,50.4,34.5,58.3C20.8,66.2,5.5,71.6,-9.3,71.1C-24.1,70.7,-38.4,64.4,-50.9,54.7C-63.4,44.9,-74,31.7,-77.8,16.5C-81.6,1.2,-78.6,-16,-69.8,-29.3C-61,-42.6,-46.4,-52,-32.1,-59.5C-17.8,-67,-3.9,-72.6,9.6,-71.7C23.1,-70.8,48.1,-58.9,48.1,-58.9Z" transform="translate(100 100)"></path>
-                </svg>
-              </div>
-              <div class="card-image-wrapper">
-                <img src="./image/product.png" alt="${p.t}" class="card-image">
-              </div>
-              <div class="card-content">
-                <div class="card-category"><i data-feather="${p.i}" class="w-3 h-3"></i><span>${p.c}</span></div>
-                <h3 class="card-title">${p.t}</h3>
-                <div class="card-rating">
-                  ${'<i data-feather="star"></i>'.repeat(Math.floor(p.r))}
-                  <span>${rating}</span>
-                </div>
-                <p class="card-price">${price}</p>
-              </div>
-              <button class="card-action-btn">
-                <span>افزودن به سبد</span><i data-feather="shopping-bag" class="w-5 h-5"></i>
-              </button>
-            </a>
-          `;
-        });
-        feather.replace();
+      // Custom Cursor Logic
+      const cur = document.querySelector(".cursor"), cFol = document.querySelector(".cursor-follower");
+      if (window.innerWidth > 768) {
+          let cX = 0, cY = 0, fX = 0, fY = 0, speed = 0.5;
+          document.addEventListener("mousemove", e => { cX = e.clientX; cY = e.clientY; });
+          function animateCursor() {
+              cur.style.left = cX + "px"; cur.style.top = cY + "px";
+              fX += (cX - fX) * speed; fY += (cY - fY) * speed;
+              cFol.style.left = fX + "px"; cFol.style.top = fY + "px";
+              requestAnimationFrame(animateCursor);
+          }
+          animateCursor();
+          document.querySelectorAll("a, button, input[type='checkbox'], input[type='range']").forEach(el => {
+              el.addEventListener("mouseenter", () => { cur.classList.add("hover"); cFol.style.transform = "translate(-50%,-50%) scale(1.5)"; });
+              el.addEventListener("mouseleave", () => { cur.classList.remove("hover"); cFol.style.transform = "translate(-50%,-50%) scale(1)"; });
+          });
+      } else {
+          [cur, cFol].forEach(el => el.style.display = "none");
       }
 
-      // --- All Other Original JS from your file ---
-      const cur = document.querySelector(".cursor"), cF = document.querySelector(".cursor-face"), cFol = document.querySelector(".cursor-follower"); let cX = 0, cY = 0, fX = 0, fY = 0, s = .5; if (window.innerWidth > 768) { document.addEventListener("mousemove", e => { cX = e.clientX, cY = e.clientY }); function a() { cur.style.left = cX + "px", cur.style.top = cY + "px", cF.style.left = cX + "px", cF.style.top = cY + "px", fX += (cX - fX) * s, fY += (cY - fY) * s, cFol.style.left = fX + "px", cFol.style.top = fY + "px", requestAnimationFrame(a) } a(); document.querySelectorAll("a,button,.filter-btn,.cute-select").forEach(e => { e.addEventListener("mouseenter", () => { cur.classList.add("hover"), cFol.style.transform = "translate(-50%,-50%) scale(1.5)" }), e.addEventListener("mouseleave", () => { cur.classList.remove("hover"), cFol.style.transform = "translate(-50%,-50%) scale(1)" }) }) } else[cur, cF, cFol].forEach(e => e.style.display = "none");
+      // Loader
+      window.addEventListener("load", () => setTimeout(() => { const e = document.getElementById("loader"); e.style.opacity = "0"; setTimeout(() => e.style.display = "none", 400); }, 500));
       
-      const mB = document.getElementById('mobile-menu-button'), mM = document.getElementById('mobile-menu'), mO = document.getElementById('mobile-menu-overlay'), tM = () => { mB.classList.toggle('is-active'), mM.classList.toggle('is-active'), mO.classList.toggle('is-active'), document.body.classList.toggle('mobile-menu-open') }; mB && (mB.addEventListener('click', tM), mO.addEventListener('click', tM), mM.querySelectorAll('a').forEach(l => l.addEventListener('click', () => { mM.classList.contains('is-active') && tM() })));
+      // Navbar Scroll & Back to Top Button
+      const nav = document.getElementById("navbar"), btt = document.getElementById("backToTop");
+      let lastScroll = 0;
+      window.addEventListener("scroll", () => {
+        const scrollY = window.pageYOffset;
+        nav.style.transform = scrollY > lastScroll && scrollY > 500 ? "translateY(-100%)" : "translateY(0)";
+        btt.style.opacity = scrollY > 500 ? "1" : "0";
+        btt.style.visibility = scrollY > 500 ? "visible" : "hidden";
+        lastScroll = scrollY;
+      });
+      btt.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+
+      // Mobile Menu Toggle
+      const mB = document.getElementById('mobile-menu-button'), mM = document.getElementById('mobile-menu'), mO = document.getElementById('mobile-menu-overlay');
+      const toggleMobileMenu = () => {
+          mB.classList.toggle('is-active'); mM.classList.toggle('is-active');
+          mO.classList.toggle('is-active'); document.body.classList.toggle('mobile-menu-open');
+      };
+      mB?.addEventListener('click', toggleMobileMenu);
+      mO?.addEventListener('click', toggleMobileMenu);
+
+      // --- ✨ SHARPER MARKET PAGE SCRIPTS ✨ ---
       
-      window.addEventListener("load", () => setTimeout(() => { const e = document.getElementById("loader"); e.style.opacity = "0", setTimeout(() => e.style.display = "none", 400) }, 500));
-      
-      const nav = document.getElementById("navbar"), btt = document.getElementById("backToTop"); let lS = 0; window.addEventListener("scroll", () => { const e = window.pageYOffset; nav.style.background = e > 100 ? "rgba(250,248,243,.95)" : "rgba(250,248,243,.85)", nav.style.boxShadow = e > 100 ? "0 4px 30px rgba(0,0,0,.1)" : "0 1px 20px rgba(0,0,0,.05)", nav.style.transform = e > lS && e > 500 ? "translateY(-100%)" : "translateY(0)", lS = e, btt.style.opacity = e > 500 ? "1" : "0", btt.style.visibility = e > 500 ? "visible" : "hidden" }), btt.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
-      
-      const fB = document.querySelectorAll(".filter-btn"), aPC = document.querySelectorAll("#product-grid .product-card-v3"); fB.forEach(b => { b.addEventListener("click", () => { fB.forEach(b => b.classList.remove("active")), b.classList.add("active"); const f = b.getAttribute("data-filter"); aPC.forEach(c => { const s = c.getAttribute("data-category"); c.style.display = "all" === f || s === f ? "block" : "none" }) }) });
-      
-      (function() { if (!window.matchMedia("(prefers-reduced-motion:reduce)").matches) { document.addEventListener("click", e => { if (e.target.closest("input,textarea,select,button,a")) return; const t = document.createElement("span"); t.className = "floating-heart", t.textContent = ["❤", "✦", "✧", "❀", "❣", "★"][Math.floor(6 * Math.random())], t.style.left = e.clientX + "px", t.style.top = e.clientY + "px", t.style.color = ["#f7bcd6", "#c9c2ff", "#bcefe1", "#ffe3a4", "#ffcfe0", "#d6f0ff"][Math.floor(6 * Math.random())], t.style.transform += ` rotate(${30 * Math.random() - 15}deg)`, document.body.appendChild(t), setTimeout(() => t.remove(), 1300) }, { passive: !0 }) } })();
+      // Sparkle generation
+      const sparkleContainer = document.getElementById('sparkle-container');
+      if (sparkleContainer) {
+          for (let i = 0; i < 20; i++) {
+              const sparkle = document.createElement('div');
+              sparkle.className = 'sparkle';
+              sparkle.style.left = `${Math.random() * 100}%`;
+              sparkle.style.animationDuration = `${5 + Math.random() * 10}s`;
+              sparkle.style.animationDelay = `${Math.random() * 5}s`;
+              sparkleContainer.appendChild(sparkle);
+          }
+      }
+
+      // Dummy Product Data
+      const products = [
+        { d: "0", c: "skincare", t: "اکسیر درخشش طلایی", p: 480000, r: 4.8 },
+        { d: "100", c: "makeup", t: "بوسه مخملی مات", p: 320000, r: 4.5 },
+        { d: "200", c: "makeup", t: "پایه ابریشمی بی‌نقص", p: 420000, r: 4.9 },
+        { d: "300", c: "fragrance", t: "راز نیمه‌شب", p: 780000, r: 4.7 },
+        { d: "0", c: "skincare", t: "کرم شب بازسازی کننده", p: 550000, r: 4.6 },
+        { d: "100", c: "haircare", t: "سرم موی آرگان", p: 290000, r: 4.8 },
+        { d: "200", c: "body-bath", t: "اسکراب بدن شکری", p: 210000, r: 4.4 },
+        { d: "300", c: "makeup", t: "پالت سایه کهکشانی", p: 650000, r: 4.9 },
+        { d: "0", c: "fragrance", t: "عطر شکوفه بهاری", p: 710000, r: 4.5 },
+        { d: "100", c: "skincare", t: "تونر گل رز آبرسان", p: 190000, r: 4.7 },
+        { d: "200", c: "body-bath", t: "کره بدن وانیلی", p: 250000, r: 4.6 },
+        { d: "300", c: "haircare", t: "ماسک موی کراتینه", p: 380000, r: 4.8 },
+      ];
+
+      const productGrid = document.getElementById('shop-product-grid');
+
+      function createProductCard(p) {
+          const categoryIcon = { 'skincare': 'shield', 'makeup': 'pen-tool', 'fragrance': 'wind', 'haircare': 'git-branch', 'body-bath': 'droplet' }[p.c] || 'gift';
+          const price = p.p.toLocaleString('fa-IR') + ' تومان';
+          const rating = p.r.toLocaleString('fa-IR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+          const stars = Array(Math.floor(p.r)).fill(0).map(() => `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-star"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>`).join('');
+
+          return `
+            <a href="#" class="product-card-v3 category-${p.c}" data-aos="fade-up" data-aos-delay="${p.d}">
+              <div class="card-bg"></div>
+              <div class="card-blob">
+                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><path d="M48.1,-58.9C62.2,-51.9,73.4,-37.2,77,-21.2C80.6,-5.2,76.5,12.2,68.4,26.1C60.3,40,48.2,50.4,34.5,58.3C20.8,66.2,5.5,71.6,-9.3,71.1C-24.1,70.7,-38.4,64.4,-50.9,54.7C-63.4,44.9,-74,31.7,-77.8,16.5C-81.6,1.2,-78.6,-16,-69.8,-29.3C-61,-42.6,-46.4,-52,-32.1,-59.5C-17.8,-67,-3.9,-72.6,9.6,-71.7C23.1,-70.8,48.1,-58.9,48.1,-58.9Z" transform="translate(100 100)"></path></svg>
+              </div>
+              <div class="card-image-wrapper"><img src="./image/product.png" alt="${p.t}" class="card-image"></div>
+              <div class="card-content">
+                <div class="card-category"><i data-feather="${categoryIcon}" class="w-3 h-3"></i><span>${p.c}</span></div>
+                <h3 class="card-title">${p.t}</h3>
+                <div class="card-rating">${stars}<span>${rating}</span></div>
+                <p class="card-price">${price}</p>
+              </div>
+            </a>
+          `;
+      }
+
+      if (productGrid) {
+          productGrid.innerHTML = products.map(p => createProductCard(p)).join('');
+          feather.replace(); // Re-run for new icons
+      }
+
+      // Filter Sidebar Logic
+      const openFilterBtn = document.getElementById('open-filter-btn');
+      const closeFilterBtn = document.getElementById('close-filter-btn');
+      const shopSidebar = document.getElementById('shop-sidebar');
+      const filterOverlay = document.createElement('div');
+      filterOverlay.className = 'mobile-menu-overlay'; 
+      document.body.appendChild(filterOverlay);
+      const toggleFilterMenu = () => {
+          shopSidebar.classList.toggle('is-active');
+          filterOverlay.classList.toggle('is-active');
+          document.body.classList.toggle('filter-menu-open');
+      };
+      openFilterBtn?.addEventListener('click', toggleFilterMenu);
+      closeFilterBtn?.addEventListener('click', toggleFilterMenu);
+      filterOverlay.addEventListener('click', toggleFilterMenu);
+
+      // Price Range Slider Logic
+      const rangeInputs = document.querySelectorAll('.range-input input');
+      const progress = document.querySelector('.price-range-slider .progress');
+      const priceMinDisplay = document.getElementById('price-min-display');
+      const priceMaxDisplay = document.getElementById('price-max-display');
+      if(rangeInputs.length > 0) {
+        rangeInputs.forEach(input => {
+            input.addEventListener("input", e => {
+                let minVal = parseInt(rangeInputs[0].value), maxVal = parseInt(rangeInputs[1].value);
+                if ((maxVal - minVal) < 100000) {
+                    if (e.target.className === "range-min") rangeInputs[0].value = maxVal - 100000;
+                    else rangeInputs[1].value = minVal + 100000;
+                } else {
+                    progress.style.right = (minVal / rangeInputs[0].max) * 100 + '%';
+                    progress.style.left = 100 - (maxVal / rangeInputs[1].max) * 100 + '%';
+                    priceMinDisplay.textContent = minVal.toLocaleString('fa-IR') + ' تومان';
+                    priceMaxDisplay.textContent = maxVal.toLocaleString('fa-IR') + ' تومان';
+                }
+            });
+        });
+      }
     });
   </script>
 </body>
-
 </html>
