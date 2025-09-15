@@ -275,33 +275,36 @@
       width: 100%
     }
 
+    /* Product card */
     .product-card-v3 {
       --card-color-1: var(--blush);
       --card-color-2: var(--accent);
       position: relative;
       width: 100%;
       aspect-ratio: 3/4;
-      border-radius: 24px;
+      border-radius: 20px;
       overflow: hidden;
       text-decoration: none;
       display: block;
       background-color: #fff;
       border: 1px solid var(--border-color);
       box-shadow: 0 4px 15px rgba(120, 80, 100, .07);
-      transition: transform .4s cubic-bezier(.175, .885, .32, 1.275), box-shadow .4s cubic-bezier(.175, .885, .32, 1.275), border-color .4s ease;
+      transition: none;
     }
 
+    /* Remove hover effects */
     .product-card-v3:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 25px rgba(120, 80, 100, .12);
-      border-color: var(--primary-sharp);
+      transform: none;
+      box-shadow: 0 4px 15px rgba(120, 80, 100, .07);
+      border-color: var(--border-color);
     }
+    .product-card-v3:hover .card-image { transform: none; }
 
     .card-bg {
       position: absolute;
       inset: 0;
       background: linear-gradient(160deg, var(--card-color-2), #fff 70%);
-      opacity: 0.5;
+      opacity: 0.35;
     }
 
     .card-blob {
@@ -313,19 +316,11 @@
       z-index: 1;
       animation: subtle-bob 12s ease-in-out infinite alternate;
     }
-
-    .card-blob svg {
-      fill: var(--card-color-1);
-    }
+    .card-blob svg { fill: var(--card-color-1); }
 
     @keyframes subtle-bob {
-      from {
-        transform: translateY(0) rotate(0);
-      }
-
-      to {
-        transform: translateY(10px) rotate(15deg);
-      }
+      from { transform: translateY(0) rotate(0) }
+      to   { transform: translateY(10px) rotate(15deg) }
     }
 
     .card-image-wrapper {
@@ -343,11 +338,6 @@
       height: 100%;
       object-fit: contain;
       filter: drop-shadow(0 15px 20px rgba(0, 0, 0, 0.1));
-      transition: transform .5s cubic-bezier(.175, .885, .32, 1.275);
-    }
-
-    .product-card-v3:hover .card-image {
-      transform: scale(1.02);
     }
 
     .card-content {
@@ -355,7 +345,7 @@
       bottom: 0;
       right: 0;
       left: 0;
-      padding: 1.5rem;
+      padding: 1.25rem 1rem 1.25rem 1rem;
       z-index: 2;
       color: var(--deep-brown);
       text-align: center;
@@ -372,17 +362,24 @@
       font-size: 0.7rem;
       font-weight: 700;
       color: var(--deep-brown);
-      text-transform: uppercase;
-      letter-spacing: .5px;
-      margin-bottom: 0.75rem;
+      text-transform: none;
+      letter-spacing: .2px;
+      margin-bottom: 0.5rem;
     }
 
     .card-title {
-      font-size: 1.1rem;
-      font-weight: 800;
-      line-height: 1.3;
-      margin-bottom: 0.5rem;
+      font-size: 1.05rem;
+      font-weight: 900;
+      line-height: 1.35;
+      margin-bottom: 0.25rem;
       color: var(--deep-brown);
+    }
+
+    .card-brand {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #6b7280;
+      margin-bottom: 0.5rem;
     }
 
     .card-rating {
@@ -391,50 +388,49 @@
       justify-content: center;
       gap: 0.25rem;
       color: #f59e0b;
-      margin-bottom: 0.75rem;
+      margin-bottom: 0.6rem;
     }
+    .card-rating svg { fill: currentColor; width: 16px; height: 16px; }
+    .card-rating span { font-weight: 700; color: #a16207; font-size: 0.9rem; }
 
-    .card-rating svg {
-      fill: currentColor;
-      width: 16px;
-      height: 16px;
-    }
-
-    .card-rating span {
-      font-weight: 700;
-      color: #a16207;
-      font-size: 0.9rem;
+    .card-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin-top: 0.2rem;
     }
 
     .card-price {
-      font-size: 1.25rem;
-      font-weight: 700;
+      font-size: 1.15rem;
+      font-weight: 800;
+      white-space: nowrap;
     }
 
-    .product-card-v3.category-skincare {
-      --card-color-1: var(--mint);
-      --card-color-2: #c5f4e5;
+    .add-to-cart-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0.55rem 0.75rem;
+      background-color: var(--primary-sharp);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-weight: 800;
+      font-size: 0.85rem;
+      line-height: 1;
+      transition: transform .05s ease, opacity .2s ease;
+      white-space: nowrap;
     }
+    .add-to-cart-btn:active { transform: translateY(1px); opacity: .95 }
+    .add-to-cart-btn i { width: 16px; height: 16px }
 
-    .product-card-v3.category-makeup {
-      --card-color-1: var(--lavender);
-      --card-color-2: #e0d9fe;
-    }
-
-    .product-card-v3.category-fragrance {
-      --card-color-1: var(--butter);
-      --card-color-2: #fef9e3;
-    }
-
-    .product-card-v3.category-haircare {
-      --card-color-1: var(--rose-cream);
-      --card-color-2: #fbe6eb;
-    }
-
-    .product-card-v3.category-body-bath {
-      --card-color-1: var(--blush);
-      --card-color-2: #ffeef5;
-    }
+    /* Category color themes */
+    .product-card-v3.category-skincare { --card-color-1: var(--mint); --card-color-2: #c5f4e5; }
+    .product-card-v3.category-makeup { --card-color-1: var(--lavender); --card-color-2: #e0d9fe; }
+    .product-card-v3.category-fragrance { --card-color-1: var(--butter); --card-color-2: #fef9e3; }
+    .product-card-v3.category-haircare { --card-color-1: var(--rose-cream); --card-color-2: #fbe6eb; }
+    .product-card-v3.category-body-bath { --card-color-1: var(--blush); --card-color-2: #ffeef5; }
 
     .loader {
       position: fixed;
@@ -469,10 +465,7 @@
         border-left: none;
         box-shadow: -10px 0 30px rgba(0, 0, 0, .1);
       }
-
-      #shop-sidebar.is-active {
-        transform: translateX(0);
-      }
+      #shop-sidebar.is-active { transform: translateX(0) }
     }
 
     .filter-accordion summary {
@@ -487,22 +480,10 @@
       border-bottom: 1px solid var(--border-color);
       list-style: none;
     }
-
-    .filter-accordion summary::-webkit-details-marker {
-      display: none;
-    }
-
-    .filter-accordion summary i {
-      transition: transform 0.3s ease;
-    }
-
-    .filter-accordion[open]>summary i {
-      transform: rotate(180deg);
-    }
-
-    .filter-accordion-content {
-      padding-bottom: 1.5rem;
-    }
+    .filter-accordion summary::-webkit-details-marker { display: none }
+    .filter-accordion summary i { transition: transform 0.3s ease }
+    .filter-accordion[open]>summary i { transform: rotate(180deg) }
+    .filter-accordion-content { padding-bottom: 1.5rem }
 
     .cute-checkbox {
       display: flex;
@@ -510,143 +491,68 @@
       gap: 0.75rem;
       position: relative;
     }
-
     .cute-checkbox input {
       position: absolute;
       opacity: 0;
-      width: 0;
-      height: 0;
+      width: 0; height: 0;
     }
-
     .cute-checkbox .checkmark {
-      width: 20px;
-      height: 20px;
+      width: 20px; height: 20px;
       border: 2px solid var(--rose-cream);
-      border-radius: 6px;
-      background-color: #fff;
+      border-radius: 6px; background-color: #fff;
       transition: all .3s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
     }
-
     .cute-checkbox .checkmark svg {
-      width: 12px;
-      height: 12px;
-      color: white;
-      stroke-width: 3;
-      opacity: 0;
-      transform: scale(0.5);
-      transition: all .3s ease;
+      width: 12px; height: 12px; color: white; stroke-width: 3;
+      opacity: 0; transform: scale(0.5); transition: all .3s ease;
     }
-
-    .cute-checkbox input:checked~.checkmark {
-      background-color: var(--primary-sharp);
-      border-color: var(--primary-sharp);
-    }
-
-    .cute-checkbox input:checked~.checkmark svg {
-      opacity: 1;
-      transform: scale(1);
-    }
-
-    .cute-checkbox:hover .checkmark {
-      border-color: var(--primary-sharp);
-    }
-
-    .cute-checkbox label {
-      color: var(--deep-brown);
-      opacity: 0.9;
-    }
+    .cute-checkbox input:checked~.checkmark { background-color: var(--primary-sharp); border-color: var(--primary-sharp) }
+    .cute-checkbox input:checked~.checkmark svg { opacity: 1; transform: scale(1) }
+    .cute-checkbox:hover .checkmark { border-color: var(--primary-sharp) }
+    .cute-checkbox label { color: var(--deep-brown); opacity: 0.9 }
 
     .price-range-slider {
-      position: relative;
-      height: 5px;
-      background-color: var(--rose-cream);
-      border-radius: 5px;
-      margin: 1.5rem 0.5rem 1rem;
+      position: relative; height: 5px; background-color: var(--rose-cream);
+      border-radius: 5px; margin: 1.5rem 0.5rem 1rem;
     }
-
     .price-range-slider .progress {
-      position: absolute;
-      height: 100%;
-      background-color: var(--primary-sharp);
-      border-radius: 5px;
-      right: 0;
-      left: 0;
+      position: absolute; height: 100%;
+      background-color: var(--primary-sharp); border-radius: 5px; right: 0; left: 0;
     }
-
-    .range-input {
-      position: relative;
-    }
-
+    .range-input { position: relative }
     .range-input input {
-      position: absolute;
-      top: -5px;
-      height: 5px;
-      width: 100%;
-      -webkit-appearance: none;
-      appearance: none;
-      background: none;
-      pointer-events: none;
+      position: absolute; top: -5px; height: 5px; width: 100%;
+      -webkit-appearance: none; appearance: none; background: none; pointer-events: none;
     }
-
     input[type="range"]::-webkit-slider-thumb {
-      height: 18px;
-      width: 18px;
-      border-radius: 50%;
-      background: var(--primary-sharp);
-      border: 3px solid #fff;
+      height: 18px; width: 18px; border-radius: 50%;
+      background: var(--primary-sharp); border: 3px solid #fff;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-      -webkit-appearance: none;
-      appearance: none;
-      pointer-events: auto;
+      -webkit-appearance: none; appearance: none; pointer-events: auto;
     }
-
     input[type="range"]::-moz-range-thumb {
-      height: 18px;
-      width: 18px;
-      border-radius: 50%;
-      background: var(--primary-sharp);
-      border: 3px solid #fff;
+      height: 18px; width: 18px; border-radius: 50%;
+      background: var(--primary-sharp); border: 3px solid #fff;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-      -moz-appearance: none;
-      appearance: none;
-      pointer-events: auto;
+      -moz-appearance: none; appearance: none; pointer-events: auto;
     }
 
-    .sort-select-wrapper {
-      position: relative;
-    }
-
+    .sort-select-wrapper { position: relative }
     .sort-select {
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      appearance: none;
-      background-color: white;
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 0.5rem 1rem 0.5rem 2.5rem;
-      font-weight: 600;
-      font-size: 14px;
-      color: var(--deep-brown);
+      -webkit-appearance: none; -moz-appearance: none; appearance: none;
+      background-color: white; border: 1px solid var(--border-color);
+      border-radius: 12px; padding: 0.5rem 1rem 0.5rem 2.5rem;
+      font-weight: 600; font-size: 14px; color: var(--deep-brown);
       transition: border-color .3s ease, box-shadow .3s ease;
     }
-
     .sort-select:focus {
-      outline: none;
-      border-color: var(--primary-sharp);
+      outline: none; border-color: var(--primary-sharp);
       box-shadow: 0 0 0 3px rgba(217, 102, 144, 0.2);
     }
-
     .sort-select-wrapper .icon {
-      position: absolute;
-      left: 0.75rem;
-      top: 50%;
-      transform: translateY(-50%);
-      pointer-events: none;
-      color: var(--primary-sharp);
+      position: absolute; left: 0.75rem; top: 50%;
+      transform: translateY(-50%); pointer-events: none; color: var(--primary-sharp);
     }
     
     .search-overlay {
@@ -664,7 +570,7 @@
       visibility: hidden;
       transition: opacity 0.4s ease, visibility 0.4s ease;
     }
-    .search-overlay.is-active { opacity: 1; visibility: visible; }
+    .search-overlay.is-active { opacity: 1; visibility: visible }
     .search-container {
       position: relative;
       width: 100%;
@@ -673,14 +579,14 @@
       transform: translateY(-20px);
       transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
     }
-    .search-overlay.is-active .search-container { transform: translateY(0); }
+    .search-overlay.is-active .search-container { transform: translateY(0) }
     .close-search-button {
       position: absolute; top: -10vh; right: 0;
       color: var(--deep-brown); background: none; border: none; padding: 10px;
       transform: scale(1.2);
     }
-    .close-search-button:hover { color: var(--primary); }
-    .search-form { position: relative; width: 100%; }
+    .close-search-button:hover { color: var(--primary) }
+    .search-form { position: relative; width: 100% }
     .search-input {
       width: 100%;
       border: 2px solid rgba(61, 41, 20, 0.2);
@@ -692,7 +598,7 @@
       padding: 1rem 1.25rem 1rem 3.5rem;
       font-size: 1rem;
     }
-    .search-input::placeholder { color: rgba(61, 41, 20, 0.5); }
+    .search-input::placeholder { color: rgba(61, 41, 20, 0.5) }
     .search-input:focus {
       border-color: var(--primary);
       box-shadow: 0 0 0 4px rgba(227, 154, 180, 0.3);
@@ -704,12 +610,12 @@
       color: white; border: none; display: flex; align-items: center; justify-content: center;
       transition: transform 0.3s ease; width: 40px; height: 40px; left: 6px;
     }
-    .search-submit-button:hover { transform: translateY(-50%) scale(1.1); }
+    .search-submit-button:hover { transform: translateY(-50%) scale(1.1) }
     .search-suggestions {
       margin-top: 1rem; text-align: center; color: var(--deep-brown);
       display: flex; justify-content: center; align-items: center; gap: 0.5rem; flex-wrap: wrap;
     }
-    .search-suggestions p { font-weight: 600; opacity: 0.8; font-size: 0.9rem; }
+    .search-suggestions p { font-weight: 600; opacity: 0.8; font-size: 0.9rem }
     .search-suggestions a {
       display: inline-block;
       background-color: rgba(227, 154, 180, 0.1);
@@ -722,22 +628,43 @@
       transform: translateY(-2px);
     }
     @media (min-width: 768px) {
-      .search-overlay { align-items: center; padding: 0 5%; }
-      .close-search-button { top: -50px; right: -10px; transform: scale(1); }
-      .search-input { padding: 1.25rem 1.5rem 1.25rem 4rem; font-size: 1.1rem; }
-      .search-submit-button { width: 48px; height: 48px; left: 8px; }
-      .search-suggestions { margin-top: 1.5rem; gap: 0.75rem; }
-      .search-suggestions p { font-size: 1rem; }
-      .search-suggestions a { padding: 0.5rem 1rem; font-size: 0.85rem; }
+      .search-overlay { align-items: center; padding: 0 5% }
+      .close-search-button { top: -50px; right: -10px; transform: scale(1) }
+      .search-input { padding: 1.25rem 1.5rem 1.25rem 4rem; font-size: 1.1rem }
+      .search-submit-button { width: 48px; height: 48px; left: 8px }
+      .search-suggestions { margin-top: 1.5rem; gap: 0.75rem }
+      .search-suggestions p { font-size: 1rem }
+      .search-suggestions a { padding: 0.5rem 1rem; font-size: 0.85rem }
     }
-    
+
+    /* Mobile & Tablet polish for product cards */
+    @media (max-width: 640px) {
+      .product-card-v3 {
+        aspect-ratio: 1/1.2;
+        border-radius: 16px;
+        box-shadow: 0 2px 8px rgba(0,0,0,.06);
+      }
+      .card-blob { display: none }
+      .card-image-wrapper {
+        top: 34%;
+        width: clamp(100px, 56%, 165px);
+      }
+      .card-content { padding: 12px }
+      .card-title { font-size: 0.98rem }
+      .card-rating svg { width: 14px; height: 14px }
+      .card-price { font-size: 1rem }
+      .add-to-cart-btn { padding: 0.45rem 0.6rem; font-size: 0.8rem }
+    }
+    @media (min-width: 641px) and (max-width: 1024px) {
+      .product-card-v3 { border-radius: 18px }
+      .card-image-wrapper { top: 30%; width: clamp(120px, 52%, 175px) }
+    }
   </style>
 </head>
 
 <body>
   <div class="loader" id="loader"></div>
   
-  <!-- CORRECTED: Added .cursor-face div -->
   <div class="cursor"><div class="cursor-eyes"></div></div>
   <div class="cursor-face"></div>
   <div class="cursor-follower"></div>
@@ -772,7 +699,8 @@
 
   <main class="pt-24">
     <div class="container mx-auto px-6 relative z-10">
-      <div class="bg-white rounded-3xl shadow-xl shadow-rose-100/50 border border-rose-100/50 p-4 sm:p-6 lg:p-8">
+      <!-- Removed rose shadow, kept a subtle neutral shadow and border -->
+      <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-4 sm:p-6 lg:p-8">
         <div class="flex flex-row-reverse lg:gap-x-8">
 
           <aside id="shop-sidebar" class="w-full lg:w-1/4 lg:max-w-xs lg:sticky top-28 self-start h-screen lg:h-auto overflow-y-auto lg:overflow-visible pb-24 lg:pb-0 rounded-2xl hide-scrollbar">
@@ -818,6 +746,13 @@
                      </div>
                 </details>
               </div>
+
+              <!-- اعمال فیلتر button (sticky at bottom of the filter panel) -->
+              <div class="mt-5 sticky bottom-0 -mx-6 px-6 pb-2 pt-3 bg-cream border-t border-rose-100">
+                <button id="apply-filters-btn" class="w-full h-11 rounded-xl font-extrabold text-white" style="background-color: var(--primary-sharp);">
+                  اعمال فیلتر
+                </button>
+              </div>
             </div>
           </aside>
 
@@ -840,7 +775,8 @@
               </div>
             </div>
 
-            <div id="shop-product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+            <!-- Improved mobile grid: 2 columns on phones -->
+            <div id="shop-product-grid" class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
               <!-- Product cards will be injected here by JavaScript -->
             </div>
             
@@ -902,7 +838,7 @@
       <div class="border-t border-gray-800 pt-8">
         <div class="flex flex-col md:flex-row justify-between items-center">
           <div class="flex flex-col md:flex-row items-center mb-4 md:mb-0">
-            <p class="text-gray-400 text-sm mb-2 md:mb-0 md:ml-6">© ۲۰۲۴ D.AI — تمام حقوق محفوظ است.</p>
+            <p class="text-gray-400 text-sm mb-2 md:mb-0 md:ml-6">© 2025 D.AI — تمام حقوق محفوظ است.</p>
             <div class="flex items-center gap-x-6 md:gap-x-8 text-sm flex-wrap"><a href="#"
                 class="text-gray-400 hover:text-white transition duration-300">سیاست حفظ حریم خصوصی</a><a href="#"
                 class="text-gray-400 hover:text-white transition duration-300">شرایط خدمات</a><a href="#"
@@ -939,7 +875,7 @@
       }
       
       const cur = document.querySelector(".cursor"), cF = document.querySelector(".cursor-face"), cFol = document.querySelector(".cursor-follower");
-      if (window.innerWidth > 768 && cur && cF && cFol) { // Added checks for elements
+      if (window.innerWidth > 768 && cur && cF && cFol) {
         let cX = 0, cY = 0, fX = 0, fY = 0, speed = 0.5;
         document.addEventListener("mousemove", e => { cX = e.clientX; cY = e.clientY; });
         function animateCursor() {
@@ -994,32 +930,38 @@
       }
 
       // --- SHOP PAGE SCRIPTS ---
-      
+
+      // Product dataset (added 'b' brand for filtering)
       const allProducts = [
-        { d: "0", c: "skincare", t: "اکسیر درخشش طلایی", p: 480000, r: 4.8, img: "https://koalaw-psi.vercel.app/image/skin.png" },
-        { d: "100", c: "makeup", t: "بوسه مخملی مات", p: 320000, r: 4.5, img: "https://koalaw-psi.vercel.app/image/cosmetic.png" },
-        { d: "200", c: "makeup", t: "پایه ابریشمی بی‌نقص", p: 420000, r: 4.9, img: "https://koalaw-psi.vercel.app/image/cosmetic.png" },
-        { d: "300", c: "fragrance", t: "راز نیمه‌شب", p: 780000, r: 4.7, img: "https://koalaw-psi.vercel.app/image/perfume.png" },
-        { d: "0", c: "skincare", t: "کرم شب بازسازی کننده", p: 550000, r: 4.6, img: "https://koalaw-psi.vercel.app/image/skin.png" },
-        { d: "100", c: "haircare", t: "سرم موی آرگان", p: 290000, r: 4.8, img: "https://koalaw-psi.vercel.app/image/hair.png" },
-        { d: "200", c: "body-bath", t: "اسکراب بدن شکری", p: 210000, r: 4.4, img: "https://koalaw-psi.vercel.app/image/body.png" },
-        { d: "300", c: "makeup", t: "پالت سایه کهکشانی", p: 650000, r: 4.9, img: "https://koalaw-psi.vercel.app/image/cosmetic.png" },
-        { d: "0", c: "fragrance", t: "عطر شکوفه بهاری", p: 710000, r: 4.5, img: "https://koalaw-psi.vercel.app/image/perfume.png" },
-        { d: "100", c: "skincare", t: "تونر گل رز آبرسان", p: 190000, r: 4.7, img: "https://koalaw-psi.vercel.app/image/skin.png" },
-        { d: "200", c: "body-bath", t: "کره بدن وانیلی", p: 250000, r: 4.6, img: "https://koalaw-psi.vercel.app/image/body.png" },
-        { d: "300", c: "haircare", t: "ماسک موی کراتینه", p: 380000, r: 4.8, img: "https://koalaw-psi.vercel.app/image/hair.png" },
-        { d: "0", c: "skincare", t: "سرم ویتامین سی", p: 495000, r: 4.9, img: "https://koalaw-psi.vercel.app/image/skin.png" },
-        { d: "100", c: "makeup", t: "ریمل حجم‌دهنده", p: 310000, r: 4.6, img: "https://koalaw-psi.vercel.app/image/cosmetic.png" },
-        { d: "200", c: "fragrance", t: "ادکلن چوب صندل", p: 850000, r: 4.8, img: "https://koalaw-psi.vercel.app/image/perfume.png" },
-        { d: "300", c: "body-bath", t: "لوسیون بدن آلوئه‌ورا", p: 230000, r: 4.5, img: "https://koalaw-psi.vercel.app/image/body.png" },
+        { d: "0",   c: "skincare",   b: "LuxeElixir",     t: "اکسیر درخشش طلایی",    p: 480000, r: 4.8, img: "./image/skin.png" },
+        { d: "100", c: "makeup",     b: "Celeste",        t: "بوسه مخملی مات",       p: 320000, r: 4.5, img: "./image/cosmetic.png" },
+        { d: "200", c: "makeup",     b: "Aetheria",       t: "پایه ابریشمی بی‌نقص",  p: 420000, r: 4.9, img: "./image/cosmetic.png" },
+        { d: "300", c: "fragrance",  b: "Solstice Glow",  t: "راز نیمه‌شب",          p: 780000, r: 4.7, img: "./image/perfume.png" },
+        { d: "0",   c: "skincare",   b: "Celeste",        t: "کرم شب بازسازی کننده", p: 550000, r: 4.6, img: "./image/skin.png" },
+        { d: "100", c: "haircare",   b: "LuxeElixir",     t: "سرم موی آرگان",        p: 290000, r: 4.8, img: "./image/hair.png" },
+        { d: "200", c: "body-bath",  b: "Aetheria",       t: "اسکراب بدن شکری",      p: 210000, r: 4.4, img: "./image/body.png" },
+        { d: "300", c: "makeup",     b: "Solstice Glow",  t: "پالت سایه کهکشانی",    p: 650000, r: 4.9, img: "./image/cosmetic.png" },
+        { d: "0",   c: "fragrance",  b: "Celeste",        t: "عطر شکوفه بهاری",      p: 710000, r: 4.5, img: "./image/perfume.png" },
+        { d: "100", c: "skincare",   b: "LuxeElixir",     t: "تونر گل رز آبرسان",     p: 190000, r: 4.7, img: "./image/skin.png" },
+        { d: "200", c: "body-bath",  b: "Aetheria",       t: "کره بدن وانیلی",       p: 250000, r: 4.6, img: "./image/body.png" },
+        { d: "300", c: "haircare",   b: "Solstice Glow",  t: "ماسک موی کراتینه",     p: 380000, r: 4.8, img: "./image/hair.png" },
+        { d: "0",   c: "skincare",   b: "Celeste",        t: "سرم ویتامین سی",       p: 495000, r: 4.9, img: "./image/skin.png" },
+        { d: "100", c: "makeup",     b: "Aetheria",       t: "ریمل حجم‌دهنده",       p: 310000, r: 4.6, img: "./image/cosmetic.png" },
+        { d: "200", c: "fragrance",  b: "LuxeElixir",     t: "ادکلن چوب صندل",       p: 850000, r: 4.8, img: "./image/perfume.png" },
+        { d: "300", c: "body-bath",  b: "Celeste",        t: "لوسیون بدن آلوئه‌ورا",  p: 230000, r: 4.5, img: "./image/body.png" },
       ];
+
+      let visibleProducts = allProducts.slice();
 
       const productGrid = document.getElementById('shop-product-grid');
       let currentProductIndex = 0;
       const productsPerPage = 12;
 
       function createProductCard(p) {
-        const categoryIcon = { 'skincare': 'shield', 'makeup': 'pen-tool', 'fragrance': 'wind', 'haircare': 'git-branch', 'body-bath': 'droplet' }[p.c] || 'gift';
+        const categoryIconMap = { skincare: 'shield', makeup: 'pen-tool', fragrance: 'wind', haircare: 'git-branch', 'body-bath': 'droplet' };
+        const categoryLabelMap = { skincare: 'مراقبت از پوست', makeup: 'آرایش', fragrance: 'عطر', haircare: 'مراقبت از مو', 'body-bath': 'بدن و حمام' };
+        const categoryIcon = categoryIconMap[p.c] || 'gift';
+        const categoryLabel = categoryLabelMap[p.c] || 'محصول';
         const price = p.p.toLocaleString('fa-IR') + ' تومان';
         const rating = p.r.toLocaleString('fa-IR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
         const stars = Array(Math.floor(p.r)).fill(0).map(() => `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-star"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>`).join('');
@@ -1032,18 +974,24 @@
               <div class="card-blob"><svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><path d="M48.1,-58.9C62.2,-51.9,73.4,-37.2,77,-21.2C80.6,-5.2,76.5,12.2,68.4,26.1C60.3,40,48.2,50.4,34.5,58.3C20.8,66.2,5.5,71.6,-9.3,71.1C-24.1,70.7,-38.4,64.4,-50.9,54.7C-63.4,44.9,-74,31.7,-77.8,16.5C-81.6,1.2,-78.6,-16,-69.8,-29.3C-61,-42.6,-46.4,-52,-32.1,-59.5C-17.8,-67,-3.9,-72.6,9.6,-71.7C23.1,-70.8,48.1,-58.9,48.1,-58.9Z" transform="translate(100 100)"></path></svg></div>
               <div class="card-image-wrapper"><img src="${p.img}" alt="${p.t}" class="card-image"></div>
               <div class="card-content">
-                <div class="card-category"><i data-feather="${categoryIcon}" class="w-3 h-3"></i><span>${p.c}</span></div>
+                <div class="card-category"><i data-feather="${categoryIcon}" class="w-3 h-3"></i><span>${categoryLabel}</span></div>
                 <h3 class="card-title">${p.t}</h3>
+                <div class="card-brand">${p.b}</div>
                 <div class="card-rating">${stars}<span>${rating}</span></div>
-                <p class="card-price">${price}</p>
+                <div class="card-bottom">
+                  <p class="card-price">${price}</p>
+                  <button class="add-to-cart-btn" data-title="${p.t}">
+                    <i data-feather="shopping-cart"></i><span>افزودن</span>
+                  </button>
+                </div>
               </div>`;
         return card;
       }
       
       function loadProducts() {
-          if (!productGrid || currentProductIndex >= allProducts.length) return;
+          if (!productGrid || currentProductIndex >= visibleProducts.length) return;
           const fragment = document.createDocumentFragment();
-          const productsToLoad = allProducts.slice(currentProductIndex, currentProductIndex + productsPerPage);
+          const productsToLoad = visibleProducts.slice(currentProductIndex, currentProductIndex + productsPerPage);
           productsToLoad.forEach(p => fragment.appendChild(createProductCard(p)));
           productGrid.appendChild(fragment);
           feather.replace();
@@ -1057,17 +1005,18 @@
       const loadingIndicator = document.getElementById('loading-indicator');
       if(loadingIndicator) {
           const observer = new IntersectionObserver((entries) => {
-              if (entries[0].isIntersecting && currentProductIndex < allProducts.length) {
+              if (entries[0].isIntersecting && currentProductIndex < visibleProducts.length) {
                   loadingIndicator.style.opacity = '1';
                   setTimeout(() => {
                       loadProducts();
                       loadingIndicator.style.opacity = '0';
-                  }, 1000);
+                  }, 800);
               }
           }, { threshold: 0.5 });
           observer.observe(loadingIndicator);
       }
 
+      // Open/Close filter sidebar (mobile)
       const openFilterBtn = document.getElementById('open-filter-btn');
       const closeFilterBtn = document.getElementById('close-filter-btn');
       const shopSidebar = document.getElementById('shop-sidebar');
@@ -1086,6 +1035,7 @@
         filterOverlay.addEventListener('click', toggleFilterMenu);
       }
       
+      // Price range UI
       const rangeInputs = document.querySelectorAll('.range-input input');
       const progress = document.querySelector('.price-range-slider .progress');
       const priceMinDisplay = document.getElementById('price-min-display');
@@ -1108,6 +1058,62 @@
               priceMaxDisplay.textContent = maxVal.toLocaleString('fa-IR') + ' تومان';
             }
           });
+        });
+      }
+
+      // Apply Filters button
+      const applyFiltersBtn = document.getElementById('apply-filters-btn');
+      function getCheckedValues(name) {
+        return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`)).map(el => el.value);
+      }
+      function applyFilters() {
+        const selectedCategories = getCheckedValues('category');
+        const selectedBrands = getCheckedValues('brand');
+        const minVal = parseInt(document.querySelector('.range-min')?.value || 0);
+        const maxVal = parseInt(document.querySelector('.range-max')?.value || Number.MAX_SAFE_INTEGER);
+        visibleProducts = allProducts.filter(p => {
+          const okCat = selectedCategories.length ? selectedCategories.includes(p.c) : true;
+          const okBrand = selectedBrands.length ? selectedBrands.includes(p.b) : true;
+          const okPrice = p.p >= minVal && p.p <= maxVal;
+          return okCat && okBrand && okPrice;
+        });
+        // Reset grid
+        productGrid.innerHTML = '';
+        currentProductIndex = 0;
+        loadProducts();
+        // Close filter on mobile if open
+        if (shopSidebar.classList.contains('is-active')) toggleFilterMenu();
+      }
+      if (applyFiltersBtn) applyFiltersBtn.addEventListener('click', applyFilters);
+
+      // Sorting
+      const sortSelect = document.querySelector('.sort-select');
+      function sortProducts() {
+        const v = sortSelect?.value || '';
+        if (v.includes('جدیدترین')) {
+          visibleProducts.sort((a, b) => parseInt(b.d) - parseInt(a.d));
+        } else if (v.includes('محبوب‌ترین')) {
+          visibleProducts.sort((a, b) => b.r - a.r);
+        } else if (v.includes('کم به زیاد')) {
+          visibleProducts.sort((a, b) => a.p - b.p);
+        } else if (v.includes('زیاد به کم')) {
+          visibleProducts.sort((a, b) => b.p - a.p);
+        }
+        productGrid.innerHTML = '';
+        currentProductIndex = 0;
+        loadProducts();
+      }
+      if (sortSelect) sortSelect.addEventListener('change', sortProducts);
+
+      // Add to cart (demo)
+      if (productGrid) {
+        productGrid.addEventListener('click', (e) => {
+          const btn = e.target.closest('.add-to-cart-btn');
+          if (!btn) return;
+          const title = btn.getAttribute('data-title') || 'محصول';
+          console.log(`Added to cart: ${title}`);
+          btn.style.opacity = '0.85';
+          setTimeout(() => (btn.style.opacity = '1'), 200);
         });
       }
     });
