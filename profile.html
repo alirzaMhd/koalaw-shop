@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
+<!-- TODO jensiat and elanat the check -->
 
 <head>
   <meta charset="UTF-8">
@@ -685,6 +686,36 @@
         margin-bottom: 1rem;
       }
     }
+
+    /* NEW: Hover effect for whole sections */
+    .hoverable-section {
+      transition: transform 0.35s ease, box-shadow 0.35s ease;
+      will-change: transform, box-shadow;
+    }
+    .hoverable-section:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 24px 60px rgba(120, 80, 100, 0.12);
+    }
+
+    /* FIX: Keep icon and text on one line inside buttons */
+    .btn-primary,
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      white-space: nowrap;
+      vertical-align: middle;
+    }
+
+    /* Ensure feather icons inside buttons keep size and don't shrink */
+    .btn-primary i, .btn-primary svg,
+    .btn-secondary i, .btn-secondary svg {
+      width: 1rem;
+      height: 1rem;
+      flex-shrink: 0;
+      display: inline-block;
+    }
   </style>
 </head>
 
@@ -739,7 +770,7 @@
   <div id="mobile-menu-overlay" class="mobile-menu-overlay"></div>
 
   <!-- Profile Hero Section -->
-  <section class="profile-hero pt-24 pb-16 relative">
+  <section class="profile-hero pt-24 pb-16 relative hoverable-section">
     <div class="container mx-auto px-6 relative z-10">
       <div class="text-center text-white" data-aos="fade-up">
         <div class="inline-flex items-center gap-3 bg-white/20 backdrop-blur-sm rounded-full px-6 py-2 mb-6">
@@ -753,7 +784,7 @@
   </section>
 
   <!-- Profile Content -->
-  <section class="py-12 relative">
+  <section class="py-12 relative hoverable-section">
     <div class="container mx-auto px-6">
       <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
         
@@ -1093,8 +1124,8 @@
               <div class="flex justify-between items-center mb-6">
                 <h2 class="text-2xl font-bold text-gray-800">آدرس‌های من</h2>
                 <button class="btn-primary">
-                  <i data-feather="plus" class="w-4 h-4 ml-2"></i>
-                  افزودن آدرس جدید
+                  <i data-feather="plus" class="w-4 h-4"></i>
+                  <span>افزودن آدرس جدید</span>
                 </button>
               </div>
               
@@ -1315,7 +1346,7 @@
         updateCursor();
 
         // Add hover effects
-        document.querySelectorAll("a, button, .profile-card, .sidebar-nav-item").forEach((el) => {
+        document.querySelectorAll("a, button, .profile-card, .sidebar-nav-item, section.hoverable-section").forEach((el) => {
           el.addEventListener("mouseenter", () => {
             cursor.classList.add("hover");
             cursorFollower.style.transform = "translate(-50%, -50%) scale(1.5)";
