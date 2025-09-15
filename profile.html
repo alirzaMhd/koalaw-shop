@@ -1,0 +1,1471 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>KOALAW | پروفایل کاربری</title>
+  <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <style>
+    @import url("https://font-face.ir/css/iransans/");
+
+    :root {
+      --primary: #e39ab4;
+      --secondary: #1a1a1a;
+      --accent: #ffe9f2;
+      --rose-gold: #f0b7c4;
+      --rose-cream: #e3d1d6;
+      --cream: #faf8f3;
+      --deep-brown: #3d2914;
+      --blush: #ffd7e5;
+      --lavender: #eae2ff;
+      --mint: #dff8ef;
+      --butter: #fff3bf
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      cursor: none !important
+    }
+
+    body {
+      font-family: "IRANSans", sans-serif;
+      font-size: 15px;
+      background-color: var(--cream);
+      color: #333;
+      overflow-x: hidden;
+      cursor: none
+    }
+
+    .font-serif {
+      font-family: "IRANSans", serif
+    }
+
+    .hide-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none
+    }
+
+    .hide-scrollbar::-webkit-scrollbar {
+      display: none
+    }
+
+    body.mobile-menu-open,
+    body.search-overlay-open {
+      overflow: hidden
+    }
+
+    .mobile-menu-overlay {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(0, 0, 0, .6);
+      z-index: 55;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity .4s ease, visibility .4s ease
+    }
+
+    .mobile-menu-overlay.is-active {
+      opacity: 1;
+      visibility: visible
+    }
+
+    #mobile-menu {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 80%;
+      max-width: 320px;
+      height: 100%;
+      background-color: var(--cream);
+      box-shadow: -10px 0 30px rgba(0, 0, 0, .1);
+      z-index: 60;
+      transform: translateX(100%);
+      transition: transform .4s cubic-bezier(.23, 1, .32, 1);
+      display: flex;
+      flex-direction: column;
+      padding: 6rem 2rem 2rem;
+      align-items: flex-end;
+      gap: 1.25rem;
+      direction: ltr;
+      text-align: right
+    }
+
+    #mobile-menu.is-active {
+      transform: translateX(0)
+    }
+
+    #mobile-menu .nav-link {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--deep-brown);
+      width: 100%
+    }
+
+    .hamburger-button {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+      position: relative;
+      z-index: 65;
+      background: 0 0;
+      border: none
+    }
+
+    .hamburger-button span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background-color: var(--deep-brown);
+      border-radius: 2px;
+      transition: transform .3s ease-in-out, opacity .3s ease-in-out;
+      transform-origin: center
+    }
+
+    .hamburger-button.is-active span:nth-child(1) {
+      transform: translateY(7px) rotate(45deg)
+    }
+
+    .hamburger-button.is-active span:nth-child(2) {
+      opacity: 0;
+      transform: scaleX(0)
+    }
+
+    .hamburger-button.is-active span:nth-child(3) {
+      transform: translateY(-7px) rotate(-45deg)
+    }
+
+    .cursor {
+      width: 30px;
+      height: 30px;
+      border: 2px solid #666;
+      background: 0 0;
+      border-radius: 50% 50% 45% 45%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: border-color .2s ease, transform .2s ease
+    }
+
+    .cursor::after,
+    .cursor::before {
+      content: "";
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border: 2px solid #666;
+      background: 0 0;
+      border-radius: 50%;
+      top: -3px;
+      transition: border-color .2s ease
+    }
+
+    .cursor::before {
+      right: -9px
+    }
+
+    .cursor::after {
+      left: -9px
+    }
+
+    .cursor-face {
+      position: fixed;
+      width: 30px;
+      height: 30px;
+      pointer-events: none;
+      z-index: 10000;
+      transform: translate(-50%, -50%)
+    }
+
+    .cursor-face::before {
+      content: "";
+      position: absolute;
+      width: 4px;
+      height: 7px;
+      border: 1.5px solid #333;
+      background: 0 0;
+      border-radius: 50%;
+      top: 13px;
+      left: 50%;
+      transform: translateX(-50%)
+    }
+
+    .cursor-eyes {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0
+    }
+
+    .cursor-eyes::after,
+    .cursor-eyes::before {
+      content: "";
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      border: 2px solid #333;
+      background: 0 0;
+      border-radius: 50%;
+      top: 10px
+    }
+
+    .cursor-eyes::before {
+      right: 6px
+    }
+
+    .cursor-eyes::after {
+      left: 6px
+    }
+
+    .cursor.hover {
+      border-color: var(--primary);
+      transform: translate(-50%, -50%) scale(1.2)
+    }
+
+    .cursor.hover::after,
+    .cursor.hover::before {
+      border-color: var(--primary)
+    }
+
+    .cursor-follower {
+      width: 50px;
+      height: 50px;
+      background: rgba(227, 154, 180, .1);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: background .3s ease, transform .3s ease
+    }
+
+    nav {
+      backdrop-filter: blur(20px);
+      background: rgba(250, 248, 243, .85);
+      box-shadow: 0 1px 20px rgba(0, 0, 0, .05)
+    }
+
+    .nav-link {
+      position: relative;
+      font-weight: 500;
+      letter-spacing: .5px;
+      transition: all .3s ease
+    }
+
+    .nav-link::before {
+      content: "";
+      position: absolute;
+      bottom: -5px;
+      right: 0;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--primary), var(--rose-gold));
+      transition: width .3s ease
+    }
+
+    .nav-link:hover::before {
+      width: 100%
+    }
+
+    /* Profile specific styles */
+    .profile-hero {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--rose-gold) 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .profile-hero::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+      animation: rotate 30s linear infinite;
+    }
+
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .profile-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 30px;
+      padding: 2rem;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      border: 1px solid rgba(227, 154, 180, 0.2);
+    }
+
+    .profile-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
+      border-color: var(--primary);
+    }
+
+    .sidebar-nav {
+      background: #fff;
+      border-radius: 24px;
+      padding: 1.5rem;
+      box-shadow: 0 8px 24px rgba(120, 80, 100, 0.05);
+    }
+
+    .sidebar-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 1.5rem;
+      border-radius: 16px;
+      color: var(--deep-brown);
+      text-decoration: none;
+      transition: all 0.3s ease;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    .sidebar-nav-item:hover,
+    .sidebar-nav-item.active {
+      background: linear-gradient(135deg, var(--primary), var(--rose-gold));
+      color: white;
+      transform: translateX(-5px);
+    }
+
+    .sidebar-nav-item i {
+      width: 20px;
+      height: 20px;
+    }
+
+    .order-card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 1.5rem;
+      border: 1px solid rgba(227, 154, 180, 0.1);
+      transition: all 0.4s ease;
+      margin-bottom: 1rem;
+    }
+
+    .order-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px rgba(120, 80, 100, 0.1);
+      border-color: var(--primary);
+    }
+
+    .status-badge {
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .status-delivered {
+      background: var(--mint);
+      color: #065f46;
+    }
+
+    .status-processing {
+      background: var(--butter);
+      color: #92400e;
+    }
+
+    .status-shipped {
+      background: var(--lavender);
+      color: #5b21b6;
+    }
+
+    .favorite-item {
+      background: #fff;
+      border-radius: 20px;
+      padding: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      transition: all 0.4s ease;
+      border: 1px solid rgba(227, 154, 180, 0.1);
+      margin-bottom: 1rem;
+    }
+
+    .favorite-item:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px rgba(120, 80, 100, 0.1);
+      border-color: var(--primary);
+    }
+
+    .favorite-image {
+      width: 80px;
+      height: 80px;
+      border-radius: 16px;
+      object-fit: cover;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--rose-gold));
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 25px;
+      border: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      cursor: none;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(227, 154, 180, 0.4);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--deep-brown);
+      border: 2px solid rgba(227, 154, 180, 0.3);
+      padding: 0.75rem 1.5rem;
+      border-radius: 25px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      cursor: none;
+    }
+
+    .btn-secondary:hover {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: var(--deep-brown);
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 1rem;
+      border: 2px solid rgba(227, 154, 180, 0.2);
+      border-radius: 15px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      background: rgba(255, 255, 255, 0.8);
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(227, 154, 180, 0.2);
+    }
+
+    .stats-card {
+      background: linear-gradient(135deg, #fff 0%, #fefefe 100%);
+      border-radius: 20px;
+      padding: 1.5rem;
+      text-align: center;
+      border: 1px solid rgba(227, 154, 180, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .stats-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px rgba(120, 80, 100, 0.1);
+    }
+
+    .stats-number {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary);
+      display: block;
+    }
+
+    .stats-label {
+      color: var(--deep-brown);
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+    }
+
+    /* Search Overlay Styles (Responsive) */
+    .search-overlay {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(250, 248, 243, 0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      z-index: 999;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 15vh 5% 0 5%;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.4s ease, visibility 0.4s ease;
+    }
+
+    .search-overlay.is-active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .search-container {
+      position: relative;
+      width: 100%;
+      max-width: 600px;
+      padding: 20px;
+      transform: translateY(-20px);
+      transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    .search-overlay.is-active .search-container {
+      transform: translateY(0);
+    }
+
+    .close-search-button {
+      position: absolute;
+      top: -10vh;
+      right: 0;
+      color: var(--deep-brown);
+      background: none;
+      border: none;
+      padding: 10px;
+      transform: scale(1.2);
+    }
+
+    .close-search-button:hover {
+      color: var(--primary);
+    }
+
+    .search-form {
+      position: relative;
+      width: 100%;
+    }
+
+    .search-input {
+      width: 100%;
+      border: 2px solid rgba(61, 41, 20, 0.2);
+      border-radius: 50px;
+      background-color: rgba(255, 255, 255, 0.7);
+      color: var(--deep-brown);
+      transition: all 0.3s ease;
+      outline: none;
+      padding: 1rem 1.25rem 1rem 3.5rem;
+      font-size: 1rem;
+    }
+
+    .search-input::placeholder {
+      color: rgba(61, 41, 20, 0.5);
+    }
+
+    .search-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(227, 154, 180, 0.3);
+    }
+
+    .search-submit-button {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--rose-gold));
+      color: white;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.3s ease;
+      width: 40px;
+      height: 40px;
+      left: 6px;
+    }
+
+    .search-submit-button:hover {
+      transform: translateY(-50%) scale(1.1);
+    }
+
+    .search-suggestions {
+      margin-top: 1rem;
+      text-align: center;
+      color: var(--deep-brown);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .search-suggestions p {
+      font-weight: 600;
+      opacity: 0.8;
+      font-size: 0.9rem;
+    }
+
+    .search-suggestions a {
+      display: inline-block;
+      background-color: rgba(227, 154, 180, 0.1);
+      border: 1px solid rgba(227, 154, 180, 0.2);
+      border-radius: 20px;
+      color: var(--deep-brown);
+      transition: all 0.3s ease;
+      text-decoration: none;
+      padding: 0.4rem 0.8rem;
+      font-size: 0.8rem;
+    }
+
+    .search-suggestions a:hover {
+      background-color: var(--primary);
+      color: white;
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    @media (min-width: 768px) {
+      .search-overlay {
+        align-items: center;
+        padding: 0 5%;
+      }
+
+      .close-search-button {
+        top: -50px;
+        right: -10px;
+        transform: scale(1);
+      }
+
+      .search-input {
+        padding: 1.25rem 1.5rem 1.25rem 4rem;
+        font-size: 1.1rem;
+      }
+
+      .search-submit-button {
+        width: 48px;
+        height: 48px;
+        left: 8px;
+      }
+
+      .search-suggestions {
+        margin-top: 1.5rem;
+        gap: 0.75rem;
+      }
+
+      .search-suggestions p {
+        font-size: 1rem;
+      }
+
+      .search-suggestions a {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .profile-hero {
+        padding: 3rem 0;
+      }
+
+      .sidebar-nav {
+        margin-bottom: 2rem;
+      }
+
+      .stats-card {
+        margin-bottom: 1rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="cursor">
+    <div class="cursor-eyes"></div>
+  </div>
+  <div class="cursor-face"></div>
+  <div class="cursor-follower"></div>
+
+  <!-- Navigation -->
+  <nav class="fixed w-full z-50 transition-all duration-300" id="navbar">
+    <div class="container mx-auto px-6 py-5">
+      <div class="flex items-center justify-between" dir="ltr">
+        <a href="/" class="text-3xl font-serif font-bold text-gray-800 tracking-wider z-50 flex items-center gap-x-1">
+          K<img src="./image/koala.png" alt="Koala logo" class="w-8 h-7 inline-block -mt-1">ALAW
+        </a>
+        <div class="hidden lg:flex items-center gap-x-10 flex-row-reverse">
+          <a href="/shop" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">فروشگاه</a>
+          <a href="#collections" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">کالکشن ها</a>
+          <a href="#brands" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">برندها</a>
+          <a href="#magazine" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">مجله</a>
+          <a href="#about" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">درباره ما</a>
+        </div>
+        <div class="flex items-center gap-x-6">
+          <button id="search-button" class="text-gray-700 hover:text-gray-900 transition-all duration-300 hover:scale-110">
+            <i data-feather="search" class="w-5 h-5"></i>
+          </button>
+          <button class="text-primary hover:text-gray-900 transition-all duration-300 hover:scale-110">
+            <i data-feather="user" class="w-5 h-5"></i>
+          </button>
+          <button class="text-gray-700 hover:text-gray-900 relative transition-all duration-300 hover:scale-110">
+            <i data-feather="shopping-bag" class="w-5 h-5"></i>
+            <span class="absolute -top-2 -right-2 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center pulse-animation">۳</span>
+          </button>
+          <button id="mobile-menu-button" class="hamburger-button lg:hidden">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div id="mobile-menu">
+    <a href="/shop" class="nav-link">فروشگاه</a>
+    <a href="#collections" class="nav-link">کالکشن ها</a>
+    <a href="#brands" class="nav-link">برندها</a>
+    <a href="#magazine" class="nav-link">مجله</a>
+    <a href="#about" class="nav-link">درباره ما</a>
+  </div>
+  <div id="mobile-menu-overlay" class="mobile-menu-overlay"></div>
+
+  <!-- Profile Hero Section -->
+  <section class="profile-hero pt-24 pb-16 relative">
+    <div class="container mx-auto px-6 relative z-10">
+      <div class="text-center text-white" data-aos="fade-up">
+        <div class="inline-flex items-center gap-3 bg-white/20 backdrop-blur-sm rounded-full px-6 py-2 mb-6">
+          <i data-feather="star" class="w-5 h-5"></i>
+          <span class="font-medium">مشتری ویژه</span>
+        </div>
+        <h1 class="text-4xl lg:text-5xl font-serif font-bold mb-4">پروفایل شما</h1>
+        <p class="text-lg text-white/90 max-w-2xl mx-auto">مدیریت حساب کاربری، سفارش‌ها و تنظیمات شخصی</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Profile Content -->
+  <section class="py-12 relative">
+    <div class="container mx-auto px-6">
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        
+        <!-- Sidebar Navigation -->
+        <div class="lg:col-span-1" data-aos="fade-right">
+          <div class="sidebar-nav">
+            <nav>
+              <a href="#dashboard" class="sidebar-nav-item active" data-tab="dashboard">
+                <i data-feather="home"></i>
+                <span>داشبورد</span>
+              </a>
+              <a href="#orders" class="sidebar-nav-item" data-tab="orders">
+                <i data-feather="package"></i>
+                <span>سفارش‌های من</span>
+              </a>
+              <a href="#favorites" class="sidebar-nav-item" data-tab="favorites">
+                <i data-feather="heart"></i>
+                <span>علاقه‌مندی‌ها</span>
+              </a>
+              <a href="#addresses" class="sidebar-nav-item" data-tab="addresses">
+                <i data-feather="map-pin"></i>
+                <span>آدرس‌ها</span>
+              </a>
+              <a href="#profile-settings" class="sidebar-nav-item" data-tab="profile-settings">
+                <i data-feather="user"></i>
+                <span>تنظیمات پروفایل</span>
+              </a>
+              <a href="#notifications" class="sidebar-nav-item" data-tab="notifications">
+                <i data-feather="bell"></i>
+                <span>اعلان‌ها</span>
+              </a>
+              <a href="#logout" class="sidebar-nav-item text-red-600">
+                <i data-feather="log-out"></i>
+                <span>خروج</span>
+              </a>
+            </nav>
+          </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="lg:col-span-3">
+          
+          <!-- Dashboard Tab -->
+          <div id="dashboard" class="tab-content" data-aos="fade-left">
+            <div class="profile-card mb-8">
+              <div class="flex items-center gap-6 mb-6">
+                <div class="relative">
+                  <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop" 
+                       alt="تصویر پروفایل" 
+                       class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg">
+                  <button class="absolute bottom-0 right-0 bg-primary text-white rounded-full p-2 shadow-lg hover:scale-110 transition-transform">
+                    <i data-feather="camera" class="w-4 h-4"></i>
+                  </button>
+                </div>
+                <div>
+                  <h2 class="text-2xl font-bold text-gray-800 mb-2">سلام، سارا محمدی</h2>
+                  <p class="text-gray-600 mb-2">عضو از: شهریور ۱۴۰۲</p>
+                  <div class="flex items-center gap-2">
+                    <div class="flex text-yellow-400">
+                      <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                      <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                      <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                      <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                      <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                    </div>
+                    <span class="text-sm text-gray-600">مشتری ویژه</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+              <div class="stats-card" data-aos="fade-up" data-aos-delay="100">
+                <span class="stats-number">۱۲</span>
+                <div class="stats-label">سفارش‌های کل</div>
+              </div>
+              <div class="stats-card" data-aos="fade-up" data-aos-delay="200">
+                <span class="stats-number">۳</span>
+                <div class="stats-label">در انتظار ارسال</div>
+              </div>
+              <div class="stats-card" data-aos="fade-up" data-aos-delay="300">
+                <span class="stats-number">۸</span>
+                <div class="stats-label">علاقه‌مندی‌ها</div>
+              </div>
+              <div class="stats-card" data-aos="fade-up" data-aos-delay="400">
+                <span class="stats-number">۱۵%</span>
+                <div class="stats-label">تخفیف ویژه</div>
+              </div>
+            </div>
+
+            <!-- Recent Orders -->
+            <div class="profile-card">
+              <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold text-gray-800">آخرین سفارش‌ها</h3>
+                <button class="btn-secondary">مشاهده همه</button>
+              </div>
+              <div class="space-y-4">
+                <div class="order-card">
+                  <div class="flex justify-between items-start mb-3">
+                    <div>
+                      <h4 class="font-semibold text-gray-800">#KL-۲۰۲۵-۰۰۱</h4>
+                      <p class="text-sm text-gray-600">۱۰ دی ۱۴۰۴</p>
+                    </div>
+                    <span class="status-badge status-delivered">تحویل شده</span>
+                  </div>
+                  <div class="flex items-center gap-3 mb-3">
+                    <img src="./image/product.png" alt="محصول" class="w-12 h-12 rounded-lg object-cover">
+                    <div>
+                      <p class="font-medium">سرم درخشش طلایی + ۲ محصول دیگر</p>
+                      <p class="text-sm text-gray-600">۱,۲۸۰,۰۰۰ تومان</p>
+                    </div>
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <button class="btn-secondary text-sm">مشاهده جزئیات</button>
+                    <button class="btn-primary text-sm">خرید مجدد</button>
+                  </div>
+                </div>
+
+                <div class="order-card">
+                  <div class="flex justify-between items-start mb-3">
+                    <div>
+                      <h4 class="font-semibold text-gray-800">#KL-۲۰۲۵-۰۰۲</h4>
+                      <p class="text-sm text-gray-600">۱۵ دی ۱۴۰۴</p>
+                    </div>
+                    <span class="status-badge status-processing">در حال پردازش</span>
+                  </div>
+                  <div class="flex items-center gap-3 mb-3">
+                    <img src="./image/product.png" alt="محصول" class="w-12 h-12 rounded-lg object-cover">
+                    <div>
+                      <p class="font-medium">رژ لب مخملی</p>
+                      <p class="text-sm text-gray-600">۳۲۰,۰۰۰ تومان</p>
+                    </div>
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <button class="btn-secondary text-sm">مشاهده جزئیات</button>
+                    <button class="btn-secondary text-sm">لغو سفارش</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Orders Tab -->
+          <div id="orders" class="tab-content hidden" data-aos="fade-left">
+            <div class="profile-card">
+              <h2 class="text-2xl font-bold text-gray-800 mb-6">سفارش‌های من</h2>
+              
+              <div class="flex gap-4 mb-6 overflow-x-auto">
+                <button class="btn-primary whitespace-nowrap">همه (۱۲)</button>
+                <button class="btn-secondary whitespace-nowrap">در انتظار پرداخت (۱)</button>
+                <button class="btn-secondary whitespace-nowrap">در حال پردازش (۳)</button>
+                <button class="btn-secondary whitespace-nowrap">ارسال شده (۲)</button>
+                <button class="btn-secondary whitespace-nowrap">تحویل شده (۶)</button>
+              </div>
+
+              <div class="space-y-4">
+                <!-- Order items would be dynamically generated here -->
+                <div class="order-card">
+                  <div class="flex justify-between items-start mb-4">
+                    <div>
+                      <h4 class="font-semibold text-gray-800 text-lg">#KL-۲۰۲۵-۰۰۱</h4>
+                      <p class="text-gray-600">سفارش داده شده در ۱۰ دی ۱۴۰۴</p>
+                    </div>
+                    <span class="status-badge status-delivered">تحویل شده</span>
+                  </div>
+                  
+                  <div class="border-t pt-4">
+                    <div class="flex items-center gap-4 mb-3">
+                      <img src="./image/product.png" alt="محصول" class="w-16 h-16 rounded-lg object-cover">
+                      <div class="flex-1">
+                        <h5 class="font-medium">سرم درخشش طلایی</h5>
+                        <p class="text-sm text-gray-600">تعداد: ۱</p>
+                        <p class="text-sm font-semibold text-primary">۴۸۰,۰۰۰ تومان</p>
+                      </div>
+                    </div>
+                    
+                    <div class="flex items-center gap-4 mb-3">
+                      <img src="./image/product.png" alt="محصول" class="w-16 h-16 rounded-lg object-cover">
+                      <div class="flex-1">
+                        <h5 class="font-medium">رژ لب مخملی مات</h5>
+                        <p class="text-sm text-gray-600">تعداد: ۲</p>
+                        <p class="text-sm font-semibold text-primary">۶۴۰,۰۰۰ تومان</p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="border-t pt-4 flex justify-between items-center">
+                    <div>
+                      <p class="text-lg font-bold">مجموع: ۱,۲۸۰,۰۰۰ تومان</p>
+                    </div>
+                    <div class="flex gap-2">
+                      <button class="btn-secondary">مشاهده جزئیات</button>
+                      <button class="btn-primary">خرید مجدد</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Favorites Tab -->
+          <div id="favorites" class="tab-content hidden" data-aos="fade-left">
+            <div class="profile-card">
+              <h2 class="text-2xl font-bold text-gray-800 mb-6">علاقه‌مندی‌ها (۸)</h2>
+              
+              <div class="space-y-4">
+                <div class="favorite-item">
+                  <img src="./image/product.png" alt="محصول" class="favorite-image">
+                  <div class="flex-1">
+                    <h4 class="font-semibold text-gray-800 mb-1">سرم درخشش طلایی</h4>
+                    <p class="text-sm text-gray-600 mb-2">مراقبت از پوست</p>
+                    <div class="flex items-center gap-2 mb-2">
+                      <div class="flex text-yellow-400">
+                        <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                        <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                        <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                        <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                        <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                      </div>
+                      <span class="text-sm text-gray-600">۴.۸</span>
+                    </div>
+                    <p class="font-bold text-primary">۴۸۰,۰۰۰ تومان</p>
+                  </div>
+                  <div class="flex flex-col gap-2">
+                    <button class="btn-primary">افزودن به سبد</button>
+                    <button class="btn-secondary">
+                      <i data-feather="trash-2" class="w-4 h-4"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="favorite-item">
+                  <img src="./image/product.png" alt="محصول" class="favorite-image">
+                  <div class="flex-1">
+                    <h4 class="font-semibold text-gray-800 mb-1">رژ لب مخملی</h4>
+                    <p class="text-sm text-gray-600 mb-2">آرایش</p>
+                    <div class="flex items-center gap-2 mb-2">
+                      <div class="flex text-yellow-400">
+                        <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                        <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                        <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                        <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                        <i data-feather="star" class="w-4 h-4"></i>
+                      </div>
+                      <span class="text-sm text-gray-600">۴.۵</span>
+                    </div>
+                    <p class="font-bold text-primary">۳۲۰,۰۰۰ تومان</p>
+                  </div>
+                  <div class="flex flex-col gap-2">
+                    <button class="btn-primary">افزودن به سبد</button>
+                    <button class="btn-secondary">
+                      <i data-feather="trash-2" class="w-4 h-4"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Profile Settings Tab -->
+          <div id="profile-settings" class="tab-content hidden" data-aos="fade-left">
+            <div class="profile-card">
+              <h2 class="text-2xl font-bold text-gray-800 mb-6">تنظیمات پروفایل</h2>
+              
+              <form class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div class="form-group">
+                    <label class="form-label">نام</label>
+                    <input type="text" value="سارا" class="form-input">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">نام خانوادگی</label>
+                    <input type="text" value="محمدی" class="form-input">
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">ایمیل</label>
+                  <input type="email" value="sara.mohammadi@email.com" class="form-input">
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">شماره تلفن</label>
+                  <input type="tel" value="۰۹۱۲۳۴۵۶۷۸۹" class="form-input">
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">تاریخ تولد</label>
+                  <input type="date" value="1995-05-15" class="form-input">
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">جنسیت</label>
+                  <select class="form-input">
+                    <option>زن</option>
+                    <option>مرد</option>
+                    <option>ترجیح می‌دهم نگویم</option>
+                  </select>
+                </div>
+
+                <div class="flex gap-4">
+                  <button type="submit" class="btn-primary">ذخیره تغییرات</button>
+                  <button type="button" class="btn-secondary">انصراف</button>
+                </div>
+              </form>
+            </div>
+
+            <!-- Change Password -->
+            <div class="profile-card mt-8">
+              <h3 class="text-xl font-bold text-gray-800 mb-6">تغییر رمز عبور</h3>
+              
+              <form class="space-y-6">
+                <div class="form-group">
+                  <label class="form-label">رمز عبور فعلی</label>
+                  <input type="password" class="form-input">
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">رمز عبور جدید</label>
+                  <input type="password" class="form-input">
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">تکرار رمز عبور جدید</label>
+                  <input type="password" class="form-input">
+                </div>
+
+                <button type="submit" class="btn-primary">تغییر رمز عبور</button>
+              </form>
+            </div>
+          </div>
+
+          <!-- Addresses Tab -->
+          <div id="addresses" class="tab-content hidden" data-aos="fade-left">
+            <div class="profile-card">
+              <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-800">آدرس‌های من</h2>
+                <button class="btn-primary">
+                  <i data-feather="plus" class="w-4 h-4 ml-2"></i>
+                  افزودن آدرس جدید
+                </button>
+              </div>
+              
+              <div class="space-y-4">
+                <div class="border border-primary rounded-2xl p-6 bg-gradient-to-r from-rose-50 to-pink-50">
+                  <div class="flex justify-between items-start mb-3">
+                    <div>
+                      <h4 class="font-semibold text-gray-800 flex items-center gap-2">
+                        <i data-feather="home" class="w-4 h-4"></i>
+                        آدرس منزل
+                      </h4>
+                      <span class="text-xs bg-primary text-white px-2 py-1 rounded-full">آدرس پیش‌فرض</span>
+                    </div>
+                    <div class="flex gap-2">
+                      <button class="btn-secondary text-sm">ویرایش</button>
+                      <button class="btn-secondary text-sm text-red-600">حذف</button>
+                    </div>
+                  </div>
+                  <p class="text-gray-600 leading-relaxed">
+                    تهران، منطقه ۳، خیابان ولیعصر، کوچه ۱۵، پلاک ۲۳، طبقه ۴، واحد ۸
+                  </p>
+                  <p class="text-sm text-gray-500 mt-2">سارا محمدی - ۰۹۱۲۳۴۵۶۷۸۹</p>
+                </div>
+
+                <div class="border border-gray-200 rounded-2xl p-6 hover:border-primary transition-colors">
+                  <div class="flex justify-between items-start mb-3">
+                    <div>
+                      <h4 class="font-semibold text-gray-800 flex items-center gap-2">
+                        <i data-feather="briefcase" class="w-4 h-4"></i>
+                        آدرس محل کار
+                      </h4>
+                    </div>
+                    <div class="flex gap-2">
+                      <button class="btn-secondary text-sm">ویرایش</button>
+                      <button class="btn-secondary text-sm text-red-600">حذف</button>
+                    </div>
+                  </div>
+                  <p class="text-gray-600 leading-relaxed">
+                    تهران، منطقه ۱، خیابان کریمخان زند، برج میلاد، طبقه ۱۰، واحد ۱۰۰۵
+                  </p>
+                  <p class="text-sm text-gray-500 mt-2">سارا محمدی - ۰۹۱۲۳۴۵۶۷۸۹</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Notifications Tab -->
+          <div id="notifications" class="tab-content hidden" data-aos="fade-left">
+            <div class="profile-card">
+              <h2 class="text-2xl font-bold text-gray-800 mb-6">تنظیمات اعلان‌ها</h2>
+              
+              <div class="space-y-6">
+                <div class="flex justify-between items-center py-4 border-b border-gray-100">
+                  <div>
+                    <h4 class="font-semibold text-gray-800">اعلان‌های سفارش</h4>
+                    <p class="text-sm text-gray-600">دریافت اطلاعات وضعیت سفارش‌های شما</p>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" checked class="sr-only peer">
+                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-rose-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                  </label>
+                </div>
+
+                <div class="flex justify-between items-center py-4 border-b border-gray-100">
+                  <div>
+                    <h4 class="font-semibold text-gray-800">اعلان‌های تخفیف و پیشنهادات</h4>
+                    <p class="text-sm text-gray-600">دریافت اطلاعات تخفیف‌ها و پیشنهادات ویژه</p>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" checked class="sr-only peer">
+                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-rose-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                  </label>
+                </div>
+
+                <div class="flex justify-between items-center py-4 border-b border-gray-100">
+                  <div>
+                    <h4 class="font-semibold text-gray-800">اعلان‌های محصولات جدید</h4>
+                    <p class="text-sm text-gray-600">آگاه شدن از محصولات و کالکشن‌های جدید</p>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" class="sr-only peer">
+                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-rose-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                  </label>
+                </div>
+
+                <div class="flex justify-between items-center py-4 border-b border-gray-100">
+                  <div>
+                    <h4 class="font-semibold text-gray-800">اعلان‌های بازاریابی</h4>
+                    <p class="text-sm text-gray-600">دریافت ایمیل‌های تبلیغاتی و محتوای مارکتینگ</p>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" class="sr-only peer">
+                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-rose-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                  </label>
+                </div>
+
+                <div class="pt-4">
+                  <button class="btn-primary">ذخیره تنظیمات</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Search Overlay -->
+  <div id="search-overlay" class="search-overlay">
+    <div class="search-container">
+      <button id="close-search-button" class="close-search-button">
+        <i data-feather="x" class="w-8 h-8"></i>
+      </button>
+      <form class="search-form">
+        <input type="search" id="search-input" placeholder="جستجو برای محصولات، برندها و..." class="search-input">
+        <button type="submit" class="search-submit-button">
+          <i data-feather="search"></i>
+        </button>
+      </form>
+      <div class="search-suggestions">
+        <p>پیشنهادات:</p>
+        <a href="#">سرم پوست</a>
+        <a href="#">رژ لب مات</a>
+        <a href="#">عطر Bloom</a>
+        <a href="#">کرم پودر</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-gradient-to-b from-gray-900 to-black text-white py-20">
+    <div class="container mx-auto px-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-12">
+        <div class="lg:col-span-2">
+          <h3 class="text-3xl font-serif font-bold mb-6">KOALAW</h3>
+          <p class="text-gray-400 mb-6 leading-relaxed">ارتقای زیبایی از طریق تجمل آگاهانه. هر محصول جشنی از بهترین مواد طبیعی و علم نوآورانه است.</p>
+          <div class="space-y-3 mb-8">
+            <div class="flex items-start gap-2 text-gray-300">
+              <i data-feather="map-pin" class="w-5 h-5 flex-shrink-0 mt-0.5"></i>
+              <address class="not-italic leading-relaxed">ایران، همدان، بلوار معدنی</address>
+            </div>
+          </div>
+          <div class="flex gap-3">
+            <a href="#" class="bg-gray-800 p-3 rounded-full hover:bg-gray-700 transition-all duration-300 transform hover:scale-110">
+              <i data-feather="instagram" class="w-5 h-5"></i>
+            </a>
+          </div>
+        </div>
+        <div class="lg:col-span-3 grid grid-cols-2 md:grid-cols-3 gap-8">
+          <div>
+            <h4 class="font-semibold text-lg mb-6">فروشگاه</h4>
+            <ul class="space-y-3">
+              <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">تازه‌ها</a></li>
+              <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">پرفروش‌ترین‌ها</a></li>
+              <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">مراقبت از پوست</a></li>
+              <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">آرایش</a></li>
+              <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">عطر</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="font-semibold text-lg mb-6">خدمات مشتریان</h4>
+            <ul class="space-y-3">
+              <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">تماس با ما</a></li>
+              <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">سوالات متداول</a></li>
+              <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">اطلاعات ارسال</a></li>
+              <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">مرجوعی</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="border-t border-gray-800 pt-8">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+          <p class="text-gray-400 text-sm mb-4 md:mb-0">© ۲۰۲۵ D.AI — تمام حقوق محفوظ است.</p>
+          <div class="flex items-center gap-x-6 text-sm">
+            <a href="#" class="text-gray-400 hover:text-white transition duration-300">سیاست حفظ حریم خصوصی</a>
+            <a href="#" class="text-gray-400 hover:text-white transition duration-300">شرایط خدمات</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Initialize AOS
+      AOS.init({ duration: 600, easing: "ease-out-cubic", once: true, offset: 40 });
+
+      // Initialize feather icons
+      feather.replace();
+
+      // Custom cursor
+      const cursor = document.querySelector(".cursor");
+      const cursorFace = document.querySelector(".cursor-face");
+      const cursorFollower = document.querySelector(".cursor-follower");
+      let cursorX = 0, cursorY = 0, followerX = 0, followerY = 0;
+      const speed = 0.5;
+
+      if (window.innerWidth > 768) {
+        document.addEventListener("mousemove", (e) => {
+          cursorX = e.clientX;
+          cursorY = e.clientY;
+        });
+
+        function updateCursor() {
+          cursor.style.left = cursorX + "px";
+          cursor.style.top = cursorY + "px";
+          cursorFace.style.left = cursorX + "px";
+          cursorFace.style.top = cursorY + "px";
+          
+          followerX += (cursorX - followerX) * speed;
+          followerY += (cursorY - followerY) * speed;
+          cursorFollower.style.left = followerX + "px";
+          cursorFollower.style.top = followerY + "px";
+          
+          requestAnimationFrame(updateCursor);
+        }
+        updateCursor();
+
+        // Add hover effects
+        document.querySelectorAll("a, button, .profile-card, .sidebar-nav-item").forEach((el) => {
+          el.addEventListener("mouseenter", () => {
+            cursor.classList.add("hover");
+            cursorFollower.style.transform = "translate(-50%, -50%) scale(1.5)";
+          });
+          el.addEventListener("mouseleave", () => {
+            cursor.classList.remove("hover");
+            cursorFollower.style.transform = "translate(-50%, -50%) scale(1)";
+          });
+        });
+      } else {
+        [cursor, cursorFace, cursorFollower].forEach(el => el.style.display = "none");
+      }
+
+      // Mobile menu
+      const mobileButton = document.getElementById('mobile-menu-button');
+      const mobileMenu = document.getElementById('mobile-menu');
+      const mobileOverlay = document.getElementById('mobile-menu-overlay');
+
+      const toggleMobileMenu = () => {
+        mobileButton.classList.toggle('is-active');
+        mobileMenu.classList.toggle('is-active');
+        mobileOverlay.classList.toggle('is-active');
+        document.body.classList.toggle('mobile-menu-open');
+      };
+
+      if (mobileButton) {
+        mobileButton.addEventListener('click', toggleMobileMenu);
+        mobileOverlay.addEventListener('click', toggleMobileMenu);
+        mobileMenu.querySelectorAll('a').forEach(link => {
+          link.addEventListener('click', () => {
+            if (mobileMenu.classList.contains('is-active')) {
+              toggleMobileMenu();
+            }
+          });
+        });
+      }
+
+      // Search overlay
+      const searchButton = document.getElementById('search-button');
+      const searchOverlay = document.getElementById('search-overlay');
+      const closeSearchButton = document.getElementById('close-search-button');
+      const searchInput = document.getElementById('search-input');
+
+      if (searchButton && searchOverlay) {
+        const openSearch = () => {
+          searchOverlay.classList.add('is-active');
+          document.body.classList.add('search-overlay-open');
+          setTimeout(() => searchInput.focus(), 400);
+        };
+
+        const closeSearch = () => {
+          searchOverlay.classList.remove('is-active');
+          document.body.classList.remove('search-overlay-open');
+        };
+
+        searchButton.addEventListener('click', (e) => {
+          e.preventDefault();
+          openSearch();
+        });
+
+        closeSearchButton.addEventListener('click', closeSearch);
+        searchOverlay.addEventListener('click', (e) => {
+          if (e.target === searchOverlay) closeSearch();
+        });
+
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && searchOverlay.classList.contains('is-active')) {
+            closeSearch();
+          }
+        });
+      }
+
+      // Tab navigation
+      const sidebarItems = document.querySelectorAll('.sidebar-nav-item[data-tab]');
+      const tabContents = document.querySelectorAll('.tab-content');
+
+      sidebarItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+          e.preventDefault();
+          
+          // Remove active class from all items
+          sidebarItems.forEach(el => el.classList.remove('active'));
+          
+          // Add active class to clicked item
+          item.classList.add('active');
+          
+          // Hide all tab contents
+          tabContents.forEach(content => {
+            content.classList.add('hidden');
+          });
+          
+          // Show selected tab content
+          const targetTab = item.getAttribute('data-tab');
+          const targetContent = document.getElementById(targetTab);
+          if (targetContent) {
+            targetContent.classList.remove('hidden');
+          }
+        });
+      });
+
+      // Navbar scroll behavior
+      const navbar = document.getElementById("navbar");
+      let lastScrollY = 0;
+
+      window.addEventListener("scroll", () => {
+        const currentScroll = window.pageYOffset;
+        
+        // Change navbar background
+        if (currentScroll > 100) {
+          navbar.style.background = "rgba(250, 248, 243, 0.95)";
+          navbar.style.boxShadow = "0 4px 30px rgba(0, 0, 0, 0.1)";
+        } else {
+          navbar.style.background = "rgba(250, 248, 243, 0.85)";
+          navbar.style.boxShadow = "0 1px 20px rgba(0, 0, 0, 0.05)";
+        }
+
+        // Hide/show navbar
+        if (currentScroll > lastScrollY && currentScroll > 500) {
+          navbar.style.transform = "translateY(-100%)";
+        } else {
+          navbar.style.transform = "translateY(0)";
+        }
+        
+        lastScrollY = currentScroll;
+      });
+
+      // Add some interactivity to cards
+      document.querySelectorAll('.profile-card, .order-card, .favorite-item').forEach(card => {
+        card.addEventListener('mouseenter', () => {
+          if (window.innerWidth > 768) {
+            gsap.to(card, {
+              y: -8,
+              duration: 0.3,
+              ease: "power2.out"
+            });
+          }
+        });
+
+        card.addEventListener('mouseleave', () => {
+          if (window.innerWidth > 768) {
+            gsap.to(card, {
+              y: 0,
+              duration: 0.3,
+              ease: "power2.out"
+            });
+          }
+        });
+      });
+    });
+  </script>
+</body>
+
+</html>
