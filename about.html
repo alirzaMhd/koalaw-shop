@@ -784,78 +784,6 @@
       to { transform: rotate(30deg) }
     }
 
-    .loader {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: var(--cream);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 10000;
-      transition: opacity .4s ease
-    }
-
-    .koala-loader {
-      position: relative;
-      width: 150px;
-      height: 150px
-    }
-
-    .koala-loader::after,
-    .koala-loader::before {
-      content: "";
-      position: absolute;
-      width: 60px;
-      height: 60px;
-      border: 8px solid var(--primary);
-      background: 0 0;
-      border-radius: 50%;
-      top: -15px;
-      z-index: 5
-    }
-
-    .koala-loader::before { right: -35px }
-    .koala-loader::after { left: -35px }
-
-    .koala-loader-body {
-      width: 100%; height: 100%; border: 8px solid var(--primary); background: 0 0; border-radius: 50% 50% 45% 45%; position: relative; overflow: hidden; animation: koala-pulse 2.5s ease-in-out infinite; z-index: 10
-    }
-
-    .koala-loader-eyes { position: absolute; width: 100%; height: 100%; top: 0; left: 0; z-index: 20 }
-    .koala-loader-eyes::before,
-    .koala-loader-eyes::after {
-      content: ""; position: absolute; width: 12px; height: 12px; border: 4px solid var(--primary); box-sizing: border-box; border-radius: 50%; top: 50px; animation: koala-blink 2s ease-in-out infinite
-    }
-    .koala-loader-eyes::before { right: 30px }
-    .koala-loader-eyes::after { left: 30px }
-    .koala-loader-nose {
-      position: absolute; width: 20px; height: 35px; border: 6px solid var(--primary); background: 0 0; border-radius: 50%; top: 65px; left: 50%; transform: translateX(-50%); z-index: 20
-    }
-
-    .liquid,
-    .liquid-bg {
-      position: absolute; bottom: -8px; left: -50%; width: 200%; height: 0; border-radius: 40%; animation-name: fill-up, wave; animation-duration: 2s, 4s; animation-timing-function: ease-out, linear; animation-delay: 0s, 0s; animation-iteration-count: 1, infinite; animation-fill-mode: forwards, none
-    }
-
-    .liquid-bg {
-      background-color: var(--rose-gold); opacity: .5; border-radius: 45%; animation-duration: 2s, 6s; animation-direction: normal, reverse
-    }
-
-    .liquid {
-      background-color: var(--primary); opacity: .7; animation-delay: .15s, 0s
-    }
-
-    @keyframes fill-up { from { height: 0 } to { height: 105% } }
-
-    @keyframes wave { from { transform: rotate(0) } to { transform: rotate(360deg) } }
-
-    @keyframes koala-pulse { 0%, 100% { transform: scale(1) } 50% { transform: scale(1.03) } }
-
-    @keyframes koala-blink { 0%, 90%, 100% { transform: scaleY(1) } 95% { transform: scaleY(.1) } }
-
     .cute-divider {
       display: flex; align-items: center; justify-content: center; gap: .5rem; margin: .5rem 0 0; opacity: .65
     }
@@ -1052,18 +980,6 @@
 </head>
 
 <body>
-  <!-- Loader -->
-  <div class="loader" id="loader">
-    <div class="koala-loader">
-      <div class="koala-loader-body">
-        <div class="liquid-bg"></div>
-        <div class="liquid"></div>
-        <div class="koala-loader-eyes"></div>
-        <div class="koala-loader-nose"></div>
-      </div>
-    </div>
-  </div>
-
   <!-- Custom Cursor -->
   <div class="cursor">
     <div class="cursor-eyes"></div>
@@ -1658,9 +1574,6 @@
         searchOverlay.addEventListener('click', e => { e.target === searchOverlay && closeSearch() });
         document.addEventListener('keydown', e => { "Escape" === e.key && searchOverlay.classList.contains('is-active') && closeSearch() });
       }
-
-      // Loader
-      window.addEventListener("load", () => setTimeout(() => { const e = document.getElementById("loader"); e.style.opacity = "0", setTimeout(() => e.style.display = "none", 400) }, 1200));
 
       // Navbar + Back to top
       const nav = document.getElementById("navbar"), btt = document.getElementById("backToTop");
