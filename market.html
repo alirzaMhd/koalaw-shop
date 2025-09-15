@@ -964,6 +964,40 @@
         width: clamp(120px, 52%, 175px);
       }
     }
+
+    /* --- ADDED: Floating Heart Click Effect --- */
+    .floating-heart {
+      position: fixed;
+      left: 0;
+      top: 0;
+      transform: translate(-50%, -50%);
+      font-size: 16px;
+      pointer-events: none;
+      z-index: 10000;
+      opacity: 0;
+      animation: heartFloat 1.2s ease-out forwards;
+      filter: drop-shadow(0 2px 0 rgba(0, 0, 0, .02))
+    }
+
+    @keyframes heartFloat {
+      0% {
+        transform: translate(-50%, -50%) scale(.8);
+        opacity: 0
+      }
+
+      15% {
+        opacity: .95
+      }
+
+      60% {
+        transform: translate(-50%, -140%) scale(1.15)
+      }
+
+      to {
+        transform: translate(-50%, -200%) scale(1);
+        opacity: 0
+      }
+    }
   </style>
 </head>
 
@@ -1372,6 +1406,33 @@
           "Escape" === e.key && searchOverlay.classList.contains("is-active") && closeSearch();
         });
       }
+
+      // --- ADDED: Floating Heart Click Effect ---
+      (function createFloatingHeartEffect() {
+          if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+            return;
+          }
+          document.addEventListener("click", e => {
+            // Do not trigger on interactive elements to avoid interference
+            if (e.target.closest("input, textarea, select, button, a, summary")) {
+              return;
+            }
+
+            const heart = document.createElement("span");
+            heart.className = "floating-heart";
+            heart.textContent = ["❤", "✦", "✧", "❀", "❣", "★"][Math.floor(Math.random() * 6)];
+            heart.style.left = e.clientX + "px";
+            heart.style.top = e.clientY + "px";
+            heart.style.color = ["#f7bcd6", "#c9c2ff", "#bcefe1", "#ffe3a4", "#ffcfe0", "#d6f0ff"][Math.floor(Math.random() * 6)];
+            heart.style.transform += ` rotate(${Math.random() * 30 - 15}deg)`;
+            
+            document.body.appendChild(heart);
+            
+            setTimeout(() => {
+              heart.remove();
+            }, 1300);
+          }, { passive: true });
+      })();
 
       // --- SHOP PAGE SCRIPTS ---
       const allProducts = [
