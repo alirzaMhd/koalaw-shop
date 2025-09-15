@@ -287,6 +287,39 @@
       transform: translate(-50%, -50%);
       transition: background 0.3s ease, transform 0.3s ease;
     }
+    
+    .floating-heart {
+      position: fixed;
+      left: 0;
+      top: 0;
+      transform: translate(-50%, -50%);
+      font-size: 16px;
+      pointer-events: none;
+      z-index: 10000;
+      opacity: 0;
+      animation: heartFloat 1.2s ease-out forwards;
+      filter: drop-shadow(0 2px 0 rgba(0, 0, 0, .02))
+    }
+
+    @keyframes heartFloat {
+      0% {
+        transform: translate(-50%, -50%) scale(.8);
+        opacity: 0
+      }
+
+      15% {
+        opacity: .95
+      }
+
+      60% {
+        transform: translate(-50%, -140%) scale(1.15)
+      }
+
+      to {
+        transform: translate(-50%, -200%) scale(1);
+        opacity: 0
+      }
+    }
   </style>
 </head>
 
@@ -563,6 +596,25 @@
           window.location.href = "/register.html";
         }
       });
+
+      // Cursor Click Effect
+      (function () { 
+        if (!window.matchMedia("(prefers-reduced-motion:reduce)").matches) {
+            document.addEventListener("click", e => { 
+                if (e.target.closest("input,textarea,select,button,a")) return; 
+                const t = document.createElement("span"); 
+                t.className = "floating-heart", 
+                t.textContent = ["❤", "✦", "✧", "❀", "❣", "★"][Math.floor(6 * Math.random())], 
+                t.style.left = e.clientX + "px", 
+                t.style.top = e.clientY + "px", 
+                t.style.color = ["#f7bcd6", "#c9c2ff", "#bcefe1", "#ffe3a4", "#ffcfe0", "#d6f0ff"][Math.floor(6 * Math.random())], 
+                t.style.transform += ` rotate(${30 * Math.random() - 15}deg)`, 
+                document.body.appendChild(t), 
+                setTimeout(() => t.remove(), 1300) 
+            }, { passive: !0 }) 
+        }
+      })();
+
     });
   </script>
 </body>
