@@ -712,6 +712,125 @@
       flex-shrink: 0;
       display: inline-block;
     }
+
+    /* ========== Responsive Fix Pack (Appended) ========== */
+
+    /* Tailwind-like helpers for classes you already use */
+    .text-primary { color: var(--primary) !important; }
+    .bg-primary { background-color: var(--primary) !important; }
+    .border-primary { border-color: var(--primary) !important; }
+
+    /* Ensure buttons are touch-friendly */
+    .btn-primary, .btn-secondary { min-height: 44px; min-width: 44px; font-size: .95rem; }
+
+    /* Prefer default cursor on touch devices, keep custom cursor on desktop */
+    @media (pointer: coarse) {
+      * { cursor: auto !important; }
+    }
+
+    /* Profile card + small tweaks on small screens */
+    @media (max-width: 640px) {
+      .profile-card { padding: 1rem; border-radius: 18px; }
+      .favorite-image { width: 72px; height: 72px; }
+    }
+
+    /* Sidebar becomes horizontal scrollable "tabs" on <= lg */
+    @media (max-width: 1024px) {
+      .sidebar-nav { padding: .75rem .75rem 1rem; border-radius: 18px; }
+      .sidebar-nav nav {
+        display: flex;
+        gap: .5rem;
+        overflow-x: auto;
+        white-space: nowrap;
+        align-items: center;
+        scrollbar-width: none; 
+        -ms-overflow-style: none;
+      }
+      .sidebar-nav nav::-webkit-scrollbar { display: none; }
+      .sidebar-nav-item {
+        margin-bottom: 0;
+        padding: .625rem 1rem;
+        border-radius: 9999px;
+        flex: 0 0 auto;
+      }
+      .sidebar-nav-item i { width: 18px; height: 18px; }
+
+      /* Avoid horizontal nudge (RTL overflow) on mobile */
+      .sidebar-nav-item:hover,
+      .sidebar-nav-item.active {
+        transform: translateY(-1px);
+      }
+    }
+
+    /* Keep the original hover nudge on large screens only */
+    @media (min-width: 1025px) {
+      .sidebar-nav-item:hover,
+      .sidebar-nav-item.active {
+        transform: translateX(-5px);
+      }
+    }
+
+    /* Cards and rows: stack and make CTA full-width on small screens */
+    @media (max-width: 640px) {
+      .order-card .flex.justify-between { 
+        flex-direction: column; 
+        align-items: flex-start; 
+        gap: .75rem; 
+      }
+      .order-card .flex.items-center { flex-wrap: wrap; }
+      .order-card .flex.justify-between.items-center { 
+        flex-direction: column; 
+        align-items: stretch; 
+        gap: .5rem; 
+      }
+      .order-card .btn-primary, 
+      .order-card .btn-secondary { width: 100%; }
+
+      .favorite-item { 
+        flex-direction: column; 
+        align-items: stretch; 
+      }
+      .favorite-item .favorite-image { 
+        width: 100%; 
+        height: auto; 
+        aspect-ratio: 4/3; 
+      }
+      .favorite-item .btn-primary, 
+      .favorite-item .btn-secondary { width: 100%; }
+    }
+
+    /* Stats grid: tighter on the tiniest screens */
+    @media (max-width: 360px) {
+      .stats-number { font-size: 1.4rem; }
+      .stats-card { padding: 1rem; }
+    }
+
+    /* Search overlay: keep close button reachable on small / with notches */
+    @media (max-width: 768px) {
+      .search-container { padding: 12px; }
+      .close-search-button { 
+        position: fixed; 
+        right: max(12px, env(safe-area-inset-right)); 
+        top: max(12px, env(safe-area-inset-top)); 
+        z-index: 1000;
+      }
+    }
+
+    /* Reduce heavy effects on very small / low-power devices */
+    @media (max-width: 480px), (prefers-reduced-motion: reduce) {
+      .profile-hero::before { display: none; }
+      .search-overlay { 
+        backdrop-filter: blur(12px); 
+        -webkit-backdrop-filter: blur(12px); 
+      }
+    }
+
+    /* Pulse animation for the cart badge (already used in your markup) */
+    @keyframes pulse { 
+      0%,100% { transform: scale(1); } 
+      50% { transform: scale(1.08); } 
+    }
+    .pulse-animation { animation: pulse 1.8s ease-in-out infinite; }
   </style>
 </head>
 
@@ -999,7 +1118,7 @@
                         <i data-feather="star" class="w-4 h-4 fill-current"></i>
                         <i data-feather="star" class="w-4 h-4 fill-current"></i>
                         <i data-feather="star" class="w-4 h-4 fill-current"></i>
-                        <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                        <i data-feather="star" class="w-4 h-4"></i>
                       </div>
                       <span class="text-sm text-gray-600">۴.۸</span>
                     </div>
@@ -1440,6 +1559,9 @@
           if (targetContent) {
             targetContent.classList.remove('hidden');
           }
+
+          // Ensure active link is centered in horizontal scroll on mobile
+          setTimeout(centerActiveSidebarLink, 0);
         });
       });
 
@@ -1491,6 +1613,21 @@
           }
         });
       });
+
+      // ========== Responsive Helper: center active sidebar item on mobile ==========
+      const sidebarNav = document.querySelector('.sidebar-nav nav');
+      function centerActiveSidebarLink() {
+        if (!sidebarNav) return;
+        if (window.innerWidth <= 1024) {
+          const active = document.querySelector('.sidebar-nav-item.active');
+          if (active) {
+            const offset = active.offsetLeft - (sidebarNav.clientWidth - active.clientWidth) / 2;
+            sidebarNav.scrollTo({ left: Math.max(0, offset), behavior: 'smooth' });
+          }
+        }
+      }
+      centerActiveSidebarLink();
+      window.addEventListener('resize', () => { if (window.innerWidth <= 1024) centerActiveSidebarLink(); });
     });
   </script>
 </body>
