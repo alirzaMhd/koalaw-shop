@@ -118,18 +118,89 @@
     .badge-free{background:var(--mint);color:#065f46}
     .badge-warn{background:var(--butter);color:#92400e}
 
-    /* Checkout stepper */
-    .checkout-steps{display:flex;align-items:center;justify-content:center;gap:.75rem;flex-wrap:wrap}
-    .checkout-steps .step{display:flex;align-items:center;gap:.5rem;text-decoration:none;color:var(--deep-brown);font-weight:700;transition:opacity .25s ease}
+    /* Checkout stepper (responsive) */
+    .checkout-steps{
+      --dot-size: clamp(26px, 6vw, 34px);
+      --line-w: clamp(28px, 8vw, 56px);
+      --gap: clamp(.5rem, 2vw, .75rem);
+      display:flex;
+      align-items:center;
+      justify-content:flex-start;
+      gap: var(--gap);
+      width:100%;
+      padding:.25rem 0;
+      overflow-x:auto;
+      -webkit-overflow-scrolling: touch;
+      scroll-snap-type: x proximity;
+      flex-wrap: nowrap;
+      touch-action: pan-x;
+    }
+    .checkout-steps .step,
+    .checkout-steps .step-line{
+      flex:0 0 auto;
+      scroll-snap-align: center;
+    }
+    .checkout-steps .step{
+      display:flex;
+      align-items:center;
+      gap:.5rem;
+      text-decoration:none;
+      color:var(--deep-brown);
+      font-weight:700;
+      white-space:nowrap;
+      transition:opacity .25s ease;
+    }
     .checkout-steps .step[aria-disabled="true"]{opacity:.6;pointer-events:none}
-    .step-dot{width:34px;height:34px;border-radius:9999px;background:#fff;border:2px solid rgba(227,154,180,.45);display:flex;align-items:center;justify-content:center;color:#7a5843;font-weight:900;box-shadow:0 4px 12px rgba(227,154,180,.25)}
-    .step-label{font-size:.95rem}
-    .step-line{width:48px;height:2px;background:rgba(227,154,180,.35);border-radius:99px}
-    .step.is-current .step-dot{border-color:var(--primary);color:var(--primary);box-shadow:0 0 0 4px rgba(227,154,180,.25)}
-    .step.is-done .step-dot{background:linear-gradient(135deg,var(--primary),var(--rose-gold));border-color:transparent;color:#fff;position:relative}
+    .step-dot{
+      width:var(--dot-size);
+      height:var(--dot-size);
+      border-radius:9999px;
+      background:#fff;
+      border:2px solid rgba(227,154,180,.45);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#7a5843;
+      font-weight:900;
+      box-shadow:0 4px 12px rgba(227,154,180,.25)
+    }
+    .step-label{ font-size: clamp(.82rem, 2.4vw, .95rem) }
+    .step-line{
+      width:var(--line-w);
+      height:2px;
+      background:rgba(227,154,180,.35);
+      border-radius:99px
+    }
+    .step.is-current .step-dot{
+      border-color:var(--primary);
+      color:var(--primary);
+      box-shadow:0 0 0 4px rgba(227,154,180,.25)
+    }
+    .step.is-done .step-dot{
+      background:linear-gradient(135deg,var(--primary),var(--rose-gold));
+      border-color:transparent;
+      color:#fff;
+      position:relative
+    }
     .step.is-done .step-dot::after{content:"✓";font-size:.95rem;font-weight:900}
     .step.is-done ~ .step-line,
-    .step.is-current + .step-line{background:linear-gradient(90deg,var(--primary),var(--rose-gold))}
+    .step.is-current + .step-line{
+      background:linear-gradient(90deg,var(--primary),var(--rose-gold))
+    }
+    @media (min-width:640px){
+      .checkout-steps{
+        justify-content:center;
+        flex-wrap:wrap;
+        overflow:visible;
+        scroll-snap-type:none;
+      }
+      .checkout-steps .step{ white-space:normal }
+    }
+    .checkout-steps::-webkit-scrollbar{ height:6px }
+    .checkout-steps::-webkit-scrollbar-thumb{ background:rgba(227,154,180,.35); border-radius:9999px }
+    @media (max-width:639px){
+      .checkout-steps{ scrollbar-width:thin }
+    }
 
     /* Toast */
     .toast{position:fixed;bottom:24px;left:24px;z-index:90;background:#111827;color:#fff;border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:10px;box-shadow:0 10px 30px rgba(0,0,0,.2);opacity:0;transform:translateY(10px);transition:all .3s ease}
@@ -283,7 +354,7 @@
             </button>
           </div>
 
-          <!-- Recommendations (Desktop only) -->
+          <!-- Recommendations (Desktop only under items) -->
           <div class="profile-card hidden lg:block" data-aos="fade-up" data-aos-delay="50">
             <h3 class="font-bold text-gray-800 mb-4">شاید این‌ها را هم بپسندید</h3>
             <div id="cart-recommendations-desktop" class="grid grid-cols-3 xl:grid-cols-4 gap-4"></div>
@@ -368,7 +439,7 @@
             <p class="text-xs text-gray-500 mt-3">با ادامه، شرایط و قوانین را می‌پذیرید.</p>
           </div>
 
-          <!-- Recommendations (Mobile & Tablet) -->
+          <!-- Recommendations (Mobile & Tablet in sidebar) -->
           <div class="profile-card lg:hidden">
             <h3 class="font-bold text-gray-800 mb-4">شاید این‌ها را هم بپسندید</h3>
             <div id="cart-recommendations" class="grid grid-cols-2 gap-3"></div>
@@ -428,7 +499,7 @@
                 <span id="addr-price-standard" class="font-bold text-gray-800">۴۵,۰۰۰ تومان</span>
               </label>
 
-              <label class="flex items-center justify-content-between gap-4 p-3 rounded-2xl border border-gray-200 hover:border-primary transition">
+              <label class="flex items-center justify-between gap-4 p-3 rounded-2xl border border-gray-200 hover:border-primary transition">
                 <div class="flex items-center gap-3">
                   <input type="radio" name="addr-ship" id="addr-ship-express" value="express" class="accent-rose-500">
                   <div>
@@ -491,7 +562,6 @@
           <div class="profile-card">
             <h3 class="text-xl font-bold text-gray-800 mb-5">روش پرداخت</h3>
             <div class="space-y-3" id="pay-methods">
-              <!-- Removed: کارت بانکی (on-site card) -->
               <label class="flex items-center justify-between gap-4 p-3 rounded-2xl border border-gray-200 hover:border-primary transition">
                 <div class="flex items-center gap-3">
                   <input type="radio" name="pay-method" value="gateway" class="accent-rose-500" checked>
@@ -516,7 +586,7 @@
             </div>
           </div>
 
-          <!-- Removed: Card form (اطلاعات کارت) -->
+          <!-- Card form removed -->
 
           <div class="flex gap-3">
             <a href="#/address" class="btn-secondary">
@@ -809,7 +879,6 @@
       function computeTotals(cart, state){
         const subtotal = cart.reduce((a,c)=>a + (c.price*c.qty), 0);
         let discount=0, shipping=0, gift= state.gift ? GIFT_WRAP_PRICE : 0;
-        // coupon
         if (state.coupon){
           const r = coupons[state.coupon.toUpperCase()];
           if (r && subtotal >= r.min){
@@ -818,52 +887,14 @@
           }
         }
         const postSubtotal = subtotal - discount;
-
-        // base shipping by threshold
         if (postSubtotal >= FREE_SHIP_THRESHOLD) shipping = 0;
         else shipping = BASE_SHIPPING;
-
-        // express
         if (state.express) shipping += EXPRESS_PRICE;
-
         const total = Math.max(0, postSubtotal + shipping + gift);
         return { subtotal, discount, shipping, gift, total };
       }
 
-      // === Payment helpers (not used now since card form removed) ===
-      function luhnCheck(num){
-        let sum = 0, dbl = false;
-        for (let i = num.length - 1; i >= 0; i--){
-          let d = parseInt(num[i], 10);
-          if (dbl){ d *= 2; if (d > 9) d -= 9; }
-          sum += d; dbl = !dbl;
-        }
-        return (sum % 10) === 0;
-      }
-      function validExp(exp){
-        if (!/^\d{2}\/\d{2}$/.test(exp)) return false;
-        const [m, y2] = exp.split('/');
-        const mm = parseInt(m, 10), yy = 2000 + parseInt(y2, 10);
-        if (mm < 1 || mm > 12) return false;
-        const now = new Date(); const yNow = now.getFullYear(); const mNow = now.getMonth() + 1;
-        if (yy < yNow) return false;
-        if (yy === yNow && mm < mNow) return false;
-        return true;
-      }
-      function ensureErrorSlot(input){
-        let msg = input.nextElementSibling;
-        const isMsg = msg && msg.dataset && msg.dataset.role === 'err';
-        if (!isMsg){
-          msg = document.createElement('p');
-          msg.dataset.role = 'err';
-          msg.className = 'text-xs text-rose-600 mt-1 hidden';
-          input.parentElement.appendChild(msg);
-        }
-        return {
-          show(text){ msg.textContent = text; msg.classList.remove('hidden'); input.classList.add('ring-2','ring-rose-300'); },
-          hide(){ msg.classList.add('hidden'); input.classList.remove('ring-2','ring-rose-300'); }
-        };
-      }
+      // UI helpers
       function showProcessing(text='در حال پردازش...'){
         let ov = document.getElementById('pay-processing-overlay');
         if (!ov){
@@ -900,12 +931,10 @@
 
       // Navigation / Router
       const routes = ['cart','address','payment'];
-
       function getRoute(){
         const h = location.hash.replace('#/','').trim();
         return routes.includes(h) ? h : 'cart';
       }
-
       function navigate(to){ location.hash = `#/${to}`; }
 
       // Hero content
@@ -921,7 +950,7 @@
         document.getElementById('hero-subtitle').textContent = meta.sub;
         const icon = document.getElementById('hero-icon');
         icon.setAttribute('data-feather', meta.icon);
-        icon.replaceWith(icon.cloneNode(false)); // reset
+        icon.replaceWith(icon.cloneNode(false));
         feather.replace();
       }
 
@@ -936,7 +965,6 @@
         if (index === 1){ sc.classList.add('is-done'); sa.classList.add('is-current'); }
         if (index === 2){ sc.classList.add('is-done'); sa.classList.add('is-done'); sp.classList.add('is-current'); }
 
-        // Disable forward navigation if prerequisites not met
         const hasCart = cart.length > 0;
         const addrValid = validateAddress(addr);
         if (!hasCart){
@@ -944,20 +972,25 @@
         } else if (!addrValid){
           sp.setAttribute('aria-disabled','true');
         }
+
+        // Auto-center current step on small screens
+        const stepsWrap = document.querySelector('.checkout-steps');
+        if (window.innerWidth < 640 && stepsWrap){
+          const current = stepsWrap.querySelector('.step.is-current');
+          current?.scrollIntoView({ behavior:'smooth', inline:'center', block:'nearest' });
+        }
       }
 
       // Views rendering
       function renderCart(){
         const cart = loadCart();
         let state = loadState();
-        // Sync express toggle
         document.getElementById('cart-express').checked = !!state.express;
         document.getElementById('cart-gift-wrap').checked = !!state.gift;
         document.getElementById('cart-note').value = state.note || '';
         document.getElementById('cart-coupon-code').value = state.coupon || '';
         document.getElementById('cart-coupon-msg').textContent = state.coupon ? (coupons[state.coupon]?.msg || 'کد اعمال‌شده.') : '';
 
-        // nav count
         document.getElementById('nav-cart-count').textContent = toFa(cart.reduce((a,c)=>a+c.qty,0));
 
         const itemsWrap = document.getElementById('cart-items');
@@ -1052,7 +1085,6 @@
           document.getElementById('cart-gift').textContent = s.gift? toIRR(t.gift) : '۰ تومان';
           document.getElementById('cart-grand').textContent = toIRR(t.total);
 
-          // progress
           const current = Math.max(0, t.subtotal - t.discount);
           if (current >= FREE_SHIP_THRESHOLD){
             document.getElementById('cart-progress-text').textContent = 'تبریک! ارسال رایگان برای سفارش شما فعال شد.';
@@ -1119,7 +1151,7 @@
               <div class="aspect-square rounded-lg overflow-hidden mb-2 bg-rose-50">
                 <img src="${p.image}" alt="${p.title}" class="w-full h-full object-cover"/>
               </div>
-              <div class="text-sm font-bold text-gray-800 line-clamp-1">${p.title}</div>
+              <div class="text-sm font-bold text-gray-800 truncate">${p.title}</div>
               <div class="text-xs text-gray-600 mt-1">${toIRR(p.price)}</div>
               <div class="mt-2 inline-flex items-center gap-1 text-rose-700 text-xs">
                 <i data-feather="plus-circle"></i>
@@ -1194,7 +1226,6 @@
           const a = loadAddress();
           document.getElementById('addr-ship-to').textContent = a.firstname ? `${a.firstname} ${a.lastname} — ${a.phone}
 ${a.province}، ${a.city}، ${a.line1} — کد پستی: ${a.postal||'—'}` : '—';
-          // nav count
           document.getElementById('nav-cart-count').textContent = toFa(loadCart().reduce((x,y)=>x+y.qty,0));
         }
         updateAddrSummary();
@@ -1210,7 +1241,7 @@ ${a.province}، ${a.city}، ${a.line1} — کد پستی: ${a.postal||'—'}` : 
         };
       }
 
-      // Enhanced Payment (Card form removed; redirect to gateway)
+      // Payment (Card form removed; redirect to gateway)
       function renderPayment(){
         const cart = loadCart();
         if (!cart.length){ showToast('سبد خرید خالی است','alert-circle'); navigate('cart'); return; }
@@ -1317,7 +1348,7 @@ ${a.province}، ${a.city}، ${a.line1} — کد پستی: ${a.postal||'—'}`;
         AOS.refresh();
       }
 
-      // Stepper click gating (router handles but we also prevent default)
+      // Stepper click gating
       ['step-cart','step-address','step-payment'].forEach(id=>{
         const el = document.getElementById(id);
         el.addEventListener('click', (e)=>{
