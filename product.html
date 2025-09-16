@@ -30,7 +30,9 @@
     }
 
     /* Smaller fonts (scales all Tailwind rem-based sizes) */
-    html { font-size: 14px; }
+    html {
+      font-size: 14px;
+    }
 
     * {
       margin: 0;
@@ -491,30 +493,6 @@
     }
 
     /* ===== Product Page Specific Styles ===== */
-
-    /* Keeping magnetic-btn styles for general usage, but not applied to Add-to-cart */
-    .magnetic-btn {
-      position: relative;
-      transition: all .3s cubic-bezier(.175, .885, .32, 1.275);
-      overflow: hidden
-    }
-    .magnetic-btn::before {
-      content: "";
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 0;
-      height: 0;
-      border-radius: 50%;
-      background: rgba(0, 0, 0, .1);
-      transform: translate(-50%, -50%);
-      transition: width .6s, height .6s
-    }
-    .magnetic-btn:hover::before {
-      width: 300px;
-      height: 300px
-    }
-
     .product-gallery {
       position: relative;
     }
@@ -530,8 +508,8 @@
       display: flex;
       gap: 1rem;
       margin-top: 1rem;
-      justify-content: center;           /* centered */
-      padding-inline: 0.5rem;            /* breathing room from edges */
+      justify-content: center;
+      padding-inline: 0.5rem;
     }
 
     .thumbnail {
@@ -594,7 +572,6 @@
       color: white;
     }
 
-    /* Removed hover effect on Add to Cart */
     .add-to-cart-btn {
       background: linear-gradient(135deg, var(--primary), var(--rose-gold));
       color: white;
@@ -603,10 +580,9 @@
       border-radius: 16px;
       font-weight: 600;
       font-size: 1.1rem;
-      transition: none;                   /* no animation */
+      transition: none;
       box-shadow: 0 8px 24px rgba(227, 154, 180, 0.3);
     }
-    /* No :hover transform/shadow */
 
     .product-info-tabs {
       border-bottom: 2px solid rgba(227, 154, 180, 0.1);
@@ -625,20 +601,6 @@
     .tab-button.active {
       color: var(--primary);
       border-bottom-color: var(--primary);
-    }
-
-    .related-product-card {
-      background: white;
-      border-radius: 20px;
-      padding: 1.5rem;
-      text-align: center;
-      transition: all 0.3s ease;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
-    }
-
-    .related-product-card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.1);
     }
 
     .review-card {
@@ -676,6 +638,148 @@
     .breadcrumb a {
       color: var(--primary);
       text-decoration: none;
+    }
+
+    /* --- ✨ PRODUCT CARD V3 (from reference) ✨ --- */
+    .product-card-v3 {
+      --card-color-1: var(--blush);
+      --card-color-2: var(--accent);
+      position: relative;
+      width: 100%;
+      aspect-ratio: 3/4;
+      border-radius: 24px;
+      overflow: hidden;
+      text-decoration: none;
+      display: block;
+      box-shadow: 0 8px 24px rgba(120, 80, 100, .05);
+    }
+
+    .card-bg {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(160deg, var(--card-color-2), #fff 70%);
+      opacity: 0.5;
+    }
+
+    .card-blob {
+      position: absolute;
+      top: -15%;
+      right: -15%;
+      width: 90%;
+      height: auto;
+      z-index: 1;
+      animation: subtle-bob 12s ease-in-out infinite alternate;
+    }
+
+    .card-blob svg {
+      fill: var(--card-color-1);
+    }
+
+    @keyframes subtle-bob {
+      from {
+        transform: translateY(0) rotate(0);
+      }
+
+      to {
+        transform: translateY(10px) rotate(15deg);
+      }
+    }
+
+    .card-image-wrapper {
+      position: absolute;
+      top: 28%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: clamp(120px, 48%, 180px);
+      aspect-ratio: 1/1;
+      z-index: 3;
+    }
+
+    .card-image {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 15px 20px rgba(0, 0, 0, 0.1));
+    }
+
+    .card-content {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      left: 0;
+      padding: 1.5rem;
+      z-index: 2;
+      color: var(--deep-brown);
+      text-align: center;
+    }
+
+    .card-category {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background-color: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(5px);
+      padding: 0.25rem 0.75rem;
+      border-radius: 50px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--deep-brown);
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      margin-bottom: 0.75rem;
+    }
+
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 0.5rem;
+    }
+
+    .card-rating {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.25rem;
+      color: #f59e0b;
+      margin-bottom: 0.75rem;
+    }
+
+    .card-rating svg {
+      fill: currentColor;
+      width: 16px;
+      height: 16px;
+    }
+
+    .card-rating span {
+      font-weight: 700;
+      color: #a16207;
+      font-size: 0.9rem;
+    }
+
+    .card-price {
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    .product-card-v3.category-skincare {
+      --card-color-1: var(--mint);
+      --card-color-2: #c5f4e5;
+    }
+
+    .product-card-v3.category-makeup {
+      --card-color-1: var(--lavender);
+      --card-color-2: #e0d9fe;
+    }
+
+    .product-card-v3.category-fragrance {
+      --card-color-1: var(--butter);
+      --card-color-2: #fef9e3;
+    }
+
+    .product-card-v3.category-default {
+      --card-color-1: var(--blush);
+      --card-color-2: #ffeef5;
     }
 
     @media (max-width: 768px) {
@@ -716,10 +820,10 @@
           <img src="./image/koala.png" alt="Koala logo" class="w-8 h-7 inline-block -mt-1">ALAW</a>
         <div class="hidden lg:flex items-center gap-x-10 flex-row-reverse">
           <a href="/shop" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">فروشگاه</a>
-          <a href="#collections" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">کالکشن ها</a>
-          <a href="#brands" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">برندها</a>
-          <a href="#magazine" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">مجله</a>
-          <a href="#about" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">درباره ما</a>
+          <a href="/#collections" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">کالکشن ها</a>
+          <a href="/#brands" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">برندها</a>
+          <a href="/#magazine" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">مجله</a>
+          <a href="/#about" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">درباره ما</a>
         </div>
         <div class="flex items-center gap-x-6">
           <button id="search-button" class="text-gray-700 hover:text-gray-900 transition-all duration-300 hover:scale-110">
@@ -741,10 +845,10 @@
   </nav>
   <div id="mobile-menu">
     <a href="/shop" class="nav-link">فروشگاه</a>
-    <a href="#collections" class="nav-link">کالکشن ها</a>
-    <a href="#brands" class="nav-link">برندها</a>
-    <a href="#magazine" class="nav-link">مجله</a>
-    <a href="#about" class="nav-link">درباره ما</a>
+    <a href="/#collections" class="nav-link">کالکشن ها</a>
+    <a href="/#brands" class="nav-link">برندها</a>
+    <a href="/#magazine" class="nav-link">مجله</a>
+    <a href="/#about" class="nav-link">درباره ما</a>
   </div>
   <div id="mobile-menu-overlay" class="mobile-menu-overlay"></div>
 
@@ -798,11 +902,11 @@
             <h1 class="text-3xl lg:text-4xl font-serif font-bold text-gray-800 mb-4">سرم درخشش طلایی</h1>
             <div class="flex items-center gap-4 mb-4">
               <div class="stars">
-                <i data-feather="star" class="w-5 h-5"></i>
-                <i data-feather="star" class="w-5 h-5"></i>
-                <i data-feather="star" class="w-5 h-5"></i>
-                <i data-feather="star" class="w-5 h-5"></i>
-                <i data-feather="star" class="w-5 h-5"></i>
+                <i data-feather="star" class="w-5 h-5 fill-current"></i>
+                <i data-feather="star" class="w-5 h-5 fill-current"></i>
+                <i data-feather="star" class="w-5 h-5 fill-current"></i>
+                <i data-feather="star" class="w-5 h-5 fill-current"></i>
+                <i data-feather="star" class="w-5 h-5 fill-current"></i>
               </div>
               <span id="review-count-inline" class="text-gray-600">(۱۲۴ نظر)</span>
             </div>
@@ -833,9 +937,8 @@
             </div>
 
             <div class="flex flex-col sm:flex-row gap-4">
-              <!-- Removed magnetic-btn class to disable magnet/hover effect -->
-              <button class="add-to-cart-btn flex-1">
-                <i data-feather="shopping-bag" class="w-5 h-5 inline ml-2"></i>
+              <button class="add-to-cart-btn flex-1 flex items-center justify-center gap-2">
+                <i data-feather="shopping-bag" class="w-5 h-5"></i>
                 افزودن به سبد خرید
               </button>
             </div>
@@ -844,7 +947,6 @@
           <!-- Product Features -->
           <div class="grid grid-cols-2 gap-4 mb-8">
             <div class="bg-white p-4 rounded-xl text-center">
-              <!-- Fixed icon for ۱۰۰% طبیعی -->
               <i data-feather="leaf" class="w-8 h-8 text-green-500 mx-auto mb-2"></i>
               <div class="font-semibold text-sm">۱۰۰% طبیعی</div>
             </div>
@@ -978,11 +1080,11 @@
                       </div>
                     </div>
                     <div class="stars">
-                      <i data-feather="star" class="w-4 h-4"></i>
-                      <i data-feather="star" class="w-4 h-4"></i>
-                      <i data-feather="star" class="w-4 h-4"></i>
-                      <i data-feather="star" class="w-4 h-4"></i>
-                      <i data-feather="star" class="w-4 h-4"></i>
+                      <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                      <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                      <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                      <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                      <i data-feather="star" class="w-4 h-4 fill-current"></i>
                     </div>
                   </div>
                   <p class="text-gray-600">عالی! پوستم خیلی نرم و درخشان شده. تا حالا همچین محصولی استفاده نکرده بودم.</p>
@@ -998,10 +1100,10 @@
                       </div>
                     </div>
                     <div class="stars">
-                      <i data-feather="star" class="w-4 h-4"></i>
-                      <i data-feather="star" class="w-4 h-4"></i>
-                      <i data-feather="star" class="w-4 h-4"></i>
-                      <i data-feather="star" class="w-4 h-4"></i>
+                      <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                      <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                      <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                      <i data-feather="star" class="w-4 h-4 fill-current"></i>
                       <i data-feather="star" class="w-4 h-4"></i>
                     </div>
                   </div>
@@ -1021,11 +1123,11 @@
                     <div>
                       <label class="block text-sm text-gray-600 mb-1">امتیاز</label>
                       <div id="rating-control" class="rating-input stars text-amber-500" aria-label="امتیاز">
-                        <i data-feather="star" class="w-5 h-5"></i>
-                        <i data-feather="star" class="w-5 h-5"></i>
-                        <i data-feather="star" class="w-5 h-5"></i>
-                        <i data-feather="star" class="w-5 h-5"></i>
-                        <i data-feather="star" class="w-5 h-5"></i>
+                        <i data-feather="star" class="w-5 h-5 star"></i>
+                        <i data-feather="star" class="w-5 h-5 star"></i>
+                        <i data-feather="star" class="w-5 h-5 star"></i>
+                        <i data-feather="star" class="w-5 h-5 star"></i>
+                        <i data-feather="star" class="w-5 h-5 star"></i>
                       </div>
                     </div>
                   </div>
@@ -1049,38 +1151,121 @@
       <section class="mb-16" data-aos="fade-up">
         <h2 class="text-3xl font-serif font-bold text-center mb-12">محصولات مرتبط</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div class="related-product-card">
-            <img src="./image/skin.png" alt="کرم آبرسان" class="w-full h-32 object-contain mb-4">
-            <h3 class="font-semibold mb-2">کرم آبرسان طلایی</h3>
-            <div class="text-rose-600 font-bold">۳۲۰,۰۰۰ تومان</div>
-          </div>
-          <div class="related-product-card">
-            <img src="./image/cosmetic.png" alt="ماسک صورت" class="w-full h-32 object-contain mb-4">
-            <h3 class="font-semibold mb-2">ماسک درخشش</h3>
-            <div class="text-rose-600 font-bold">۲۸۰,۰۰۰ تومان</div>
-          </div>
-          <div class="related-product-card">
-            <img src="./image/hair.png" alt="سرم مو" class="w-full h-32 object-contain mb-4">
-            <h3 class="font-semibold mb-2">سرم تقویت مو</h3>
-            <div class="text-rose-600 font-bold">۴۲۰,۰۰۰ تومان</div>
-          </div>
-          <div class="related-product-card">
-            <img src="./image/body.png" alt="لوسیون بدن" class="w-full h-32 object-contain mb-4">
-            <h3 class="font-semibold mb-2">לوسیون طلایی</h3>
-            <div class="text-rose-600 font-bold">۳۵۰,۰۰۰ تومان</div>
-          </div>
+          <!-- Card 1 -->
+          <a href="#" class="product-card-v3 category-default" data-aos="fade-up" data-aos-delay="100">
+            <div class="card-bg"></div>
+            <div class="card-blob">
+              <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <path d="M48.1,-58.9C62.2,-51.9,73.4,-37.2,77,-21.2C80.6,-5.2,76.5,12.2,68.4,26.1C60.3,40,48.2,50.4,34.5,58.3C20.8,66.2,5.5,71.6,-9.3,71.1C-24.1,70.7,-38.4,64.4,-50.9,54.7C-63.4,44.9,-74,31.7,-77.8,16.5C-81.6,1.2,-78.6,-16,-69.8,-29.3C-61,-42.6,-46.4,-52,-32.1,-59.5C-17.8,-67,-3.9,-72.6,9.6,-71.7C23.1,-70.8,48.1,-58.9,48.1,-58.9Z" transform="translate(100 100)"></path>
+              </svg>
+            </div>
+            <div class="card-image-wrapper">
+              <img src="./image/skin.png" alt="کرم آبرسان طلایی" class="card-image">
+            </div>
+            <div class="card-content">
+              <div class="card-category"><i data-feather="shield" class="w-3 h-3"></i><span>پوست</span></div>
+              <h3 class="card-title">کرم آبرسان طلایی</h3>
+              <div class="card-rating">
+                <i data-feather="star" class="w-4 h-4"></i><i data-feather="star" class="w-4 h-4"></i><i data-feather="star" class="w-4 h-4"></i><i data-feather="star" class="w-4 h-4"></i><i data-feather="star" class="w-4 h-4"></i>
+                <span>۴.۸</span>
+              </div>
+              <p class="card-price">۳۲۰,۰۰۰ تومان</p>
+            </div>
+          </a>
+          <!-- Card 2 -->
+          <a href="#" class="product-card-v3 category-skincare" data-aos="fade-up" data-aos-delay="200">
+            <div class="card-bg"></div>
+            <div class="card-blob">
+              <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <path d="M48.1,-58.9C62.2,-51.9,73.4,-37.2,77,-21.2C80.6,-5.2,76.5,12.2,68.4,26.1C60.3,40,48.2,50.4,34.5,58.3C20.8,66.2,5.5,71.6,-9.3,71.1C-24.1,70.7,-38.4,64.4,-50.9,54.7C-63.4,44.9,-74,31.7,-77.8,16.5C-81.6,1.2,-78.6,-16,-69.8,-29.3C-61,-42.6,-46.4,-52,-32.1,-59.5C-17.8,-67,-3.9,-72.6,9.6,-71.7C23.1,-70.8,48.1,-58.9,48.1,-58.9Z" transform="translate(100 100)"></path>
+              </svg>
+            </div>
+            <div class="card-image-wrapper">
+              <img src="./image/cosmetic.png" alt="ماسک صورت" class="card-image">
+            </div>
+            <div class="card-content">
+              <div class="card-category"><i data-feather="sun" class="w-3 h-3"></i><span>ماسک</span></div>
+              <h3 class="card-title">ماسک درخشش</h3>
+              <div class="card-rating">
+                <i data-feather="star" class="w-4 h-4"></i><i data-feather="star" class="w-4 h-4"></i><i data-feather="star" class="w-4 h-4"></i><i data-feather="star" class="w-4 h-4"></i><i data-feather="star" class="w-4 h-4"></i>
+                <span>۴.۶</span>
+              </div>
+              <p class="card-price">۲۸۰,۰۰۰ تومان</p>
+            </div>
+          </a>
+          <!-- Card 3 -->
+          <a href="#" class="product-card-v3 category-makeup" data-aos="fade-up" data-aos-delay="300">
+            <div class="card-bg"></div>
+            <div class="card-blob">
+              <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <path d="M48.1,-58.9C62.2,-51.9,73.4,-37.2,77,-21.2C80.6,-5.2,76.5,12.2,68.4,26.1C60.3,40,48.2,50.4,34.5,58.3C20.8,66.2,5.5,71.6,-9.3,71.1C-24.1,70.7,-38.4,64.4,-50.9,54.7C-63.4,44.9,-74,31.7,-77.8,16.5C-81.6,1.2,-78.6,-16,-69.8,-29.3C-61,-42.6,-46.4,-52,-32.1,-59.5C-17.8,-67,-3.9,-72.6,9.6,-71.7C23.1,-70.8,48.1,-58.9,48.1,-58.9Z" transform="translate(100 100)"></path>
+              </svg>
+            </div>
+            <div class="card-image-wrapper">
+              <img src="./image/hair.png" alt="سرم مو" class="card-image">
+            </div>
+            <div class="card-content">
+              <div class="card-category"><i data-feather="git-branch" class="w-3 h-3"></i><span>مو</span></div>
+              <h3 class="card-title">سرم تقویت مو</h3>
+              <div class="card-rating">
+                <i data-feather="star" class="w-4 h-4"></i><i data-feather="star" class="w-4 h-4"></i><i data-feather="star" class="w-4 h-4"></i><i data-feather="star" class="w-4 h-4"></i><i data-feather="star" class="w-4 h-4"></i>
+                <span>۴.۹</span>
+              </div>
+              <p class="card-price">۴۲۰,۰۰۰ تومان</p>
+            </div>
+          </a>
+          <!-- Card 4 -->
+          <a href="#" class="product-card-v3 category-fragrance" data-aos="fade-up" data-aos-delay="400">
+            <div class="card-bg"></div>
+            <div class="card-blob">
+              <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <path d="M48.1,-58.9C62.2,-51.9,73.4,-37.2,77,-21.2C80.6,-5.2,76.5,12.2,68.4,26.1C60.3,40,48.2,50.4,34.5,58.3C20.8,66.2,5.5,71.6,-9.3,71.1C-24.1,70.7,-38.4,64.4,-50.9,54.7C-63.4,44.9,-74,31.7,-77.8,16.5C-81.6,1.2,-78.6,-16,-69.8,-29.3C-61,-42.6,-46.4,-52,-32.1,-59.5C-17.8,-67,-3.9,-72.6,9.6,-71.7C23.1,-70.8,48.1,-58.9,48.1,-58.9Z" transform="translate(100 100)"></path>
+              </svg>
+            </div>
+            <div class="card-image-wrapper">
+              <img src="./image/body.png" alt="لوسیون بدن" class="card-image">
+            </div>
+            <div class="card-content">
+              <div class="card-category"><i data-feather="droplet" class="w-3 h-3"></i><span>بدن</span></div>
+              <h3 class="card-title">لوسیون طلایی</h3>
+              <div class="card-rating">
+                <i data-feather="star" class="w-4 h-4"></i><i data-feather="star" class="w-4 h-4"></i><i data-feather="star" class="w-4 h-4"></i><i data-feather="star" class="w-4 h-4"></i><i data-feather="star" class="w-4 h-4"></i>
+                <span>۴.۷</span>
+              </div>
+              <p class="card-price">۳۵۰,۰۰۰ تومان</p>
+            </div>
+          </a>
         </div>
       </section>
     </div>
   </main>
 
-  <!-- Footer -->
-  <footer class="bg-gradient-to-b from-gray-900 to-black text-white py-20">
+  <!-- Footer (from reference) -->
+  <footer id="about" class="bg-gradient-to-b from-gray-900 to-black text-white py-20">
     <div class="container mx-auto px-6">
-      <div class="text-center">
-        <h3 class="text-3xl font-serif font-bold mb-6">KOALAW</h3>
-        <p class="text-gray-400 mb-6">ارتقای زیبایی از طریق تجمل آگاهانه</p>
-        <div class="text-gray-400 text-sm">© ۲۰۲۵ KOALAW — تمام حقوق محفوظ است.</div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-12">
+        <div class="lg:col-span-2">
+          <h3 class="text-3xl font-serif font-bold mb-6">KOALAW</h3>
+          <p class="text-gray-400 mb-6 leading-relaxed">ارتقای زیبایی از طریق تجمل آگاهانه. هر محصول جشنی از بهترین مواد
+            طبیعی و علم نوآورانه است.</p>
+          <div class="space-y-3 mb-8">
+            <div class="flex items-start gap-2 text-gray-300"><i data-feather="map-pin" class="w-5 h-5 flex-shrink-0 mt-0.5"></i>
+              <address class="not-italic leading-relaxed">ایران، همدان، بلوار معدنی</address>
+            </div>
+            <div class="rounded-xl overflow-hidden ring-1 ring-white/10 max-w-sm"><iframe title="Iran Hamedan Madani Blvd Map" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d13076.699965851406!2d48.51733694002674!3d34.97746897368537!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3fee6d4d12658141%3A0x5514695c023923c4!2sMadani%20Blvd%2C%20Hamedan%2C%20Hamedan%20Province%2C%20Iran!5e0!3m2!1sen!2s!4v1701345678901!5m2!1sen!2s" width="100%" height="160" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" style="filter:grayscale(20%)"></iframe></div>
+          </div>
+          <div class="flex gap-3"><a href="#" class="bg-gray-800 p-3 rounded-full hover:bg-gray-700 transition-all duration-300 transform hover:scale-110"><i data-feather="instagram" class="w-5 h-5"></i></a></div>
+        </div>
+        <div id="footer-links" class="lg:col-span-3 grid grid-cols-2 md:grid-cols-3 gap-8"></div>
+      </div>
+      <div class="border-t border-gray-800 pt-8">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+          <div class="flex flex-col md:flex-row items-center mb-4 md:mb-0">
+            <p class="text-gray-400 text-sm mb-2 md:mb-0 md:ml-6">© ۲۰۲۵ D.AI — تمام حقوق محفوظ است.</p>
+            <div class="flex items-center gap-x-6 md:gap-x-8 text-sm flex-wrap"><a href="#" class="text-gray-400 hover:text-white transition duration-300">سیاست حفظ حریم خصوصی</a><a href="#" class="text-gray-400 hover:text-white transition duration-300">شرایط خدمات</a><a href="#" class="text-gray-400 hover:text-white transition duration-300">سیاست کوکی</a></div>
+          </div>
+          <div class="flex items-center gap-x-4"><span class="text-gray-400 text-sm ml-2">پرداخت امن:</span><img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa" class="h-8 opacity-70 hover:opacity-100 transition-opacity duration-300"><img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" class="h-8 opacity-70 hover:opacity-100 transition-opacity duration-300"><img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal" class="h-6 opacity-70 hover:opacity-100 transition-opacity duration-300"><img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" alt="Apple Pay" class="h-8 opacity-70 hover:opacity-100 transition-opacity duration-300"></div>
+        </div>
       </div>
     </div>
   </footer>
@@ -1110,8 +1295,28 @@
   <script>
     // Initialize
     document.addEventListener('DOMContentLoaded', () => {
-      AOS.init({ duration: 600, easing: "ease-out-cubic", once: true, offset: 40 });
+      AOS.init({
+        duration: 600,
+        easing: "ease-out-cubic",
+        once: true,
+        offset: 40
+      });
       feather.replace();
+
+      // ** NEW: Footer Links Generation (from reference) **
+      const fLC = document.getElementById("footer-links");
+      if (fLC) {
+        const fL = {
+          "فروشگاه": ["تازه‌ها", "پرفروش‌ترین‌ها", "مراقبت از پوست", "آرایش", "عطر", "ست‌های هدیه"],
+          "خدمات مشتریان": ["تماس با ما", "سوالات متداول", "اطلاعات ارسال", "مرجوعی", "پیگیری سفارش"]
+        };
+        fLC.innerHTML = '';
+        for (const title in fL) {
+          let linksHTML = "";
+          fL[title].forEach(linkText => linksHTML += `<li><a href="#" class="text-gray-400 hover:text-white transition duration-300">${linkText}</a></li>`);
+          fLC.innerHTML += `<div><h4 class="font-semibold text-lg mb-6">${title}</h4><ul class="space-y-3">${linksHTML}</ul></div>`;
+        }
+      }
 
       // GSAP Parallax minor for vibe (optional)
       gsap.registerPlugin(ScrollTrigger);
@@ -1154,19 +1359,36 @@
         searchInput = document.getElementById('search-input');
 
       if (searchButton && searchOverlay && closeSearchButton && searchInput) {
-        const openSearch = () => { searchOverlay.classList.add('is-active'); document.body.classList.add('search-overlay-open'); setTimeout(() => searchInput.focus(), 400); };
-        const closeSearch = () => { searchOverlay.classList.remove('is-active'); document.body.classList.remove('search-overlay-open'); };
-        searchButton.addEventListener('click', e => { e.preventDefault(); openSearch(); });
+        const openSearch = () => {
+          searchOverlay.classList.add('is-active');
+          document.body.classList.add('search-overlay-open');
+          setTimeout(() => searchInput.focus(), 400);
+        };
+        const closeSearch = () => {
+          searchOverlay.classList.remove('is-active');
+          document.body.classList.remove('search-overlay-open');
+        };
+        searchButton.addEventListener('click', e => {
+          e.preventDefault();
+          openSearch();
+        });
         closeSearchButton.addEventListener('click', closeSearch);
-        searchOverlay.addEventListener('click', e => { if (e.target === searchOverlay) closeSearch(); });
-        document.addEventListener('keydown', e => { if (e.key === "Escape" && searchOverlay.classList.contains('is-active')) closeSearch(); });
+        searchOverlay.addEventListener('click', e => {
+          if (e.target === searchOverlay) closeSearch();
+        });
+        document.addEventListener('keydown', e => {
+          if (e.key === "Escape" && searchOverlay.classList.contains('is-active')) closeSearch();
+        });
       }
 
       // Custom cursor (exactly like reference with click hearts)
       const cursor = document.querySelector(".cursor");
       const cursorFace = document.querySelector(".cursor-face");
       const cursorFollower = document.querySelector(".cursor-follower");
-      let cursorX = 0, cursorY = 0, followerX = 0, followerY = 0;
+      let cursorX = 0,
+        cursorY = 0,
+        followerX = 0,
+        followerY = 0;
       const speed = 0.5;
 
       if (window.innerWidth > 768) {
@@ -1191,7 +1413,7 @@
         animate();
 
         // Hover effects (scale follower & color)
-        document.querySelectorAll("a, button, .thumbnail, .related-product-card").forEach(el => {
+        document.querySelectorAll("a, button, .thumbnail, .product-card-v3").forEach(el => {
           el.addEventListener("mouseenter", () => {
             cursor.classList.add("hover");
             cursorFollower.style.transform = "translate(-50%, -50%) scale(1.5)";
@@ -1215,7 +1437,9 @@
             t.style.transform += ` rotate(${30 * Math.random() - 15}deg)`;
             document.body.appendChild(t);
             setTimeout(() => t.remove(), 1300);
-          }, { passive: true });
+          }, {
+            passive: true
+          });
         }
       } else {
         [cursor, cursorFace, cursorFollower].forEach(el => el.style.display = "none");
@@ -1235,6 +1459,7 @@
       const reviewMsg = document.getElementById('review-msg');
 
       let currentRating = 0;
+
       function updateReviewCounts() {
         const total = initialReviewsCount + userReviewsCount;
         const fa = total.toLocaleString('fa-IR');
@@ -1245,41 +1470,34 @@
 
       function setupRatingControl() {
         if (!ratingControl) return;
-        // Feather replaced icons -> now they are <svg class="feather feather-star">
-        const stars = Array.from(ratingControl.querySelectorAll('svg.feather-star, svg.feather.feather-star'));
-        stars.forEach((svg, idx) => {
-          svg.classList.add('star');
-          svg.setAttribute('role', 'button');
-          svg.setAttribute('tabindex', '0');
-          svg.setAttribute('aria-label', `${idx + 1} ستاره`);
+        const stars = Array.from(ratingControl.querySelectorAll('.star'));
+        stars.forEach((star, idx) => {
+          star.setAttribute('role', 'button');
+          star.setAttribute('tabindex', '0');
+          star.setAttribute('aria-label', `${idx + 1} ستاره`);
 
           const paint = (value) => {
             stars.forEach((s, i) => {
-              if (i < value) {
-                s.setAttribute('fill', 'currentColor'); // fill star
-              } else {
-                s.setAttribute('fill', 'none');         // unfill star
-              }
+              s.style.fill = (i < value) ? 'currentColor' : 'none';
             });
           };
 
-          svg.addEventListener('mouseenter', () => paint(idx + 1));
-          svg.addEventListener('mouseleave', () => paint(currentRating));
-          svg.addEventListener('click', () => { currentRating = idx + 1; paint(currentRating); });
-          svg.addEventListener('keydown', (e) => {
+          star.addEventListener('mouseenter', () => paint(idx + 1));
+          star.addEventListener('mouseleave', () => paint(currentRating));
+          star.addEventListener('click', () => {
+            currentRating = idx + 1;
+            paint(currentRating);
+          });
+          star.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' || e.key === ' ') {
               e.preventDefault();
               currentRating = idx + 1;
               paint(currentRating);
             }
           });
-
-          // initial paint
-          const initial = currentRating;
-          paint(initial);
         });
       }
-      setupRatingControl(); // after feather.replace()
+      setupRatingControl();
 
       reviewForm?.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -1293,12 +1511,12 @@
 
         // Build review card HTML
         const starsHtml = Array(5).fill(0).map((_, i) =>
-          `<i data-feather="star" class="w-4 h-4" ${i < currentRating ? 'data-filled="true"' : ''}></i>`
+          `<i data-feather="star" class="w-4 h-4 ${i < currentRating ? 'fill-current' : ''}"></i>`
         ).join('');
 
-        const avatarSeed = Math.random() > 0.5
-          ? "1494790108377-be9c29b29330"
-          : "1507003211169-0a1dd7228f2d";
+        const avatarSeed = Math.random() > 0.5 ?
+          "1494790108377-be9c29b29330" :
+          "1507003211169-0a1dd7228f2d";
 
         const card = document.createElement('div');
         card.className = 'review-card';
@@ -1318,13 +1536,7 @@
         card.querySelector('p').textContent = text;
 
         reviewsList.prepend(card);
-        feather.replace(); // render icons in new card
-        // Fill the stars in the new card according to data-filled
-        card.querySelectorAll('.stars svg.feather-star, .stars svg.feather.feather-star').forEach(svg => {
-          if (svg.previousElementSibling && svg.previousElementSibling.hasAttribute('data-filled')) {
-            svg.setAttribute('fill', 'currentColor');
-          }
-        });
+        feather.replace();
 
         // Reset form
         reviewForm.reset();
@@ -1361,7 +1573,7 @@
       // Show selected tab content
       document.getElementById(tabName).classList.remove('hidden');
       // Add active class to clicked button
-      e.target.classList.add('active');
+      e.currentTarget.classList.add('active');
     }
   </script>
 </body>
