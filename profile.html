@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
-<!-- TODO jensiat and elanat the check, -->
 
 <head>
   <meta charset="UTF-8">
@@ -677,6 +676,12 @@
       transform: translateY(-2px);
     }
 
+    /* Keep the open gender dropdown above following cards */
+    .profile-card:has(.sort-select-wrapper.is-open) {
+      position: relative;
+      z-index: 1000;
+    }
+
     @media (min-width: 768px) {
       .search-overlay {
         align-items: center;
@@ -945,6 +950,156 @@
 
     .pulse-animation {
       animation: pulse 1.8s ease-in-out infinite;
+    }
+
+    /* ========== Gender dropdown (exact design as reference) ========== */
+    .sort-select-wrapper {
+      position: relative;
+      /* local vars to avoid conflicts */
+      --primary-sharp: #d96690;
+      --deep-brown: #3d2114;
+      --border-color: rgba(61, 33, 20, 0.1);
+    }
+
+    .sort-select--button {
+      width: 100%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: space-between; /* in RTL places text at right, icon at left (end) */
+      gap: 0.5rem;
+      cursor: pointer;
+      white-space: nowrap;
+      background-color: #fff;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 0.75rem 1rem;
+      font-weight: 600;
+      font-size: 0.875rem;
+      color: var(--deep-brown);
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      text-align: right;
+    }
+
+    .sort-select--button:focus {
+      outline: none;
+      border-color: var(--primary-sharp);
+      box-shadow: 0 0 0 3px rgba(217, 102, 144, 0.2);
+    }
+
+    .sort-select-wrapper .icon {
+      color: var(--primary-sharp);
+      transition: transform 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .sort-menu {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: calc(100% + 8px);
+      background: #fff;
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 6px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+      z-index: 40;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-6px);
+      transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+    }
+
+    .sort-select-wrapper.is-open .sort-menu {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .sort-select-wrapper.is-open .icon {
+      transform: rotate(180deg);
+    }
+
+    .sort-item {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.625rem 0.875rem;
+      border-radius: 10px;
+      cursor: pointer;
+      color: var(--deep-brown);
+      font-weight: 700;
+      font-size: 0.875rem;
+      background: transparent;
+      border: 0;
+      text-align: right;
+    }
+
+    .sort-item:hover {
+      background: rgba(227, 154, 180, 0.08);
+    }
+
+    .sort-item[aria-selected="true"] {
+      background: rgba(227, 154, 180, 0.12);
+    }
+
+    .sort-item .feather-check {
+      display: none;
+      color: var(--primary-sharp);
+    }
+
+    .sort-item[aria-selected="true"] .feather-check {
+      display: inline-block;
+    }
+
+    /* ========== Pink Toggle Switch for Notifications ========== */
+    .toggle-switch {
+      position: relative;
+    }
+
+    .toggle-switch input {
+      position: absolute;
+      opacity: 0;
+      width: 1px;
+      height: 1px;
+    }
+
+    .toggle-switch .switch {
+      width: 44px;
+      height: 24px;
+      background: #e5e7eb;
+      border-radius: 9999px;
+      display: inline-block;
+      position: relative;
+      transition: background 0.25s ease, box-shadow 0.25s ease;
+      box-shadow: inset 0 0 0 1px rgba(61, 41, 20, 0.08);
+    }
+
+    .toggle-switch .switch::after {
+      content: "";
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 20px;
+      height: 20px;
+      background: #fff;
+      border-radius: 50%;
+      transition: transform 0.25s ease;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+    }
+
+    .toggle-switch input:checked + .switch {
+      background: var(--primary);
+      box-shadow: inset 0 0 0 2px rgba(227, 154, 180, 0.35);
+    }
+
+    .toggle-switch input:checked + .switch::after {
+      transform: translateX(20px);
+    }
+
+    .toggle-switch input:focus-visible + .switch {
+      outline: none;
+      box-shadow: 0 0 0 4px rgba(227, 154, 180, 0.3);
     }
   </style>
 </head>
@@ -1298,13 +1453,27 @@
                   <input type="date" value="1995-05-15" class="form-input">
                 </div>
 
+                <!-- Gender dropdown (custom, exact design) -->
                 <div class="form-group">
                   <label class="form-label">جنسیت</label>
-                  <select class="form-input">
-                    <option>زن</option>
-                    <option>مرد</option>
-                    <option>ترجیح می‌دهم نگویم</option>
-                  </select>
+                  <div class="sort-select-wrapper" id="genderSelect">
+                    <button type="button" class="sort-select--button" aria-haspopup="listbox" aria-expanded="false">
+                      <span class="sort-current">جنسیت: زن</span>
+                      <i data-feather="chevron-down" class="w-4 h-4 icon"></i>
+                    </button>
+
+                    <div class="sort-menu" role="listbox" aria-label="جنسیت">
+                      <button type="button" class="sort-item" data-gender="female" role="option" aria-selected="true">
+                        <span>زن</span>
+                        <i data-feather="check" class="w-4 h-4"></i>
+                      </button>
+                      <button type="button" class="sort-item" data-gender="male" role="option" aria-selected="false">
+                        <span>مرد</span>
+                        <i data-feather="check" class="w-4 h-4"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <input type="hidden" name="gender" id="genderValue" value="female">
                 </div>
 
                 <div class="flex gap-4">
@@ -1404,9 +1573,10 @@
                     <h4 class="font-semibold text-gray-800">اعلان‌های سفارش</h4>
                     <p class="text-sm text-gray-600">دریافت اطلاعات وضعیت سفارش‌های شما</p>
                   </div>
-                  <label class="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" checked class="sr-only peer">
-                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-rose-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                  <!-- Modified toggle -->
+                  <label class="toggle-switch relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" checked class="sr-only">
+                    <span class="switch"></span>
                   </label>
                 </div>
 
@@ -1415,9 +1585,10 @@
                     <h4 class="font-semibold text-gray-800">اعلان‌های تخفیف و پیشنهادات</h4>
                     <p class="text-sm text-gray-600">دریافت اطلاعات تخفیف‌ها و پیشنهادات ویژه</p>
                   </div>
-                  <label class="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" checked class="sr-only peer">
-                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-rose-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                  <!-- Modified toggle -->
+                  <label class="toggle-switch relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" checked class="sr-only">
+                    <span class="switch"></span>
                   </label>
                 </div>
 
@@ -1426,9 +1597,10 @@
                     <h4 class="font-semibold text-gray-800">اعلان‌های محصولات جدید</h4>
                     <p class="text-sm text-gray-600">آگاه شدن از محصولات و کالکشن‌های جدید</p>
                   </div>
-                  <label class="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" class="sr-only peer">
-                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-rose-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                  <!-- Modified toggle -->
+                  <label class="toggle-switch relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" class="sr-only">
+                    <span class="switch"></span>
                   </label>
                 </div>
 
@@ -1437,9 +1609,10 @@
                     <h4 class="font-semibold text-gray-800">اعلان‌های بازاریابی</h4>
                     <p class="text-sm text-gray-600">دریافت ایمیل‌های تبلیغاتی و محتوای مارکتینگ</p>
                   </div>
-                  <label class="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" class="sr-only peer">
-                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-rose-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                  <!-- Modified toggle -->
+                  <label class="toggle-switch relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" class="sr-only">
+                    <span class="switch"></span>
                   </label>
                 </div>
 
@@ -1622,7 +1795,8 @@
       sidebarItems.forEach(item => {
         item.addEventListener('click', (e) => {
           e.preventDefault();
-          sidebarItems.forEach(el => el.classList.remove('active'));
+          sidebarItems.forEach(el => el.removeAttribute('class'));
+          sidebarItems.forEach(el => el.classList.add('sidebar-nav-item'));
           item.classList.add('active');
           tabContents.forEach(content => content.classList.add('hidden'));
           const targetTab = item.getAttribute('data-tab');
@@ -1657,6 +1831,57 @@
               setTimeout(() => t.remove(), 1300)
           }, { passive: !0 })
       })();
+
+      // ========== Gender dropdown (reference behavior) ==========
+      const genderWrap = document.getElementById("genderSelect");
+      if (genderWrap) {
+        const trigger = genderWrap.querySelector(".sort-select--button");
+        const current = genderWrap.querySelector(".sort-current");
+        const items = genderWrap.querySelectorAll(".sort-item");
+        const hiddenInput = document.getElementById("genderValue");
+
+        function openMenu() {
+          genderWrap.classList.add("is-open");
+          trigger.setAttribute("aria-expanded", "true");
+        }
+        function closeMenu() {
+          genderWrap.classList.remove("is-open");
+          trigger.setAttribute("aria-expanded", "false");
+        }
+        function updateGenderUI(key) {
+          items.forEach(btn => btn.setAttribute("aria-selected", String(btn.dataset.gender === key)));
+          const activeItem = Array.from(items).find(b => b.dataset.gender === key);
+          const activeText = activeItem ? activeItem.querySelector("span").textContent : "";
+          current.textContent = "جنسیت: " + activeText;
+          if (hiddenInput) hiddenInput.value = key;
+          feather.replace();
+        }
+
+        trigger.addEventListener("click", (e) => {
+          e.stopPropagation();
+          genderWrap.classList.contains("is-open") ? closeMenu() : openMenu();
+        });
+
+        items.forEach((btn) => {
+          btn.addEventListener("click", (e) => {
+            e.preventDefault();   // <- add this
+            e.stopPropagation();
+            updateGenderUI(btn.dataset.gender);
+            closeMenu();
+          });
+        });
+
+        document.addEventListener("click", () => {
+          if (genderWrap.classList.contains("is-open")) closeMenu();
+        });
+
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape" && genderWrap.classList.contains("is-open")) closeMenu();
+
+        });
+        // Initial icons within this component
+        feather.replace();
+      }
     });
   </script>
 </body>
