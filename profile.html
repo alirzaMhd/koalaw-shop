@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
-<!-- TODO jensiat and elanat the check -->
+<!-- TODO jensiat and elanat the check, -->
 
 <head>
   <meta charset="UTF-8">
@@ -315,11 +315,7 @@
       border: 1px solid rgba(227, 154, 180, 0.2);
     }
 
-    .profile-card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
-      border-color: var(--primary);
-    }
+    /* Hover effect removed from .profile-card */
 
     .sidebar-nav {
       background: #fff;
@@ -770,7 +766,7 @@
   <div id="mobile-menu-overlay" class="mobile-menu-overlay"></div>
 
   <!-- Profile Hero Section -->
-  <section class="profile-hero pt-24 pb-16 relative hoverable-section">
+  <section class="profile-hero pt-24 pb-16 relative">
     <div class="container mx-auto px-6 relative z-10">
       <div class="text-center text-white" data-aos="fade-up">
         <div class="inline-flex items-center gap-3 bg-white/20 backdrop-blur-sm rounded-full px-6 py-2 mb-6">
@@ -784,7 +780,7 @@
   </section>
 
   <!-- Profile Content -->
-  <section class="py-12 relative hoverable-section">
+  <section class="py-12 relative">
     <div class="container mx-auto px-6">
       <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
         
@@ -1345,8 +1341,8 @@
         }
         updateCursor();
 
-        // Add hover effects
-        document.querySelectorAll("a, button, .profile-card, .sidebar-nav-item, section.hoverable-section").forEach((el) => {
+        // Add hover effects (remove from .profile-card and section.hoverable-section)
+        document.querySelectorAll("a, button, .sidebar-nav-item").forEach((el) => {
           el.addEventListener("mouseenter", () => {
             cursor.classList.add("hover");
             cursorFollower.style.transform = "translate(-50%, -50%) scale(1.5)";
@@ -1473,8 +1469,8 @@
         lastScrollY = currentScroll;
       });
 
-      // Add some interactivity to cards
-      document.querySelectorAll('.profile-card, .order-card, .favorite-item').forEach(card => {
+      // Add some interactivity to cards (removed from .profile-card)
+      document.querySelectorAll('.order-card, .favorite-item').forEach(card => {
         card.addEventListener('mouseenter', () => {
           if (window.innerWidth > 768) {
             gsap.to(card, {
