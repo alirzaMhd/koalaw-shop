@@ -148,6 +148,7 @@
       transform: translateY(-7px) rotate(-45deg)
     }
 
+    /* Cursor (exactly as reference) */
     .cursor {
       width: 30px;
       height: 30px;
@@ -254,6 +255,46 @@
       transition: background .3s ease, transform .3s ease
     }
 
+    /* Floating heart effect (exactly as reference) */
+    .floating-heart {
+      position: fixed;
+      left: 0;
+      top: 0;
+      transform: translate(-50%, -50%);
+      font-size: 16px;
+      pointer-events: none;
+      z-index: 10000;
+      opacity: 0;
+      animation: heartFloat 1.2s ease-out forwards;
+      filter: drop-shadow(0 2px 0 rgba(0, 0, 0, .02))
+    }
+
+    @keyframes heartFloat {
+      0% {
+        transform: translate(-50%, -50%) scale(.8);
+        opacity: 0
+      }
+
+      15% {
+        opacity: .95
+      }
+
+      60% {
+        transform: translate(-50%, -140%) scale(1.15)
+      }
+
+      to {
+        transform: translate(-50%, -200%) scale(1);
+        opacity: 0
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .floating-heart {
+        animation: none !important;
+      }
+    }
+
     nav {
       backdrop-filter: blur(20px);
       background: rgba(250, 248, 243, .85);
@@ -301,8 +342,13 @@
     }
 
     @keyframes rotate {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
     }
 
     .profile-card {
@@ -688,6 +734,7 @@
       transition: transform 0.35s ease, box-shadow 0.35s ease;
       will-change: transform, box-shadow;
     }
+
     .hoverable-section:hover {
       transform: translateY(-6px);
       box-shadow: 0 24px 60px rgba(120, 80, 100, 0.12);
@@ -705,8 +752,10 @@
     }
 
     /* Ensure feather icons inside buttons keep size and don't shrink */
-    .btn-primary i, .btn-primary svg,
-    .btn-secondary i, .btn-secondary svg {
+    .btn-primary i,
+    .btn-primary svg,
+    .btn-secondary i,
+    .btn-secondary svg {
       width: 1rem;
       height: 1rem;
       flex-shrink: 0;
@@ -716,44 +765,78 @@
     /* ========== Responsive Fix Pack (Appended) ========== */
 
     /* Tailwind-like helpers for classes you already use */
-    .text-primary { color: var(--primary) !important; }
-    .bg-primary { background-color: var(--primary) !important; }
-    .border-primary { border-color: var(--primary) !important; }
+    .text-primary {
+      color: var(--primary) !important;
+    }
+
+    .bg-primary {
+      background-color: var(--primary) !important;
+    }
+
+    .border-primary {
+      border-color: var(--primary) !important;
+    }
 
     /* Ensure buttons are touch-friendly */
-    .btn-primary, .btn-secondary { min-height: 44px; min-width: 44px; font-size: .95rem; }
+    .btn-primary,
+    .btn-secondary {
+      min-height: 44px;
+      min-width: 44px;
+      font-size: .95rem;
+    }
 
     /* Prefer default cursor on touch devices, keep custom cursor on desktop */
     @media (pointer: coarse) {
-      * { cursor: auto !important; }
+      * {
+        cursor: auto !important;
+      }
     }
 
     /* Profile card + small tweaks on small screens */
     @media (max-width: 640px) {
-      .profile-card { padding: 1rem; border-radius: 18px; }
-      .favorite-image { width: 72px; height: 72px; }
+      .profile-card {
+        padding: 1rem;
+        border-radius: 18px;
+      }
+
+      .favorite-image {
+        width: 72px;
+        height: 72px;
+      }
     }
 
     /* Sidebar becomes horizontal scrollable "tabs" on <= lg */
     @media (max-width: 1024px) {
-      .sidebar-nav { padding: .75rem .75rem 1rem; border-radius: 18px; }
+      .sidebar-nav {
+        padding: .75rem .75rem 1rem;
+        border-radius: 18px;
+      }
+
       .sidebar-nav nav {
         display: flex;
         gap: .5rem;
         overflow-x: auto;
         white-space: nowrap;
         align-items: center;
-        scrollbar-width: none; 
+        scrollbar-width: none;
         -ms-overflow-style: none;
       }
-      .sidebar-nav nav::-webkit-scrollbar { display: none; }
+
+      .sidebar-nav nav::-webkit-scrollbar {
+        display: none;
+      }
+
       .sidebar-nav-item {
         margin-bottom: 0;
         padding: .625rem 1rem;
         border-radius: 9999px;
         flex: 0 0 auto;
       }
-      .sidebar-nav-item i { width: 18px; height: 18px; }
+
+      .sidebar-nav-item i {
+        width: 18px;
+        height: 18px;
+      }
 
       /* Avoid horizontal nudge (RTL overflow) on mobile */
       .sidebar-nav-item:hover,
@@ -772,103 +855,128 @@
 
     /* Cards and rows: stack and make CTA full-width on small screens */
     @media (max-width: 640px) {
-      .order-card .flex.justify-between { 
-        flex-direction: column; 
-        align-items: flex-start; 
-        gap: .75rem; 
+      .order-card .flex.justify-between {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: .75rem;
       }
-      .order-card .flex.items-center { flex-wrap: wrap; }
-      .order-card .flex.justify-between.items-center { 
-        flex-direction: column; 
-        align-items: stretch; 
-        gap: .5rem; 
-      }
-      .order-card .btn-primary, 
-      .order-card .btn-secondary { width: 100%; }
 
-      .favorite-item { 
-        flex-direction: column; 
-        align-items: stretch; 
+      .order-card .flex.items-center {
+        flex-wrap: wrap;
       }
-      .favorite-item .favorite-image { 
-        width: 100%; 
-        height: auto; 
-        aspect-ratio: 4/3; 
+
+      .order-card .flex.justify-between.items-center {
+        flex-direction: column;
+        align-items: stretch;
+        gap: .5rem;
       }
-      .favorite-item .btn-primary, 
-      .favorite-item .btn-secondary { width: 100%; }
+
+      .order-card .btn-primary,
+      .order-card .btn-secondary {
+        width: 100%;
+      }
+
+      .favorite-item {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .favorite-item .favorite-image {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 4/3;
+      }
+
+      .favorite-item .btn-primary,
+      .favorite-item .btn-secondary {
+        width: 100%;
+      }
     }
 
     /* Stats grid: tighter on the tiniest screens */
     @media (max-width: 360px) {
-      .stats-number { font-size: 1.4rem; }
-      .stats-card { padding: 1rem; }
+      .stats-number {
+        font-size: 1.4rem;
+      }
+
+      .stats-card {
+        padding: 1rem;
+      }
     }
 
     /* Search overlay: keep close button reachable on small / with notches */
     @media (max-width: 768px) {
-      .search-container { padding: 12px; }
-      .close-search-button { 
-        position: fixed; 
-        right: max(12px, env(safe-area-inset-right)); 
-        top: max(12px, env(safe-area-inset-top)); 
+      .search-container {
+        padding: 12px;
+      }
+
+      .close-search-button {
+        position: fixed;
+        right: max(12px, env(safe-area-inset-right));
+        top: max(12px, env(safe-area-inset-top));
         z-index: 1000;
       }
     }
 
     /* Reduce heavy effects on very small / low-power devices */
-    @media (max-width: 480px), (prefers-reduced-motion: reduce) {
-      .profile-hero::before { display: none; }
-      .search-overlay { 
-        backdrop-filter: blur(12px); 
-        -webkit-backdrop-filter: blur(12px); 
+    @media (max-width: 480px),
+    (prefers-reduced-motion: reduce) {
+      .profile-hero::before {
+        display: none;
+      }
+
+      .search-overlay {
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
       }
     }
 
     /* Pulse animation for the cart badge (already used in your markup) */
-    @keyframes pulse { 
-      0%,100% { transform: scale(1); } 
-      50% { transform: scale(1.08); } 
+    @keyframes pulse {
+      0%,
+      100% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.08);
+      }
     }
-    .pulse-animation { animation: pulse 1.8s ease-in-out infinite; }
+
+    .pulse-animation {
+      animation: pulse 1.8s ease-in-out infinite;
+    }
   </style>
 </head>
 
 <body>
+  <!-- Custom cursor elements (exactly as reference) -->
   <div class="cursor">
     <div class="cursor-eyes"></div>
   </div>
   <div class="cursor-face"></div>
   <div class="cursor-follower"></div>
 
-  <!-- Navigation -->
+  <!-- Navigation (exactly as reference) -->
   <nav class="fixed w-full z-50 transition-all duration-300" id="navbar">
     <div class="container mx-auto px-6 py-5">
       <div class="flex items-center justify-between" dir="ltr">
-        <a href="/" class="text-3xl font-serif font-bold text-gray-800 tracking-wider z-50 flex items-center gap-x-1">
-          K<img src="./image/koala.png" alt="Koala logo" class="w-8 h-7 inline-block -mt-1">ALAW
-        </a>
-        <div class="hidden lg:flex items-center gap-x-10 flex-row-reverse">
-          <a href="/shop" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">فروشگاه</a>
-          <a href="#collections" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">کالکشن ها</a>
-          <a href="#brands" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">برندها</a>
-          <a href="#magazine" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">مجله</a>
-          <a href="#about" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">درباره ما</a>
-        </div>
-        <div class="flex items-center gap-x-6">
-          <button id="search-button" class="text-gray-700 hover:text-gray-900 transition-all duration-300 hover:scale-110">
-            <i data-feather="search" class="w-5 h-5"></i>
-          </button>
-          <button class="text-primary hover:text-gray-900 transition-all duration-300 hover:scale-110">
-            <i data-feather="user" class="w-5 h-5"></i>
-          </button>
-          <button class="text-gray-700 hover:text-gray-900 relative transition-all duration-300 hover:scale-110">
-            <i data-feather="shopping-bag" class="w-5 h-5"></i>
-            <span class="absolute -top-2 -right-2 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center pulse-animation">۳</span>
-          </button>
-          <button id="mobile-menu-button" class="hamburger-button lg:hidden">
-            <span></span><span></span><span></span>
-          </button>
+        <a href="#" class="text-3xl font-serif font-bold text-gray-800 tracking-wider z-50 flex items-center gap-x-1">K<img src="./image/koala.png" alt="Koala logo" class="w-8 h-7 inline-block -mt-1">ALAW</a>
+        <div class="hidden lg:flex items-center gap-x-10 flex-row-reverse"><a href="/shop"
+            class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">فروشگاه</a><a href="#collections"
+            class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">کالکشن ها</a><a href="#brands"
+            class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">برندها</a><a href="#magazine"
+            class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">مجله</a><a href="#about"
+            class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">درباره ما</a></div>
+        <div class="flex items-center gap-x-6"><button id="search-button"
+            class="text-gray-700 hover:text-gray-900 transition-all duration-300 hover:scale-110"><i
+              data-feather="search" class="w-5 h-5"></i></button><button
+            class="text-gray-700 hover:text-gray-900 transition-all duration-300 hover:scale-110"><i data-feather="user"
+              class="w-5 h-5"></i></button><button
+            class="text-gray-700 hover:text-gray-900 relative transition-all duration-300 hover:scale-110"><i
+              data-feather="shopping-bag" class="w-5 h-5"></i><span
+              class="absolute -top-2 -right-2 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center pulse-animation">۳</span></button><button
+            id="mobile-menu-button" class="hamburger-button lg:hidden"><span></span><span></span><span></span></button>
         </div>
       </div>
     </div>
@@ -902,7 +1010,7 @@
   <section class="py-12 relative">
     <div class="container mx-auto px-6">
       <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
-        
+
         <!-- Sidebar Navigation -->
         <div class="lg:col-span-1" data-aos="fade-right">
           <div class="sidebar-nav">
@@ -941,15 +1049,13 @@
 
         <!-- Main Content -->
         <div class="lg:col-span-3">
-          
+
           <!-- Dashboard Tab -->
           <div id="dashboard" class="tab-content" data-aos="fade-left">
             <div class="profile-card mb-8">
               <div class="flex items-center gap-6 mb-6">
                 <div class="relative">
-                  <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop" 
-                       alt="تصویر پروفایل" 
-                       class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg">
+                  <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop" alt="تصویر پروفایل" class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg">
                   <button class="absolute bottom-0 right-0 bg-primary text-white rounded-full p-2 shadow-lg hover:scale-110 transition-transform">
                     <i data-feather="camera" class="w-4 h-4"></i>
                   </button>
@@ -1047,7 +1153,7 @@
           <div id="orders" class="tab-content hidden" data-aos="fade-left">
             <div class="profile-card">
               <h2 class="text-2xl font-bold text-gray-800 mb-6">سفارش‌های من</h2>
-              
+
               <div class="flex gap-4 mb-6 overflow-x-auto">
                 <button class="btn-primary whitespace-nowrap">همه (۱۲)</button>
                 <button class="btn-secondary whitespace-nowrap">در انتظار پرداخت (۱)</button>
@@ -1066,7 +1172,7 @@
                     </div>
                     <span class="status-badge status-delivered">تحویل شده</span>
                   </div>
-                  
+
                   <div class="border-t pt-4">
                     <div class="flex items-center gap-4 mb-3">
                       <img src="./image/product.png" alt="محصول" class="w-16 h-16 rounded-lg object-cover">
@@ -1076,7 +1182,7 @@
                         <p class="text-sm font-semibold text-primary">۴۸۰,۰۰۰ تومان</p>
                       </div>
                     </div>
-                    
+
                     <div class="flex items-center gap-4 mb-3">
                       <img src="./image/product.png" alt="محصول" class="w-16 h-16 rounded-lg object-cover">
                       <div class="flex-1">
@@ -1086,7 +1192,7 @@
                       </div>
                     </div>
                   </div>
-                  
+
                   <div class="border-t pt-4 flex justify-between items-center">
                     <div>
                       <p class="text-lg font-bold">مجموع: ۱,۲۸۰,۰۰۰ تومان</p>
@@ -1105,7 +1211,7 @@
           <div id="favorites" class="tab-content hidden" data-aos="fade-left">
             <div class="profile-card">
               <h2 class="text-2xl font-bold text-gray-800 mb-6">علاقه‌مندی‌ها (۸)</h2>
-              
+
               <div class="space-y-4">
                 <div class="favorite-item">
                   <img src="./image/product.png" alt="محصول" class="favorite-image">
@@ -1164,7 +1270,7 @@
           <div id="profile-settings" class="tab-content hidden" data-aos="fade-left">
             <div class="profile-card">
               <h2 class="text-2xl font-bold text-gray-800 mb-6">تنظیمات پروفایل</h2>
-              
+
               <form class="space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div class="form-group">
@@ -1211,7 +1317,7 @@
             <!-- Change Password -->
             <div class="profile-card mt-8">
               <h3 class="text-xl font-bold text-gray-800 mb-6">تغییر رمز عبور</h3>
-              
+
               <form class="space-y-6">
                 <div class="form-group">
                   <label class="form-label">رمز عبور فعلی</label>
@@ -1243,7 +1349,7 @@
                   <span>افزودن آدرس جدید</span>
                 </button>
               </div>
-              
+
               <div class="space-y-4">
                 <div class="border border-primary rounded-2xl p-6 bg-gradient-to-r from-rose-50 to-pink-50">
                   <div class="flex justify-between items-start mb-3">
@@ -1291,7 +1397,7 @@
           <div id="notifications" class="tab-content hidden" data-aos="fade-left">
             <div class="profile-card">
               <h2 class="text-2xl font-bold text-gray-800 mb-6">تنظیمات اعلان‌ها</h2>
-              
+
               <div class="space-y-6">
                 <div class="flex justify-between items-center py-4 border-b border-gray-100">
                   <div>
@@ -1371,54 +1477,49 @@
     </div>
   </div>
 
-  <!-- Footer -->
-  <footer class="bg-gradient-to-b from-gray-900 to-black text-white py-20">
+  <!-- Footer (exactly as reference) -->
+  <footer id="about" class="bg-gradient-to-b from-gray-900 to-black text-white py-20">
     <div class="container mx-auto px-6">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-12">
         <div class="lg:col-span-2">
           <h3 class="text-3xl font-serif font-bold mb-6">KOALAW</h3>
-          <p class="text-gray-400 mb-6 leading-relaxed">ارتقای زیبایی از طریق تجمل آگاهانه. هر محصول جشنی از بهترین مواد طبیعی و علم نوآورانه است.</p>
+          <p class="text-gray-400 mb-6 leading-relaxed">ارتقای زیبایی از طریق تجمل آگاهانه. هر محصول جشنی از بهترین مواد
+            طبیعی و علم نوآورانه است.</p>
           <div class="space-y-3 mb-8">
-            <div class="flex items-start gap-2 text-gray-300">
-              <i data-feather="map-pin" class="w-5 h-5 flex-shrink-0 mt-0.5"></i>
+            <div class="flex items-start gap-2 text-gray-300"><i data-feather="map-pin"
+                class="w-5 h-5 flex-shrink-0 mt-0.5"></i>
               <address class="not-italic leading-relaxed">ایران، همدان، بلوار معدنی</address>
             </div>
+            <div class="rounded-xl overflow-hidden ring-1 ring-white/10 max-w-sm"><iframe
+                title="Iran Hamedan Madani Blvd Map"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d13076.699965851406!2d48.51733694002674!3d34.97746897368537!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3fee6d4d12658141%3A0x5514695c023923c4!2sMadani%20Blvd%2C%20Hamedan%2C%20Hamedan%20Province%2C%20Iran!5e0!3m2!1sen!2s!4v1701345678901!5m2!1sen!2s"
+                width="100%" height="160" style="border:0;" allowfullscreen="" loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade" style="filter:grayscale(20%)"></iframe></div>
           </div>
-          <div class="flex gap-3">
-            <a href="#" class="bg-gray-800 p-3 rounded-full hover:bg-gray-700 transition-all duration-300 transform hover:scale-110">
-              <i data-feather="instagram" class="w-5 h-5"></i>
-            </a>
-          </div>
+          <div class="flex gap-3"><a href="#"
+              class="bg-gray-800 p-3 rounded-full hover:bg-gray-700 transition-all duration-300 transform hover:scale-110"><i
+                data-feather="instagram" class="w-5 h-5"></i></a></div>
         </div>
-        <div class="lg:col-span-3 grid grid-cols-2 md:grid-cols-3 gap-8">
-          <div>
-            <h4 class="font-semibold text-lg mb-6">فروشگاه</h4>
-            <ul class="space-y-3">
-              <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">تازه‌ها</a></li>
-              <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">پرفروش‌ترین‌ها</a></li>
-              <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">مراقبت از پوست</a></li>
-              <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">آرایش</a></li>
-              <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">عطر</a></li>
-            </ul>
-          </div>
-          <div>
-            <h4 class="font-semibold text-lg mb-6">خدمات مشتریان</h4>
-            <ul class="space-y-3">
-              <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">تماس با ما</a></li>
-              <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">سوالات متداول</a></li>
-              <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">اطلاعات ارسال</a></li>
-              <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">مرجوعی</a></li>
-            </ul>
-          </div>
-        </div>
+        <div id="footer-links" class="lg:col-span-3 grid grid-cols-2 md:grid-cols-3 gap-8"></div>
       </div>
       <div class="border-t border-gray-800 pt-8">
         <div class="flex flex-col md:flex-row justify-between items-center">
-          <p class="text-gray-400 text-sm mb-4 md:mb-0">© ۲۰۲۵ D.AI — تمام حقوق محفوظ است.</p>
-          <div class="flex items-center gap-x-6 text-sm">
-            <a href="#" class="text-gray-400 hover:text-white transition duration-300">سیاست حفظ حریم خصوصی</a>
-            <a href="#" class="text-gray-400 hover:text-white transition duration-300">شرایط خدمات</a>
+          <div class="flex flex-col md:flex-row items-center mb-4 md:mb-0">
+            <p class="text-gray-400 text-sm mb-2 md:mb-0 md:ml-6">© ۲۰۲۵ D.AI — تمام حقوق محفوظ است.</p>
+            <div class="flex items-center gap-x-6 md:gap-x-8 text-sm flex-wrap"><a href="#"
+                class="text-gray-400 hover:text-white transition duration-300">سیاست حفظ حریم خصوصی</a><a href="#"
+                class="text-gray-400 hover:text-white transition duration-300">شرایط خدمات</a><a href="#"
+                class="text-gray-400 hover:text-white transition duration-300">سیاست کوکی</a></div>
           </div>
+          <div class="flex items-center gap-x-4"><span class="text-gray-400 text-sm ml-2">پرداخت امن:</span><img
+              src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa"
+              class="h-8 opacity-70 hover:opacity-100 transition-opacity duration-300"><img
+              src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard"
+              class="h-8 opacity-70 hover:opacity-100 transition-opacity duration-300"><img
+              src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal"
+              class="h-6 opacity-70 hover:opacity-100 transition-opacity duration-300"><img
+              src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" alt="Apple Pay"
+              class="h-8 opacity-70 hover:opacity-100 transition-opacity duration-300"></div>
         </div>
       </div>
     </div>
@@ -1429,205 +1530,133 @@
       // Initialize AOS
       AOS.init({ duration: 600, easing: "ease-out-cubic", once: true, offset: 40 });
 
-      // Initialize feather icons
+      // Feather icons
       feather.replace();
 
-      // Custom cursor
-      const cursor = document.querySelector(".cursor");
-      const cursorFace = document.querySelector(".cursor-face");
-      const cursorFollower = document.querySelector(".cursor-follower");
-      let cursorX = 0, cursorY = 0, followerX = 0, followerY = 0;
-      const speed = 0.5;
+      // Populate footer links (exactly as reference)
+      const fLC = document.getElementById("footer-links");
+      if (fLC) {
+        const fL = {
+          "فروشگاه": ["تازه‌ها", "پرفروش‌ترین‌ها", "مراقبت از پوست", "آرایش", "عطر", "ست‌های هدیه"],
+          "خدمات مشتریان": ["تماس با ما", "سوالات متداول", "اطلاعات ارسال", "مرجوعی", "پیگیری سفارش"]
+        };
+        for (const t in fL) {
+          let l = "";
+          fL[t].forEach(it => l += `<li><a href="#" class="text-gray-400 hover:text-white transition duration-300">${it}</a></li>`);
+          fLC.innerHTML += `<div><h4 class="font-semibold text-lg mb-6">${t}</h4><ul class="space-y-3">${l}</ul></div>`;
+        }
+      }
+
+      // Custom cursor (exact behavior as reference)
+      const cur = document.querySelector(".cursor"),
+        cF = document.querySelector(".cursor-face"),
+        cFol = document.querySelector(".cursor-follower");
+      let cX = 0, cY = 0, fX = 0, fY = 0, s = .5;
 
       if (window.innerWidth > 768) {
-        document.addEventListener("mousemove", (e) => {
-          cursorX = e.clientX;
-          cursorY = e.clientY;
-        });
+        document.addEventListener("mousemove", e => { cX = e.clientX, cY = e.clientY });
+        (function a() {
+          cur.style.left = cX + "px", cur.style.top = cY + "px",
+            cF.style.left = cX + "px", cF.style.top = cY + "px",
+            fX += (cX - fX) * s, fY += (cY - fY) * s,
+            cFol.style.left = fX + "px", cFol.style.top = fY + "px",
+            requestAnimationFrame(a)
+        })();
 
-        function updateCursor() {
-          cursor.style.left = cursorX + "px";
-          cursor.style.top = cursorY + "px";
-          cursorFace.style.left = cursorX + "px";
-          cursorFace.style.top = cursorY + "px";
-          
-          followerX += (cursorX - followerX) * speed;
-          followerY += (cursorY - followerY) * speed;
-          cursorFollower.style.left = followerX + "px";
-          cursorFollower.style.top = followerY + "px";
-          
-          requestAnimationFrame(updateCursor);
-        }
-        updateCursor();
-
-        // Add hover effects (remove from .profile-card and section.hoverable-section)
-        document.querySelectorAll("a, button, .sidebar-nav-item").forEach((el) => {
-          el.addEventListener("mouseenter", () => {
-            cursor.classList.add("hover");
-            cursorFollower.style.transform = "translate(-50%, -50%) scale(1.5)";
-          });
-          el.addEventListener("mouseleave", () => {
-            cursor.classList.remove("hover");
-            cursorFollower.style.transform = "translate(-50%, -50%) scale(1)";
-          });
+        document.querySelectorAll("a,button,.collection-card-new, .category-card, .campaign-featured-card, .campaign-side-card").forEach(e => {
+          e.addEventListener("mouseenter", () => { cur.classList.add("hover"), cFol.style.transform = "translate(-50%,-50%) scale(1.5)" }),
+            e.addEventListener("mouseleave", () => { cur.classList.remove("hover"), cFol.style.transform = "translate(-50%,-50%) scale(1)" })
         });
       } else {
-        [cursor, cursorFace, cursorFollower].forEach(el => el.style.display = "none");
+        [cur, cF, cFol].forEach(e => e.style.display = "none");
       }
 
-      // Mobile menu
-      const mobileButton = document.getElementById('mobile-menu-button');
-      const mobileMenu = document.getElementById('mobile-menu');
-      const mobileOverlay = document.getElementById('mobile-menu-overlay');
-
-      const toggleMobileMenu = () => {
-        mobileButton.classList.toggle('is-active');
-        mobileMenu.classList.toggle('is-active');
-        mobileOverlay.classList.toggle('is-active');
-        document.body.classList.toggle('mobile-menu-open');
-      };
-
-      if (mobileButton) {
-        mobileButton.addEventListener('click', toggleMobileMenu);
-        mobileOverlay.addEventListener('click', toggleMobileMenu);
-        mobileMenu.querySelectorAll('a').forEach(link => {
-          link.addEventListener('click', () => {
-            if (mobileMenu.classList.contains('is-active')) {
-              toggleMobileMenu();
-            }
-          });
-        });
+      // Mobile menu (exact logic as reference)
+      const mB = document.getElementById('mobile-menu-button'),
+        mM = document.getElementById('mobile-menu'),
+        mO = document.getElementById('mobile-menu-overlay'),
+        tM = () => {
+          mB.classList.toggle('is-active'),
+            mM.classList.toggle('is-active'),
+            mO.classList.toggle('is-active'),
+            document.body.classList.toggle('mobile-menu-open')
+        };
+      if (mB && mM && mO) {
+        mB.addEventListener('click', tM);
+        mO.addEventListener('click', tM);
+        mM.querySelectorAll('a').forEach(l => l.addEventListener('click', () => {
+          mM.classList.contains('is-active') && tM()
+        }));
       }
 
-      // Search overlay
-      const searchButton = document.getElementById('search-button');
-      const searchOverlay = document.getElementById('search-overlay');
-      const closeSearchButton = document.getElementById('close-search-button');
-      const searchInput = document.getElementById('search-input');
+      // Search overlay (same UX as reference)
+      const searchButton = document.getElementById('search-button'),
+        searchOverlay = document.getElementById('search-overlay'),
+        closeSearchButton = document.getElementById('close-search-button'),
+        searchInput = document.getElementById('search-input');
 
-      if (searchButton && searchOverlay) {
-        const openSearch = () => {
-          searchOverlay.classList.add('is-active');
-          document.body.classList.add('search-overlay-open');
-          setTimeout(() => searchInput.focus(), 400);
-        };
-
-        const closeSearch = () => {
-          searchOverlay.classList.remove('is-active');
-          document.body.classList.remove('search-overlay-open');
-        };
-
-        searchButton.addEventListener('click', (e) => {
-          e.preventDefault();
-          openSearch();
-        });
-
+      if (searchButton && searchOverlay && closeSearchButton && searchInput) {
+        const openSearch = () => { searchOverlay.classList.add('is-active'), document.body.classList.add('search-overlay-open'), setTimeout(() => searchInput.focus(), 400) };
+        const closeSearch = () => { searchOverlay.classList.remove('is-active'), document.body.classList.remove('search-overlay-open') };
+        searchButton.addEventListener('click', e => { e.preventDefault(), openSearch() });
         closeSearchButton.addEventListener('click', closeSearch);
-        searchOverlay.addEventListener('click', (e) => {
-          if (e.target === searchOverlay) closeSearch();
-        });
-
-        document.addEventListener('keydown', (e) => {
-          if (e.key === 'Escape' && searchOverlay.classList.contains('is-active')) {
-            closeSearch();
-          }
-        });
+        searchOverlay.addEventListener('click', e => { e.target === searchOverlay && closeSearch() });
+        document.addEventListener('keydown', e => { "Escape" === e.key && searchOverlay.classList.contains('is-active') && closeSearch() });
       }
 
-      // Tab navigation
+      // Navbar scroll behavior (as reference)
+      const nav = document.getElementById("navbar");
+      let lS = 0;
+      window.addEventListener("scroll", () => {
+        const e = window.pageYOffset;
+        nav.style.background = e > 100 ? "rgba(250,248,243,.95)" : "rgba(250,248,243,.85)";
+        nav.style.boxShadow = e > 100 ? "0 4px 30px rgba(0,0,0,.1)" : "0 1px 20px rgba(0,0,0,.05)";
+        nav.style.transform = e > lS && e > 500 ? "translateY(-100%)" : "translateY(0)";
+        lS = e;
+      });
+
+      // Tabs
       const sidebarItems = document.querySelectorAll('.sidebar-nav-item[data-tab]');
       const tabContents = document.querySelectorAll('.tab-content');
 
       sidebarItems.forEach(item => {
         item.addEventListener('click', (e) => {
           e.preventDefault();
-          
-          // Remove active class from all items
           sidebarItems.forEach(el => el.classList.remove('active'));
-          
-          // Add active class to clicked item
           item.classList.add('active');
-          
-          // Hide all tab contents
-          tabContents.forEach(content => {
-            content.classList.add('hidden');
-          });
-          
-          // Show selected tab content
+          tabContents.forEach(content => content.classList.add('hidden'));
           const targetTab = item.getAttribute('data-tab');
           const targetContent = document.getElementById(targetTab);
-          if (targetContent) {
-            targetContent.classList.remove('hidden');
-          }
-
-          // Ensure active link is centered in horizontal scroll on mobile
-          setTimeout(centerActiveSidebarLink, 0);
+          if (targetContent) targetContent.classList.remove('hidden');
         });
       });
 
-      // Navbar scroll behavior
-      const navbar = document.getElementById("navbar");
-      let lastScrollY = 0;
-
-      window.addEventListener("scroll", () => {
-        const currentScroll = window.pageYOffset;
-        
-        // Change navbar background
-        if (currentScroll > 100) {
-          navbar.style.background = "rgba(250, 248, 243, 0.95)";
-          navbar.style.boxShadow = "0 4px 30px rgba(0, 0, 0, 0.1)";
-        } else {
-          navbar.style.background = "rgba(250, 248, 243, 0.85)";
-          navbar.style.boxShadow = "0 1px 20px rgba(0, 0, 0, 0.05)";
-        }
-
-        // Hide/show navbar
-        if (currentScroll > lastScrollY && currentScroll > 500) {
-          navbar.style.transform = "translateY(-100%)";
-        } else {
-          navbar.style.transform = "translateY(0)";
-        }
-        
-        lastScrollY = currentScroll;
-      });
-
-      // Add some interactivity to cards (removed from .profile-card)
+      // Card hover lift (kept from your page)
       document.querySelectorAll('.order-card, .favorite-item').forEach(card => {
         card.addEventListener('mouseenter', () => {
-          if (window.innerWidth > 768) {
-            gsap.to(card, {
-              y: -8,
-              duration: 0.3,
-              ease: "power2.out"
-            });
-          }
+          if (window.innerWidth > 768) gsap.to(card, { y: -8, duration: 0.3, ease: "power2.out" });
         });
-
         card.addEventListener('mouseleave', () => {
-          if (window.innerWidth > 768) {
-            gsap.to(card, {
-              y: 0,
-              duration: 0.3,
-              ease: "power2.out"
-            });
-          }
+          if (window.innerWidth > 768) gsap.to(card, { y: 0, duration: 0.3, ease: "power2.out" });
         });
       });
 
-      // ========== Responsive Helper: center active sidebar item on mobile ==========
-      const sidebarNav = document.querySelector('.sidebar-nav nav');
-      function centerActiveSidebarLink() {
-        if (!sidebarNav) return;
-        if (window.innerWidth <= 1024) {
-          const active = document.querySelector('.sidebar-nav-item.active');
-          if (active) {
-            const offset = active.offsetLeft - (sidebarNav.clientWidth - active.clientWidth) / 2;
-            sidebarNav.scrollTo({ left: Math.max(0, offset), behavior: 'smooth' });
-          }
-        }
-      }
-      centerActiveSidebarLink();
-      window.addEventListener('resize', () => { if (window.innerWidth <= 1024) centerActiveSidebarLink(); });
+      // Floating hearts click effect (exactly as reference)
+      (function () {
+        if (!window.matchMedia("(prefers-reduced-motion:reduce)").matches)
+          document.addEventListener("click", e => {
+            if (e.target.closest("input,textarea,select,button,a")) return;
+            const t = document.createElement("span");
+            t.className = "floating-heart",
+              t.textContent = ["❤", "✦", "✧", "❀", "❣", "★"][Math.floor(6 * Math.random())],
+              t.style.left = e.clientX + "px",
+              t.style.top = e.clientY + "px",
+              t.style.color = ["#f7bcd6", "#c9c2ff", "#bcefe1", "#ffe3a4", "#ffcfe0", "#d6f0ff"][Math.floor(6 * Math.random())],
+              t.style.transform += ` rotate(${30 * Math.random() - 15}deg)`,
+              document.body.appendChild(t),
+              setTimeout(() => t.remove(), 1300)
+          }, { passive: !0 })
+      })();
     });
   </script>
 </body>
