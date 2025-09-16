@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>KOALAW | سرم درخشش طلایی - محصولات لوکس آرایش</title>
+  <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <style>
+    @import url("https://font-face.ir/css/iransans/");
+
+    :root {
+      --primary: #e39ab4;
+      --secondary: #1a1a1a;
+      --accent: #ffe9f2;
+      --rose-gold: #f0b7c4;
+      --rose-cream: #e3d1d6;
+      --cream: #faf8f3;
+      --deep-brown: #3d2914;
+      --blush: #ffd7e5;
+      --lavender: #eae2ff;
+      --mint: #dff8ef;
+      --butter: #fff3bf
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      cursor: none !important
+    }
+
+    body {
+      font-family: "IRANSans", sans-serif;
+      font-size: 15px;
+      background-color: var(--cream);
+      color: #333;
+      overflow-x: hidden;
+      cursor: none
+    }
+
+    .font-serif {
+      font-family: "IRANSans", serif
+    }
+
+    .hide-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none
+    }
+
+    .hide-scrollbar::-webkit-scrollbar {
+      display: none
+    }
+
+    .cursor {
+      width: 30px;
+      height: 30px;
+      border: 2px solid #666;
+      background: 0 0;
+      border-radius: 50% 50% 45% 45%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: border-color .2s ease, transform .2s ease
+    }
+
+    .cursor::after,
+    .cursor::before {
+      content: "";
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border: 2px solid #666;
+      background: 0 0;
+      border-radius: 50%;
+      top: -3px;
+      transition: border-color .2s ease
+    }
+
+    .cursor::before {
+      right: -9px
+    }
+
+    .cursor::after {
+      left: -9px
+    }
+
+    .cursor-face {
+      position: fixed;
+      width: 30px;
+      height: 30px;
+      pointer-events: none;
+      z-index: 10000;
+      transform: translate(-50%, -50%)
+    }
+
+    .cursor.hover {
+      border-color: var(--primary);
+      transform: translate(-50%, -50%) scale(1.2)
+    }
+
+    .cursor.hover::after,
+    .cursor.hover::before {
+      border-color: var(--primary)
+    }
+
+    .cursor-follower {
+      width: 50px;
+      height: 50px;
+      background: rgba(227, 154, 180, .1);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: background .3s ease, transform .3s ease
+    }
+
+    nav {
+      backdrop-filter: blur(20px);
+      background: rgba(250, 248, 243, .85);
+      box-shadow: 0 1px 20px rgba(0, 0, 0, .05)
+    }
+
+    .nav-link {
+      position: relative;
+      font-weight: 500;
+      letter-spacing: .5px;
+      transition: all .3s ease
+    }
+
+    .nav-link::before {
+      content: "";
+      position: absolute;
+      bottom: -5px;
+      right: 0;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--primary), var(--rose-gold));
+      transition: width .3s ease
+    }
+
+    .nav-link:hover::before {
+      width: 100%
+    }
+
+    .magnetic-btn {
+      position: relative;
+      transition: all .3s cubic-bezier(.175, .885, .32, 1.275);
+      overflow: hidden
+    }
+
+    .magnetic-btn::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, .1);
+      transform: translate(-50%, -50%);
+      transition: width .6s, height .6s
+    }
+
+    .magnetic-btn:hover::before {
+      width: 300px;
+      height: 300px
+    }
+
+    /* Product Page Specific Styles */
+    .product-gallery {
+      position: relative;
+    }
+
+    .main-image {
+      border-radius: 24px;
+      overflow: hidden;
+      background: linear-gradient(135deg, var(--accent), #fff);
+      box-shadow: 0 20px 60px -20px rgba(227, 154, 180, 0.3);
+    }
+
+    .thumbnail-gallery {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .thumbnail {
+      width: 80px;
+      height: 80px;
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      border: 3px solid transparent;
+      transition: all 0.3s ease;
+    }
+
+    .thumbnail.active {
+      border-color: var(--primary);
+      transform: scale(1.05);
+    }
+
+    .thumbnail:hover {
+      transform: scale(1.05);
+      border-color: var(--rose-gold);
+    }
+
+    .product-badge {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: linear-gradient(135deg, var(--primary), var(--rose-gold));
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      z-index: 10;
+    }
+
+    .quantity-selector {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: rgba(255, 255, 255, 0.8);
+      border: 2px solid rgba(227, 154, 180, 0.2);
+      border-radius: 12px;
+      padding: 0.5rem;
+    }
+
+    .quantity-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: var(--accent);
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+
+    .quantity-btn:hover {
+      background: var(--primary);
+      color: white;
+    }
+
+    .add-to-cart-btn {
+      background: linear-gradient(135deg, var(--primary), var(--rose-gold));
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 16px;
+      font-weight: 600;
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 24px rgba(227, 154, 180, 0.3);
+    }
+
+    .add-to-cart-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(227, 154, 180, 0.4);
+    }
+
+    .product-info-tabs {
+      border-bottom: 2px solid rgba(227, 154, 180, 0.1);
+    }
+
+    .tab-button {
+      padding: 1rem 2rem;
+      border: none;
+      background: none;
+      font-weight: 600;
+      color: #666;
+      border-bottom: 3px solid transparent;
+      transition: all 0.3s ease;
+    }
+
+    .tab-button.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+
+    .related-product-card {
+      background: white;
+      border-radius: 20px;
+      padding: 1.5rem;
+      text-align: center;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+    }
+
+    .related-product-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .review-card {
+      background: white;
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+    }
+
+    .stars {
+      display: flex;
+      gap: 0.25rem;
+      color: #f59e0b;
+    }
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #666;
+      font-size: 0.9rem;
+      margin-bottom: 2rem;
+    }
+
+    .breadcrumb a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    @media (max-width: 768px) {
+      .thumbnail-gallery {
+        flex-wrap: wrap;
+      }
+      
+      .thumbnail {
+        width: 60px;
+        height: 60px;
+      }
+      
+      .quantity-selector {
+        gap: 0.5rem;
+      }
+      
+      .tab-button {
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="cursor">
+    <div class="cursor-eyes"></div>
+  </div>
+  <div class="cursor-face"></div>
+  <div class="cursor-follower"></div>
+
+  <!-- Navigation -->
+  <nav class="fixed w-full z-50 transition-all duration-300" id="navbar">
+    <div class="container mx-auto px-6 py-5">
+      <div class="flex items-center justify-between" dir="ltr">
+        <a href="/" class="text-3xl font-serif font-bold text-gray-800 tracking-wider z-50 flex items-center gap-x-1">
+          K<img src="./image/koala.png" alt="Koala logo" class="w-8 h-7 inline-block -mt-1">ALAW
+        </a>
+        <div class="hidden lg:flex items-center gap-x-10 flex-row-reverse">
+          <a href="/shop" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">فروشگاه</a>
+          <a href="#collections" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">کالکشن ها</a>
+          <a href="#brands" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">برندها</a>
+          <a href="#magazine" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">مجله</a>
+          <a href="#about" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">درباره ما</a>
+        </div>
+        <div class="flex items-center gap-x-6">
+          <button class="text-gray-700 hover:text-gray-900 transition-all duration-300 hover:scale-110">
+            <i data-feather="search" class="w-5 h-5"></i>
+          </button>
+          <button class="text-gray-700 hover:text-gray-900 transition-all duration-300 hover:scale-110">
+            <i data-feather="user" class="w-5 h-5"></i>
+          </button>
+          <button class="text-gray-700 hover:text-gray-900 relative transition-all duration-300 hover:scale-110">
+            <i data-feather="shopping-bag" class="w-5 h-5"></i>
+            <span class="absolute -top-2 -right-2 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">۳</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="pt-24 pb-16">
+    <div class="container mx-auto px-6">
+      
+      <!-- Breadcrumb -->
+      <div class="breadcrumb" data-aos="fade-up">
+        <a href="/">خانه</a>
+        <i data-feather="chevron-left" class="w-4 h-4"></i>
+        <a href="/shop">فروشگاه</a>
+        <i data-feather="chevron-left" class="w-4 h-4"></i>
+        <a href="/shop/skincare">مراقبت از پوست</a>
+        <i data-feather="chevron-left" class="w-4 h-4"></i>
+        <span>سرم درخشش طلایی</span>
+      </div>
+
+      <!-- Product Section -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
+        
+        <!-- Product Images -->
+        <div class="product-gallery" data-aos="fade-right">
+          <div class="main-image relative">
+            <div class="product-badge">پرفروش</div>
+            <img id="main-product-image" src="./image/product.png" alt="سرم درخشش طلایی" class="w-full h-96 lg:h-[500px] object-contain p-8">
+          </div>
+          <div class="thumbnail-gallery">
+            <div class="thumbnail active">
+              <img src="./image/product.png" alt="نمای اصلی" class="w-full h-full object-cover" onclick="changeMainImage(this.src)">
+            </div>
+            <div class="thumbnail">
+              <img src="./image/skin.png" alt="نمای جانبی" class="w-full h-full object-cover" onclick="changeMainImage(this.src)">
+            </div>
+            <div class="thumbnail">
+              <img src="./image/cosmetic.png" alt="نمای بسته‌بندی" class="w-full h-full object-cover" onclick="changeMainImage(this.src)">
+            </div>
+            <div class="thumbnail">
+              <img src="./image/body.png" alt="نمای استفاده" class="w-full h-full object-cover" onclick="changeMainImage(this.src)">
+            </div>
+          </div>
+        </div>
+
+        <!-- Product Info -->
+        <div class="product-info" data-aos="fade-left">
+          <div class="mb-6">
+            <div class="flex items-center gap-2 text-sm text-rose-800 mb-3">
+              <i data-feather="shield" class="w-4 h-4"></i>
+              <span>مراقبت از پوست</span>
+            </div>
+            <h1 class="text-3xl lg:text-4xl font-serif font-bold text-gray-800 mb-4">سرم درخشش طلایی</h1>
+            <div class="flex items-center gap-4 mb-4">
+              <div class="stars">
+                <i data-feather="star" class="w-5 h-5 fill-current"></i>
+                <i data-feather="star" class="w-5 h-5 fill-current"></i>
+                <i data-feather="star" class="w-5 h-5 fill-current"></i>
+                <i data-feather="star" class="w-5 h-5 fill-current"></i>
+                <i data-feather="star" class="w-5 h-5 fill-current"></i>
+              </div>
+              <span class="text-gray-600">(۱۲۴ نظر)</span>
+            </div>
+            <p class="text-gray-600 text-lg leading-relaxed mb-6">
+              سرمی انقلابی با عصاره‌های طبیعی و نانو ذرات طلا که پوست شما را از عمق تغذیه کرده و درخشندگی طبیعی می‌بخشد. فرمول منحصر به فرد این محصول با ترکیب هیالورونیک اسید و ویتامین C، پوستی صاف، شفاف و جوان به شما هدیه می‌دهد.
+            </p>
+          </div>
+
+          <!-- Price & Add to Cart -->
+          <div class="mb-8">
+            <div class="flex items-center gap-4 mb-6">
+              <span class="text-3xl font-bold text-gray-800">۴۸۰,۰۰۰ تومان</span>
+              <span class="text-xl text-gray-400 line-through">۵۶۰,۰۰۰ تومان</span>
+              <span class="bg-red-100 text-red-800 px-2 py-1 rounded-full text-sm font-semibold">۱۴% تخفیف</span>
+            </div>
+
+            <div class="flex items-center gap-4 mb-6">
+              <span class="text-gray-700 font-medium">تعداد:</span>
+              <div class="quantity-selector">
+                <button class="quantity-btn" onclick="changeQuantity(-1)">
+                  <i data-feather="minus" class="w-4 h-4"></i>
+                </button>
+                <span id="quantity" class="mx-4 font-semibold">۱</span>
+                <button class="quantity-btn" onclick="changeQuantity(1)">
+                  <i data-feather="plus" class="w-4 h-4"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-4">
+              <button class="add-to-cart-btn flex-1 magnetic-btn">
+                <i data-feather="shopping-bag" class="w-5 h-5 inline ml-2"></i>
+                افزودن به سبد خرید
+              </button>
+              <button class="p-3 border-2 border-gray-300 rounded-16 hover:border-rose-400 transition-colors">
+                <i data-feather="heart" class="w-6 h-6"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Product Features -->
+          <div class="grid grid-cols-2 gap-4 mb-8">
+            <div class="bg-white p-4 rounded-16 text-center">
+              <i data-feather="shield-check" class="w-8 h-8 text-green-500 mx-auto mb-2"></i>
+              <div class="font-semibold text-sm">۱۰۰% طبیعی</div>
+            </div>
+            <div class="bg-white p-4 rounded-16 text-center">
+              <i data-feather="award" class="w-8 h-8 text-yellow-500 mx-auto mb-2"></i>
+              <div class="font-semibold text-sm">تایید شده</div>
+            </div>
+            <div class="bg-white p-4 rounded-16 text-center">
+              <i data-feather="truck" class="w-8 h-8 text-blue-500 mx-auto mb-2"></i>
+              <div class="font-semibold text-sm">ارسال رایگان</div>
+            </div>
+            <div class="bg-white p-4 rounded-16 text-center">
+              <i data-feather="refresh-cw" class="w-8 h-8 text-purple-500 mx-auto mb-2"></i>
+              <div class="font-semibold text-sm">ضمانت بازگشت</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product Info Tabs -->
+      <div class="mb-16" data-aos="fade-up">
+        <div class="product-info-tabs flex border-b">
+          <button class="tab-button active" onclick="showTab('description')">توضیحات</button>
+          <button class="tab-button" onclick="showTab('ingredients')">ترکیبات</button>
+          <button class="tab-button" onclick="showTab('usage')">نحوه استفاده</button>
+          <button class="tab-button" onclick="showTab('reviews')">نظرات (۱۲۴)</button>
+        </div>
+
+        <div class="mt-8">
+          <div id="description" class="tab-content">
+            <div class="prose max-w-none">
+              <h3 class="text-xl font-bold mb-4">درباره سرم درخشش طلایی</h3>
+              <p class="text-gray-600 leading-relaxed mb-4">
+                این سرم با فناوری پیشرفته نانو و استفاده از بهترین مواد طبیعی تولید شده است. ترکیب منحصر به فرد طلای خالص، هیالورونیک اسید و عصاره‌های گیاهی، پوستی شاداب و درخشان به شما هدیه می‌دهد.
+              </p>
+              <p class="text-gray-600 leading-relaxed mb-4">
+                فرمول سبک و غیر چرب آن به سرعت جذب پوست شده و حس چسبناکی ایجاد نمی‌کند. مناسب برای تمام انواع پوست از جمله پوست‌های حساس.
+              </p>
+              <h4 class="text-lg font-semibold mb-3">مزایای کلیدی:</h4>
+              <ul class="list-disc list-inside space-y-2 text-gray-600">
+                <li>آبرسانی عمیق و طولانی مدت</li>
+                <li>کاهش خطوط ریز و چین و چروک</li>
+                <li>درخشندگی و شفافیت پوست</li>
+                <li>محافظت در برابر آسیب‌های محیطی</li>
+                <li>بهبود بافت و نرمی پوست</li>
+              </ul>
+            </div>
+          </div>
+
+          <div id="ingredients" class="tab-content hidden">
+            <h3 class="text-xl font-bold mb-4">ترکیبات</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <h4 class="font-semibold mb-3">مواد فعال اصلی:</h4>
+                <ul class="space-y-2 text-gray-600">
+                  <li><strong>نانو ذرات طلا:</strong> تحریک کولاژن سازی</li>
+                  <li><strong>هیالورونیک اسید:</strong> آبرسانی عمیق</li>
+                  <li><strong>ویتامین C:</strong> آنتی اکسیدان قوی</li>
+                  <li><strong>پپتیدها:</strong> ضد پیری</li>
+                </ul>
+              </div>
+              <div>
+                <h4 class="font-semibold mb-3">عصاره‌های طبیعی:</h4>
+                <ul class="space-y-2 text-gray-600">
+                  <li><strong>عصاره گل رز:</strong> تسکین دهنده</li>
+                  <li><strong>آلوئه ورا:</strong> مرطوب کننده</li>
+                  <li><strong>عصاره چای سبز:</strong> محافظت کننده</li>
+                  <li><strong>روغن آرگان:</strong> تغذیه کننده</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div id="usage" class="tab-content hidden">
+            <h3 class="text-xl font-bold mb-4">نحوه استفاده</h3>
+            <div class="space-y-4">
+              <div class="flex items-start gap-4">
+                <div class="bg-rose-100 text-rose-800 w-8 h-8 rounded-full flex items-center justify-center font-bold flex-shrink-0">۱</div>
+                <div>
+                  <h4 class="font-semibold mb-1">پاکسازی</h4>
+                  <p class="text-gray-600">پوست صورت را به طور کامل پاک کنید و خشک نمایید.</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-4">
+                <div class="bg-rose-100 text-rose-800 w-8 h-8 rounded-full flex items-center justify-center font-bold flex-shrink-0">۲</div>
+                <div>
+                  <h4 class="font-semibold mb-1">اعمال سرم</h4>
+                  <p class="text-gray-600">۲-۳ قطره سرم را روی صورت و گردن اعمال کنید.</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-4">
+                <div class="bg-rose-100 text-rose-800 w-8 h-8 rounded-full flex items-center justify-center font-bold flex-shrink-0">۳</div>
+                <div>
+                  <h4 class="font-semibold mb-1">ماساژ ملایم</h4>
+                  <p class="text-gray-600">با حرکات دایره‌ای ملایم تا جذب کامل ماساژ دهید.</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-4">
+                <div class="bg-rose-100 text-rose-800 w-8 h-8 rounded-full flex items-center justify-center font-bold flex-shrink-0">۴</div>
+                <div>
+                  <h4 class="font-semibold mb-1">مرطوب کننده</h4>
+                  <p class="text-gray-600">در صورت نیاز، مرطوب کننده مورد علاقه خود را اعمال کنید.</p>
+                </div>
+              </div>
+            </div>
+            <div class="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-12">
+              <h4 class="font-semibold text-yellow-800 mb-2">توصیه‌های مهم:</h4>
+              <ul class="text-yellow-700 text-sm space-y-1">
+                <li>• روزانه صبح و شب استفاده کنید</li>
+                <li>• از استفاده همزمان با محصولات حاوی اسید پرهیز کنید</li>
+                <li>• حتماً از ضد آفتاب استفاده نمایید</li>
+              </ul>
+            </div>
+          </div>
+
+          <div id="reviews" class="tab-content hidden">
+            <h3 class="text-xl font-bold mb-6">نظرات مشتریان</h3>
+            <div class="space-y-4">
+              <div class="review-card">
+                <div class="flex items-center justify-between mb-3">
+                  <div class="flex items-center gap-3">
+                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=50&h=50&fit=crop" class="w-10 h-10 rounded-full">
+                    <div>
+                      <div class="font-semibold">سارا احمدی</div>
+                      <div class="text-sm text-gray-500">۲ هفته پیش</div>
+                    </div>
+                  </div>
+                  <div class="stars">
+                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                  </div>
+                </div>
+                <p class="text-gray-600">عالی! پوستم خیلی نرم و درخشان شده. تا حالا همچین محصولی استفاده نکرده بودم.</p>
+              </div>
+              
+              <div class="review-card">
+                <div class="flex items-center justify-between mb-3">
+                  <div class="flex items-center gap-3">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=50&h=50&fit=crop" class="w-10 h-10 rounded-full">
+                    <div>
+                      <div class="font-semibold">علی رضایی</div>
+                      <div class="text-sm text-gray-500">۱ ماه پیش</div>
+                    </div>
+                  </div>
+                  <div class="stars">
+                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                    <i data-feather="star" class="w-4 h-4"></i>
+                  </div>
+                </div>
+                <p class="text-gray-600">برای همسرم خریدم و خیلی راضی هست. کیفیت بسته بندی هم عالی بود.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Related Products -->
+      <section class="mb-16" data-aos="fade-up">
+        <h2 class="text-3xl font-serif font-bold text-center mb-12">محصولات مرتبط</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div class="related-product-card">
+            <img src="./image/skin.png" alt="کرم آبرسان" class="w-full h-32 object-contain mb-4">
+            <h3 class="font-semibold mb-2">کرم آبرسان طلایی</h3>
+            <div class="text-rose-600 font-bold">۳۲۰,۰۰۰ تومان</div>
+          </div>
+          <div class="related-product-card">
+            <img src="./image/cosmetic.png" alt="ماسک صورت" class="w-full h-32 object-contain mb-4">
+            <h3 class="font-semibold mb-2">ماسک درخشش</h3>
+            <div class="text-rose-600 font-bold">۲۸۰,۰۰۰ تومان</div>
+          </div>
+          <div class="related-product-card">
+            <img src="./image/hair.png" alt="سرم مو" class="w-full h-32 object-contain mb-4">
+            <h3 class="font-semibold mb-2">سرم تقویت مو</h3>
+            <div class="text-rose-600 font-bold">۴۲۰,۰۰۰ تومان</div>
+          </div>
+          <div class="related-product-card">
+            <img src="./image/body.png" alt="لوسیون بدن" class="w-full h-32 object-contain mb-4">
+            <h3 class="font-semibold mb-2">لوسیون طلایی</h3>
+            <div class="text-rose-600 font-bold">۳۵۰,۰۰۰ تومان</div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gradient-to-b from-gray-900 to-black text-white py-20">
+    <div class="container mx-auto px-6">
+      <div class="text-center">
+        <h3 class="text-3xl font-serif font-bold mb-6">KOALAW</h3>
+        <p class="text-gray-400 mb-6">ارتقای زیبایی از طریق تجمل آگاهانه</p>
+        <div class="text-gray-400 text-sm">© ۲۰۲۵ KOALAW — تمام حقوق محفوظ است.</div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      AOS.init({ duration: 600, easing: "ease-out-cubic", once: true, offset: 40 });
+      feather.replace();
+      
+      // Custom cursor
+      const cursor = document.querySelector(".cursor");
+      const cursorFollower = document.querySelector(".cursor-follower");
+      let cursorX = 0, cursorY = 0, followerX = 0, followerY = 0;
+      const speed = 0.5;
+
+      if (window.innerWidth > 768) {
+        document.addEventListener("mousemove", e => {
+          cursorX = e.clientX;
+          cursorY = e.clientY;
+        });
+
+        function animate() {
+          cursor.style.left = cursorX + "px";
+          cursor.style.top = cursorY + "px";
+          
+          followerX += (cursorX - followerX) * speed;
+          followerY += (cursorY - followerY) * speed;
+          cursorFollower.style.left = followerX + "px";
+          cursorFollower.style.top = followerY + "px";
+          
+          requestAnimationFrame(animate);
+        }
+        animate();
+
+        // Hover effects
+        document.querySelectorAll("a, button, .thumbnail").forEach(el => {
+          el.addEventListener("mouseenter", () => {
+            cursor.classList.add("hover");
+            cursorFollower.style.transform = "translate(-50%, -50%) scale(1.5)";
+          });
+          el.addEventListener("mouseleave", () => {
+            cursor.classList.remove("hover");
+            cursorFollower.style.transform = "translate(-50%, -50%) scale(1)";
+          });
+        });
+      } else {
+        [cursor, cursorFollower].forEach(el => el.style.display = "none");
+      }
+    });
+
+    // Product page functions
+    let quantity = 1;
+
+    function changeMainImage(src) {
+      document.getElementById('main-product-image').src = src;
+      
+      // Update active thumbnail
+      document.querySelectorAll('.thumbnail').forEach(thumb => {
+        thumb.classList.remove('active');
+      });
+      event.target.closest('.thumbnail').classList.add('active');
+    }
+
+    function changeQuantity(delta) {
+      quantity = Math.max(1, quantity + delta);
+      document.getElementById('quantity').textContent = quantity.toLocaleString('fa-IR');
+    }
+
+    function showTab(tabName) {
+      // Hide all tab contents
+      document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.add('hidden');
+      });
+      
+      // Remove active class from all buttons
+      document.querySelectorAll('.tab-button').forEach(button => {
+        button.classList.remove('active');
+      });
+      
+      // Show selected tab content
+      document.getElementById(tabName).classList.remove('hidden');
+      
+      // Add active class to clicked button
+      event.target.classList.add('active');
+    }
+
+    // Magnetic button effect
+    document.querySelectorAll(".magnetic-btn").forEach(btn => {
+      btn.addEventListener("mousemove", e => {
+        const rect = btn.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+        
+        btn.style.transform = `translate(${x * 0.15}px, ${y * 0.15}px)`;
+      });
+      
+      btn.addEventListener("mouseleave", () => {
+        btn.style.transform = 'translate(0, 0)';
+      });
+    });
+
+    // Navbar scroll effect
+    const navbar = document.getElementById("navbar");
+    let lastScrollY = 0;
+
+    window.addEventListener("scroll", () => {
+      const currentScrollY = window.pageYOffset;
+      
+      navbar.style.background = currentScrollY > 100 ? 
+        "rgba(250,248,243,.95)" : "rgba(250,248,243,.85)";
+      navbar.style.boxShadow = currentScrollY > 100 ? 
+        "0 4px 30px rgba(0,0,0,.1)" : "0 1px 20px rgba(0,0,0,.05)";
+      
+      lastScrollY = currentScrollY;
+    });
+  </script>
+</body>
+
+</html>
