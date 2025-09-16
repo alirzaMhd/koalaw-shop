@@ -282,6 +282,12 @@
               پاک کردن سبد
             </button>
           </div>
+
+          <!-- Recommendations (Desktop only) -->
+          <div class="profile-card hidden lg:block" data-aos="fade-up" data-aos-delay="50">
+            <h3 class="font-bold text-gray-800 mb-4">شاید این‌ها را هم بپسندید</h3>
+            <div id="cart-recommendations-desktop" class="grid grid-cols-3 xl:grid-cols-4 gap-4"></div>
+          </div>
         </div>
 
         <!-- Right Summary -->
@@ -362,8 +368,8 @@
             <p class="text-xs text-gray-500 mt-3">با ادامه، شرایط و قوانین را می‌پذیرید.</p>
           </div>
 
-          <!-- Recommendations -->
-          <div class="profile-card">
+          <!-- Recommendations (Mobile & Tablet) -->
+          <div class="profile-card lg:hidden">
             <h3 class="font-bold text-gray-800 mb-4">شاید این‌ها را هم بپسندید</h3>
             <div id="cart-recommendations" class="grid grid-cols-2 gap-3"></div>
           </div>
@@ -422,7 +428,7 @@
                 <span id="addr-price-standard" class="font-bold text-gray-800">۴۵,۰۰۰ تومان</span>
               </label>
 
-              <label class="flex items-center justify-between gap-4 p-3 rounded-2xl border border-gray-200 hover:border-primary transition">
+              <label class="flex items-center justify-content-between gap-4 p-3 rounded-2xl border border-gray-200 hover:border-primary transition">
                 <div class="flex items-center gap-3">
                   <input type="radio" name="addr-ship" id="addr-ship-express" value="express" class="accent-rose-500">
                   <div>
@@ -485,15 +491,16 @@
           <div class="profile-card">
             <h3 class="text-xl font-bold text-gray-800 mb-5">روش پرداخت</h3>
             <div class="space-y-3" id="pay-methods">
+              <!-- Removed: کارت بانکی (on-site card) -->
               <label class="flex items-center justify-between gap-4 p-3 rounded-2xl border border-gray-200 hover:border-primary transition">
                 <div class="flex items-center gap-3">
-                  <input type="radio" name="pay-method" value="card" class="accent-rose-500" checked>
+                  <input type="radio" name="pay-method" value="gateway" class="accent-rose-500" checked>
                   <div>
-                    <p class="font-semibold text-gray-800">کارت بانکی</p>
-                    <p class="text-xs text-gray-500">پرداخت اینترنتی با کارت شتاب</p>
+                    <p class="font-semibold text-gray-800">درگاه پرداخت</p>
+                    <p class="text-xs text-gray-500">انتقال به درگاه بانکی امن</p>
                   </div>
                 </div>
-                <i data-feather="credit-card"></i>
+                <i data-feather="shield"></i>
               </label>
 
               <label class="flex items-center justify-between gap-4 p-3 rounded-2xl border border-gray-200 hover:border-primary transition">
@@ -506,43 +513,10 @@
                 </div>
                 <i data-feather="truck"></i>
               </label>
-
-              <label class="flex items-center justify-between gap-4 p-3 rounded-2xl border border-gray-200 hover:border-primary transition">
-                <div class="flex items-center gap-3">
-                  <input type="radio" name="pay-method" value="gateway" class="accent-rose-500">
-                  <div>
-                    <p class="font-semibold text-gray-800">درگاه پرداخت</p>
-                    <p class="text-xs text-gray-500">انتقال به درگاه بانکی امن</p>
-                  </div>
-                </div>
-                <i data-feather="shield"></i>
-              </label>
             </div>
           </div>
 
-          <!-- Card form -->
-          <div class="profile-card" id="pay-card-form">
-            <h3 class="text-xl font-bold text-gray-800 mb-5">اطلاعات کارت</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div class="md:col-span-2">
-                <label class="form-label">شماره کارت</label>
-                <input id="pay-card-number" dir="ltr" maxlength="19" class="form-input" placeholder="XXXX XXXX XXXX XXXX">
-              </div>
-              <div>
-                <label class="form-label">تاریخ انقضا</label>
-                <input id="pay-card-exp" dir="ltr" maxlength="5" class="form-input" placeholder="MM/YY">
-              </div>
-              <div>
-                <label class="form-label">CVV2</label>
-                <input id="pay-card-cvv" dir="ltr" maxlength="4" class="form-input" placeholder="XXX">
-              </div>
-              <div class="md:col-span-2">
-                <label class="form-label">نام صاحب کارت</label>
-                <input id="pay-card-name" class="form-input" placeholder="مانند: سارا محمدی">
-              </div>
-            </div>
-            <p class="text-xs text-gray-500 mt-3">پرداخت شما با استانداردهای امنیتی انجام می‌شود.</p>
-          </div>
+          <!-- Removed: Card form (اطلاعات کارت) -->
 
           <div class="flex gap-3">
             <a href="#/address" class="btn-secondary">
@@ -816,7 +790,7 @@
           const raw = localStorage.getItem(STATE_KEY);
           if (raw) return JSON.parse(raw);
         }catch(e){}
-        const init = { coupon:'', gift:false, express:false, note:'', shippingMethod:'standard', payMethod:'card' };
+        const init = { coupon:'', gift:false, express:false, note:'', shippingMethod:'standard', payMethod:'gateway' };
         localStorage.setItem(STATE_KEY, JSON.stringify(init));
         return init;
       }
@@ -856,7 +830,7 @@
         return { subtotal, discount, shipping, gift, total };
       }
 
-      // === Payment helpers ===
+      // === Payment helpers (not used now since card form removed) ===
       function luhnCheck(num){
         let sum = 0, dbl = false;
         for (let i = num.length - 1; i >= 0; i--){
@@ -938,7 +912,7 @@
       const heroMap = {
         cart: { icon:'shopping-bag', badge:'سبد خرید', title:'سفارش خود را نهایی کنید', sub:'بررسی اقلام سبد، اعمال کد تخفیف و ادامه به پرداخت' },
         address: { icon:'map-pin', badge:'آدرس و ارسال', title:'نشانی و روش ارسال خود را انتخاب کنید', sub:'اطلاعات تحویل را وارد کنید و ادامه دهید' },
-        payment: { icon:'credit-card', badge:'پرداخت', title:'جزئیات پرداخت را تکمیل کنید', sub:'روش پرداخت را انتخاب کرده و سفارش را ثبت کنید' },
+        payment: { icon:'credit-card', badge:'پرداخت', title:'پرداخت و ثبت سفارش', sub:'به درگاه بانکی امن هدایت می‌شوید' },
       };
       function updateHero(route){
         const meta = heroMap[route];
@@ -1134,30 +1108,32 @@
           }
         };
 
-        // Recommendations
-        const recWrap = document.getElementById('cart-recommendations');
-        recWrap.innerHTML = '';
-        RECS.forEach(p=>{
-          const d = document.createElement('button');
-          d.className = "text-right p-3 rounded-xl border hover:border-rose-300 bg-white transition";
-          d.innerHTML = `
-            <div class="aspect-square rounded-lg overflow-hidden mb-2 bg-rose-50">
-              <img src="${p.image}" alt="${p.title}" class="w-full h-full object-cover"/>
-            </div>
-            <div class="text-sm font-bold text-gray-800">${p.title}</div>
-            <div class="text-xs text-gray-600 mt-1">${toIRR(p.price)}</div>
-            <div class="mt-2 inline-flex items-center gap-1 text-rose-700 text-xs">
-              <i data-feather="plus-circle"></i>
-              افزودن
-            </div>
-          `;
-          d.addEventListener('click', ()=>{
-            const c = loadCart();
-            const i = c.findIndex(x=>x.id===p.id);
-            if (i>-1) c[i].qty += 1; else c.push({ id:p.id, title:p.title, price:p.price, qty:1, image:p.image, variant:'' });
-            saveCart(c); showToast('به سبد اضافه شد','check-circle'); renderCart();
+        // Recommendations (both mobile/tablet and desktop)
+        const recWraps = document.querySelectorAll('#cart-recommendations, #cart-recommendations-desktop');
+        recWraps.forEach(recWrap => {
+          recWrap.innerHTML = '';
+          RECS.forEach(p=>{
+            const d = document.createElement('button');
+            d.className = "text-right p-3 rounded-xl border hover:border-rose-300 bg-white transition";
+            d.innerHTML = `
+              <div class="aspect-square rounded-lg overflow-hidden mb-2 bg-rose-50">
+                <img src="${p.image}" alt="${p.title}" class="w-full h-full object-cover"/>
+              </div>
+              <div class="text-sm font-bold text-gray-800 line-clamp-1">${p.title}</div>
+              <div class="text-xs text-gray-600 mt-1">${toIRR(p.price)}</div>
+              <div class="mt-2 inline-flex items-center gap-1 text-rose-700 text-xs">
+                <i data-feather="plus-circle"></i>
+                افزودن
+              </div>
+            `;
+            d.addEventListener('click', ()=>{
+              const c = loadCart();
+              const i = c.findIndex(x=>x.id===p.id);
+              if (i>-1) c[i].qty += 1; else c.push({ id:p.id, title:p.title, price:p.price, qty:1, image:p.image, variant:'' });
+              saveCart(c); showToast('به سبد اضافه شد','check-circle'); renderCart();
+            });
+            recWrap.appendChild(d);
           });
-          recWrap.appendChild(d);
         });
         feather.replace();
 
@@ -1234,7 +1210,7 @@ ${a.province}، ${a.city}، ${a.line1} — کد پستی: ${a.postal||'—'}` : 
         };
       }
 
-      // Enhanced Payment
+      // Enhanced Payment (Card form removed; redirect to gateway)
       function renderPayment(){
         const cart = loadCart();
         if (!cart.length){ showToast('سبد خرید خالی است','alert-circle'); navigate('cart'); return; }
@@ -1259,74 +1235,22 @@ ${a.province}، ${a.city}، ${a.line1} — کد پستی: ${a.postal||'—'}`;
 
         // Payment method toggle + persist
         const radios = Array.from(document.querySelectorAll('input[name="pay-method"]'));
-        const savedMethod = state.payMethod || 'card';
+        const savedMethod = state.payMethod || 'gateway';
         const rSaved = radios.find(r => r.value === savedMethod);
-        if (rSaved) rSaved.checked = true;
+        if (rSaved) rSaved.checked = true; else (radios[0] && (radios[0].checked = true));
 
         function selectedMethod(){
-          return document.querySelector('input[name="pay-method"]:checked')?.value || 'card';
-        }
-        function updateCardFormVisibility(){
-          document.getElementById('pay-card-form').style.display = (selectedMethod()==='card') ? 'block' : 'none';
+          return document.querySelector('input[name="pay-method"]:checked')?.value || 'gateway';
         }
         radios.forEach(r=>{
           r.addEventListener('change', ()=>{
             state = loadState();
             state.payMethod = r.value;
             saveState(state);
-            updateCardFormVisibility();
           });
         });
-        updateCardFormVisibility();
 
-        // Card inputs + validation
-        const cn = document.getElementById('pay-card-number');
-        const ce = document.getElementById('pay-card-exp');
-        const cv = document.getElementById('pay-card-cvv');
-        const nm = document.getElementById('pay-card-name');
-        const numErr = ensureErrorSlot(cn), expErr = ensureErrorSlot(ce), cvvErr = ensureErrorSlot(cv), nameErr = ensureErrorSlot(nm);
-
-        if (cn){
-          cn.addEventListener('input', e=>{
-            const digits = e.target.value.replace(/\D/g,'').slice(0,16);
-            let out = '';
-            for (let i=0;i<digits.length;i++){ out += digits[i]; if ((i+1)%4===0 && i!==digits.length-1) out+=' '; }
-            e.target.value = out;
-            if (digits.length===16 && luhnCheck(digits)) numErr.hide(); else numErr.show('شماره کارت نامعتبر است (۱۶ رقم).');
-          });
-          cn.addEventListener('blur', ()=> {
-            const digits = cn.value.replace(/\D/g,'');
-            if (digits.length===16 && luhnCheck(digits)) numErr.hide();
-          });
-        }
-        if (ce){
-          ce.addEventListener('input', e=>{
-            let v = e.target.value.replace(/\D/g,'').slice(0,4);
-            if (v.length>=3) v = v.slice(0,2)+'/'+v.slice(2);
-            e.target.value = v;
-            if (v.length===5){
-              if (validExp(v)) expErr.hide(); else expErr.show('تاریخ انقضا نامعتبر است.');
-            } else { expErr.hide(); }
-          });
-          ce.addEventListener('blur', ()=> {
-            const v = ce.value;
-            if (v && !validExp(v)) expErr.show('تاریخ انقضا نامعتبر است.');
-          });
-        }
-        if (cv){
-          cv.addEventListener('input', e=>{
-            const d = e.target.value.replace(/\D/g,'').slice(0,4);
-            e.target.value = d;
-            if (d.length>=3 && d.length<=4) cvvErr.hide(); else cvvErr.show('CVV باید ۳ یا ۴ رقم باشد.');
-          });
-        }
-        if (nm){
-          nm.addEventListener('input', e=>{
-            if (e.target.value.trim().length>=3) nameErr.hide(); else nameErr.show('نام دارنده کارت را وارد کنید.');
-          });
-        }
-
-        // Pay now
+        // Pay now (gateway redirect or COD)
         const payBtn = document.getElementById('pay-now');
         let locking = false;
 
@@ -1335,28 +1259,7 @@ ${a.province}، ${a.city}، ${a.line1} — کد پستی: ${a.postal||'—'}`;
           const method = selectedMethod();
           state = loadState(); state.payMethod = method; saveState(state);
 
-          if (method === 'card'){
-            const digits = cn.value.replace(/\D/g,'');
-            const exp = ce.value;
-            const cvv = cv.value;
-            const name = nm.value.trim();
-
-            let ok = true;
-            if (!(digits.length===16 && luhnCheck(digits))) { numErr.show('شماره کارت نامعتبر است (۱۶ رقم).'); ok=false; }
-            if (!(exp && validExp(exp))) { expErr.show('تاریخ انقضا نامعتبر است.'); ok=false; }
-            if (!(cvv.length>=3 && cvv.length<=4)) { cvvErr.show('CVV باید ۳ یا ۴ رقم باشد.'); ok=false; }
-            if (name.length<3) { nameErr.show('نام دارنده کارت را وارد کنید.'); ok=false; }
-            if (!ok){ showToast('لطفاً خطاهای فرم را برطرف کنید','alert-circle'); return; }
-
-            locking = true; setButtonLoading(payBtn, true, 'در حال تایید پرداخت...'); showProcessing('در حال تایید پرداخت...');
-            setTimeout(()=>{
-              hideProcessing();
-              finishOrder('paid', { method:'card', last4: digits.slice(-4) });
-              setButtonLoading(payBtn, false);
-              locking = false;
-            }, 1300);
-
-          } else if (method === 'gateway'){
+          if (method === 'gateway'){
             locking = true; setButtonLoading(payBtn, true, 'در حال انتقال به درگاه...'); showProcessing('در حال انتقال به درگاه بانکی...');
             setTimeout(()=>{
               showProcessing('بازگشت از درگاه...');
@@ -1367,7 +1270,6 @@ ${a.province}، ${a.city}، ${a.line1} — کد پستی: ${a.postal||'—'}`;
                 locking = false;
               }, 1000);
             }, 900);
-
           } else { // COD
             finishOrder('cod', { method:'cod' });
           }
