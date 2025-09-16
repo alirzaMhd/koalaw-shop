@@ -29,20 +29,22 @@
       --butter: #fff3bf
     }
 
+    /* Smaller fonts (scales all Tailwind rem-based sizes) */
+    html { font-size: 14px; }
+
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      cursor: none !important
+      cursor: none !important;
     }
 
     body {
       font-family: "IRANSans", sans-serif;
-      font-size: 15px;
       background-color: var(--cream);
       color: #333;
       overflow-x: hidden;
-      cursor: none
+      cursor: none;
     }
 
     .font-serif {
@@ -58,17 +60,18 @@
       display: none
     }
 
+    /* ===== Cursor (exactly like reference) ===== */
     .cursor {
       width: 30px;
       height: 30px;
       border: 2px solid #666;
-      background: 0 0;
+      background: transparent;
       border-radius: 50% 50% 45% 45%;
       position: fixed;
       pointer-events: none;
       z-index: 9999;
       transform: translate(-50%, -50%);
-      transition: border-color .2s ease, transform .2s ease
+      transition: border-color .2s ease, transform .2s ease;
     }
 
     .cursor::after,
@@ -78,10 +81,10 @@
       width: 12px;
       height: 12px;
       border: 2px solid #666;
-      background: 0 0;
+      background: transparent;
       border-radius: 50%;
       top: -3px;
-      transition: border-color .2s ease
+      transition: border-color .2s ease;
     }
 
     .cursor::before {
@@ -99,6 +102,47 @@
       pointer-events: none;
       z-index: 10000;
       transform: translate(-50%, -50%)
+    }
+
+    .cursor-face::before {
+      content: "";
+      position: absolute;
+      width: 4px;
+      height: 7px;
+      border: 1.5px solid #333;
+      background: transparent;
+      border-radius: 50%;
+      top: 13px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .cursor-eyes {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0
+    }
+
+    .cursor-eyes::after,
+    .cursor-eyes::before {
+      content: "";
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      border: 2px solid #333;
+      background: transparent;
+      border-radius: 50%;
+      top: 10px
+    }
+
+    .cursor-eyes::before {
+      right: 6px
+    }
+
+    .cursor-eyes::after {
+      left: 6px
     }
 
     .cursor.hover {
@@ -123,6 +167,41 @@
       transition: background .3s ease, transform .3s ease
     }
 
+    /* Floating heart click effect (from reference) */
+    .floating-heart {
+      position: fixed;
+      left: 0;
+      top: 0;
+      transform: translate(-50%, -50%);
+      font-size: 16px;
+      pointer-events: none;
+      z-index: 10000;
+      opacity: 0;
+      animation: heartFloat 1.2s ease-out forwards;
+      filter: drop-shadow(0 2px 0 rgba(0, 0, 0, .02))
+    }
+
+    @keyframes heartFloat {
+      0% {
+        transform: translate(-50%, -50%) scale(.8);
+        opacity: 0
+      }
+
+      15% {
+        opacity: .95
+      }
+
+      60% {
+        transform: translate(-50%, -140%) scale(1.15)
+      }
+
+      to {
+        transform: translate(-50%, -200%) scale(1);
+        opacity: 0
+      }
+    }
+
+    /* ===== Header (exactly like reference) ===== */
     nav {
       backdrop-filter: blur(20px);
       background: rgba(250, 248, 243, .85);
@@ -151,12 +230,274 @@
       width: 100%
     }
 
+    .hamburger-button {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+      position: relative;
+      z-index: 65;
+      background: none;
+      border: none
+    }
+
+    .hamburger-button span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background-color: var(--deep-brown);
+      border-radius: 2px;
+      transition: transform .3s ease-in-out, opacity .3s ease-in-out;
+      transform-origin: center
+    }
+
+    .hamburger-button.is-active span:nth-child(1) {
+      transform: translateY(7px) rotate(45deg)
+    }
+
+    .hamburger-button.is-active span:nth-child(2) {
+      opacity: 0;
+      transform: scaleX(0)
+    }
+
+    .hamburger-button.is-active span:nth-child(3) {
+      transform: translateY(-7px) rotate(-45deg)
+    }
+
+    body.mobile-menu-open,
+    body.search-overlay-open {
+      overflow: hidden
+    }
+
+    .mobile-menu-overlay {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(0, 0, 0, .6);
+      z-index: 55;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity .4s ease, visibility .4s ease
+    }
+
+    .mobile-menu-overlay.is-active {
+      opacity: 1;
+      visibility: visible
+    }
+
+    #mobile-menu {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 80%;
+      max-width: 320px;
+      height: 100%;
+      background-color: var(--cream);
+      box-shadow: -10px 0 30px rgba(0, 0, 0, .1);
+      z-index: 60;
+      transform: translateX(100%);
+      transition: transform .4s cubic-bezier(.23, 1, .32, 1);
+      display: flex;
+      flex-direction: column;
+      padding: 6rem 2rem 2rem;
+      align-items: flex-end;
+      gap: 1.25rem;
+      direction: ltr;
+      text-align: right
+    }
+
+    #mobile-menu.is-active {
+      transform: translateX(0)
+    }
+
+    #mobile-menu .nav-link {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--deep-brown);
+      width: 100%
+    }
+
+    /* ===== Search Overlay Styles (from reference) ===== */
+    .search-overlay {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(250, 248, 243, 0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      z-index: 999;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 15vh 5% 0 5%;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.4s ease, visibility 0.4s ease;
+    }
+
+    .search-overlay.is-active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .search-container {
+      position: relative;
+      width: 100%;
+      max-width: 600px;
+      padding: 20px;
+      transform: translateY(-20px);
+      transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    .search-overlay.is-active .search-container {
+      transform: translateY(0);
+    }
+
+    .close-search-button {
+      position: absolute;
+      top: -10vh;
+      right: 0;
+      color: var(--deep-brown);
+      background: none;
+      border: none;
+      padding: 10px;
+      transform: scale(1.2);
+    }
+
+    .close-search-button:hover {
+      color: var(--primary);
+    }
+
+    .search-form {
+      position: relative;
+      width: 100%;
+    }
+
+    .search-input {
+      width: 100%;
+      border: 2px solid rgba(61, 41, 20, 0.2);
+      border-radius: 50px;
+      background-color: rgba(255, 255, 255, 0.7);
+      color: var(--deep-brown);
+      transition: all 0.3s ease;
+      outline: none;
+      padding: 1rem 1.25rem 1rem 3.5rem;
+      font-size: 1rem;
+    }
+
+    .search-input::placeholder {
+      color: rgba(61, 41, 20, 0.5);
+    }
+
+    .search-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(227, 154, 180, 0.3);
+    }
+
+    .search-submit-button {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--rose-gold));
+      color: white;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.3s ease;
+      width: 40px;
+      height: 40px;
+      left: 6px;
+    }
+
+    .search-submit-button:hover {
+      transform: translateY(-50%) scale(1.1);
+    }
+
+    .search-suggestions {
+      margin-top: 1rem;
+      text-align: center;
+      color: var(--deep-brown);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .search-suggestions p {
+      font-weight: 600;
+      opacity: 0.8;
+      font-size: 0.9rem;
+    }
+
+    .search-suggestions a {
+      display: inline-block;
+      background-color: rgba(227, 154, 180, 0.1);
+      border: 1px solid rgba(227, 154, 180, 0.2);
+      border-radius: 20px;
+      color: var(--deep-brown);
+      transition: all 0.3s ease;
+      text-decoration: none;
+      padding: 0.4rem 0.8rem;
+      font-size: 0.8rem;
+    }
+
+    .search-suggestions a:hover {
+      background-color: var(--primary);
+      color: white;
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    @media (min-width: 768px) {
+      .search-overlay {
+        align-items: center;
+        padding: 0 5%;
+      }
+
+      .close-search-button {
+        top: -50px;
+        right: -10px;
+        transform: scale(1);
+      }
+
+      .search-input {
+        padding: 1.25rem 1.5rem 1.25rem 4rem;
+        font-size: 1.1rem;
+      }
+
+      .search-submit-button {
+        width: 48px;
+        height: 48px;
+        left: 8px;
+      }
+
+      .search-suggestions {
+        margin-top: 1.5rem;
+        gap: 0.75rem;
+      }
+
+      .search-suggestions p {
+        font-size: 1rem;
+      }
+
+      .search-suggestions a {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+      }
+    }
+
+    /* ===== Product Page Specific Styles ===== */
+
+    /* Keeping magnetic-btn styles for general usage, but not applied to Add-to-cart */
     .magnetic-btn {
       position: relative;
       transition: all .3s cubic-bezier(.175, .885, .32, 1.275);
       overflow: hidden
     }
-
     .magnetic-btn::before {
       content: "";
       position: absolute;
@@ -169,13 +510,11 @@
       transform: translate(-50%, -50%);
       transition: width .6s, height .6s
     }
-
     .magnetic-btn:hover::before {
       width: 300px;
       height: 300px
     }
 
-    /* Product Page Specific Styles */
     .product-gallery {
       position: relative;
     }
@@ -191,6 +530,8 @@
       display: flex;
       gap: 1rem;
       margin-top: 1rem;
+      justify-content: center;           /* centered */
+      padding-inline: 0.5rem;            /* breathing room from edges */
     }
 
     .thumbnail {
@@ -253,6 +594,7 @@
       color: white;
     }
 
+    /* Removed hover effect on Add to Cart */
     .add-to-cart-btn {
       background: linear-gradient(135deg, var(--primary), var(--rose-gold));
       color: white;
@@ -261,14 +603,10 @@
       border-radius: 16px;
       font-weight: 600;
       font-size: 1.1rem;
-      transition: all 0.3s ease;
+      transition: none;                   /* no animation */
       box-shadow: 0 8px 24px rgba(227, 154, 180, 0.3);
     }
-
-    .add-to-cart-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 32px rgba(227, 154, 180, 0.4);
-    }
+    /* No :hover transform/shadow */
 
     .product-info-tabs {
       border-bottom: 2px solid rgba(227, 154, 180, 0.1);
@@ -317,6 +655,15 @@
       color: #f59e0b;
     }
 
+    .rating-input .star {
+      cursor: pointer !important;
+      transition: transform .15s ease;
+    }
+
+    .rating-input .star:hover {
+      transform: scale(1.1);
+    }
+
     .breadcrumb {
       display: flex;
       align-items: center;
@@ -335,16 +682,16 @@
       .thumbnail-gallery {
         flex-wrap: wrap;
       }
-      
+
       .thumbnail {
         width: 60px;
         height: 60px;
       }
-      
+
       .quantity-selector {
         gap: 0.5rem;
       }
-      
+
       .tab-button {
         padding: 0.75rem 1rem;
         font-size: 0.9rem;
@@ -354,19 +701,19 @@
 </head>
 
 <body>
+  <!-- Cursor (reference) -->
   <div class="cursor">
     <div class="cursor-eyes"></div>
   </div>
   <div class="cursor-face"></div>
   <div class="cursor-follower"></div>
 
-  <!-- Navigation -->
+  <!-- Navigation (exactly like reference) -->
   <nav class="fixed w-full z-50 transition-all duration-300" id="navbar">
     <div class="container mx-auto px-6 py-5">
       <div class="flex items-center justify-between" dir="ltr">
-        <a href="/" class="text-3xl font-serif font-bold text-gray-800 tracking-wider z-50 flex items-center gap-x-1">
-          K<img src="./image/koala.png" alt="Koala logo" class="w-8 h-7 inline-block -mt-1">ALAW
-        </a>
+        <a href="/" class="text-3xl font-serif font-bold text-gray-800 tracking-wider z-50 flex items-center gap-x-1">K
+          <img src="./image/koala.png" alt="Koala logo" class="w-8 h-7 inline-block -mt-1">ALAW</a>
         <div class="hidden lg:flex items-center gap-x-10 flex-row-reverse">
           <a href="/shop" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">فروشگاه</a>
           <a href="#collections" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">کالکشن ها</a>
@@ -375,7 +722,7 @@
           <a href="#about" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">درباره ما</a>
         </div>
         <div class="flex items-center gap-x-6">
-          <button class="text-gray-700 hover:text-gray-900 transition-all duration-300 hover:scale-110">
+          <button id="search-button" class="text-gray-700 hover:text-gray-900 transition-all duration-300 hover:scale-110">
             <i data-feather="search" class="w-5 h-5"></i>
           </button>
           <button class="text-gray-700 hover:text-gray-900 transition-all duration-300 hover:scale-110">
@@ -385,15 +732,26 @@
             <i data-feather="shopping-bag" class="w-5 h-5"></i>
             <span class="absolute -top-2 -right-2 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">۳</span>
           </button>
+          <button id="mobile-menu-button" class="hamburger-button lg:hidden">
+            <span></span><span></span><span></span>
+          </button>
         </div>
       </div>
     </div>
   </nav>
+  <div id="mobile-menu">
+    <a href="/shop" class="nav-link">فروشگاه</a>
+    <a href="#collections" class="nav-link">کالکشن ها</a>
+    <a href="#brands" class="nav-link">برندها</a>
+    <a href="#magazine" class="nav-link">مجله</a>
+    <a href="#about" class="nav-link">درباره ما</a>
+  </div>
+  <div id="mobile-menu-overlay" class="mobile-menu-overlay"></div>
 
   <!-- Main Content -->
   <main class="pt-24 pb-16">
     <div class="container mx-auto px-6">
-      
+
       <!-- Breadcrumb -->
       <div class="breadcrumb" data-aos="fade-up">
         <a href="/">خانه</a>
@@ -407,7 +765,7 @@
 
       <!-- Product Section -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
-        
+
         <!-- Product Images -->
         <div class="product-gallery" data-aos="fade-right">
           <div class="main-image relative">
@@ -416,16 +774,16 @@
           </div>
           <div class="thumbnail-gallery">
             <div class="thumbnail active">
-              <img src="./image/product.png" alt="نمای اصلی" class="w-full h-full object-cover" onclick="changeMainImage(this.src)">
+              <img src="./image/product.png" alt="نمای اصلی" class="w-full h-full object-cover" onclick="changeMainImage(event, this.src)">
             </div>
             <div class="thumbnail">
-              <img src="./image/skin.png" alt="نمای جانبی" class="w-full h-full object-cover" onclick="changeMainImage(this.src)">
+              <img src="./image/skin.png" alt="نمای جانبی" class="w-full h-full object-cover" onclick="changeMainImage(event, this.src)">
             </div>
             <div class="thumbnail">
-              <img src="./image/cosmetic.png" alt="نمای بسته‌بندی" class="w-full h-full object-cover" onclick="changeMainImage(this.src)">
+              <img src="./image/cosmetic.png" alt="نمای بسته‌بندی" class="w-full h-full object-cover" onclick="changeMainImage(event, this.src)">
             </div>
             <div class="thumbnail">
-              <img src="./image/body.png" alt="نمای استفاده" class="w-full h-full object-cover" onclick="changeMainImage(this.src)">
+              <img src="./image/body.png" alt="نمای استفاده" class="w-full h-full object-cover" onclick="changeMainImage(event, this.src)">
             </div>
           </div>
         </div>
@@ -440,13 +798,13 @@
             <h1 class="text-3xl lg:text-4xl font-serif font-bold text-gray-800 mb-4">سرم درخشش طلایی</h1>
             <div class="flex items-center gap-4 mb-4">
               <div class="stars">
-                <i data-feather="star" class="w-5 h-5 fill-current"></i>
-                <i data-feather="star" class="w-5 h-5 fill-current"></i>
-                <i data-feather="star" class="w-5 h-5 fill-current"></i>
-                <i data-feather="star" class="w-5 h-5 fill-current"></i>
-                <i data-feather="star" class="w-5 h-5 fill-current"></i>
+                <i data-feather="star" class="w-5 h-5"></i>
+                <i data-feather="star" class="w-5 h-5"></i>
+                <i data-feather="star" class="w-5 h-5"></i>
+                <i data-feather="star" class="w-5 h-5"></i>
+                <i data-feather="star" class="w-5 h-5"></i>
               </div>
-              <span class="text-gray-600">(۱۲۴ نظر)</span>
+              <span id="review-count-inline" class="text-gray-600">(۱۲۴ نظر)</span>
             </div>
             <p class="text-gray-600 text-lg leading-relaxed mb-6">
               سرمی انقلابی با عصاره‌های طبیعی و نانو ذرات طلا که پوست شما را از عمق تغذیه کرده و درخشندگی طبیعی می‌بخشد. فرمول منحصر به فرد این محصول با ترکیب هیالورونیک اسید و ویتامین C، پوستی صاف، شفاف و جوان به شما هدیه می‌دهد.
@@ -475,31 +833,30 @@
             </div>
 
             <div class="flex flex-col sm:flex-row gap-4">
-              <button class="add-to-cart-btn flex-1 magnetic-btn">
+              <!-- Removed magnetic-btn class to disable magnet/hover effect -->
+              <button class="add-to-cart-btn flex-1">
                 <i data-feather="shopping-bag" class="w-5 h-5 inline ml-2"></i>
                 افزودن به سبد خرید
-              </button>
-              <button class="p-3 border-2 border-gray-300 rounded-16 hover:border-rose-400 transition-colors">
-                <i data-feather="heart" class="w-6 h-6"></i>
               </button>
             </div>
           </div>
 
           <!-- Product Features -->
           <div class="grid grid-cols-2 gap-4 mb-8">
-            <div class="bg-white p-4 rounded-16 text-center">
-              <i data-feather="shield-check" class="w-8 h-8 text-green-500 mx-auto mb-2"></i>
+            <div class="bg-white p-4 rounded-xl text-center">
+              <!-- Fixed icon for ۱۰۰% طبیعی -->
+              <i data-feather="leaf" class="w-8 h-8 text-green-500 mx-auto mb-2"></i>
               <div class="font-semibold text-sm">۱۰۰% طبیعی</div>
             </div>
-            <div class="bg-white p-4 rounded-16 text-center">
+            <div class="bg-white p-4 rounded-xl text-center">
               <i data-feather="award" class="w-8 h-8 text-yellow-500 mx-auto mb-2"></i>
               <div class="font-semibold text-sm">تایید شده</div>
             </div>
-            <div class="bg-white p-4 rounded-16 text-center">
+            <div class="bg-white p-4 rounded-xl text-center">
               <i data-feather="truck" class="w-8 h-8 text-blue-500 mx-auto mb-2"></i>
               <div class="font-semibold text-sm">ارسال رایگان</div>
             </div>
-            <div class="bg-white p-4 rounded-16 text-center">
+            <div class="bg-white p-4 rounded-xl text-center">
               <i data-feather="refresh-cw" class="w-8 h-8 text-purple-500 mx-auto mb-2"></i>
               <div class="font-semibold text-sm">ضمانت بازگشت</div>
             </div>
@@ -510,10 +867,10 @@
       <!-- Product Info Tabs -->
       <div class="mb-16" data-aos="fade-up">
         <div class="product-info-tabs flex border-b">
-          <button class="tab-button active" onclick="showTab('description')">توضیحات</button>
-          <button class="tab-button" onclick="showTab('ingredients')">ترکیبات</button>
-          <button class="tab-button" onclick="showTab('usage')">نحوه استفاده</button>
-          <button class="tab-button" onclick="showTab('reviews')">نظرات (۱۲۴)</button>
+          <button class="tab-button active" onclick="showTab(event,'description')">توضیحات</button>
+          <button class="tab-button" onclick="showTab(event,'ingredients')">ترکیبات</button>
+          <button class="tab-button" onclick="showTab(event,'usage')">نحوه استفاده</button>
+          <button class="tab-button" id="reviews-tab-btn" onclick="showTab(event,'reviews')">نظرات (<span id="review-tab-count">۱۲۴</span>)</button>
         </div>
 
         <div class="mt-8">
@@ -593,7 +950,7 @@
                 </div>
               </div>
             </div>
-            <div class="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-12">
+            <div class="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
               <h4 class="font-semibold text-yellow-800 mb-2">توصیه‌های مهم:</h4>
               <ul class="text-yellow-700 text-sm space-y-1">
                 <li>• روزانه صبح و شب استفاده کنید</li>
@@ -603,50 +960,88 @@
             </div>
           </div>
 
+          <!-- Reviews: narrower + add form -->
           <div id="reviews" class="tab-content hidden">
             <h3 class="text-xl font-bold mb-6">نظرات مشتریان</h3>
-            <div class="space-y-4">
-              <div class="review-card">
-                <div class="flex items-center justify-between mb-3">
-                  <div class="flex items-center gap-3">
-                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=50&h=50&fit=crop" class="w-10 h-10 rounded-full">
-                    <div>
-                      <div class="font-semibold">سارا احمدی</div>
-                      <div class="text-sm text-gray-500">۲ هفته پیش</div>
+
+            <!-- Narrow container -->
+            <div class="max-w-2xl mx-auto">
+              <!-- Existing reviews -->
+              <div id="reviews-list" class="space-y-4">
+                <div class="review-card">
+                  <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center gap-3">
+                      <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=50&h=50&fit=crop" class="w-10 h-10 rounded-full" alt="avatar">
+                      <div>
+                        <div class="font-semibold">سارا احمدی</div>
+                        <div class="text-sm text-gray-500">۲ هفته پیش</div>
+                      </div>
+                    </div>
+                    <div class="stars">
+                      <i data-feather="star" class="w-4 h-4"></i>
+                      <i data-feather="star" class="w-4 h-4"></i>
+                      <i data-feather="star" class="w-4 h-4"></i>
+                      <i data-feather="star" class="w-4 h-4"></i>
+                      <i data-feather="star" class="w-4 h-4"></i>
                     </div>
                   </div>
-                  <div class="stars">
-                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
-                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
-                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
-                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
-                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
-                  </div>
+                  <p class="text-gray-600">عالی! پوستم خیلی نرم و درخشان شده. تا حالا همچین محصولی استفاده نکرده بودم.</p>
                 </div>
-                <p class="text-gray-600">عالی! پوستم خیلی نرم و درخشان شده. تا حالا همچین محصولی استفاده نکرده بودم.</p>
+
+                <div class="review-card">
+                  <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center gap-3">
+                      <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=50&h=50&fit=crop" class="w-10 h-10 rounded-full" alt="avatar">
+                      <div>
+                        <div class="font-semibold">علی رضایی</div>
+                        <div class="text-sm text-gray-500">۱ ماه پیش</div>
+                      </div>
+                    </div>
+                    <div class="stars">
+                      <i data-feather="star" class="w-4 h-4"></i>
+                      <i data-feather="star" class="w-4 h-4"></i>
+                      <i data-feather="star" class="w-4 h-4"></i>
+                      <i data-feather="star" class="w-4 h-4"></i>
+                      <i data-feather="star" class="w-4 h-4"></i>
+                    </div>
+                  </div>
+                  <p class="text-gray-600">برای همسرم خریدم و خیلی راضی هست. کیفیت بسته بندی هم عالی بود.</p>
+                </div>
               </div>
-              
-              <div class="review-card">
-                <div class="flex items-center justify-between mb-3">
-                  <div class="flex items-center gap-3">
-                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=50&h=50&fit=crop" class="w-10 h-10 rounded-full">
+
+              <!-- Add review form -->
+              <div class="mt-8 p-4 bg-white rounded-xl shadow-sm border border-rose-100">
+                <h4 class="font-semibold mb-4">نظر خود را ثبت کنید</h4>
+                <form id="review-form" class="space-y-4">
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <div class="font-semibold">علی رضایی</div>
-                      <div class="text-sm text-gray-500">۱ ماه پیش</div>
+                      <label class="block text-sm text-gray-600 mb-1">نام شما</label>
+                      <input id="review-name" type="text" class="w-full px-4 py-2 rounded-lg border border-gray-200 outline-none focus:ring-4 focus:ring-rose-200/60" placeholder="نام و نام خانوادگی" required>
+                    </div>
+                    <div>
+                      <label class="block text-sm text-gray-600 mb-1">امتیاز</label>
+                      <div id="rating-control" class="rating-input stars text-amber-500" aria-label="امتیاز">
+                        <i data-feather="star" class="w-5 h-5"></i>
+                        <i data-feather="star" class="w-5 h-5"></i>
+                        <i data-feather="star" class="w-5 h-5"></i>
+                        <i data-feather="star" class="w-5 h-5"></i>
+                        <i data-feather="star" class="w-5 h-5"></i>
+                      </div>
                     </div>
                   </div>
-                  <div class="stars">
-                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
-                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
-                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
-                    <i data-feather="star" class="w-4 h-4 fill-current"></i>
-                    <i data-feather="star" class="w-4 h-4"></i>
+                  <div>
+                    <label class="block text-sm text-gray-600 mb-1">نظر شما</label>
+                    <textarea id="review-text" rows="4" class="w-full px-4 py-2 rounded-lg border border-gray-200 outline-none focus:ring-4 focus:ring-rose-200/60" placeholder="تجربه خود را با ما به اشتراک بگذارید..." required></textarea>
                   </div>
-                </div>
-                <p class="text-gray-600">برای همسرم خریدم و خیلی راضی هست. کیفیت بسته بندی هم عالی بود.</p>
+                  <div class="flex items-center gap-3">
+                    <button type="submit" class="px-5 py-2 bg-gradient-to-r from-rose-500 to-pink-500 text-white rounded-lg font-semibold hover:opacity-95 transition">ثبت نظر</button>
+                    <p id="review-msg" class="text-sm text-green-600 hidden">نظر شما با موفقیت اضافه شد ✨</p>
+                  </div>
+                </form>
               </div>
             </div>
           </div>
+          <!-- /reviews -->
         </div>
       </div>
 
@@ -671,7 +1066,7 @@
           </div>
           <div class="related-product-card">
             <img src="./image/body.png" alt="لوسیون بدن" class="w-full h-32 object-contain mb-4">
-            <h3 class="font-semibold mb-2">لوسیون طلایی</h3>
+            <h3 class="font-semibold mb-2">לوسیون طلایی</h3>
             <div class="text-rose-600 font-bold">۳۵۰,۰۰۰ تومان</div>
           </div>
         </div>
@@ -690,14 +1085,86 @@
     </div>
   </footer>
 
+  <!-- Search Overlay (from reference) -->
+  <div id="search-overlay" class="search-overlay">
+    <div class="search-container">
+      <button id="close-search-button" class="close-search-button">
+        <i data-feather="x" class="w-8 h-8"></i>
+      </button>
+      <form class="search-form" onsubmit="event.preventDefault();">
+        <input type="search" id="search-input" placeholder="جستجو برای محصولات، برندها و..." class="search-input">
+        <button type="submit" class="search-submit-button">
+          <i data-feather="search"></i>
+        </button>
+      </form>
+      <div class="search-suggestions">
+        <p>پیشنهادات:</p>
+        <a href="#">سرم پوست</a>
+        <a href="#">رژ لب مات</a>
+        <a href="#">عطر Bloom</a>
+        <a href="#">کرم پودر</a>
+      </div>
+    </div>
+  </div>
+
   <script>
     // Initialize
     document.addEventListener('DOMContentLoaded', () => {
       AOS.init({ duration: 600, easing: "ease-out-cubic", once: true, offset: 40 });
       feather.replace();
-      
-      // Custom cursor
+
+      // GSAP Parallax minor for vibe (optional)
+      gsap.registerPlugin(ScrollTrigger);
+
+      // Navbar scroll behavior (like reference)
+      const nav = document.getElementById("navbar");
+      let lastScroll = 0;
+      window.addEventListener("scroll", () => {
+        const y = window.pageYOffset;
+        nav.style.background = y > 100 ? "rgba(250,248,243,.95)" : "rgba(250,248,243,.85)";
+        nav.style.boxShadow = y > 100 ? "0 4px 30px rgba(0,0,0,.1)" : "0 1px 20px rgba(0,0,0,.05)";
+        nav.style.transform = y > lastScroll && y > 500 ? "translateY(-100%)" : "translateY(0)";
+        lastScroll = y;
+      });
+
+      // Mobile menu (from reference)
+      const mB = document.getElementById('mobile-menu-button'),
+        mM = document.getElementById('mobile-menu'),
+        mO = document.getElementById('mobile-menu-overlay');
+
+      const toggleMenu = () => {
+        mB.classList.toggle('is-active');
+        mM.classList.toggle('is-active');
+        mO.classList.toggle('is-active');
+        document.body.classList.toggle('mobile-menu-open');
+      };
+
+      if (mB && mM && mO) {
+        mB.addEventListener('click', toggleMenu);
+        mO.addEventListener('click', toggleMenu);
+        mM.querySelectorAll('a').forEach(l => l.addEventListener('click', () => {
+          if (mM.classList.contains('is-active')) toggleMenu();
+        }));
+      }
+
+      // Search overlay (from reference)
+      const searchButton = document.getElementById('search-button'),
+        searchOverlay = document.getElementById('search-overlay'),
+        closeSearchButton = document.getElementById('close-search-button'),
+        searchInput = document.getElementById('search-input');
+
+      if (searchButton && searchOverlay && closeSearchButton && searchInput) {
+        const openSearch = () => { searchOverlay.classList.add('is-active'); document.body.classList.add('search-overlay-open'); setTimeout(() => searchInput.focus(), 400); };
+        const closeSearch = () => { searchOverlay.classList.remove('is-active'); document.body.classList.remove('search-overlay-open'); };
+        searchButton.addEventListener('click', e => { e.preventDefault(); openSearch(); });
+        closeSearchButton.addEventListener('click', closeSearch);
+        searchOverlay.addEventListener('click', e => { if (e.target === searchOverlay) closeSearch(); });
+        document.addEventListener('keydown', e => { if (e.key === "Escape" && searchOverlay.classList.contains('is-active')) closeSearch(); });
+      }
+
+      // Custom cursor (exactly like reference with click hearts)
       const cursor = document.querySelector(".cursor");
+      const cursorFace = document.querySelector(".cursor-face");
       const cursorFollower = document.querySelector(".cursor-follower");
       let cursorX = 0, cursorY = 0, followerX = 0, followerY = 0;
       const speed = 0.5;
@@ -711,18 +1178,20 @@
         function animate() {
           cursor.style.left = cursorX + "px";
           cursor.style.top = cursorY + "px";
-          
+          cursorFace.style.left = cursorX + "px";
+          cursorFace.style.top = cursorY + "px";
+
           followerX += (cursorX - followerX) * speed;
           followerY += (cursorY - followerY) * speed;
           cursorFollower.style.left = followerX + "px";
           cursorFollower.style.top = followerY + "px";
-          
+
           requestAnimationFrame(animate);
         }
         animate();
 
-        // Hover effects
-        document.querySelectorAll("a, button, .thumbnail").forEach(el => {
+        // Hover effects (scale follower & color)
+        document.querySelectorAll("a, button, .thumbnail, .related-product-card").forEach(el => {
           el.addEventListener("mouseenter", () => {
             cursor.classList.add("hover");
             cursorFollower.style.transform = "translate(-50%, -50%) scale(1.5)";
@@ -732,22 +1201,151 @@
             cursorFollower.style.transform = "translate(-50%, -50%) scale(1)";
           });
         });
+
+        // Floating heart click effect (skip form controls and links)
+        if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+          document.addEventListener("click", e => {
+            if (e.target.closest("input,textarea,select,button,a")) return;
+            const t = document.createElement("span");
+            t.className = "floating-heart";
+            t.textContent = ["❤", "✦", "✧", "❀", "❣", "★"][Math.floor(Math.random() * 6)];
+            t.style.left = e.clientX + "px";
+            t.style.top = e.clientY + "px";
+            t.style.color = ["#f7bcd6", "#c9c2ff", "#bcefe1", "#ffe3a4", "#ffcfe0", "#d6f0ff"][Math.floor(Math.random() * 6)];
+            t.style.transform += ` rotate(${30 * Math.random() - 15}deg)`;
+            document.body.appendChild(t);
+            setTimeout(() => t.remove(), 1300);
+          }, { passive: true });
+        }
       } else {
-        [cursor, cursorFollower].forEach(el => el.style.display = "none");
+        [cursor, cursorFace, cursorFollower].forEach(el => el.style.display = "none");
       }
+
+      // Interactive rating control (fix)
+      const initialReviewsCount = 124;
+      let userReviewsCount = 0;
+
+      const reviewCountInline = document.getElementById('review-count-inline');
+      const reviewTabCount = document.getElementById('review-tab-count');
+      const reviewsList = document.getElementById('reviews-list');
+      const reviewForm = document.getElementById('review-form');
+      const reviewName = document.getElementById('review-name');
+      const reviewText = document.getElementById('review-text');
+      const ratingControl = document.getElementById('rating-control');
+      const reviewMsg = document.getElementById('review-msg');
+
+      let currentRating = 0;
+      function updateReviewCounts() {
+        const total = initialReviewsCount + userReviewsCount;
+        const fa = total.toLocaleString('fa-IR');
+        if (reviewCountInline) reviewCountInline.textContent = `(${fa} نظر)`;
+        if (reviewTabCount) reviewTabCount.textContent = fa;
+      }
+      updateReviewCounts();
+
+      function setupRatingControl() {
+        if (!ratingControl) return;
+        // Feather replaced icons -> now they are <svg class="feather feather-star">
+        const stars = Array.from(ratingControl.querySelectorAll('svg.feather-star, svg.feather.feather-star'));
+        stars.forEach((svg, idx) => {
+          svg.classList.add('star');
+          svg.setAttribute('role', 'button');
+          svg.setAttribute('tabindex', '0');
+          svg.setAttribute('aria-label', `${idx + 1} ستاره`);
+
+          const paint = (value) => {
+            stars.forEach((s, i) => {
+              if (i < value) {
+                s.setAttribute('fill', 'currentColor'); // fill star
+              } else {
+                s.setAttribute('fill', 'none');         // unfill star
+              }
+            });
+          };
+
+          svg.addEventListener('mouseenter', () => paint(idx + 1));
+          svg.addEventListener('mouseleave', () => paint(currentRating));
+          svg.addEventListener('click', () => { currentRating = idx + 1; paint(currentRating); });
+          svg.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              currentRating = idx + 1;
+              paint(currentRating);
+            }
+          });
+
+          // initial paint
+          const initial = currentRating;
+          paint(initial);
+        });
+      }
+      setupRatingControl(); // after feather.replace()
+
+      reviewForm?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (currentRating < 1) {
+          alert('لطفاً امتیاز بدهید.');
+          return;
+        }
+        const name = reviewName.value.trim();
+        const text = reviewText.value.trim();
+        if (!name || !text) return;
+
+        // Build review card HTML
+        const starsHtml = Array(5).fill(0).map((_, i) =>
+          `<i data-feather="star" class="w-4 h-4" ${i < currentRating ? 'data-filled="true"' : ''}></i>`
+        ).join('');
+
+        const avatarSeed = Math.random() > 0.5
+          ? "1494790108377-be9c29b29330"
+          : "1507003211169-0a1dd7228f2d";
+
+        const card = document.createElement('div');
+        card.className = 'review-card';
+        card.innerHTML = `
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-3">
+              <img src="https://images.unsplash.com/photo-${avatarSeed}?w=50&h=50&fit=crop" class="w-10 h-10 rounded-full" alt="avatar">
+              <div>
+                <div class="font-semibold">${name}</div>
+                <div class="text-sm text-gray-500">لحظاتی پیش</div>
+              </div>
+            </div>
+            <div class="stars">${starsHtml}</div>
+          </div>
+          <p class="text-gray-600"></p>
+        `;
+        card.querySelector('p').textContent = text;
+
+        reviewsList.prepend(card);
+        feather.replace(); // render icons in new card
+        // Fill the stars in the new card according to data-filled
+        card.querySelectorAll('.stars svg.feather-star, .stars svg.feather.feather-star').forEach(svg => {
+          if (svg.previousElementSibling && svg.previousElementSibling.hasAttribute('data-filled')) {
+            svg.setAttribute('fill', 'currentColor');
+          }
+        });
+
+        // Reset form
+        reviewForm.reset();
+        currentRating = 0;
+        setupRatingControl();
+        reviewMsg.classList.remove('hidden');
+        setTimeout(() => reviewMsg.classList.add('hidden'), 2000);
+
+        userReviewsCount++;
+        updateReviewCounts();
+      });
     });
 
     // Product page functions
     let quantity = 1;
 
-    function changeMainImage(src) {
+    function changeMainImage(e, src) {
       document.getElementById('main-product-image').src = src;
-      
       // Update active thumbnail
-      document.querySelectorAll('.thumbnail').forEach(thumb => {
-        thumb.classList.remove('active');
-      });
-      event.target.closest('.thumbnail').classList.add('active');
+      document.querySelectorAll('.thumbnail').forEach(thumb => thumb.classList.remove('active'));
+      e.target.closest('.thumbnail').classList.add('active');
     }
 
     function changeQuantity(delta) {
@@ -755,53 +1353,16 @@
       document.getElementById('quantity').textContent = quantity.toLocaleString('fa-IR');
     }
 
-    function showTab(tabName) {
+    function showTab(e, tabName) {
       // Hide all tab contents
-      document.querySelectorAll('.tab-content').forEach(content => {
-        content.classList.add('hidden');
-      });
-      
+      document.querySelectorAll('.tab-content').forEach(content => content.classList.add('hidden'));
       // Remove active class from all buttons
-      document.querySelectorAll('.tab-button').forEach(button => {
-        button.classList.remove('active');
-      });
-      
+      document.querySelectorAll('.tab-button').forEach(button => button.classList.remove('active'));
       // Show selected tab content
       document.getElementById(tabName).classList.remove('hidden');
-      
       // Add active class to clicked button
-      event.target.classList.add('active');
+      e.target.classList.add('active');
     }
-
-    // Magnetic button effect
-    document.querySelectorAll(".magnetic-btn").forEach(btn => {
-      btn.addEventListener("mousemove", e => {
-        const rect = btn.getBoundingClientRect();
-        const x = e.clientX - rect.left - rect.width / 2;
-        const y = e.clientY - rect.top - rect.height / 2;
-        
-        btn.style.transform = `translate(${x * 0.15}px, ${y * 0.15}px)`;
-      });
-      
-      btn.addEventListener("mouseleave", () => {
-        btn.style.transform = 'translate(0, 0)';
-      });
-    });
-
-    // Navbar scroll effect
-    const navbar = document.getElementById("navbar");
-    let lastScrollY = 0;
-
-    window.addEventListener("scroll", () => {
-      const currentScrollY = window.pageYOffset;
-      
-      navbar.style.background = currentScrollY > 100 ? 
-        "rgba(250,248,243,.95)" : "rgba(250,248,243,.85)";
-      navbar.style.boxShadow = currentScrollY > 100 ? 
-        "0 4px 30px rgba(0,0,0,.1)" : "0 1px 20px rgba(0,0,0,.05)";
-      
-      lastScrollY = currentScrollY;
-    });
   </script>
 </body>
 
