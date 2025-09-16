@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>راهنمای کامل روتین مراقبت شبانه | مجله KOALAW</title>
+  <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <style>
+    @import url("https://font-face.ir/css/iransans/");
+
+    :root {
+      --primary: #e39ab4;
+      --secondary: #1a1a1a;
+      --accent: #ffe9f2;
+      --rose-gold: #f0b7c4;
+      --rose-cream: #e3d1d6;
+      --cream: #faf8f3;
+      --deep-brown: #3d2914;
+      --blush: #ffd7e5;
+      --lavender: #eae2ff;
+      --mint: #dff8ef;
+      --butter: #fff3bf
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      cursor: none !important
+    }
+
+    body {
+      font-family: "IRANSans", sans-serif;
+      font-size: 15px;
+      background-color: var(--cream);
+      color: #333;
+      overflow-x: hidden;
+      cursor: none
+    }
+
+    .font-serif {
+      font-family: "IRANSans", serif
+    }
+
+    .hide-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none
+    }
+
+    .hide-scrollbar::-webkit-scrollbar {
+      display: none
+    }
+
+    body.mobile-menu-open,
+    body.search-overlay-open {
+      overflow: hidden
+    }
+
+    .mobile-menu-overlay {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(0, 0, 0, .6);
+      z-index: 55;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity .4s ease, visibility .4s ease
+    }
+
+    .mobile-menu-overlay.is-active {
+      opacity: 1;
+      visibility: visible
+    }
+
+    #mobile-menu {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 80%;
+      max-width: 320px;
+      height: 100%;
+      background-color: var(--cream);
+      box-shadow: -10px 0 30px rgba(0, 0, 0, .1);
+      z-index: 60;
+      transform: translateX(100%);
+      transition: transform .4s cubic-bezier(.23, 1, .32, 1);
+      display: flex;
+      flex-direction: column;
+      padding: 6rem 2rem 2rem;
+      align-items: flex-end;
+      gap: 1.25rem;
+      direction: ltr;
+      text-align: right
+    }
+
+    #mobile-menu.is-active {
+      transform: translateX(0)
+    }
+
+    #mobile-menu .nav-link {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--deep-brown);
+      width: 100%
+    }
+
+    .hamburger-button {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+      position: relative;
+      z-index: 65;
+      background: 0 0;
+      border: none
+    }
+
+    .hamburger-button span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background-color: var(--deep-brown);
+      border-radius: 2px;
+      transition: transform .3s ease-in-out, opacity .3s ease-in-out;
+      transform-origin: center
+    }
+
+    .hamburger-button.is-active span:nth-child(1) {
+      transform: translateY(7px) rotate(45deg)
+    }
+
+    .hamburger-button.is-active span:nth-child(2) {
+      opacity: 0;
+      transform: scaleX(0)
+    }
+
+    .hamburger-button.is-active span:nth-child(3) {
+      transform: translateY(-7px) rotate(-45deg)
+    }
+
+    /* Cursor (exactly as reference) */
+    .cursor {
+      width: 30px;
+      height: 30px;
+      border: 2px solid #666;
+      background: 0 0;
+      border-radius: 50% 50% 45% 45%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: border-color .2s ease, transform .2s ease
+    }
+
+    .cursor::after,
+    .cursor::before {
+      content: "";
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border: 2px solid #666;
+      background: 0 0;
+      border-radius: 50%;
+      top: -3px;
+      transition: border-color .2s ease
+    }
+
+    .cursor::before {
+      right: -9px
+    }
+
+    .cursor::after {
+      left: -9px
+    }
+
+    .cursor-face {
+      position: fixed;
+      width: 30px;
+      height: 30px;
+      pointer-events: none;
+      z-index: 10000;
+      transform: translate(-50%, -50%)
+    }
+
+    .cursor-face::before {
+      content: "";
+      position: absolute;
+      width: 4px;
+      height: 7px;
+      border: 1.5px solid #333;
+      background: 0 0;
+      border-radius: 50%;
+      top: 13px;
+      left: 50%;
+      transform: translateX(-50%)
+    }
+
+    .cursor-eyes {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0
+    }
+
+    .cursor-eyes::after,
+    .cursor-eyes::before {
+      content: "";
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      border: 2px solid #333;
+      background: 0 0;
+      border-radius: 50%;
+      top: 10px
+    }
+
+    .cursor-eyes::before {
+      right: 6px
+    }
+
+    .cursor-eyes::after {
+      left: 6px
+    }
+
+    .cursor.hover {
+      border-color: var(--primary);
+      transform: translate(-50%, -50%) scale(1.2)
+    }
+
+    .cursor.hover::after,
+    .cursor.hover::before {
+      border-color: var(--primary)
+    }
+
+    .cursor-follower {
+      width: 50px;
+      height: 50px;
+      background: rgba(227, 154, 180, .1);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: background .3s ease, transform .3s ease
+    }
+
+    .floating-heart {
+      position: fixed;
+      left: 0;
+      top: 0;
+      transform: translate(-50%, -50%);
+      font-size: 16px;
+      pointer-events: none;
+      z-index: 10000;
+      opacity: 0;
+      animation: heartFloat 1.2s ease-out forwards;
+      filter: drop-shadow(0 2px 0 rgba(0, 0, 0, .02))
+    }
+
+    @keyframes heartFloat {
+      0% {
+        transform: translate(-50%, -50%) scale(.8);
+        opacity: 0
+      }
+
+      15% {
+        opacity: .95
+      }
+
+      60% {
+        transform: translate(-50%, -140%) scale(1.15)
+      }
+
+      to {
+        transform: translate(-50%, -200%) scale(1);
+        opacity: 0
+      }
+    }
+
+    @media (prefers-reduced-motion:reduce) {
+
+      .floating-heart,
+      #backToTop:hover,
+      body [class*=animation] {
+        animation: none !important
+      }
+    }
+
+    .pulse-animation {
+      animation: pulse 2s ease-in-out infinite
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        transform: scale(1);
+        opacity: 1
+      }
+
+      50% {
+        transform: scale(1.05);
+        opacity: .8
+      }
+    }
+
+    nav {
+      backdrop-filter: blur(20px);
+      background: rgba(250, 248, 243, .85);
+      box-shadow: 0 1px 20px rgba(0, 0, 0, .05)
+    }
+
+    .nav-link {
+      position: relative;
+      font-weight: 500;
+      letter-spacing: .5px;
+      transition: all .3s ease
+    }
+
+    .nav-link::before {
+      content: "";
+      position: absolute;
+      bottom: -5px;
+      right: 0;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--primary), var(--rose-gold));
+      transition: width .3s ease
+    }
+
+    .nav-link:hover::before,
+    .nav-link.active::before {
+      width: 100%
+    }
+    
+    .newsletter-bg {
+      background: linear-gradient(135deg, var(--deep-brown) 0, var(--primary) 100%);
+      position: relative;
+      overflow: hidden
+    }
+
+    .newsletter-bg::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, hsla(0, 0%, 100%, .1) 0, transparent 70%);
+      animation: rotate 30s linear infinite
+    }
+
+    @keyframes rotate {
+      from {
+        transform: rotate(0)
+      }
+
+      to {
+        transform: rotate(30deg)
+      }
+    }
+
+    #backToTop:hover {
+      animation: cute-wiggle .7s ease both
+    }
+
+    @keyframes cute-wiggle {
+
+      0%,
+      50%,
+      to {
+        transform: scale(1.1) rotate(0)
+      }
+
+      25% {
+        transform: scale(1.1) rotate(-6deg)
+      }
+
+      75% {
+        transform: scale(1.1) rotate(6deg)
+      }
+    }
+
+    .search-overlay {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(250, 248, 243, 0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      z-index: 999;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 15vh 5% 0 5%;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.4s ease, visibility 0.4s ease;
+    }
+
+    .search-overlay.is-active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .search-container {
+      position: relative;
+      width: 100%;
+      max-width: 600px;
+      padding: 20px;
+      transform: translateY(-20px);
+      transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    .search-overlay.is-active .search-container {
+      transform: translateY(0);
+    }
+
+    .close-search-button {
+      position: absolute;
+      top: -10vh;
+      right: 0;
+      color: var(--deep-brown);
+      background: none;
+      border: none;
+      padding: 10px;
+      transform: scale(1.2);
+    }
+
+    .search-form {
+      position: relative;
+      width: 100%;
+    }
+
+    .search-input {
+      width: 100%;
+      border: 2px solid rgba(61, 41, 20, 0.2);
+      border-radius: 50px;
+      background-color: rgba(255, 255, 255, 0.7);
+      color: var(--deep-brown);
+      transition: all 0.3s ease;
+      outline: none;
+      padding: 1rem 1.25rem 1rem 3.5rem;
+      font-size: 1rem;
+    }
+
+    .search-input::placeholder {
+      color: rgba(61, 41, 20, 0.5);
+    }
+
+    .search-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(227, 154, 180, 0.3);
+    }
+
+    .search-submit-button {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--rose-gold));
+      color: white;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.3s ease;
+      width: 40px;
+      height: 40px;
+      left: 6px;
+    }
+
+    .search-submit-button:hover {
+      transform: translateY(-50%) scale(1.1);
+    }
+
+    .search-suggestions {
+      margin-top: 1rem;
+      text-align: center;
+      color: var(--deep-brown);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .search-suggestions p {
+      font-weight: 600;
+      opacity: 0.8;
+      font-size: 0.9rem;
+    }
+
+    .search-suggestions a {
+      display: inline-block;
+      background-color: rgba(227, 154, 180, 0.1);
+      border: 1px solid rgba(227, 154, 180, 0.2);
+      border-radius: 20px;
+      color: var(--deep-brown);
+      transition: all 0.3s ease;
+      text-decoration: none;
+      padding: 0.4rem 0.8rem;
+      font-size: 0.8rem;
+    }
+
+    .search-suggestions a:hover {
+      background-color: var(--primary);
+      color: white;
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    @media (min-width: 768px) {
+      .search-overlay {
+        align-items: center;
+        padding: 0 5%;
+      }
+
+      .close-search-button {
+        top: -50px;
+        right: -10px;
+        transform: scale(1);
+      }
+
+      .search-input {
+        padding: 1.25rem 1.5rem 1.25rem 4rem;
+        font-size: 1.1rem;
+      }
+
+      .search-submit-button {
+        width: 48px;
+        height: 48px;
+        left: 8px;
+      }
+
+      .search-suggestions a {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+      }
+    }
+    
+    /* Article specific styles */
+    .article-content h2 {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--deep-brown);
+        margin-top: 2.5rem;
+        margin-bottom: 1rem;
+        line-height: 1.4;
+    }
+    .article-content h3 {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: var(--deep-brown);
+        margin-top: 2rem;
+        margin-bottom: 0.75rem;
+    }
+    .article-content p, .article-content li {
+        font-size: 1.1rem;
+        line-height: 2;
+        color: #4a4a4a;
+        margin-bottom: 1.5rem;
+    }
+    .article-content a {
+        color: var(--primary);
+        text-decoration: none;
+        font-weight: 600;
+        border-bottom: 2px solid var(--rose-cream);
+        transition: all 0.3s ease;
+    }
+    .article-content a:hover {
+        background-color: var(--accent);
+        border-bottom-color: var(--primary);
+    }
+    .article-content ul {
+        list-style-type: '✧ ';
+        padding-right: 2rem;
+        margin-bottom: 1.5rem;
+    }
+    .article-content blockquote {
+        border-right: 4px solid var(--primary);
+        padding: 1rem 1.5rem;
+        margin: 2rem 0;
+        background-color: var(--accent);
+        border-radius: 0 8px 8px 0;
+        font-style: italic;
+    }
+    .article-content blockquote p {
+        margin-bottom: 0;
+        color: #5c4b37;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Cursor (reused from original) -->
+  <div class="cursor">
+    <div class="cursor-eyes"></div>
+  </div>
+  <div class="cursor-face"></div>
+  <div class="cursor-follower"></div>
+
+  <!-- Header (exact reference) -->
+  <nav class="fixed w-full z-50 transition-all duration-300" id="navbar">
+    <div class="container mx-auto px-6 py-5">
+      <div class="flex items-center justify-between" dir="ltr">
+        <a href="#" class="text-3xl font-serif font-bold text-gray-800 tracking-wider z-50 flex items-center gap-x-1">
+          K<img src="./image/koala.png" alt="Koala logo" class="w-8 h-7 inline-block -mt-1">ALAW
+        </a>
+        <div class="hidden lg:flex items-center gap-x-10 flex-row-reverse">
+          <a href="/shop" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">فروشگاه</a>
+          <a href="#collections" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">کالکشن ها</a>
+          <a href="#brands" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">برندها</a>
+          <a href="#magazine" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">مجله</a>
+          <a href="#about" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">درباره ما</a>
+        </div>
+        <div class="flex items-center gap-x-6">
+          <button id="search-button" class="text-gray-700 hover:text-gray-900 transition-all duration-300 hover:scale-110">
+            <i data-feather="search" class="w-5 h-5"></i>
+          </button>
+          <button class="text-gray-700 hover:text-gray-900 transition-all duration-300 hover:scale-110">
+            <i data-feather="user" class="w-5 h-5"></i>
+          </button>
+          <button class="text-gray-700 hover:text-gray-900 relative transition-all duration-300 hover:scale-110">
+            <i data-feather="shopping-bag" class="w-5 h-5"></i>
+            <span class="absolute -top-2 -right-2 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center pulse-animation">۳</span>
+          </button>
+          <button id="mobile-menu-button" class="hamburger-button lg:hidden"><span></span><span></span><span></span></button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile menu (reused from original) -->
+  <div id="mobile-menu">
+    <a href="/shop" class="nav-link">فروشگاه</a>
+    <a href="#collections" class="nav-link">کالکشن ها</a>
+    <a href="#brands" class="nav-link">برندها</a>
+    <a href="#magazine" class="nav-link">مجله</a>
+    <a href="#about" class="nav-link">درباره ما</a>
+  </div>
+  <div id="mobile-menu-overlay" class="mobile-menu-overlay"></div>
+
+  <!-- Main Content for the Article Page -->
+  <main class="pt-32">
+    
+    <!-- Article Section -->
+    <article class="py-12 md:py-20">
+        <div class="container mx-auto px-6">
+            <!-- Constrain content width for readability -->
+            <div class="max-w-4xl mx-auto">
+                
+                <!-- Article Header -->
+                <header class="text-center" data-aos="fade-up">
+                    <div class="mb-4">
+                        <a href="#" class="inline-block bg-accent text-rose-700 font-semibold px-4 py-1 rounded-full text-sm">راهنما</a>
+                    </div>
+                    <h1 class="text-3xl md:text-5xl font-serif font-bold text-gray-800 leading-tight mb-6">
+                        راهنمای کامل روتین مراقبت شبانه
+                    </h1>
+                    <p class="text-lg text-gray-500 mb-8 max-w-2xl mx-auto">
+                       با این راهنمای قدم به قدم، پوست خود را برای بازسازی شبانه آماده کنید و با پوستی درخشان بیدار شوید.
+                    </p>
+                    <div class="flex items-center justify-center gap-x-6 text-gray-500 text-sm">
+                        <div class="flex items-center gap-2">
+                            <img src="https://i.pravatar.cc/32?u=author1" alt="نویسنده" class="w-8 h-8 rounded-full">
+                            <span>سارا احمدی</span>
+                        </div>
+                        <span class="hidden sm:inline">|</span>
+                        <span>۱۴ شهریور ۱۴۰۴</span>
+                        <span class="hidden sm:inline">|</span>
+                        <span class="flex items-center gap-1"><i data-feather="clock" class="w-4 h-4"></i>۵ دقیقه مطالعه</span>
+                    </div>
+                </header>
+                
+                <!-- Hero Image -->
+                <figure class="my-12" data-aos="fade-up" data-aos-delay="100">
+                    <img src="https://images.unsplash.com/photo-1600180758890-6b94519a8ba6?q=80&w=1200&auto=format&fit=crop" 
+                         alt="روتین مراقبت شبانه" 
+                         class="w-full h-auto object-cover rounded-3xl shadow-lg">
+                </figure>
+
+                <!-- Article Body -->
+                <div class="article-content" data-aos="fade-up" data-aos-delay="200">
+                    <p>پوست ما در طول روز با آلاینده‌ها، استرس و اشعه‌های مضر خورشید در تماس است. شب، زمانی است که پوست فرصت پیدا می‌کند تا خود را بازسازی و ترمیم کند. یک روتین مراقبت از پوست شبانه مؤثر، این فرآیند طبیعی را تقویت کرده و به شما کمک می‌کند تا صبح با پوستی شاداب، سالم و درخشان از خواب بیدار شوید. اما یک روتین کامل شامل چه مراحلی است؟</p>
+
+                    <h2>چرا روتین شبانه اینقدر مهم است؟</h2>
+                    <p>در طول شب، جریان خون در پوست افزایش می‌یابد و این به معنای بازسازی کلاژن و ترمیم آسیب‌های ناشی از رادیکال‌های آزاد است. محصولات مراقبتی در شب بهتر جذب می‌شوند زیرا پوست در حالت استراحت قرار دارد و با عوامل مزاحم محیطی درگیر نیست. بنابراین، سرمایه‌گذاری روی یک روتین شبانه خوب، یکی از بهترین کارهایی است که می‌توانید برای سلامت بلندمدت پوست خود انجام دهید.</p>
+
+                    <h2>مراحل کلیدی یک روتین شبانه کامل</h2>
+                    <p>ترتیب استفاده از محصولات بسیار مهم است. قانون کلی این است که از رقیق‌ترین محصول به غلیظ‌ترین محصول حرکت کنید.</p>
+
+                    <h3>مرحله ۱: پاکسازی دو مرحله‌ای</h3>
+                    <p>ابتدا با یک پاک‌کننده بر پایه روغن (بالم یا روغن پاک‌کننده) آرایش، ضدآفتاب و آلودگی‌های روغنی را پاک کنید. سپس با یک شوینده بر پایه آب (ژل یا فوم) پوست را کاملاً تمیز کنید تا منافذ از هرگونه آلودگی پاک شوند. این کار تضمین می‌کند که پوست شما برای جذب محصولات بعدی کاملاً آماده است.</p>
+                    
+                    <h3>مرحله ۲: تونر</h3>
+                    <p>تونر به تعادل pH پوست پس از شستشو کمک کرده و آخرین بقایای آلودگی را نیز پاک می‌کند. تونرهای مدرن حاوی مواد آبرسان و مغذی هستند که پوست را آرام و آماده می‌کنند. به دنبال تونرهایی باشید که فاقد الکل باشند تا پوستتان خشک نشود.</p>
+
+                    <h3>مرحله ۳: سرم‌های درمانی</h3>
+                    <p>این مرحله، قلب روتین شماست. سرم‌ها حاوی غلظت بالایی از مواد مؤثره هستند که مشکلات خاص پوستی مانند لک، چروک، خشکی یا آکنه را هدف قرار می‌دهند. برای شب، سرم‌های حاوی رتینول (برای جوانسازی)، هیالورونیک اسید (برای آبرسانی) یا نیاسینامید (برای کنترل چربی و روشن‌کنندگی) گزینه‌های عالی هستند.</p>
+                    
+                    <blockquote>
+                        <p>نکته حرفه‌ای: هنگام استفاده از مواد مؤثره قوی مانند رتینول، از مقدار کم شروع کنید (مثلاً دو شب در هفته) و به تدریج تعداد دفعات استفاده را افزایش دهید تا پوستتان به آن عادت کند.</p>
+                    </blockquote>
+
+                    <h3>مرحله ۴: کرم دور چشم</h3>
+                    <p>پوست اطراف چشم بسیار نازک و حساس است و اولین علائم پیری در این ناحیه ظاهر می‌شوند. از یک کرم دور چشم تخصصی برای آبرسانی، کاهش پف و تیرگی و مبارزه با خطوط ریز استفاده کنید. کرم را با انگشت حلقه و با حرکات ضربه‌ای ملایم اعمال کنید.</p>
+
+                    <h3>مرحله ۵: مرطوب‌کننده یا کرم شب</h3>
+                    <p>در نهایت، با یک مرطوب‌کننده مناسب، تمام مواد مغذی را روی پوست خود "قفل" کنید. کرم‌های شب معمولاً غلیظ‌تر از کرم‌های روز هستند و حاوی ترکیبات ترمیم‌کننده بیشتری هستند تا در طول شب پوست را عمیقاً تغذیه کنند.</p>
+                    
+                    <ul>
+                        <li>همیشه محصولات را روی پوست تمیز استفاده کنید.</li>
+                        <li>برای دیدن نتایج، به روتین خود حداقل ۴ تا ۶ هفته پایبند باشید.</li>
+                        <li>به نیازهای پوست خود گوش دهید؛ شاید لازم باشد برخی شب‌ها روتین خود را تغییر دهید.</li>
+                    </ul>
+
+                    <p>با پیروی از این راهنما، شما نه تنها به سلامت پوست خود کمک می‌کنید، بلکه این چند دقیقه مراقبت از خود در پایان روز، می‌تواند یک مراسم آرامش‌بخش برای کاهش استرس و آماده شدن برای یک خواب راحت باشد.</p>
+                </div>
+                
+                <!-- Sharing & Author Section -->
+                <div class="mt-16 pt-8 border-t border-gray-200">
+                    <div class="flex flex-col sm:flex-row justify-between items-center gap-6">
+                        <!-- Social Share -->
+                        <div class="flex items-center gap-3">
+                            <span class="font-semibold text-gray-700">اشتراک‌گذاری:</span>
+                            <a href="#" class="text-gray-500 hover:text-rose-600 transition-colors"><i data-feather="twitter"></i></a>
+                            <a href="#" class="text-gray-500 hover:text-rose-600 transition-colors"><i data-feather="send"></i></a>
+                            <a href="#" class="text-gray-500 hover:text-rose-600 transition-colors"><i data-feather="link"></i></a>
+                        </div>
+                        <!-- Author Box -->
+                        <div class="flex items-center gap-4 bg-gray-50 p-4 rounded-2xl">
+                            <img src="https://i.pravatar.cc/64?u=author1" alt="نویسنده" class="w-14 h-14 rounded-full">
+                            <div>
+                                <h4 class="font-bold text-gray-800">سارا احمدی</h4>
+                                <p class="text-sm text-gray-500">متخصص مراقبت از پوست و نویسنده مجله KOALAW.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </article>
+    
+    <!-- Related Articles Section -->
+    <section class="py-24 bg-rose-50/50">
+      <div class="container mx-auto px-6">
+        <h2 class="text-3xl font-serif font-bold text-center text-gray-800 mb-12" data-aos="fade-up">مقالات مرتبط</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Reusing the card component from the magazine page -->
+            <a href="#" class="group block rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 bg-white"
+               data-aos="fade-up" data-aos-delay="100">
+              <div class="relative h-64 overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1512496015851-a90fb38ba796?q=80&w=800&auto=format&fit=crop" alt="مییکاپ مینیمال" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+              </div>
+              <div class="p-6">
+                <div class="flex items-center gap-2 text-sm text-rose-600 font-semibold">
+                  <i data-feather="tag" class="w-4 h-4"></i><span>آموزش</span>
+                </div>
+                <h3 class="mt-3 text-xl font-bold text-gray-800 leading-8 group-hover:text-rose-700 transition-colors">
+                  مییکاپ مینیمال در ۱۰ دقیقه: راهنمای قدم‌به‌قدم
+                </h3>
+                <div class="mt-4 pt-4 border-t border-gray-100 flex justify-between items-center text-sm text-gray-500">
+                  <span class="inline-flex items-center gap-1"><i data-feather="clock" class="w-4 h-4"></i>۷ دقیقه مطالعه</span><span>۱۰ شهریور ۱۴۰۴</span>
+                </div>
+              </div>
+            </a>
+            
+            <a href="#" class="group block rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 bg-white"
+               data-aos="fade-up" data-aos-delay="150">
+              <div class="relative h-64 overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1556041136379-c3da31393693?q=80&w=800&auto=format&fit=crop" alt="پوست شیشه ای" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+              </div>
+              <div class="p-6">
+                <div class="flex items-center gap-2 text-sm text-rose-600 font-semibold">
+                  <i data-feather="tag" class="w-4 h-4"></i><span>راهنما</span>
+                </div>
+                <h3 class="mt-3 text-xl font-bold text-gray-800 leading-8 group-hover:text-rose-700 transition-colors">
+                  رازهای داشتن پوستی شبیه شیشه (Glass Skin)
+                </h3>
+                <div class="mt-4 pt-4 border-t border-gray-100 flex justify-between items-center text-sm text-gray-500">
+                  <span class="inline-flex items-center gap-1"><i data-feather="clock" class="w-4 h-4"></i>۸ دقیقه مطالعه</span><span>۲ شهریور ۱۴۰۴</span>
+                </div>
+              </div>
+            </a>
+            
+            <a href="#" class="group block rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 bg-white"
+               data-aos="fade-up" data-aos-delay="200">
+              <div class="relative h-64 overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1590135824146-a79a3a16a443?q=80&w=800&auto=format&fit=crop" alt="ضدآفتاب" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+              </div>
+              <div class="p-6">
+                <div class="flex items-center gap-2 text-sm text-rose-600 font-semibold">
+                  <i data-feather="tag" class="w-4 h-4"></i><span>راهنما</span>
+                </div>
+                <h3 class="mt-3 text-xl font-bold text-gray-800 leading-8 group-hover:text-rose-700 transition-colors">
+                  ضدآفتاب: چرا مهم‌ترین محصول شماست؟
+                </h3>
+                <div class="mt-4 pt-4 border-t border-gray-100 flex justify-between items-center text-sm text-gray-500">
+                  <span class="inline-flex items-center gap-1"><i data-feather="clock" class="w-4 h-4"></i>۶ دقیقه مطالعه</span><span>۲۹ مرداد ۱۴۰۴</span>
+                </div>
+              </div>
+            </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Newsletter Section (reused from original) -->
+    <section class="py-24 newsletter-bg relative">
+      <div class="container mx-auto px-6 relative z-10">
+        <div class="max-w-4xl mx-auto text-center" data-aos="fade-up">
+          <h2 class="text-4xl lg:text-5xl font-serif font-bold text-white mb-6">درخشان بمانید</h2>
+          <p class="text-rose-100 mb-10 text-lg max-w-2xl mx-auto">اولین کسی باشید که از کالکشن‌های جدید، پیشنهادات انحصاری و نکات زیبایی متخصصان ما باخبر می‌شود.</p>
+          <form class="flex flex-col sm:flex-row max-w-xl mx-auto gap-4">
+            <input type="email" placeholder="ایمیل خود را وارد کنید" class="flex-grow px-6 py-4 rounded-full text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-rose-300/50 transition-all duration-300">
+            <button type="submit" class="px-8 py-4 bg-white text-gray-900 rounded-full font-semibold hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 hover:shadow-xl">عضویت</button>
+          </form>
+          <p class="text-xs text-rose-200 mt-6">به بیش از ۵۰,۰۰۰ دوست‌دار زیبایی بپیوندید. لغو عضویت در هر زمان ممکن است.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Search Overlay (reused from original) -->
+  <div id="search-overlay" class="search-overlay">
+    <div class="search-container">
+      <button id="close-search-button" class="close-search-button"><i data-feather="x" class="w-8 h-8"></i></button>
+      <form class="search-form">
+        <input type="search" id="search-input" placeholder="جستجو برای محصولات، برندها و..." class="search-input">
+        <button type="submit" class="search-submit-button"><i data-feather="search"></i></button>
+      </form>
+      <div class="search-suggestions">
+        <p>پیشنهادات:</p><a href="#">سرم پوست</a><a href="#">رژ لب مات</a><a href="#">عطر Bloom</a><a href="#">کرم پودر</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer (reused from original) -->
+  <footer id="about" class="bg-gradient-to-b from-gray-900 to-black text-white py-20">
+    <div class="container mx-auto px-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-12">
+        <div class="lg:col-span-2">
+          <h3 class="text-3xl font-serif font-bold mb-6">KOALAW</h3>
+          <p class="text-gray-400 mb-6 leading-relaxed">ارتقای زیبایی از طریق تجمل آگاهانه. هر محصول جشنی از بهترین مواد طبیعی و علم نوآورانه است.</p>
+          <div class="space-y-3 mb-8">
+            <div class="flex items-start gap-2 text-gray-300"><i data-feather="map-pin" class="w-5 h-5 flex-shrink-0 mt-0.5"></i>
+              <address class="not-italic leading-relaxed">ایران، همدان، بلوار معدنی</address>
+            </div>
+            <div class="rounded-xl overflow-hidden ring-1 ring-white/10 max-w-sm">
+              <iframe title="Iran Hamedan Madani Blvd Map" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d13076.699965851406!2d48.51733694002674!3d34.97746897368537!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3fee6d4d12658141%3A0x5514695c023923c4!2sMadani%20Blvd%2C%20Hamedan%2C%20Hamedan%20Province%2C%20Iran!5e0!3m2!1sen!2s!4v1701345678901!5m2!1sen!2s" width="100%" height="160" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" style="filter:grayscale(20%)"></iframe>
+            </div>
+          </div>
+          <div class="flex gap-3">
+            <a href="#" class="bg-gray-800 p-3 rounded-full hover:bg-gray-700 transition-all duration-300 transform hover:scale-110">
+              <i data-feather="instagram" class="w-5 h-5"></i>
+            </a>
+          </div>
+        </div>
+        <div id="footer-links" class="lg:col-span-3 grid grid-cols-2 md:grid-cols-3 gap-8"></div>
+      </div>
+      <div class="border-t border-gray-800 pt-8">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+          <div class="flex flex-col md:flex-row items-center mb-4 md:mb-0">
+            <p class="text-gray-400 text-sm mb-2 md:mb-0 md:ml-6">© ۲۰۲۵ D.AI — تمام حقوق محفوظ است.</p>
+            <div class="flex items-center gap-x-6 md:gap-x-8 text-sm flex-wrap">
+              <a href="#" class="text-gray-400 hover:text-white transition duration-300">سیاست حفظ حریم خصوصی</a>
+              <a href="#" class="text-gray-400 hover:text-white transition duration-300">شرایط خدمات</a>
+              <a href="#" class="text-gray-400 hover:text-white transition duration-300">سیاست کوکی</a>
+            </div>
+          </div>
+          <div class="flex items-center gap-x-4">
+            <span class="text-gray-400 text-sm ml-2">پرداخت امن:</span>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa" class="h-8 opacity-70 hover:opacity-100 transition-opacity duration-300">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" class="h-8 opacity-70 hover:opacity-100 transition-opacity duration-300">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal" class="h-6 opacity-70 hover:opacity-100 transition-opacity duration-300">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" alt="Apple Pay" class="h-8 opacity-70 hover:opacity-100 transition-opacity duration-300">
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <button id="backToTop" class="fixed bottom-8 left-8 bg-gradient-to-r from-gray-900 to-black text-white p-4 rounded-full shadow-lg opacity-0 invisible transition-all duration-300 hover:shadow-xl transform hover:scale-110 z-40">
+    <i data-feather="arrow-up" class="w-5 h-5"></i>
+  </button>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      AOS.init({ duration: 600, easing: "ease-out-cubic", once: true, offset: 40 });
+      document.querySelectorAll('[data-aos-duration]').forEach(e => e.setAttribute('data-aos-duration', '600'));
+      feather.replace();
+
+      /* Footer links (reused) */
+      const fLC = document.getElementById("footer-links");
+      const fL = {
+        "فروشگاه": ["تازه‌ها", "پرفروش‌ترین‌ها", "مراقبت از پوست", "آرایش", "عطر", "ست‌های هدیه"],
+        "خدمات مشتریان": ["تماس با ما", "سوالات متداول", "اطلاعات ارسال", "مرجوعی", "پیگیری سفارش"]
+      };
+      if (fLC) {
+          for (const t in fL) {
+            let l = "";
+            fL[t].forEach(i => l += `<li><a href="#" class="text-gray-400 hover:text-white transition duration-300">${i}</a></li>`);
+            fLC.innerHTML += `<div><h4 class="font-semibold text-lg mb-6">${t}</h4><ul class="space-y-3">${l}</ul></div>`;
+          }
+      }
+      
+      /* Cursor behavior (reused) */
+      const cur = document.querySelector(".cursor"),
+            cF = document.querySelector(".cursor-face"),
+            cFol = document.querySelector(".cursor-follower");
+      let cX = 0, cY = 0, fX = 0, fY = 0, s = .5;
+
+      if (window.innerWidth > 768) {
+        document.addEventListener("mousemove", e => { cX = e.clientX; cY = e.clientY; });
+        (function animate() {
+          cur.style.left = cX + "px"; cur.style.top = cY + "px";
+          cF.style.left = cX + "px"; cF.style.top = cY + "px";
+          fX += (cX - fX) * s; fY += (cY - fY) * s;
+          cFol.style.left = fX + "px"; cFol.style.top = fY + "px";
+          requestAnimationFrame(animate);
+        })();
+        document.querySelectorAll("a,button").forEach(el => {
+          el.addEventListener("mouseenter", () => { cur.classList.add("hover"); cFol.style.transform = "translate(-50%,-50%) scale(1.5)"; });
+          el.addEventListener("mouseleave", () => { cur.classList.remove("hover"); cFol.style.transform = "translate(-50%,-50%) scale(1)"; });
+        });
+        if (!window.matchMedia("(prefers-reduced-motion:reduce)").matches) {
+          document.addEventListener("click", e => {
+            if (e.target.closest("input,textarea,select,button,a")) return;
+            const t = document.createElement("span");
+            t.className = "floating-heart";
+            t.textContent = ["❤", "✦", "✧", "❀", "❣", "★"][Math.floor(Math.random()*6)];
+            t.style.left = e.clientX + "px";
+            t.style.top = e.clientY + "px";
+            t.style.color = ["#f7bcd6", "#c9c2ff", "#bcefe1", "#ffe3a4", "#ffcfe0", "#d6f0ff"][Math.floor(Math.random()*6)];
+            t.style.transform += ` rotate(${30 * Math.random() - 15}deg)`;
+            document.body.appendChild(t);
+            setTimeout(() => t.remove(), 1300);
+          }, { passive: true });
+        }
+      } else { [cur, cF, cFol].forEach(e => e.style.display = "none"); }
+
+      /* Mobile menu (reused) */
+      const mB = document.getElementById('mobile-menu-button'),
+            mM = document.getElementById('mobile-menu'),
+            mO = document.getElementById('mobile-menu-overlay');
+      const tM = () => {
+        mB.classList.toggle('is-active');
+        mM.classList.toggle('is-active');
+        mO.classList.toggle('is-active');
+        document.body.classList.toggle('mobile-menu-open');
+      };
+      if (mB) {
+        mB.addEventListener('click', tM);
+        mO.addEventListener('click', tM);
+        mM.querySelectorAll('a').forEach(l => l.addEventListener('click', () => { if (mM.classList.contains('is-active')) tM(); }));
+      }
+
+      /* Search overlay (reused) */
+      const searchButton = document.getElementById('search-button'),
+            searchOverlay = document.getElementById('search-overlay'),
+            closeSearchButton = document.getElementById('close-search-button'),
+            searchInput = document.getElementById('search-input');
+      if (searchButton && searchOverlay && closeSearchButton && searchInput) {
+        const openSearch = () => { searchOverlay.classList.add('is-active'); document.body.classList.add('search-overlay-open'); setTimeout(() => searchInput.focus(), 400); };
+        const closeSearch = () => { searchOverlay.classList.remove('is-active'); document.body.classList.remove('search-overlay-open'); };
+        searchButton.addEventListener('click', e => { e.preventDefault(); openSearch(); });
+        closeSearchButton.addEventListener('click', closeSearch);
+        searchOverlay.addEventListener('click', e => { if (e.target === searchOverlay) closeSearch(); });
+        document.addEventListener('keydown', e => { if (e.key === "Escape" && searchOverlay.classList.contains('is-active')) closeSearch(); });
+      }
+
+      /* Sticky header + back-to-top visibility (reused) */
+      const nav = document.getElementById("navbar"),
+            btt = document.getElementById("backToTop");
+      let lastScroll = 0;
+      window.addEventListener("scroll", () => {
+        const y = window.pageYOffset;
+        nav.style.background = y > 100 ? "rgba(250,248,243,.95)" : "rgba(250,248,243,.85)";
+        nav.style.boxShadow = y > 100 ? "0 4px 30px rgba(0,0,0,.1)" : "0 1px 20px rgba(0,0,0,.05)";
+        nav.style.transform = (y > lastScroll && y > 500) ? "translateY(-100%)" : "translateY(0)";
+        lastScroll = y;
+        btt.style.opacity = y > 500 ? "1" : "0";
+        btt.style.visibility = y > 500 ? "visible" : "hidden";
+      });
+      btt.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+    });
+  </script>
+</body>
+</html>
