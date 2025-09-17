@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>تایید شماره | KOALAW</title>
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <link rel="stylesheet" href="./src/assets/css/main.css" />
+  </head>
+
+  <body>
+    <!-- Custom Cursor -->
+    <div class="cursor">
+      <div class="cursor-eyes"></div>
+    </div>
+    <div class="cursor-face"></div>
+    <div class="cursor-follower"></div>
+
+    <!-- Main -->
+    <main
+      class="min-h-screen w-full flex items-center justify-center p-4 relative overflow-hidden"
+      style="background: linear-gradient(to bottom, #faf8f3, #fff7fb)"
+    >
+      <div class="cloud-animation"></div>
+      <div class="particle-overlay"></div>
+      <div
+        class="absolute inset-0 bg-gradient-to-t from-black/10 via-black/5 to-transparent z-0"
+      ></div>
+
+      <div
+        class="relative z-10 w-full max-w-md bg-white/70 backdrop-blur-xl rounded-3xl shadow-2xl shadow-rose-200/50 p-8 md:p-12 text-center space-y-6"
+        data-aos="fade-up"
+        data-aos-duration="700"
+      >
+        <!-- Logo -->
+        <a
+          href="#"
+          class="text-3xl font-serif font-bold text-gray-800 tracking-wider z-50 flex items-center justify-center gap-x-1"
+          dir="ltr"
+          >K<img
+            src="./src/assets/images/koala.png"
+            alt="Koala logo"
+            class="w-8 h-7 inline-block -mt-1"
+          />ALAW</a
+        >
+
+        <!-- Title -->
+        <h1 class="text-2xl font-bold text-deep-brown">
+          کد تایید را وارد کنید
+        </h1>
+
+        <!-- Subtitle -->
+        <p class="text-gray-600" id="phoneInfo">
+          کد ۶ رقمی به شماره شما ارسال شد.
+        </p>
+
+        <!-- OTP Inputs -->
+        <form id="otpForm" class="space-y-6">
+          <div
+            class="flex items-center justify-center gap-2 sm:gap-3"
+            dir="ltr"
+          >
+            <input
+              class="otp-input w-11 h-12 sm:w-12 sm:h-14 text-center text-xl sm:text-2xl rounded-xl border-2 border-rose-200/60 bg-cream/60 text-deep-brown focus:outline-none focus:ring-4 focus:ring-primary/30 focus:border-primary transition-all"
+              type="text"
+              inputmode="numeric"
+              pattern="[0-9]*"
+              maxlength="1"
+              autocomplete="one-time-code"
+            />
+            <input
+              class="otp-input w-11 h-12 sm:w-12 sm:h-14 text-center text-xl sm:text-2xl rounded-xl border-2 border-rose-200/60 bg-cream/60 text-deep-brown focus:outline-none focus:ring-4 focus:ring-primary/30 focus:border-primary transition-all"
+              type="text"
+              inputmode="numeric"
+              pattern="[0-9]*"
+              maxlength="1"
+            />
+            <input
+              class="otp-input w-11 h-12 sm:w-12 sm:h-14 text-center text-xl sm:text-2xl rounded-xl border-2 border-rose-200/60 bg-cream/60 text-deep-brown focus:outline-none focus:ring-4 focus:ring-primary/30 focus:border-primary transition-all"
+              type="text"
+              inputmode="numeric"
+              pattern="[0-9]*"
+              maxlength="1"
+            />
+            <input
+              class="otp-input w-11 h-12 sm:w-12 sm:h-14 text-center text-xl sm:text-2xl rounded-xl border-2 border-rose-200/60 bg-cream/60 text-deep-brown focus:outline-none focus:ring-4 focus:ring-primary/30 focus:border-primary transition-all"
+              type="text"
+              inputmode="numeric"
+              pattern="[0-9]*"
+              maxlength="1"
+            />
+            <input
+              class="otp-input w-11 h-12 sm:w-12 sm:h-14 text-center text-xl sm:text-2xl rounded-xl border-2 border-rose-200/60 bg-cream/60 text-deep-brown focus:outline-none focus:ring-4 focus:ring-primary/30 focus:border-primary transition-all"
+              type="text"
+              inputmode="numeric"
+              pattern="[0-9]*"
+              maxlength="1"
+            />
+            <input
+              class="otp-input w-11 h-12 sm:w-12 sm:h-14 text-center text-xl sm:text-2xl rounded-xl border-2 border-rose-200/60 bg-cream/60 text-deep-brown focus:outline-none focus:ring-4 focus:ring-primary/30 focus:border-primary transition-all"
+              type="text"
+              inputmode="numeric"
+              pattern="[0-9]*"
+              maxlength="1"
+            />
+          </div>
+
+          <!-- Error/Info -->
+          <p id="otpMsg" class="min-h-[20px] text-sm text-red-500"></p>
+
+          <!-- Verify button -->
+          <button
+            id="btnVerify"
+            type="submit"
+            class="w-full px-8 py-4 bg-pink-500 text-white rounded-full font-semibold text-lg hover:shadow-2xl hover:shadow-pink-500/40 hover:bg-pink-600 transition-all duration-300 transform hover:-translate-y-1 disabled:opacity-60 disabled:cursor-not-allowed"
+            disabled
+          >
+            تایید و ادامه
+          </button>
+
+          <!-- Resend -->
+          <div
+            class="text-sm text-gray-700 flex items-center justify-center gap-2"
+          >
+            <span>کدی دریافت نکردید؟</span>
+            <button
+              type="button"
+              id="btnResend"
+              class="inline-flex items-center gap-1 font-semibold text-primary hover:underline disabled:text-gray-400 disabled:no-underline disabled:cursor-not-allowed"
+              disabled
+            >
+              <i data-feather="refresh-ccw" class="w-4 h-4"></i>
+              <span>ارسال مجدد کد</span>
+            </button>
+            <span id="resendTimer" class="text-gray-500">(۶۰ ثانیه)</span>
+          </div>
+
+          <!-- Change phone -->
+          <div class="text-sm">
+            <button
+              type="button"
+              id="editPhone"
+              class="inline-flex items-center gap-1 font-semibold text-deep-brown hover:text-primary transition-colors"
+            >
+              <i data-feather="edit-2" class="w-4 h-4"></i>
+              ویرایش شماره
+            </button>
+          </div>
+        </form>
+
+        <!-- Back -->
+        <div>
+          <a
+            href="/"
+            class="inline-flex items-center gap-2 text-deep-brown font-semibold hover:text-primary transition-colors duration-300 group"
+          >
+            <i
+              data-feather="arrow-right"
+              class="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1"
+            ></i>
+            <span>بازگشت به صفحه اصلی</span>
+          </a>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // Init AOS
+        AOS.init({
+          duration: 600,
+          easing: "ease-out-cubic",
+          once: true,
+          offset: 40,
+        });
+
+        // Background elements
+        const cC = document.querySelector(".cloud-animation");
+        const pC = document.querySelector(".particle-overlay");
+        if (cC) {
+          for (let i = 1; i <= 6; i++)
+            cC.innerHTML += `<div class="cloud cloud-${i}"></div>`;
+        }
+        if (pC) {
+          for (let i = 0; i < 9; i++)
+            pC.innerHTML += `<div class="particle" style="left:${
+              10 + 10 * i
+            }%;animation-duration:${25 + 10 * Math.random()}s;animation-delay:${
+              15 * Math.random()
+            }s"></div>`;
+        }
+
+        // Icons
+        feather.replace();
+
+        // Custom cursor
+        const cur = document.querySelector(".cursor");
+        const cF = document.querySelector(".cursor-face");
+        const cFol = document.querySelector(".cursor-follower");
+        let cX = 0,
+          cY = 0,
+          fX = 0,
+          fY = 0,
+          s = 0.5;
+
+        if (window.innerWidth > 768) {
+          document.addEventListener("mousemove", (e) => {
+            cX = e.clientX;
+            cY = e.clientY;
+          });
+          function animateCursor() {
+            cur.style.left = cX + "px";
+            cur.style.top = cY + "px";
+            cF.style.left = cX + "px";
+            cF.style.top = cY + "px";
+            fX += (cX - fX) * s;
+            fY += (cY - fY) * s;
+            cFol.style.left = fX + "px";
+            cFol.style.top = fY + "px";
+            requestAnimationFrame(animateCursor);
+          }
+          animateCursor();
+          document.querySelectorAll("a, button, input").forEach((el) => {
+            el.addEventListener("mouseenter", () => {
+              cur.classList.add("hover");
+              cFol.style.transform = "translate(-50%,-50%) scale(1.5)";
+            });
+            el.addEventListener("mouseleave", () => {
+              cur.classList.remove("hover");
+              cFol.style.transform = "translate(-50%,-50%) scale(1)";
+            });
+          });
+        } else {
+          [cur, cF, cFol].forEach((el) => (el.style.display = "none"));
+        }
+
+        // Helpers
+        const qs = (s) => document.querySelector(s);
+        const qsa = (s) => Array.from(document.querySelectorAll(s));
+
+        function normalizeIranPhone(p) {
+          const d = (p || "").replace(/\D/g, "");
+          if (d.startsWith("0098")) return "0" + d.slice(4);
+          if (d.startsWith("98")) return "0" + d.slice(2);
+          if (d.startsWith("0")) return d;
+          if (d.startsWith("9")) return "0" + d;
+          return p || "";
+        }
+
+        function maskPhone(p) {
+          const n = normalizeIranPhone(p).replace(/\D/g, "");
+          if (!n) return "";
+          return n.replace(/\d(?=\d{4})/g, "•");
+        }
+
+        // Show phone (from URL or localStorage)
+        const params = new URLSearchParams(location.search);
+        const phoneRaw =
+          params.get("phone") || localStorage.getItem("signup_phone") || "";
+        const phoneMasked = phoneRaw ? maskPhone(phoneRaw) : "";
+        const phoneInfo = qs("#phoneInfo");
+        if (phoneMasked) {
+          phoneInfo.textContent = `کد ۶ رقمی به شماره ${phoneMasked} ارسال شد.`;
+        }
+
+        // OTP handling
+        const inputs = qsa(".otp-input");
+        const form = qs("#otpForm");
+        const btnVerify = qs("#btnVerify");
+        const otpMsg = qs("#otpMsg");
+
+        inputs[0].focus();
+
+        function getCode() {
+          return inputs.map((i) => i.value).join("");
+        }
+
+        function updateVerifyState() {
+          const filled = getCode().length === inputs.length;
+          btnVerify.disabled = !filled;
+          if (filled) otpMsg.textContent = "";
+        }
+
+        inputs.forEach((inp, idx) => {
+          // Only digits
+          inp.addEventListener("input", (e) => {
+            const v = e.target.value.replace(/\D/g, "");
+            e.target.value = v.slice(0, 1);
+            if (v && idx < inputs.length - 1) inputs[idx + 1].focus();
+            updateVerifyState();
+          });
+
+          // Backspace to previous
+          inp.addEventListener("keydown", (e) => {
+            if (
+              (e.key === "Backspace" || e.key === "Delete") &&
+              !inp.value &&
+              idx > 0
+            ) {
+              inputs[idx - 1].focus();
+            }
+            if (e.key === "ArrowLeft" && idx > 0) inputs[idx - 1].focus();
+            if (e.key === "ArrowRight" && idx < inputs.length - 1)
+              inputs[idx + 1].focus();
+          });
+
+          // Paste full code
+          inp.addEventListener("paste", (e) => {
+            const pasted = (e.clipboardData || window.clipboardData)
+              .getData("text")
+              .replace(/\D/g, "");
+            if (!pasted) return;
+            e.preventDefault();
+            pasted
+              .split("")
+              .slice(0, inputs.length)
+              .forEach((ch, i) => {
+                inputs[i].value = ch;
+              });
+            inputs[Math.min(pasted.length, inputs.length) - 1]?.focus();
+            updateVerifyState();
+          });
+        });
+
+        form.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const code = getCode();
+
+          if (code.length !== inputs.length) {
+            otpMsg.textContent = "لطفاً کد ۶ رقمی را کامل وارد کنید.";
+            return;
+          }
+
+          otpMsg.textContent = "";
+          btnVerify.disabled = true;
+          btnVerify.innerHTML = `<span class="inline-flex items-center justify-center gap-2">
+          <svg class="w-5 h-5 animate-spin" viewBox="0 0 24 24" fill="none">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="white" stroke-width="4"></circle>
+            <path class="opacity-75" fill="white" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+          </svg>
+          در حال بررسی...
+        </span>`;
+
+          try {
+            // TODO: Replace with real API call to verify code
+            await new Promise((res) => setTimeout(res, 1000));
+
+            // Simulate success
+            // Redirect or proceed
+            window.location.href = "/"; // change to dashboard or next step
+          } catch (err) {
+            otpMsg.textContent = "خطا در تایید کد. دوباره تلاش کنید.";
+            btnVerify.textContent = "تایید و ادامه";
+            btnVerify.disabled = false;
+          }
+        });
+
+        // Resend logic with countdown
+        const btnResend = qs("#btnResend");
+        const resendTimer = qs("#resendTimer");
+        let timeLeft = 60;
+        let tHandle;
+
+        function tick() {
+          timeLeft -= 1;
+          if (timeLeft <= 0) {
+            clearInterval(tHandle);
+            btnResend.disabled = false;
+            resendTimer.textContent = "";
+            return;
+          }
+          resendTimer.textContent = `(${timeLeft} ثانیه)`;
+        }
+
+        function startTimer() {
+          btnResend.disabled = true;
+          timeLeft = 60;
+          resendTimer.textContent = `(${timeLeft} ثانیه)`;
+          clearInterval(tHandle);
+          tHandle = setInterval(tick, 1000);
+        }
+
+        async function resendCode() {
+          btnResend.disabled = true;
+          // TODO: Call your API to resend code using phoneRaw
+          // await fetch('/api/send-code', { method: 'POST', body: JSON.stringify({ phone: phoneRaw }) })
+          await new Promise((res) => setTimeout(res, 500));
+          startTimer();
+        }
+
+        // Start initial countdown as if code was just sent
+        startTimer();
+        btnResend.addEventListener("click", resendCode);
+
+        // Edit phone (go back)
+        qs("#editPhone").addEventListener("click", () => {
+          if (document.referrer) {
+            history.back();
+          } else {
+            window.location.href = "/register.html";
+          }
+        });
+
+        // Cursor Click Effect
+        (function () {
+          if (!window.matchMedia("(prefers-reduced-motion:reduce)").matches) {
+            document.addEventListener(
+              "click",
+              (e) => {
+                if (e.target.closest("input,textarea,select,button,a")) return;
+                const t = document.createElement("span");
+                (t.className = "floating-heart"),
+                  (t.textContent = ["❤", "✦", "✧", "❀", "❣", "★"][
+                    Math.floor(6 * Math.random())
+                  ]),
+                  (t.style.left = e.clientX + "px"),
+                  (t.style.top = e.clientY + "px"),
+                  (t.style.color = [
+                    "#f7bcd6",
+                    "#c9c2ff",
+                    "#bcefe1",
+                    "#ffe3a4",
+                    "#ffcfe0",
+                    "#d6f0ff",
+                  ][Math.floor(6 * Math.random())]),
+                  (t.style.transform += ` rotate(${
+                    30 * Math.random() - 15
+                  }deg)`),
+                  document.body.appendChild(t),
+                  setTimeout(() => t.remove(), 1300);
+              },
+              { passive: !0 }
+            );
+          }
+        })();
+      });
+    </script>
+  </body>
+</html>

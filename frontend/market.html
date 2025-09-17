@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,maximum-scale=5"
+    />
+    <title>فروشگاه | KOALAW - محصولات زیبایی رویایی</title>
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <link rel="stylesheet" href="./src/assets/css/main.css" />
+  </head>
+
+  <body>
+    <div class="loader" id="loader"></div>
+
+    <div class="cursor">
+      <div class="cursor-eyes"></div>
+    </div>
+    <div class="cursor-face"></div>
+    <div class="cursor-follower"></div>
+
+    <nav class="fixed w-full z-50 transition-all duration-300" id="navbar">
+      <div class="container mx-auto px-6 py-5">
+        <div class="flex items-center justify-between" dir="ltr">
+          <a
+            href="#"
+            class="text-3xl font-serif font-bold text-gray-800 tracking-wider z-50 flex items-center gap-x-1"
+            >K<img
+              src="./src/assets/images/koala.png"
+              alt="Koala logo"
+              class="w-8 h-7 inline-block -mt-1"
+            />ALAW</a
+          >
+          <div class="hidden lg:flex items-center gap-x-10 flex-row-reverse">
+            <a
+              href="/shop"
+              class="nav-link text-gray-700 hover:text-gray-900 transition duration-300"
+              >فروشگاه</a
+            ><a
+              href="#collections"
+              class="nav-link text-gray-700 hover:text-gray-900 transition duration-300"
+              >کالکشن ها</a
+            ><a
+              href="#brands"
+              class="nav-link text-gray-700 hover:text-gray-900 transition duration-300"
+              >برندها</a
+            ><a
+              href="#magazine"
+              class="nav-link text-gray-700 hover:text-gray-900 transition duration-300"
+              >مجله</a
+            ><a
+              href="#about"
+              class="nav-link text-gray-700 hover:text-gray-900 transition duration-300"
+              >درباره ما</a
+            >
+          </div>
+          <div class="flex items-center gap-x-6">
+            <button
+              id="search-button"
+              class="text-gray-700 hover:text-gray-900 transition-all duration-300 hover:scale-110"
+            >
+              <i data-feather="search" class="w-5 h-5"></i></button
+            ><button
+              class="text-gray-700 hover:text-gray-900 transition-all duration-300 hover:scale-110"
+            >
+              <i data-feather="user" class="w-5 h-5"></i></button
+            ><button
+              class="text-gray-700 hover:text-gray-900 relative transition-all duration-300 hover:scale-110"
+            >
+              <i data-feather="shopping-bag" class="w-5 h-5"></i
+              ><span
+                class="absolute -top-2 -right-2 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center pulse-animation"
+                >۳</span
+              ></button
+            ><button id="mobile-menu-button" class="hamburger-button lg:hidden">
+              <span></span><span></span><span></span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+    <div id="mobile-menu">
+      <a href="/shop.html" class="nav-link">فروشگاه</a>
+      <a href="/#collections" class="nav-link">کالکشن ها</a>
+      <a href="/#brands" class="nav-link">برندها</a>
+      <a href="/#magazine" class="nav-link">مجله</a>
+      <a href="/#about" class="nav-link">درباره ما</a>
+    </div>
+    <div id="mobile-menu-overlay" class="mobile-menu-overlay"></div>
+
+    <main>
+      <div class="container mx-auto px-4 sm:px-6 relative z-10">
+        <div
+          class="bg-white rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100 p-3 sm:p-4 md:p-6 lg:p-8"
+        >
+          <div class="flex flex-row-reverse flex-col lg:flex-row lg:gap-x-8">
+            <aside
+              id="shop-sidebar"
+              class="w-full lg:w-1/4 lg:max-w-xs lg:sticky top-28 self-start h-screen lg:h-auto overflow-y-auto lg:overflow-visible pb-24 lg:pb-0 rounded-2xl hide-scrollbar"
+            >
+              <div class="p-4 sm:p-6">
+                <div class="flex items-center justify-between lg:hidden mb-6">
+                  <h3 class="font-bold text-lg sm:text-xl">فیلتر محصولات</h3>
+                  <button id="close-filter-btn" class="p-2 -m-2">
+                    <i data-feather="x" class="w-6 h-6"></i>
+                  </button>
+                </div>
+                <div class="space-y-4">
+                  <details class="filter-accordion" open>
+                    <summary>
+                      <span class="flex items-center gap-2"
+                        ><i
+                          data-feather="grid"
+                          class="w-4 sm:w-5 h-4 sm:h-5 text-primary-sharp"
+                        ></i
+                        >دسته‌بندی</span
+                      >
+                      <i data-feather="chevron-down"></i>
+                    </summary>
+                    <div
+                      class="filter-accordion-content space-y-3 sm:space-y-4 pt-4"
+                    >
+                      <label class="cute-checkbox"
+                        ><input
+                          type="checkbox"
+                          name="category"
+                          value="skincare"
+                          checked
+                        /><span class="checkmark"
+                          ><svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <polyline
+                              points="20 6 9 17 4 12"
+                            ></polyline></svg></span
+                        ><label>مراقبت از پوست</label></label
+                      >
+                      <label class="cute-checkbox"
+                        ><input
+                          type="checkbox"
+                          name="category"
+                          value="makeup"
+                        /><span class="checkmark"
+                          ><svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <polyline
+                              points="20 6 9 17 4 12"
+                            ></polyline></svg></span
+                        ><label>آرایش</label></label
+                      >
+                      <label class="cute-checkbox"
+                        ><input
+                          type="checkbox"
+                          name="category"
+                          value="fragrance"
+                        /><span class="checkmark"
+                          ><svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <polyline
+                              points="20 6 9 17 4 12"
+                            ></polyline></svg></span
+                        ><label>عطر</label></label
+                      >
+                      <label class="cute-checkbox"
+                        ><input
+                          type="checkbox"
+                          name="category"
+                          value="haircare"
+                        /><span class="checkmark"
+                          ><svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <polyline
+                              points="20 6 9 17 4 12"
+                            ></polyline></svg></span
+                        ><label>مراقبت از مو</label></label
+                      >
+                      <label class="cute-checkbox"
+                        ><input
+                          type="checkbox"
+                          name="category"
+                          value="body-bath"
+                        /><span class="checkmark"
+                          ><svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <polyline
+                              points="20 6 9 17 4 12"
+                            ></polyline></svg></span
+                        ><label>بدن و حمام</label></label
+                      >
+                    </div>
+                  </details>
+                  <details class="filter-accordion" open>
+                    <summary>
+                      <span class="flex items-center gap-2"
+                        ><i
+                          data-feather="star"
+                          class="w-4 sm:w-5 h-4 sm:h-5 text-primary-sharp"
+                        ></i
+                        >برند</span
+                      >
+                      <i data-feather="chevron-down"></i>
+                    </summary>
+                    <div
+                      class="filter-accordion-content space-y-3 sm:space-y-4 pt-4"
+                    >
+                      <label class="cute-checkbox"
+                        ><input
+                          type="checkbox"
+                          name="brand"
+                          value="LuxeElixir"
+                        /><span class="checkmark"
+                          ><svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <polyline
+                              points="20 6 9 17 4 12"
+                            ></polyline></svg></span
+                        ><label>LuxeElixir</label></label
+                      >
+                      <label class="cute-checkbox"
+                        ><input
+                          type="checkbox"
+                          name="brand"
+                          value="Aetheria"
+                        /><span class="checkmark"
+                          ><svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <polyline
+                              points="20 6 9 17 4 12"
+                            ></polyline></svg></span
+                        ><label>Aetheria</label></label
+                      >
+                      <label class="cute-checkbox"
+                        ><input
+                          type="checkbox"
+                          name="brand"
+                          value="Celeste"
+                          checked
+                        /><span class="checkmark"
+                          ><svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <polyline
+                              points="20 6 9 17 4 12"
+                            ></polyline></svg></span
+                        ><label>Celeste</label></label
+                      >
+                      <label class="cute-checkbox"
+                        ><input
+                          type="checkbox"
+                          name="brand"
+                          value="Solstice Glow"
+                        /><span class="checkmark"
+                          ><svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <polyline
+                              points="20 6 9 17 4 12"
+                            ></polyline></svg></span
+                        ><label>Solstice Glow</label></label
+                      >
+                    </div>
+                  </details>
+                  <details class="filter-accordion" open>
+                    <summary>
+                      <span class="flex items-center gap-2"
+                        ><i
+                          data-feather="dollar-sign"
+                          class="w-4 sm:w-5 h-4 sm:h-5 text-primary-sharp"
+                        ></i
+                        >محدوده قیمت</span
+                      >
+                      <i data-feather="chevron-down"></i>
+                    </summary>
+                    <div class="filter-accordion-content pt-2">
+                      <div class="price-range-slider">
+                        <div class="progress"></div>
+                      </div>
+                      <div class="range-input">
+                        <input
+                          type="range"
+                          class="range-min"
+                          min="0"
+                          max="1000000"
+                          value="100000"
+                          step="10000"
+                        />
+                        <input
+                          type="range"
+                          class="range-max"
+                          min="0"
+                          max="1000000"
+                          value="800000"
+                          step="10000"
+                        />
+                      </div>
+                      <div
+                        class="flex justify-between items-center mt-6 text-xs sm:text-sm text-gray-600"
+                      >
+                        <span id="price-min-display">۱۰۰,۰۰۰ تومان</span>
+                        <span id="price-max-display">۸۰۰,۰۰۰ تومان</span>
+                      </div>
+                    </div>
+                  </details>
+                </div>
+
+                <div
+                  class="mt-5 sticky bottom-0 -mx-4 sm:-mx-6 px-4 sm:px-6 pb-2 pt-3 bg-cream border-t border-rose-100"
+                >
+                  <button
+                    id="apply-filters-btn"
+                    class="w-full h-10 sm:h-11 rounded-xl font-extrabold text-white text-sm sm:text-base"
+                    style="background-color: var(--primary-sharp)"
+                  >
+                    اعمال فیلتر
+                  </button>
+                </div>
+              </div>
+            </aside>
+
+            <div class="w-full lg:w-3/4">
+              <div
+                class="flex items-center justify-between mb-4 sm:mb-6 lg:mb-8 px-3 sm:px-4 py-2 sm:py-3 rounded-xl sm:rounded-2xl bg-cream/50 border border-rose-100"
+              >
+                <button
+                  id="open-filter-btn"
+                  class="lg:hidden flex items-center gap-2 font-semibold text-xs sm:text-sm"
+                >
+                  <i
+                    data-feather="filter"
+                    class="w-4 sm:w-5 h-4 sm:h-5 text-primary-sharp"
+                  ></i
+                  ><span>فیلتر</span>
+                </button>
+                <div class="hidden lg:block">
+                  <p class="text-sm text-gray-600">
+                    نمایش
+                    <span id="product-count" class="font-bold">۱۲</span> از
+                    <span class="font-bold">۷۴</span> محصول
+                  </p>
+                </div>
+
+                <!-- Custom sort (original select look) -->
+                <div class="sort-select-wrapper" id="sortSelect">
+                  <button
+                    type="button"
+                    class="sort-select--button"
+                    aria-haspopup="listbox"
+                    aria-expanded="false"
+                  >
+                    <span class="sort-current">مرتب‌سازی: جدیدترین</span>
+                  </button>
+                  <i
+                    data-feather="chevron-down"
+                    class="w-4 sm:w-5 h-4 sm:h-5 icon"
+                  ></i>
+
+                  <div class="sort-menu" role="listbox" aria-label="مرتب‌سازی">
+                    <button
+                      class="sort-item"
+                      data-sort="newest"
+                      role="option"
+                      aria-selected="true"
+                    >
+                      <span>جدیدترین</span>
+                      <i data-feather="check" class="w-4 h-4"></i>
+                    </button>
+                    <button
+                      class="sort-item"
+                      data-sort="popular"
+                      role="option"
+                      aria-selected="false"
+                    >
+                      <span>محبوب‌ترین</span>
+                      <i data-feather="check" class="w-4 h-4"></i>
+                    </button>
+                    <button
+                      class="sort-item"
+                      data-sort="price-asc"
+                      role="option"
+                      aria-selected="false"
+                    >
+                      <span>قیمت: کم به زیاد</span>
+                      <i data-feather="check" class="w-4 h-4"></i>
+                    </button>
+                    <button
+                      class="sort-item"
+                      data-sort="price-desc"
+                      role="option"
+                      aria-selected="false"
+                    >
+                      <span>قیمت: زیاد به کم</span>
+                      <i data-feather="check" class="w-4 h-4"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div
+                id="shop-product-grid"
+                class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 md:gap-5 lg:gap-6"
+              >
+                <!-- Product cards will be injected here by JavaScript -->
+              </div>
+
+              <div
+                id="loading-indicator"
+                class="text-center py-8 sm:py-10 opacity-0 transition-opacity duration-300"
+              >
+                <p class="font-semibold text-gray-500">
+                  در حال بارگذاری محصولات بیشتر...
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <div id="search-overlay" class="search-overlay">
+      <div class="search-container">
+        <button id="close-search-button" class="close-search-button">
+          <i data-feather="x" class="w-6 sm:w-8 h-6 sm:h-8"></i>
+        </button>
+        <form class="search-form">
+          <input
+            type="search"
+            id="search-input"
+            placeholder="جستجو برای محصولات، برندها و..."
+            class="search-input"
+          />
+          <button type="submit" class="search-submit-button">
+            <i data-feather="search"></i>
+          </button>
+        </form>
+        <div class="search-suggestions">
+          <p>پیشنهادات:</p>
+          <a href="#">سرم پوست</a>
+          <a href="#">رژ لب مات</a>
+          <a href="#">عطر Bloom</a>
+          <a href="#">کرم پودر</a>
+        </div>
+      </div>
+    </div>
+
+    <footer
+      id="about"
+      class="bg-gradient-to-b from-gray-900 to-black text-white py-20"
+    >
+      <div class="container mx-auto px-6">
+        <div
+          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-12"
+        >
+          <div class="lg:col-span-2">
+            <h3 class="text-3xl font-serif font-bold mb-6">KOALAW</h3>
+            <p class="text-gray-400 mb-6 leading-relaxed">
+              ارتقای زیبایی از طریق تجمل آگاهانه. هر محصول جشنی از بهترین مواد
+              طبیعی و علم نوآورانه است.
+            </p>
+            <div class="space-y-3 mb-8">
+              <div class="flex items-start gap-2 text-gray-300">
+                <i
+                  data-feather="map-pin"
+                  class="w-5 h-5 flex-shrink-0 mt-0.5"
+                ></i>
+                <address class="not-italic leading-relaxed">
+                  ایران، همدان، بلوار معدنی
+                </address>
+              </div>
+              <div
+                class="rounded-xl overflow-hidden ring-1 ring-white/10 max-w-sm"
+              >
+                <iframe
+                  title="Iran Hamedan Madani Blvd Map"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d13076.699965851406!2d48.51733694002674!3d34.97746897368537!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3fee6d4d12658141%3A0x5514695c023923c4!2sMadani%20Blvd%2C%20Hamedan%2C%20Hamedan%20Province%2C%20Iran!5e0!3m2!1sen!2s!4v1701345678901!5m2!1sen!2s"
+                  width="100%"
+                  height="160"
+                  style="border: 0"
+                  allowfullscreen=""
+                  loading="lazy"
+                  referrerpolicy="no-referrer-when-downgrade"
+                  style="filter: grayscale(20%)"
+                ></iframe>
+              </div>
+            </div>
+            <div class="flex gap-3">
+              <a
+                href="#"
+                class="bg-gray-800 p-3 rounded-full hover:bg-gray-700 transition-all duration-300 transform hover:scale-110"
+                ><i data-feather="instagram" class="w-5 h-5"></i
+              ></a>
+            </div>
+          </div>
+          <div
+            id="footer-links"
+            class="lg:col-span-3 grid grid-cols-2 md:grid-cols-3 gap-8"
+          ></div>
+        </div>
+        <div class="border-t border-gray-800 pt-8">
+          <div class="flex flex-col md:flex-row justify-between items-center">
+            <div class="flex flex-col md:flex-row items-center mb-4 md:mb-0">
+              <p class="text-gray-400 text-sm mb-2 md:mb-0 md:ml-6">
+                © ۲۰۲۵ D.AI — تمام حقوق محفوظ است.
+              </p>
+              <div
+                class="flex items-center gap-x-6 md:gap-x-8 text-sm flex-wrap"
+              >
+                <a
+                  href="#"
+                  class="text-gray-400 hover:text-white transition duration-300"
+                  >سیاست حفظ حریم خصوصی</a
+                ><a
+                  href="#"
+                  class="text-gray-400 hover:text-white transition duration-300"
+                  >شرایط خدمات</a
+                ><a
+                  href="#"
+                  class="text-gray-400 hover:text-white transition duration-300"
+                  >سیاست کوکی</a
+                >
+              </div>
+            </div>
+            <div class="flex items-center gap-x-4">
+              <span class="text-gray-400 text-sm ml-2">پرداخت امن:</span
+              ><img
+                src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg"
+                alt="Visa"
+                class="h-8 opacity-70 hover:opacity-100 transition-opacity duration-300"
+              /><img
+                src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg"
+                alt="Mastercard"
+                class="h-8 opacity-70 hover:opacity-100 transition-opacity duration-300"
+              /><img
+                src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg"
+                alt="PayPal"
+                class="h-6 opacity-70 hover:opacity-100 transition-opacity duration-300"
+              /><img
+                src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg"
+                alt="Apple Pay"
+                class="h-8 opacity-70 hover:opacity-100 transition-opacity duration-300"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <button
+      id="backToTop"
+      class="fixed bg-gradient-to-r from-gray-900 to-black text-white rounded-full shadow-lg opacity-0 invisible transition-all duration-300 hover:shadow-xl transform hover:scale-110 z-40"
+    >
+      <i data-feather="arrow-up"></i>
+    </button>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // --- CORE SCRIPTS ---
+        AOS.init({
+          duration: 600,
+          easing: "ease-out-cubic",
+          once: true,
+          offset: 40,
+        });
+        feather.replace();
+
+        const fLC = document.getElementById("footer-links");
+        const fL = {
+          فروشگاه: [
+            "تازه‌ها",
+            "پرفروش‌ترین‌ها",
+            "مراقبت از پوست",
+            "آرایش",
+            "عطر",
+            "ست‌های هدیه",
+          ],
+          "خدمات مشتریان": [
+            "تماس با ما",
+            "سوالات متداول",
+            "اطلاعات ارسال",
+            "مرجوعی",
+            "پیگیری سفارش",
+          ],
+        };
+        if (fLC) {
+          for (const t in fL) {
+            let l = "";
+            fL[t].forEach(
+              (t) =>
+                (l += `<li><a href="#" class="text-gray-400 hover:text-white transition duration-300">${t}</a></li>`)
+            ),
+              (fLC.innerHTML += `<div><h4 class="font-semibold text-lg mb-6">${t}</h4><ul class="space-y-3">${l}</ul></div>`);
+          }
+        }
+
+        const cur = document.querySelector(".cursor"),
+          cF = document.querySelector(".cursor-face"),
+          cFol = document.querySelector(".cursor-follower");
+        if (
+          window.innerWidth > 768 &&
+          window.matchMedia("(hover: hover) and (pointer: fine)").matches &&
+          cur &&
+          cF &&
+          cFol
+        ) {
+          let cX = 0,
+            cY = 0,
+            fX = 0,
+            fY = 0,
+            speed = 0.5;
+          document.addEventListener("mousemove", (e) => {
+            cX = e.clientX;
+            cY = e.clientY;
+          });
+          function animateCursor() {
+            cur.style.left = cX + "px";
+            cur.style.top = cY + "px";
+            cF.style.left = cX + "px";
+            cF.style.top = cY + "px";
+            fX += (cX - fX) * speed;
+            fY += (cY - fY) * speed;
+            cFol.style.left = fX + "px";
+            cFol.style.top = fY + "px";
+            requestAnimationFrame(animateCursor);
+          }
+          animateCursor();
+          document
+            .querySelectorAll(
+              "a, button, input[type='checkbox'], input[type='range'], summary"
+            )
+            .forEach((el) => {
+              el.addEventListener("mouseenter", () => {
+                cur.classList.add("hover");
+                cFol.style.transform = "translate(-50%,-50%) scale(1.5)";
+              });
+              el.addEventListener("mouseleave", () => {
+                cur.classList.remove("hover");
+                cFol.style.transform = "translate(-50%,-50%) scale(1)";
+              });
+            });
+        } else {
+          [cur, cF, cFol].forEach((el) => {
+            if (el) el.style.display = "none";
+          });
+        }
+
+        window.addEventListener("load", () =>
+          setTimeout(() => {
+            const e = document.getElementById("loader");
+            if (e) {
+              e.style.opacity = "0";
+              setTimeout(() => (e.style.display = "none"), 400);
+            }
+          }, 500)
+        );
+
+        const nav = document.getElementById("navbar"),
+          btt = document.getElementById("backToTop");
+        let lastScroll = 0;
+        window.addEventListener("scroll", () => {
+          const scrollY = window.pageYOffset;
+          if (nav)
+            nav.style.transform =
+              scrollY > lastScroll && scrollY > 500
+                ? "translateY(-100%)"
+                : "translateY(0)";
+          if (btt) {
+            btt.style.opacity = scrollY > 500 ? "1" : "0";
+            btt.style.visibility = scrollY > 500 ? "visible" : "hidden";
+          }
+          lastScroll = scrollY;
+        });
+        if (btt)
+          btt.addEventListener("click", () =>
+            window.scrollTo({ top: 0, behavior: "smooth" })
+          );
+
+        const mB = document.getElementById("mobile-menu-button"),
+          mM = document.getElementById("mobile-menu"),
+          mO = document.getElementById("mobile-menu-overlay");
+        const toggleMobileMenu = () => {
+          mB.classList.toggle("is-active");
+          mM.classList.toggle("is-active");
+          mO.classList.toggle("is-active");
+          document.body.classList.toggle("mobile-menu-open");
+        };
+        if (mB && mM && mO) {
+          mB.addEventListener("click", toggleMobileMenu);
+          mO.addEventListener("click", toggleMobileMenu);
+        }
+
+        const searchButton = document.getElementById("search-button"),
+          searchOverlay = document.getElementById("search-overlay"),
+          closeSearchButton = document.getElementById("close-search-button"),
+          searchInput = document.getElementById("search-input");
+        if (searchButton && searchOverlay && closeSearchButton && searchInput) {
+          const openSearch = () => {
+            searchOverlay.classList.add("is-active"),
+              document.body.classList.add("search-overlay-open"),
+              setTimeout(() => searchInput.focus(), 400);
+          };
+          const closeSearch = () => {
+            searchOverlay.classList.remove("is-active"),
+              document.body.classList.remove("search-overlay-open");
+          };
+          searchButton.addEventListener("click", (e) => {
+            e.preventDefault(), openSearch();
+          });
+          closeSearchButton.addEventListener("click", closeSearch);
+          searchOverlay.addEventListener("click", (e) => {
+            e.target === searchOverlay && closeSearch();
+          });
+          document.addEventListener("keydown", (e) => {
+            "Escape" === e.key &&
+              searchOverlay.classList.contains("is-active") &&
+              closeSearch();
+          });
+        }
+
+        // --- ADDED: Floating Heart Click Effect ---
+        (function createFloatingHeartEffect() {
+          if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+            return;
+          }
+          document.addEventListener(
+            "click",
+            (e) => {
+              // Do not trigger on interactive elements to avoid interference
+              if (
+                e.target.closest("input, textarea, select, button, a, summary")
+              ) {
+                return;
+              }
+
+              const heart = document.createElement("span");
+              heart.className = "floating-heart";
+              heart.textContent = ["❤", "✦", "✧", "❀", "❣", "★"][
+                Math.floor(Math.random() * 6)
+              ];
+              heart.style.left = e.clientX + "px";
+              heart.style.top = e.clientY + "px";
+              heart.style.color = [
+                "#f7bcd6",
+                "#c9c2ff",
+                "#bcefe1",
+                "#ffe3a4",
+                "#ffcfe0",
+                "#d6f0ff",
+              ][Math.floor(Math.random() * 6)];
+              heart.style.transform += ` rotate(${Math.random() * 30 - 15}deg)`;
+
+              document.body.appendChild(heart);
+
+              setTimeout(() => {
+                heart.remove();
+              }, 1300);
+            },
+            { passive: true }
+          );
+        })();
+
+        // --- SHOP PAGE SCRIPTS ---
+        const allProducts = [
+          {
+            d: "0",
+            c: "skincare",
+            b: "LuxeElixir",
+            t: "اکسیر درخشش طلایی",
+            p: 480000,
+            r: 4.8,
+            img: "./src/assets/images/skin.png",
+          },
+          {
+            d: "100",
+            c: "makeup",
+            b: "Celeste",
+            t: "بوسه مخملی مات",
+            p: 320000,
+            r: 4.5,
+            img: "./src/assets/images/cosmetic.png",
+          },
+          {
+            d: "200",
+            c: "makeup",
+            b: "Aetheria",
+            t: "پایه ابریشمی بی‌نقص",
+            p: 420000,
+            r: 4.9,
+            img: "./src/assets/images/cosmetic.png",
+          },
+          {
+            d: "300",
+            c: "fragrance",
+            b: "Solstice Glow",
+            t: "راز نیمه‌شب",
+            p: 780000,
+            r: 4.7,
+            img: "./src/assets/images/perfume.png",
+          },
+          {
+            d: "0",
+            c: "skincare",
+            b: "Celeste",
+            t: "کرم شب بازسازی کننده",
+            p: 550000,
+            r: 4.6,
+            img: "./src/assets/images/skin.png",
+          },
+          {
+            d: "100",
+            c: "haircare",
+            b: "LuxeElixir",
+            t: "سرم موی آرگان",
+            p: 290000,
+            r: 4.8,
+            img: "./src/assets/images/hair.png",
+          },
+          {
+            d: "200",
+            c: "body-bath",
+            b: "Aetheria",
+            t: "اسکراب بدن شکری",
+            p: 210000,
+            r: 4.4,
+            img: "./src/assets/images/body.png",
+          },
+          {
+            d: "300",
+            c: "makeup",
+            b: "Solstice Glow",
+            t: "پالت سایه کهکشانی",
+            p: 650000,
+            r: 4.9,
+            img: "./src/assets/images/cosmetic.png",
+          },
+          {
+            d: "0",
+            c: "fragrance",
+            b: "Celeste",
+            t: "عطر شکوفه بهاری",
+            p: 710000,
+            r: 4.5,
+            img: "./src/assets/images/perfume.png",
+          },
+          {
+            d: "100",
+            c: "skincare",
+            b: "LuxeElixir",
+            t: "تونر گل رز آبرسان",
+            p: 190000,
+            r: 4.7,
+            img: "./src/assets/images/skin.png",
+          },
+          {
+            d: "200",
+            c: "body-bath",
+            b: "Aetheria",
+            t: "کره بدن وانیلی",
+            p: 250000,
+            r: 4.6,
+            img: "./src/assets/images/body.png",
+          },
+          {
+            d: "300",
+            c: "haircare",
+            b: "Solstice Glow",
+            t: "ماسک موی کراتینه",
+            p: 380000,
+            r: 4.8,
+            img: "./src/assets/images/hair.png",
+          },
+          {
+            d: "0",
+            c: "skincare",
+            b: "Celeste",
+            t: "سرم ویتامین سی",
+            p: 495000,
+            r: 4.9,
+            img: "./src/assets/images/skin.png",
+          },
+          {
+            d: "100",
+            c: "makeup",
+            b: "Aetheria",
+            t: "ریمل حجم‌دهنده",
+            p: 310000,
+            r: 4.6,
+            img: "./src/assets/images/cosmetic.png",
+          },
+          {
+            d: "200",
+            c: "fragrance",
+            b: "LuxeElixir",
+            t: "ادکلن چوب صندل",
+            p: 850000,
+            r: 4.8,
+            img: "./src/assets/images/perfume.png",
+          },
+          {
+            d: "300",
+            c: "body-bath",
+            b: "Celeste",
+            t: "لوسیون بدن آلوئه‌ورا",
+            p: 230000,
+            r: 4.5,
+            img: "./src/assets/images/body.png",
+          },
+        ];
+
+        let visibleProducts = allProducts.slice();
+
+        const productGrid = document.getElementById("shop-product-grid");
+        let currentProductIndex = 0;
+        const productsPerPage = 12;
+
+        function createProductCard(p) {
+          const categoryIconMap = {
+            skincare: "shield",
+            makeup: "pen-tool",
+            fragrance: "wind",
+            haircare: "git-branch",
+            "body-bath": "droplet",
+          };
+          const categoryLabelMap = {
+            skincare: "مراقبت از پوست",
+            makeup: "آرایش",
+            fragrance: "عطر",
+            haircare: "مراقبت از مو",
+            "body-bath": "بدن و حمام",
+          };
+          const categoryIcon = categoryIconMap[p.c] || "gift";
+          const categoryLabel = categoryLabelMap[p.c] || "محصول";
+          const price = p.p.toLocaleString("fa-IR") + " تومان";
+          const rating = p.r.toLocaleString("fa-IR", {
+            minimumFractionDigits: 1,
+            maximumFractionDigits: 1,
+          });
+          const stars = Array(Math.floor(p.r))
+            .fill(0)
+            .map(
+              () =>
+                `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-star"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>`
+            )
+            .join("");
+          const card = document.createElement("a");
+          card.href = "#";
+          card.className = `product-card-v3 category-${p.c}`;
+          card.setAttribute("data-aos", "fade-up");
+          card.innerHTML = `
+          <div class="card-bg"></div>
+          <div class="card-blob"><svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><path d="M48.1,-58.9C62.2,-51.9,73.4,-37.2,77,-21.2C80.6,-5.2,76.5,12.2,68.4,26.1C60.3,40,48.2,50.4,34.5,58.3C20.8,66.2,5.5,71.6,-9.3,71.1C-24.1,70.7,-38.4,64.4,-50.9,54.7C-63.4,44.9,-74,31.7,-77.8,16.5C-81.6,1.2,-78.6,-16,-69.8,-29.3C-61,-42.6,-46.4,-52,-32.1,-59.5C-17.8,-67,-3.9,-72.6,9.6,-71.7C23.1,-70.8,48.1,-58.9,48.1,-58.9Z" transform="translate(100 100)"></path></svg></div>
+          <div class="card-image-wrapper"><img src="${p.img}" alt="${p.t}" class="card-image"></div>
+          <div class="card-content">
+            <div class="card-category"><i data-feather="${categoryIcon}" class="w-3 h-3"></i><span>${categoryLabel}</span></div>
+            <h3 class="card-title">${p.t}</h3>
+            <div class="card-brand">${p.b}</div>
+            <div class="card-rating">${stars}<span>${rating}</span></div>
+            <p class="card-price">${price}</p>
+          </div>`;
+          return card;
+        }
+
+        function loadProducts() {
+          if (!productGrid || currentProductIndex >= visibleProducts.length)
+            return;
+          const fragment = document.createDocumentFragment();
+          const productsToLoad = visibleProducts.slice(
+            currentProductIndex,
+            currentProductIndex + productsPerPage
+          );
+          productsToLoad.forEach((p) =>
+            fragment.appendChild(createProductCard(p))
+          );
+          productGrid.appendChild(fragment);
+          feather.replace();
+          currentProductIndex += productsPerPage;
+          const productCountEl = document.getElementById("product-count");
+          if (productCountEl)
+            productCountEl.textContent = productGrid.children.length;
+        }
+
+        // Custom sort (original look)
+        const sortWrap = document.getElementById("sortSelect");
+        const sortTrigger = sortWrap?.querySelector(".sort-select--button");
+        const sortCurrent = sortWrap?.querySelector(".sort-current");
+        const sortItems = sortWrap?.querySelectorAll(".sort-item");
+
+        function openSort() {
+          sortWrap?.classList.add("is-open");
+          if (sortTrigger) sortTrigger.setAttribute("aria-expanded", "true");
+        }
+        function closeSort() {
+          sortWrap?.classList.remove("is-open");
+          if (sortTrigger) sortTrigger.setAttribute("aria-expanded", "false");
+        }
+        function updateSortUI(key) {
+          (sortItems || []).forEach((btn) => {
+            btn.setAttribute(
+              "aria-selected",
+              btn.dataset.sort === key ? "true" : "false"
+            );
+          });
+          const activeText =
+            Array.from(sortItems || [])
+              .find((b) => b.dataset.sort === key)
+              ?.querySelector("span")?.textContent || "جدیدترین";
+          if (sortCurrent) sortCurrent.textContent = "مرتب‌سازی: " + activeText;
+          feather.replace();
+        }
+        function sortProducts(key = "newest") {
+          if (key === "newest") {
+            visibleProducts.sort((a, b) => parseInt(b.d) - parseInt(a.d));
+          } else if (key === "popular") {
+            visibleProducts.sort((a, b) => b.r - a.r);
+          } else if (key === "price-asc") {
+            visibleProducts.sort((a, b) => a.p - b.p);
+          } else if (key === "price-desc") {
+            visibleProducts.sort((a, b) => b.p - a.p);
+          }
+          productGrid.innerHTML = "";
+          currentProductIndex = 0;
+          loadProducts();
+          updateSortUI(key);
+        }
+
+        if (sortTrigger) {
+          sortTrigger.addEventListener("click", (e) => {
+            e.stopPropagation();
+            sortWrap.classList.contains("is-open") ? closeSort() : openSort();
+          });
+        }
+        (sortItems || []).forEach((btn) => {
+          btn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            const key = btn.dataset.sort;
+            closeSort();
+            sortProducts(key);
+          });
+        });
+        document.addEventListener("click", () => closeSort());
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape") closeSort();
+        });
+
+        // Initial sort and render
+        sortProducts("newest");
+
+        const loadingIndicator = document.getElementById("loading-indicator");
+        if (loadingIndicator) {
+          const observer = new IntersectionObserver(
+            (entries) => {
+              if (
+                entries[0].isIntersecting &&
+                currentProductIndex < visibleProducts.length
+              ) {
+                loadingIndicator.style.opacity = "1";
+                setTimeout(() => {
+                  loadProducts();
+                  loadingIndicator.style.opacity = "0";
+                }, 800);
+              }
+            },
+            { threshold: 0.5 }
+          );
+          observer.observe(loadingIndicator);
+        }
+
+        // Open/Close filter sidebar (mobile)
+        const openFilterBtn = document.getElementById("open-filter-btn");
+        const closeFilterBtn = document.getElementById("close-filter-btn");
+        const shopSidebar = document.getElementById("shop-sidebar");
+        const filterOverlay = document.createElement("div");
+        filterOverlay.className = "mobile-menu-overlay";
+        document.body.appendChild(filterOverlay);
+
+        const toggleFilterMenu = () => {
+          shopSidebar.classList.toggle("is-active");
+          filterOverlay.classList.toggle("is-active");
+          document.body.classList.toggle("filter-menu-open");
+        };
+        if (openFilterBtn && closeFilterBtn && shopSidebar) {
+          openFilterBtn.addEventListener("click", toggleFilterMenu);
+          closeFilterBtn.addEventListener("click", toggleFilterMenu);
+          filterOverlay.addEventListener("click", toggleFilterMenu);
+        }
+
+        // Price range UI
+        const rangeInputs = document.querySelectorAll(".range-input input");
+        const progress = document.querySelector(
+          ".price-range-slider .progress"
+        );
+        const priceMinDisplay = document.getElementById("price-min-display");
+        const priceMaxDisplay = document.getElementById("price-max-display");
+
+        if (
+          rangeInputs.length > 0 &&
+          progress &&
+          priceMinDisplay &&
+          priceMaxDisplay
+        ) {
+          let minVal = parseInt(rangeInputs[0].value),
+            maxVal = parseInt(rangeInputs[1].value);
+          progress.style.right = (minVal / rangeInputs[0].max) * 100 + "%";
+          progress.style.left = 100 - (maxVal / rangeInputs[1].max) * 100 + "%";
+          rangeInputs.forEach((input) => {
+            input.addEventListener("input", (e) => {
+              let minVal = parseInt(rangeInputs[0].value),
+                maxVal = parseInt(rangeInputs[1].value);
+              if (maxVal - minVal < 100000) {
+                if (e.target.className === "range-min")
+                  rangeInputs[0].value = maxVal - 100000;
+                else rangeInputs[1].value = minVal + 100000;
+              } else {
+                progress.style.right =
+                  (minVal / rangeInputs[0].max) * 100 + "%";
+                progress.style.left =
+                  100 - (maxVal / rangeInputs[1].max) * 100 + "%";
+                priceMinDisplay.textContent =
+                  minVal.toLocaleString("fa-IR") + " تومان";
+                priceMaxDisplay.textContent =
+                  maxVal.toLocaleString("fa-IR") + " تومان";
+              }
+            });
+          });
+        }
+
+        // Apply Filters button
+        const applyFiltersBtn = document.getElementById("apply-filters-btn");
+        function getCheckedValues(name) {
+          return Array.from(
+            document.querySelectorAll(`input[name="${name}"]:checked`)
+          ).map((el) => el.value);
+        }
+        function applyFilters() {
+          const selectedCategories = getCheckedValues("category");
+          const selectedBrands = getCheckedValues("brand");
+          const minVal = parseInt(
+            document.querySelector(".range-min")?.value || 0
+          );
+          const maxVal = parseInt(
+            document.querySelector(".range-max")?.value ||
+              Number.MAX_SAFE_INTEGER
+          );
+          visibleProducts = allProducts.filter((p) => {
+            const okCat = selectedCategories.length
+              ? selectedCategories.includes(p.c)
+              : true;
+            const okBrand = selectedBrands.length
+              ? selectedBrands.includes(p.b)
+              : true;
+            const okPrice = p.p >= minVal && p.p <= maxVal;
+            return okCat && okBrand && okPrice;
+          });
+          const activeSortKey =
+            (Array.from(document.querySelectorAll(".sort-item")) || []).find(
+              (o) => o.getAttribute("aria-selected") === "true"
+            )?.dataset.sort || "newest";
+          sortProducts(activeSortKey);
+          if (shopSidebar.classList.contains("is-active")) toggleFilterMenu();
+        }
+        if (applyFiltersBtn)
+          applyFiltersBtn.addEventListener("click", applyFilters);
+      });
+    </script>
+  </body>
+</html>
