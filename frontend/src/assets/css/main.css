@@ -1101,3 +1101,25 @@ section[id] { scroll-margin-top: 7rem; }
 
 /* Keep dropdowns above other content when open (profile) */
 .profile-card:has(.sort-select-wrapper.is-open) { position: relative; z-index: 1000; }
+/* Add this to your main.css file */
+@keyframes scroll-brands {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(var(--marquee-shift, -100%));
+  }
+}
+/* Replace the previous .scroll-indicator::before with this */
+.scroll-indicator::before {
+  content: "";
+  position: absolute;
+  top: 8px; /* Slightly adjusted for better visual placement */
+  left: 50%;
+  transform: translateX(-50%); /* Ensures perfect horizontal centering */
+  width: 8px;      /* Make width and height equal */
+  height: 8px;     /* to form a square */
+  background-color: #fff;
+  border-radius: 50%; /* This rounds the square into a perfect circle */
+  animation: scroll-down 2s ease-in-out infinite;
+}
