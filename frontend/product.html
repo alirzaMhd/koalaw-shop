@@ -133,7 +133,6 @@
                   src="./src/assets/images/product.png"
                   alt="نمای اصلی"
                   class="w-full h-full object-cover"
-                  onclick="changeMainImage(event, this.src)"
                 />
               </div>
               <div class="thumbnail">
@@ -141,7 +140,6 @@
                   src="./src/assets/images/skin.png"
                   alt="نمای جانبی"
                   class="w-full h-full object-cover"
-                  onclick="changeMainImage(event, this.src)"
                 />
               </div>
               <div class="thumbnail">
@@ -149,7 +147,6 @@
                   src="./src/assets/images/cosmetic.png"
                   alt="نمای بسته‌بندی"
                   class="w-full h-full object-cover"
-                  onclick="changeMainImage(event, this.src)"
                 />
               </div>
               <div class="thumbnail">
@@ -157,7 +154,6 @@
                   src="./src/assets/images/body.png"
                   alt="نمای استفاده"
                   class="w-full h-full object-cover"
-                  onclick="changeMainImage(event, this.src)"
                 />
               </div>
             </div>
@@ -213,11 +209,11 @@
               <div class="flex items-center gap-4 mb-6">
                 <span class="text-gray-700 font-medium">تعداد:</span>
                 <div class="quantity-selector">
-                  <button class="quantity-btn" onclick="changeQuantity(-1)">
+                  <button class="quantity-btn">
                     <i data-feather="minus" class="w-4 h-4"></i>
                   </button>
                   <span id="quantity" class="mx-4 font-semibold">۱</span>
-                  <button class="quantity-btn" onclick="changeQuantity(1)">
+                  <button class="quantity-btn">
                     <i data-feather="plus" class="w-4 h-4"></i>
                   </button>
                 </div>
@@ -270,23 +266,14 @@
         <!-- Product Info Tabs -->
         <div class="mb-16" data-aos="fade-up">
           <div class="product-info-tabs flex border-b">
-            <button
-              class="tab-button active"
-              onclick="showTab(event,'description')"
-            >
+            <button class="tab-button active" data-tab="description">
               توضیحات
             </button>
-            <button class="tab-button" onclick="showTab(event,'ingredients')">
+            <button class="tab-button" data-tab="ingredients">
               ترکیبات
             </button>
-            <button class="tab-button" onclick="showTab(event,'usage')">
-              نحوه استفاده
-            </button>
-            <button
-              class="tab-button"
-              id="reviews-tab-btn"
-              onclick="showTab(event,'reviews')"
-            >
+            <button class="tab-button" data-tab="usage">نحوه استفاده</button>
+            <button class="tab-button" id="reviews-tab-btn" data-tab="reviews">
               نظرات (<span id="review-tab-count">۱۲۴</span>)
             </button>
           </div>
@@ -743,7 +730,6 @@
                   allowfullscreen=""
                   loading="lazy"
                   referrerpolicy="no-referrer-when-downgrade"
-                  style="filter: grayscale(20%)"
                 ></iframe>
               </div>
             </div>
