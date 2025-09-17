@@ -625,31 +625,48 @@
           }
         }
 
-        // Smooth active link highlighting
-        const headings = Array.from(
-          document.querySelectorAll("article section[id]")
-        );
-        const links = Array.from(document.querySelectorAll(".toc a"));
-        const linkById = new Map(
-          links.map((a) => [a.getAttribute("href").slice(1), a])
-        );
+        // Smooth active link highlighting (click + scroll + sync desktop/mobile)
+        const headings = Array.from(document.querySelectorAll("article section[id]"));
+        const links = Array.from(document.querySelectorAll(".toc a[href^='#']"));
+
+        // Group all TOC links by target id so both TOCs (desktop + mobile) stay in sync
+        const linksById = new Map();
+        links.forEach((a) => {
+          const id = a.getAttribute("href").slice(1);
+          if (!linksById.has(id)) linksById.set(id, []);
+          linksById.get(id).push(a);
+        });
+
+        function setActive(id) {
+          links.forEach((l) => l.classList.remove("active"));
+          (linksById.get(id) || []).forEach((l) => l.classList.add("active"));
+        }
 
         const obs = new IntersectionObserver(
           (entries) => {
             entries.forEach((entry) => {
-              const id = entry.target.id;
-              const link = linkById.get(id);
-              if (!link) return;
-              if (entry.isIntersecting) {
-                links.forEach((l) => l.classList.remove("active"));
-                link.classList.add("active");
-              }
+              if (entry.isIntersecting) setActive(entry.target.id);
             });
           },
           { rootMargin: "-40% 0px -45% 0px", threshold: 0.01 }
         );
 
         headings.forEach((h) => obs.observe(h));
+
+        // Immediate pink highlight on click
+        links.forEach((a) => {
+          a.addEventListener("click", () => {
+            const id = a.getAttribute("href").slice(1);
+            setActive(id);
+          });
+        });
+
+        // If the page loads with a hash, activate it; otherwise default to first section
+        if (location.hash) {
+          setActive(decodeURIComponent(location.hash.slice(1)));
+        } else if (headings[0]) {
+          setActive(headings[0].id);
+        }
 
         // Back to top
         const toTop = document.getElementById("toTop");
