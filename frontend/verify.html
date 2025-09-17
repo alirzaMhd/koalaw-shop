@@ -12,6 +12,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <link rel="stylesheet" href="./src/assets/css/main.css" />
+    <style>
+      /* Ensure the phone number segment renders LTR inside RTL text */
+      .ltr-numbers { direction: ltr; unicode-bidi: bidi-override; display: inline-block; }
+    </style>
   </head>
 
   <body>
@@ -132,7 +136,7 @@
             <button
               type="button"
               id="btnResend"
-              class="inline-flex items-center gap-1 font-semibold text-primary hover:underline disabled:text-gray-400 disabled:no-underline disabled:cursor-not-allowed"
+              class="inline-flex items-center gap-1 font-semibold text-gray-400 no-underline cursor-not-allowed transition-colors"
               disabled
             >
               <i data-feather="refresh-ccw" class="w-4 h-4"></i>
@@ -266,7 +270,7 @@
         const phoneMasked = phoneRaw ? maskPhone(phoneRaw) : "";
         const phoneInfo = qs("#phoneInfo");
         if (phoneMasked) {
-          phoneInfo.textContent = `کد ۶ رقمی به شماره ${phoneMasked} ارسال شد.`;
+          phoneInfo.innerHTML = `کد ۶ رقمی به شماره <span class="ltr-numbers" dir="ltr">${phoneMasked}</span> ارسال شد.`;
         }
 
         // OTP handling
@@ -352,7 +356,6 @@
             await new Promise((res) => setTimeout(res, 1000));
 
             // Simulate success
-            // Redirect or proceed
             window.location.href = "/"; // change to dashboard or next step
           } catch (err) {
             otpMsg.textContent = "خطا در تایید کد. دوباره تلاش کنید.";
@@ -367,11 +370,22 @@
         let timeLeft = 60;
         let tHandle;
 
+        function setResendVisualState(enabled) {
+          if (enabled) {
+            btnResend.classList.remove("text-gray-400", "no-underline", "cursor-not-allowed");
+            btnResend.classList.add("text-primary", "hover:underline");
+          } else {
+            btnResend.classList.add("text-gray-400", "no-underline", "cursor-not-allowed");
+            btnResend.classList.remove("text-primary", "hover:underline");
+          }
+        }
+
         function tick() {
           timeLeft -= 1;
           if (timeLeft <= 0) {
             clearInterval(tHandle);
             btnResend.disabled = false;
+            setResendVisualState(true); // turn pink when enabled
             resendTimer.textContent = "";
             return;
           }
@@ -380,6 +394,7 @@
 
         function startTimer() {
           btnResend.disabled = true;
+          setResendVisualState(false); // keep gray while disabled
           timeLeft = 60;
           resendTimer.textContent = `(${timeLeft} ثانیه)`;
           clearInterval(tHandle);
@@ -388,8 +403,8 @@
 
         async function resendCode() {
           btnResend.disabled = true;
+          setResendVisualState(false); // gray while re-sending
           // TODO: Call your API to resend code using phoneRaw
-          // await fetch('/api/send-code', { method: 'POST', body: JSON.stringify({ phone: phoneRaw }) })
           await new Promise((res) => setTimeout(res, 500));
           startTimer();
         }
