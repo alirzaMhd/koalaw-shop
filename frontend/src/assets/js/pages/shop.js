@@ -22,7 +22,7 @@
         t: "اکسیر درخشش طلایی",
         p: 480000,
         r: 4.8,
-        img: "../images/skin.png",
+        img: "../../images/skin.png",
       },
       {
         d: "100",
@@ -31,7 +31,7 @@
         t: "بوسه مخملی مات",
         p: 320000,
         r: 4.5,
-        img: "../images/cosmetic.png",
+        img: "../../images/cosmetic.png",
       },
       {
         d: "200",
@@ -40,7 +40,7 @@
         t: "پایه ابریشمی بی‌نقص",
         p: 420000,
         r: 4.9,
-        img: "../images/cosmetic.png",
+        img: "../../images/cosmetic.png",
       },
       {
         d: "300",
@@ -49,7 +49,7 @@
         t: "راز نیمه‌شب",
         p: 780000,
         r: 4.7,
-        img: "../images/perfume.png",
+        img: "../../images/perfume.png",
       },
       {
         d: "0",
@@ -58,7 +58,7 @@
         t: "کرم شب بازسازی کننده",
         p: 550000,
         r: 4.6,
-        img: "../images/skin.png",
+        img: "../../images/skin.png",
       },
       {
         d: "100",
@@ -67,7 +67,7 @@
         t: "سرم موی آرگان",
         p: 290000,
         r: 4.8,
-        img: "../images/hair.png",
+        img: "../../images/hair.png",
       },
       {
         d: "200",
@@ -76,7 +76,7 @@
         t: "اسکراب بدن شکری",
         p: 210000,
         r: 4.4,
-        img: "../images/body.png",
+        img: "../../images/body.png",
       },
       {
         d: "300",
@@ -85,7 +85,7 @@
         t: "پالت سایه کهکشانی",
         p: 650000,
         r: 4.9,
-        img: "../images/cosmetic.png",
+        img: "../../images/cosmetic.png",
       },
       {
         d: "0",
@@ -94,7 +94,7 @@
         t: "عطر شکوفه بهاری",
         p: 710000,
         r: 4.5,
-        img: "../images/perfume.png",
+        img: "../../images/perfume.png",
       },
       {
         d: "100",
@@ -103,7 +103,7 @@
         t: "تونر گل رز آبرسان",
         p: 190000,
         r: 4.7,
-        img: "../images/skin.png",
+        img: "../../images/skin.png",
       },
       {
         d: "200",
@@ -112,7 +112,7 @@
         t: "کره بدن وانیلی",
         p: 250000,
         r: 4.6,
-        img: "../images/body.png",
+        img: "../../images/body.png",
       },
       {
         d: "300",
@@ -121,7 +121,7 @@
         t: "ماسک موی کراتینه",
         p: 380000,
         r: 4.8,
-        img: "../images/hair.png",
+        img: "../../images/hair.png",
       },
       {
         d: "0",
@@ -130,7 +130,7 @@
         t: "سرم ویتامین سی",
         p: 495000,
         r: 4.9,
-        img: "../images/skin.png",
+        img: "../../images/skin.png",
       },
       {
         d: "100",
@@ -139,7 +139,7 @@
         t: "ریمل حجم‌دهنده",
         p: 310000,
         r: 4.6,
-        img: "../images/cosmetic.png",
+        img: "../../images/cosmetic.png",
       },
       {
         d: "200",
@@ -148,7 +148,7 @@
         t: "ادکلن چوب صندل",
         p: 850000,
         r: 4.8,
-        img: "../images/perfume.png",
+        img: "../../images/perfume.png",
       },
       {
         d: "300",
@@ -157,7 +157,7 @@
         t: "لوسیون بدن آلوئه‌ورا",
         p: 230000,
         r: 4.5,
-        img: "../images/body.png",
+        img: "../../images/body.png",
       },
     ];
     let visibleProducts = allProducts.slice();
