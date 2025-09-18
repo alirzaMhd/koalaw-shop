@@ -696,14 +696,6 @@ nav {
 .status-processing{ background: var(--butter);   color: #92400e; }
 .status-shipped   { background: var(--lavender); color: #5b21b6; }
 
-/* Favorite item */
-.favorite-item {
-  background: #fff; border-radius: 20px; padding: 1rem; display:flex; align-items:center; gap:1rem;
-  transition: all .4s ease; border: 1px solid rgba(227,154,180,.1); margin-bottom: 1rem;
-}
-.favorite-item:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(120,80,100,.1); border-color: var(--primary); }
-.favorite-image { width: 80px; height: 80px; border-radius: 16px; object-fit: cover; }
-
 /* Buttons */
 .btn-primary, .btn-secondary {
   display: inline-flex; align-items: center; justify-content: center; gap: .5rem; white-space: nowrap; vertical-align: middle;
@@ -1086,17 +1078,13 @@ section[id] { scroll-margin-top: 7rem; }
 .bg-primary { background-color: var(--primary) !important; }
 .border-primary { border-color: var(--primary) !important; }
 
-/* Mobile/layout tweaks (profile, orders/favorites stacking) */
+/* Mobile/layout tweaks (profile, orders stacking) */
 @media (max-width: 640px) {
   .profile-card { padding: 1rem; border-radius: 18px; }
-  .favorite-image { width: 72px; height: 72px; }
   .order-card .flex.justify-between { flex-direction: column; align-items: flex-start; gap: .75rem; }
   .order-card .flex.items-center { flex-wrap: wrap; }
   .order-card .flex.justify-between.items-center { flex-direction: column; align-items: stretch; gap: .5rem; }
   .order-card .btn-primary, .order-card .btn-secondary { width: 100%; }
-  .favorite-item { flex-direction: column; align-items: stretch; }
-  .favorite-item .favorite-image { width: 100%; height: auto; aspect-ratio: 4/3; }
-  .favorite-item .btn-primary, .favorite-item .btn-secondary { width: 100%; }
 }
 
 /* Keep dropdowns above other content when open (profile) */

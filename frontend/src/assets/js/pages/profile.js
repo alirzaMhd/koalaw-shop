@@ -2,7 +2,7 @@
 // src/assets/js/profile.js
 (function () {
   document.addEventListener("DOMContentLoaded", () => {
-    const root = document.getElementById("dashboard") || document.getElementById("orders") || document.getElementById("favorites");
+    const root = document.getElementById("dashboard") || document.getElementById("orders");
     if (!root) return;
 
     window.AOS && AOS.init({ duration: 600, easing: "ease-out-cubic", once: true, offset: 40 });
@@ -22,7 +22,7 @@
     }));
 
     // Card hover lift
-    document.querySelectorAll(".order-card, .favorite-item").forEach(card => {
+    document.querySelectorAll(".order-card").forEach(card => {
       card.addEventListener("mouseenter", () => { if (window.gsap && window.innerWidth > 768) gsap.to(card, { y: -8, duration: 0.3, ease: "power2.out" }); });
       card.addEventListener("mouseleave", () => { if (window.gsap && window.innerWidth > 768) gsap.to(card, { y: 0,  duration: 0.3, ease: "power2.out" }); });
     });
