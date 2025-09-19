@@ -66,10 +66,21 @@ CREATE TABLE brands (
   updated_at  timestamptz NOT NULL DEFAULT now()
 );
 
+-- ADDED: Color Themes (for grouping products by visual theme like "Pastels", "Warm Tones", etc.)
+CREATE TABLE color_themes (
+  id       uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  name     text NOT NULL UNIQUE,
+  slug     text NOT NULL UNIQUE,
+  hex_code char(7), -- An optional representative color for the theme
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now()
+);
+
 -- Products
 CREATE TABLE products (
   id                   uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   brand_id             uuid NOT NULL REFERENCES brands(id) ON DELETE RESTRICT,
+  color_theme_id       uuid REFERENCES color_themes(id) ON DELETE SET NULL, -- MODIFIED: Added color theme
   category             product_category_enum NOT NULL,
   title                text NOT NULL,
   subtitle             text,
@@ -95,6 +106,7 @@ CREATE TABLE products (
 CREATE INDEX idx_products_category_price ON products(category, price);
 CREATE INDEX idx_products_brand ON products(brand_id);
 CREATE INDEX idx_products_title_trgm ON products USING gin (title gin_trgm_ops);
+CREATE INDEX idx_products_color_theme ON products(color_theme_id); -- ADDED: Index for the new foreign key
 
 -- Product images
 CREATE TABLE product_images (
@@ -111,11 +123,11 @@ CREATE TABLE product_images (
 CREATE TABLE product_variants (
   id              uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   product_id      uuid NOT NULL REFERENCES products(id) ON DELETE CASCADE,
-  variant_name    text NOT NULL,
+  variant_name    text NOT NULL,      -- e.g., "50ml", "Ruby Red"
   sku             text UNIQUE,
-  price           integer,
+  price           integer,            -- optional override
   currency_code   char(3) NOT NULL DEFAULT 'IRR',
-  stock           integer NOT NULL DEFAULT 0,
+  stock           integer NOT NULL DEFAULT 0, -- This is the correct place for stock
   color_name      text,
   color_hex_code  char(7),
   is_active       boolean NOT NULL DEFAULT true,
@@ -132,7 +144,7 @@ CREATE TABLE product_reviews (
   user_id     uuid REFERENCES users(id) ON DELETE SET NULL,
   rating      smallint NOT NULL CHECK (rating BETWEEN 1 AND 5),
   title       text,
-  body        text NOT NULL,
+  body        text NOT NULL, -- This field holds customer comments
   guest_name  text,
   status      review_status_enum NOT NULL DEFAULT 'pending',
   created_at  timestamptz NOT NULL DEFAULT now(),
@@ -142,7 +154,7 @@ CREATE TABLE product_reviews (
 CREATE INDEX idx_reviews_product ON product_reviews(product_id);
 CREATE INDEX idx_reviews_status ON product_reviews(status);
 
--- Collections
+-- Collections (Product groups like "Valentine's", used for filtering and features)
 CREATE TABLE collections (
   id             uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   slug           text NOT NULL UNIQUE,
@@ -154,7 +166,7 @@ CREATE TABLE collections (
   updated_at     timestamptz NOT NULL DEFAULT now()
 );
 
--- Junction table: products <-> collections
+-- Junction table to link products to collections (many-to-many)
 CREATE TABLE collection_products (
   collection_id uuid NOT NULL REFERENCES collections(id) ON DELETE CASCADE,
   product_id    uuid NOT NULL REFERENCES products(id) ON DELETE CASCADE,
@@ -162,25 +174,28 @@ CREATE TABLE collection_products (
   PRIMARY KEY (collection_id, product_id)
 );
 
--- Related products (self-relation)
+-- Junction table to link products to other products (many-to-many)
 CREATE TABLE related_products (
   product_id         uuid NOT NULL REFERENCES products(id) ON DELETE CASCADE,
   related_product_id uuid NOT NULL REFERENCES products(id) ON DELETE CASCADE,
   position           integer NOT NULL DEFAULT 0,
   PRIMARY KEY (product_id, related_product_id),
-  CHECK (product_id <> related_product_id)
+  CHECK (product_id <> related_product_id) -- A product cannot be related to itself
 );
+-- Index for faster lookups when viewing a product page
 CREATE INDEX idx_related_products_product_id ON related_products(product_id);
 
--- Carts
+
+-- Carts (server-side support; SPA uses localStorage)
 CREATE TABLE carts (
   id             uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id        uuid REFERENCES users(id) ON DELETE SET NULL,
-  anonymous_id   uuid UNIQUE,
+  anonymous_id   uuid UNIQUE,  -- optional correlation for guests
   status         cart_status_enum NOT NULL DEFAULT 'active',
   created_at     timestamptz NOT NULL DEFAULT now(),
   updated_at     timestamptz NOT NULL DEFAULT now()
 );
+-- Ensure at most one active cart per user
 CREATE UNIQUE INDEX ux_carts_one_active_per_user ON carts(user_id) WHERE status = 'active';
 
 CREATE TABLE cart_items (
@@ -188,7 +203,7 @@ CREATE TABLE cart_items (
   cart_id       uuid NOT NULL REFERENCES carts(id) ON DELETE CASCADE,
   product_id    uuid NOT NULL REFERENCES products(id) ON DELETE RESTRICT,
   variant_id    uuid REFERENCES product_variants(id) ON DELETE SET NULL,
-  title         text NOT NULL,
+  title         text NOT NULL,       -- snapshot
   variant_name  text,
   unit_price    integer NOT NULL,
   quantity      integer NOT NULL CHECK (quantity >= 1),
@@ -217,6 +232,7 @@ CREATE TABLE orders (
   gift_wrap_total          integer NOT NULL DEFAULT 0,
   total                    integer NOT NULL DEFAULT 0,
   currency_code            char(3) NOT NULL DEFAULT 'IRR',
+  -- Shipping address snapshot
   shipping_first_name      text NOT NULL,
   shipping_last_name       text NOT NULL,
   shipping_phone           text NOT NULL,
@@ -257,14 +273,15 @@ CREATE TABLE payments (
   status          payment_status_enum NOT NULL DEFAULT 'pending',
   amount          integer NOT NULL,
   currency_code   char(3) NOT NULL DEFAULT 'IRR',
-  authority       text,
-  transaction_ref text,
+  authority       text,            -- gateway token
+  transaction_ref text,            -- bank/PSP ref
   paid_at         timestamptz,
   created_at      timestamptz NOT NULL DEFAULT now(),
   updated_at      timestamptz NOT NULL DEFAULT now()
 );
 CREATE INDEX idx_payments_order ON payments(order_id);
 CREATE INDEX idx_payments_status ON payments(status);
+-- Enforce at most one PAID payment per order
 CREATE UNIQUE INDEX ux_one_paid_payment_per_order ON payments(order_id) WHERE status = 'paid';
 
 -- Coupons
@@ -300,7 +317,7 @@ CREATE TABLE coupon_redemptions (
 );
 CREATE INDEX idx_coupon_redemptions_user ON coupon_redemptions(coupon_id, user_id);
 
--- User addresses
+-- User addresses (address book)
 CREATE TABLE user_addresses (
   id             uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id        uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
@@ -318,6 +335,7 @@ CREATE TABLE user_addresses (
   created_at     timestamptz NOT NULL DEFAULT now(),
   updated_at     timestamptz NOT NULL DEFAULT now()
 );
+-- Only one default address per user
 CREATE UNIQUE INDEX ux_user_addresses_default ON user_addresses(user_id) WHERE is_default;
 
 -- Newsletter subscriptions
