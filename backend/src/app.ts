@@ -1,11 +1,10 @@
 // src/app.ts
-// Express app bootstrap: security, parsers, logs, CORS, routes, and error handling.
-
 import express from "express";
 import helmet from "helmet";
 import compression from "compression";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import path from "node:path";
 
 import { env } from "./config/env";
 import { logger } from "./config/logger";
@@ -14,41 +13,29 @@ import { errorHandler } from "./common/middlewares/errorHandler";
 import { rateLimiter } from "./common/middlewares/rateLimiter";
 import buildApiRouter from "./routes";
 
-// Create app
 export function createApp() {
   const app = express();
 
-  // Trust proxy if behind a proxy (K8s/Heroku)
   app.set("trust proxy", 1);
-
-  // Security headers
   app.use(helmet());
 
-  // CORS
   const origins = env.corsOrigins.length ? env.corsOrigins : undefined;
   app.use(
     cors({
-      origin: origins || true, // allow all in dev if not provided
+      origin: origins || true,
       credentials: true,
     })
   );
 
-  // Special raw body for Stripe webhook BEFORE json parser (route path-level)
-  // This ensures req.body stays as Buffer for signature verification.
+  // Stripe webhook raw body BEFORE json parser
   app.use("/api/payments/stripe/webhook", express.raw({ type: "application/json" }));
 
-  // Parsers
   app.use(express.json({ limit: env.JSON_LIMIT }));
   app.use(express.urlencoded({ extended: true }));
   app.use(cookieParser());
-
-  // Compression
   app.use(compression());
-
-  // Request logging
   app.use(requestLogger);
 
-  // Global rate limiter (light); tune or disable if handled per-route
   app.use(
     rateLimiter({
       windowMs: env.rateLimit.windowMs,
@@ -57,19 +44,30 @@ export function createApp() {
     })
   );
 
-  // API routes under /api
+  // Serve static assets (put your 404.html under public/404.html)
+  app.use(express.static(path.resolve(process.cwd(), "public")));
+
+  // API routes
   app.use("/api", buildApiRouter());
 
-  // 404 handler for API
+  // 404 handler for API (JSON)
   app.use("/api", (_req, res) => {
-    res.status(404).json({ success: false, error: { code: "NOT_FOUND", message: "مسیر مورد نظر یافت نشد." } });
+    res
+      .status(404)
+      .json({ success: false, error: { code: "NOT_FOUND", message: "مسیر مورد نظر یافت نشد." } });
   });
 
-  // Error handler
-  app.use(errorHandler);
-
-  // Basic root
+  // Optional root
   app.get("/", (_req, res) => res.send(`${env.APP_NAME} API is running`));
+
+  // Non-API 404 -> serve 404.html
+  app.use((req, res, next) => {
+    if (req.path.startsWith("/api")) return next(); // safety, though API 404 above handles it
+    res.status(404).sendFile(path.resolve(process.cwd(), "../../frontend/src/pages/404.html"));
+  });
+
+  // Error handler LAST
+  app.use(errorHandler);
 
   return app;
 }
