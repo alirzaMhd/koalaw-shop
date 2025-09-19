@@ -1,4 +1,4 @@
-getfile.py
+*.py
 html_files.txt
-
+node_modules
 schema

@@ -1,0 +1,39 @@
+// src/modules/payments/payment.routes.ts
+// Registers payment endpoints
+
+import express, { Router, Request, Response, NextFunction } from "express";
+import { paymentController } from "./payment.controller";
+import { authGuard } from "../../common/middlewares/authGuard";
+import { AppError } from "../../common/errors/AppError";
+
+export const paymentRouter = Router();
+
+// Simple role guard (replace with a shared roleGuard if available)
+interface AuthenticatedRequest extends Request {
+  user?: { id?: string; sub?: string; role?: string };
+}
+const requireAdmin = (req: AuthenticatedRequest, _res: Response, next: NextFunction) => {
+  const role = (req.user?.role || "").toLowerCase();
+  if (role === "admin" || role === "manager") return next();
+  return next(new AppError("دسترسی غیرمجاز.", 403, "FORBIDDEN"));
+};
+
+// Webhooks (no auth; Stripe requires raw body)
+paymentRouter.post("/stripe/webhook", express.raw({ type: "application/json" }), paymentController.stripeWebhook);
+paymentRouter.post("/paypal/webhook", paymentController.paypalWebhook);
+
+// Generic gateway return (support both GET and POST)
+paymentRouter.get("/return", paymentController.gatewayReturn);
+paymentRouter.post("/return", paymentController.gatewayReturn);
+
+// Admin/internal endpoints
+paymentRouter.get("/order/:orderId", authGuard, requireAdmin, paymentController.listForOrder);
+paymentRouter.post("/orders/:orderId/cod/confirm", authGuard, requireAdmin, paymentController.confirmCodPaid);
+
+paymentRouter.post("/:id/mark-paid", authGuard, requireAdmin, paymentController.markPaid);
+paymentRouter.post("/:id/mark-failed", authGuard, requireAdmin, paymentController.markFailed);
+paymentRouter.post("/:id/refund", authGuard, requireAdmin, paymentController.refund);
+paymentRouter.get("/:id", authGuard, requireAdmin, paymentController.getById);
+
+// Default export for router registration convenience
+export default paymentRouter;
