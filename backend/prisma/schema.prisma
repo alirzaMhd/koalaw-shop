@@ -7,91 +7,108 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-/******************
- * Enums (mapped to existing Postgres enum types)
- ******************/
-enum Gender @map("gender_enum") {
-  MALE         @map("male")
-  FEMALE       @map("female")
-  OTHER        @map("other")
-  UNDISCLOSED  @map("undisclosed")
+enum Gender {
+  UNDISCLOSED @map("undisclosed")
+  MALE        @map("male")
+  FEMALE      @map("female")
+
+  @@map("gender_enum")
 }
 
-enum ProductCategory @map("product_category_enum") {
-  SKINCARE    @map("skincare")
-  MAKEUP      @map("makeup")
-  FRAGRANCE   @map("fragrance")
-  HAIRCARE    @map("haircare")
-  BODY_BATH   @map("body-bath")
+enum ProductCategory {
+  SKINCARE   @map("skincare")
+  MAKEUP     @map("makeup")
+  FRAGRANCE  @map("fragrance")
+  HAIRCARE   @map("haircare")
+  BODY_BATH  @map("body-bath")
+
+  @@map("product_category_enum")
 }
 
-enum OrderStatus @map("order_status_enum") {
-  DRAFT             @map("draft")
-  AWAITING_PAYMENT  @map("awaiting_payment")
-  PAID              @map("paid")
-  PROCESSING        @map("processing")
-  SHIPPED           @map("shipped")
-  DELIVERED         @map("delivered")
-  CANCELLED         @map("cancelled")
-  RETURNED          @map("returned")
+enum OrderStatus {
+  DRAFT            @map("draft")
+  AWAITING_PAYMENT @map("awaiting_payment")
+  PAID             @map("paid")
+  PROCESSING       @map("processing")
+  SHIPPED          @map("shipped")
+  DELIVERED        @map("delivered")
+  CANCELLED        @map("cancelled")
+  RETURNED         @map("returned")
+
+  @@map("order_status_enum")
 }
 
-enum PaymentMethod @map("payment_method_enum") {
-  GATEWAY  @map("gateway")
-  COD      @map("cod")
+enum PaymentMethod {
+  GATEWAY @map("gateway")
+  COD     @map("cod")
+
+  @@map("payment_method_enum")
 }
 
-enum PaymentStatus @map("payment_status_enum") {
+enum PaymentStatus {
   PENDING  @map("pending")
   PAID     @map("paid")
   FAILED   @map("failed")
   REFUNDED @map("refunded")
+
+  @@map("payment_status_enum")
 }
 
-enum ShippingMethod @map("shipping_method_enum") {
+enum ShippingMethod {
   STANDARD @map("standard")
   EXPRESS  @map("express")
+
+  @@map("shipping_method_enum")
 }
 
-enum CouponType @map("coupon_type_enum") {
-  PERCENT        @map("percent")
-  AMOUNT         @map("amount")
-  FREE_SHIPPING  @map("free_shipping")
+enum CouponType {
+  PERCENT       @map("percent")
+  AMOUNT        @map("amount")
+  FREE_SHIPPING @map("free_shipping")
+
+  @@map("coupon_type_enum")
 }
 
-enum ReviewStatus @map("review_status_enum") {
-  PENDING   @map("pending")
-  APPROVED  @map("approved")
-  REJECTED  @map("rejected")
+enum ReviewStatus {
+  PENDING  @map("pending")
+  APPROVED @map("approved")
+  REJECTED @map("rejected")
+
+  @@map("review_status_enum")
 }
 
-enum MagazineCategory @map("magazine_category_enum") {
-  GUIDE      @map("guide")
-  TUTORIAL   @map("tutorial")
-  TRENDS     @map("trends")
-  LIFESTYLE  @map("lifestyle")
+enum MagazineCategory {
+  GUIDE     @map("guide")
+  TUTORIAL  @map("tutorial")
+  TRENDS    @map("trends")
+  LIFESTYLE @map("lifestyle")
+
+  @@map("magazine_category_enum")
 }
 
-enum CustomerTier @map("customer_tier_enum") {
+enum CustomerTier {
   STANDARD @map("standard")
   VIP      @map("vip")
+
+  @@map("customer_tier_enum")
 }
 
-enum CartStatus @map("cart_status_enum") {
-  ACTIVE     @map("active")
-  CONVERTED  @map("converted")
-  ABANDONED  @map("abandoned")
+enum CartStatus {
+  ACTIVE    @map("active")
+  CONVERTED @map("converted")
+  ABANDONED @map("abandoned")
+
+  @@map("cart_status_enum")
 }
 
-enum OtpPurpose @map("otp_purpose_enum") {
+enum OtpPurpose {
   LOGIN  @map("login")
   VERIFY @map("verify")
   RESET  @map("reset")
+
+  @@map("otp_purpose_enum")
 }
 
-/******************
- * Models
- ******************/
 model User {
   id               String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   phone            String        @unique @db.VarChar(20)
@@ -105,7 +122,6 @@ model User {
   createdAt        DateTime      @default(now()) @map("created_at") @db.Timestamptz
   updatedAt        DateTime      @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 
-  // Relations
   notificationPrefs UserNotificationPrefs?
   addresses         UserAddress[]
   carts             Cart[]
@@ -201,7 +217,7 @@ model Product {
   variants    ProductVariant[]
   reviews     ProductReview[]
   collections CollectionProduct[]
-  // Self-relation through junction table
+
   relatedOut  RelatedProduct[] @relation("ProductRelations")
   relatedIn   RelatedProduct[] @relation("ProductRelationsInverse")
   cartItems   CartItem[]
@@ -225,19 +241,19 @@ model ProductImage {
 }
 
 model ProductVariant {
-  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  productId     String   @map("product_id") @db.Uuid
-  variantName   String   @map("variant_name") @db.Text
-  sku           String?  @unique @db.Text
-  price         Int?
-  currencyCode  String   @map("currency_code") @default("IRR") @db.Char(3)
-  stock         Int      @default(0)
-  colorName     String?  @map("color_name") @db.Text
-  colorHexCode  String?  @map("color_hex_code") @db.Char(7)
-  isActive      Boolean  @map("is_active") @default(true)
-  position      Int      @default(0)
-  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt     DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  productId    String   @map("product_id") @db.Uuid
+  variantName  String   @map("variant_name") @db.Text
+  sku          String?  @unique @db.Text
+  price        Int?
+  currencyCode String   @map("currency_code") @default("IRR") @db.Char(3)
+  stock        Int      @default(0)
+  colorName    String?  @map("color_name") @db.Text
+  colorHexCode String?  @map("color_hex_code") @db.Char(7)
+  isActive     Boolean  @map("is_active") @default(true)
+  position     Int      @default(0)
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 
   product    Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
   orderItems OrderItem[]
@@ -248,16 +264,16 @@ model ProductVariant {
 }
 
 model ProductReview {
-  id         String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  productId  String       @map("product_id") @db.Uuid
-  userId     String?      @map("user_id") @db.Uuid
-  rating     Int          @db.SmallInt
-  title      String?      @db.Text
-  body       String       @db.Text
-  guestName  String?      @map("guest_name") @db.Text
-  status     ReviewStatus @default(PENDING)
-  createdAt  DateTime     @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt  DateTime     @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+  id        String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  productId String       @map("product_id") @db.Uuid
+  userId    String?      @map("user_id") @db.Uuid
+  rating    Int          @db.SmallInt
+  title     String?      @db.Text
+  body      String       @db.Text
+  guestName String?      @map("guest_name") @db.Text
+  status    ReviewStatus @default(PENDING)
+  createdAt DateTime     @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime     @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 
   product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
   user    User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
@@ -305,12 +321,12 @@ model RelatedProduct {
 }
 
 model Cart {
-  id           String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  userId       String?    @map("user_id") @db.Uuid
-  anonymousId  String?    @map("anonymous_id") @unique @db.Uuid
-  status       CartStatus @default(ACTIVE)
-  createdAt    DateTime   @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt    DateTime   @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+  id          String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId      String?    @map("user_id") @db.Uuid
+  anonymousId String?    @map("anonymous_id") @unique @db.Uuid
+  status      CartStatus @default(ACTIVE)
+  createdAt   DateTime   @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime   @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 
   user  User?      @relation(fields: [userId], references: [id], onDelete: SetNull)
   items CartItem[]
@@ -333,41 +349,41 @@ model CartItem {
   createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt    DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 
-  cart    Cart           @relation(fields: [cartId], references: [id], onDelete: Cascade)
-  product Product        @relation(fields: [productId], references: [id], onDelete: Restrict)
-  variant ProductVariant @relation(fields: [variantId], references: [id], onDelete: SetNull)
+  cart    Cart            @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  product Product         @relation(fields: [productId], references: [id], onDelete: Restrict)
+  variant ProductVariant? @relation(fields: [variantId], references: [id], onDelete: SetNull)
 
   @@map("cart_items")
 }
 
 model Order {
-  id                    String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  orderNumber          String          @unique @map("order_number") @db.Text
-  userId               String?         @map("user_id") @db.Uuid
-  status               OrderStatus     @default(AWAITING_PAYMENT)
-  shippingMethod       ShippingMethod  @map("shipping_method") @default(STANDARD)
-  paymentMethod        PaymentMethod   @map("payment_method") @default(GATEWAY)
-  couponCode           String?         @map("coupon_code") @db.Text
-  giftWrap             Boolean         @map("gift_wrap") @default(false)
-  note                 String?         @db.Text
-  subtotal             Int             @default(0)
-  discountTotal        Int             @map("discount_total") @default(0)
-  shippingTotal        Int             @map("shipping_total") @default(0)
-  giftWrapTotal        Int             @map("gift_wrap_total") @default(0)
-  total                Int             @default(0)
-  currencyCode         String          @map("currency_code") @default("IRR") @db.Char(3)
-  shippingFirstName    String          @map("shipping_first_name") @db.Text
-  shippingLastName     String          @map("shipping_last_name") @db.Text
-  shippingPhone        String          @map("shipping_phone") @db.Text
-  shippingPostalCode   String?         @map("shipping_postal_code") @db.Text
-  shippingProvince     String          @map("shipping_province") @db.Text
-  shippingCity         String          @map("shipping_city") @db.Text
-  shippingAddressLine1 String          @map("shipping_address_line1") @db.Text
-  shippingAddressLine2 String?         @map("shipping_address_line2") @db.Text
-  shippingCountry      String          @map("shipping_country") @default("IR") @db.Char(2)
-  placedAt             DateTime        @default(now()) @map("placed_at") @db.Timestamptz
-  createdAt            DateTime        @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt            DateTime        @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+  id                   String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orderNumber          String         @unique @map("order_number") @db.Text
+  userId               String?        @map("user_id") @db.Uuid
+  status               OrderStatus    @default(AWAITING_PAYMENT)
+  shippingMethod       ShippingMethod @map("shipping_method") @default(STANDARD)
+  paymentMethod        PaymentMethod  @map("payment_method") @default(GATEWAY)
+  couponCode           String?        @map("coupon_code") @db.Text
+  giftWrap             Boolean        @map("gift_wrap") @default(false)
+  note                 String?        @db.Text
+  subtotal             Int            @default(0)
+  discountTotal        Int            @map("discount_total") @default(0)
+  shippingTotal        Int            @map("shipping_total") @default(0)
+  giftWrapTotal        Int            @map("gift_wrap_total") @default(0)
+  total                Int            @default(0)
+  currencyCode         String         @map("currency_code") @default("IRR") @db.Char(3)
+  shippingFirstName    String         @map("shipping_first_name") @db.Text
+  shippingLastName     String         @map("shipping_last_name") @db.Text
+  shippingPhone        String         @map("shipping_phone") @db.Text
+  shippingPostalCode   String?        @map("shipping_postal_code") @db.Text
+  shippingProvince     String         @map("shipping_province") @db.Text
+  shippingCity         String         @map("shipping_city") @db.Text
+  shippingAddressLine1 String         @map("shipping_address_line1") @db.Text
+  shippingAddressLine2 String?        @map("shipping_address_line2") @db.Text
+  shippingCountry      String         @map("shipping_country") @default("IR") @db.Char(2)
+  placedAt             DateTime       @default(now()) @map("placed_at") @db.Timestamptz
+  createdAt            DateTime       @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt            DateTime       @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 
   user        User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
   items       OrderItem[]
@@ -392,25 +408,25 @@ model OrderItem {
   position     Int      @default(0)
   createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
 
-  order   Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  product Product?       @relation(fields: [productId], references: [id], onDelete: SetNull)
-  variant ProductVariant?@relation(fields: [variantId], references: [id], onDelete: SetNull)
+  order   Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product?        @relation(fields: [productId], references: [id], onDelete: SetNull)
+  variant ProductVariant? @relation(fields: [variantId], references: [id], onDelete: SetNull)
 
   @@map("order_items")
 }
 
 model Payment {
-  id             String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  orderId        String         @map("order_id") @db.Uuid
+  id             String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orderId        String        @map("order_id") @db.Uuid
   method         PaymentMethod
-  status         PaymentStatus  @default(PENDING)
+  status         PaymentStatus @default(PENDING)
   amount         Int
-  currencyCode   String         @map("currency_code") @default("IRR") @db.Char(3)
-  authority      String?        @db.Text
-  transactionRef String?        @map("transaction_ref") @db.Text
-  paidAt         DateTime?      @map("paid_at") @db.Timestamptz
-  createdAt      DateTime       @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt      DateTime       @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+  currencyCode   String        @map("currency_code") @default("IRR") @db.Char(3)
+  authority      String?       @db.Text
+  transactionRef String?       @map("transaction_ref") @db.Text
+  paidAt         DateTime?     @map("paid_at") @db.Timestamptz
+  createdAt      DateTime      @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime      @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 
   order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
@@ -418,19 +434,19 @@ model Payment {
 }
 
 model Coupon {
-  id               String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  code             String      @unique @db.Text
-  type             CouponType
-  percentValue     Int?        @map("percent_value")
-  amountValue      Int?        @map("amount_value")
-  minSubtotal      Int         @map("min_subtotal") @default(0)
-  maxUses          Int?        @map("max_uses")
-  maxUsesPerUser   Int?        @map("max_uses_per_user")
-  startsAt         DateTime?   @map("starts_at") @db.Timestamptz
-  endsAt           DateTime?   @map("ends_at") @db.Timestamptz
-  isActive         Boolean     @map("is_active") @default(true)
-  createdAt        DateTime    @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt        DateTime    @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  code           String    @unique @db.Text
+  type           CouponType
+  percentValue   Int?      @map("percent_value")
+  amountValue    Int?      @map("amount_value")
+  minSubtotal    Int       @map("min_subtotal") @default(0)
+  maxUses        Int?      @map("max_uses")
+  maxUsesPerUser Int?      @map("max_uses_per_user")
+  startsAt       DateTime? @map("starts_at") @db.Timestamptz
+  endsAt         DateTime? @map("ends_at") @db.Timestamptz
+  isActive       Boolean   @map("is_active") @default(true)
+  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 
   redemptions CouponRedemption[]
 
@@ -453,21 +469,21 @@ model CouponRedemption {
 }
 
 model UserAddress {
-  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  userId        String   @map("user_id") @db.Uuid
-  label         String?  @db.Text
-  firstName     String   @map("first_name") @db.Text
-  lastName      String   @map("last_name") @db.Text
-  phone         String   @db.Text
-  postalCode    String?  @map("postal_code") @db.Text
-  province      String   @db.Text
-  city          String   @db.Text
-  addressLine1  String   @map("address_line1") @db.Text
-  addressLine2  String?  @map("address_line2") @db.Text
-  country       String   @default("IR") @db.Char(2)
-  isDefault     Boolean  @map("is_default") @default(false)
-  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt     DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId       String   @map("user_id") @db.Uuid
+  label        String?  @db.Text
+  firstName    String   @map("first_name") @db.Text
+  lastName     String   @map("last_name") @db.Text
+  phone        String   @db.Text
+  postalCode   String?  @map("postal_code") @db.Text
+  province     String   @db.Text
+  city         String   @db.Text
+  addressLine1 String   @map("address_line1") @db.Text
+  addressLine2 String?  @map("address_line2") @db.Text
+  country      String   @default("IR") @db.Char(2)
+  isDefault    Boolean  @map("is_default") @default(false)
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -500,24 +516,24 @@ model MagazineAuthor {
 }
 
 model MagazinePost {
-  id               String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  authorId         String?          @map("author_id") @db.Uuid
-  category         MagazineCategory
-  title            String           @db.Text
-  slug             String           @unique @db.Text
-  excerpt          String?          @db.Text
-  content          String           @db.Text
-  heroImageUrl     String?          @map("hero_image_url") @db.Text
-  readTimeMinutes  Int?             @map("read_time_minutes")
-  publishedAt      DateTime?        @map("published_at") @db.Timestamptz
-  isPublished      Boolean          @map("is_published") @default(true)
-  createdAt        DateTime         @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt        DateTime         @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+  id              String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  authorId        String?          @map("author_id") @db.Uuid
+  category        MagazineCategory
+  title           String           @db.Text
+  slug            String           @unique @db.Text
+  excerpt         String?          @db.Text
+  content         String           @db.Text
+  heroImageUrl    String?          @map("hero_image_url") @db.Text
+  readTimeMinutes Int?             @map("read_time_minutes")
+  publishedAt     DateTime?        @map("published_at") @db.Timestamptz
+  isPublished     Boolean          @map("is_published") @default(true)
+  createdAt       DateTime         @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt       DateTime         @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 
-  author      MagazineAuthor?      @relation(fields: [authorId], references: [id], onDelete: SetNull)
-  tags        MagazinePostTag[]
-  relatedOut  MagazineRelatedPost[] @relation("MagPostRelations")
-  relatedIn   MagazineRelatedPost[] @relation("MagPostRelationsInverse")
+  author     MagazineAuthor?       @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  tags       MagazinePostTag[]
+  relatedOut MagazineRelatedPost[] @relation("MagPostRelations")
+  relatedIn  MagazineRelatedPost[] @relation("MagPostRelationsInverse")
 
   @@map("magazine_posts")
 }
@@ -544,11 +560,11 @@ model MagazinePostTag {
 }
 
 model MagazineRelatedPost {
-  postId         String @map("post_id") @db.Uuid
-  relatedPostId  String @map("related_post_id") @db.Uuid
+  postId        String @map("post_id") @db.Uuid
+  relatedPostId String @map("related_post_id") @db.Uuid
 
-  post         MagazinePost @relation("MagPostRelations", fields: [postId], references: [id], onDelete: Cascade)
-  relatedPost  MagazinePost @relation("MagPostRelationsInverse", fields: [relatedPostId], references: [id], onDelete: Cascade)
+  post        MagazinePost @relation("MagPostRelations", fields: [postId], references: [id], onDelete: Cascade)
+  relatedPost MagazinePost @relation("MagPostRelationsInverse", fields: [relatedPostId], references: [id], onDelete: Cascade)
 
   @@id([postId, relatedPostId])
   @@map("magazine_related_posts")
