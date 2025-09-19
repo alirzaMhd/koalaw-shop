@@ -211,7 +211,7 @@ async function seedProducts() {
       await prisma.$transaction(async (tx) => {
         await tx.productImage.deleteMany({ where: { productId: created.id } });
         await tx.productImage.createMany({
-          data: p.images.map((img, idx) => ({
+          data: p.images!.map((img, idx) => ({
             productId: created.id,
             url: img.url,
             alt: img.alt || null,
@@ -226,7 +226,7 @@ async function seedProducts() {
       await prisma.$transaction(async (tx) => {
         await tx.productVariant.deleteMany({ where: { productId: created.id } });
         await tx.productVariant.createMany({
-          data: p.variants.map((v, idx) => ({
+          data: p.variants!.map((v, idx) => ({
             productId: created.id,
             variantName: v.variantName,
             sku: v.sku || null,

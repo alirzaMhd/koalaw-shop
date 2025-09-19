@@ -22,11 +22,7 @@ export function createApp() {
   app.set("trust proxy", 1);
 
   // Security headers
-  app.use(
-    helmet({
-      crossOriginResourcePolicy: { policy: "cross-origin" },
-    })
-  );
+  app.use(helmet());
 
   // CORS
   const origins = env.corsOrigins.length ? env.corsOrigins : undefined;
