@@ -122,6 +122,11 @@ export function createApp() {
     res.sendFile(path.join(frontendPages, "index.html"));
   });
 
+  // Explicit endpoint for tos.html
+  app.get("/tos", (_req, res) => {
+    res.sendFile(path.join(frontendPages, "tos.html"));
+  });
+
   // Simple page router: /shop -> pages/shop.html, /login -> pages/login.html, etc.
   app.get("/:page", (req, res, next) => {
     const p = req.path;
