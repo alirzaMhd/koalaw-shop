@@ -17,7 +17,51 @@ export function createApp() {
   const app = express();
 
   app.set("trust proxy", 1);
-  app.use(helmet());
+
+  // Helmet with CSP relaxed for Google Maps iframe and third‑party embeds
+  app.use(
+    helmet({
+      crossOriginEmbedderPolicy: false, // avoid blocking third‑party iframes
+      crossOriginResourcePolicy: { policy: "cross-origin" },
+      contentSecurityPolicy: {
+        useDefaults: true,
+        directives: {
+          defaultSrc: ["'self'"],
+          // Allow Google Maps in iframes
+          frameSrc: [
+            "'self'",
+            "https://www.google.com",
+            "https://*.google.com",
+            "https://*.gstatic.com",
+          ],
+          // Backward-compatibility for older agents
+          childSrc: [
+            "'self'",
+            "https://www.google.com",
+            "https://*.google.com",
+            "https://*.gstatic.com",
+          ],
+          // Images (local, data URIs, Wikimedia logos, Google assets)
+          imgSrc: [
+            "'self'",
+            "data:",
+            "blob:",
+            "https://*.google.com",
+            "https://*.gstatic.com",
+            "https://upload.wikimedia.org",
+          ],
+          // Your page uses some inline styles; allow them
+          styleSrc: ["'self'", "'unsafe-inline'", "https:"],
+          // All scripts are local; allow inline init (feather.replace(), etc.)
+          scriptSrc: ["'self'", "'unsafe-inline'"],
+          // Fonts (local/data/https)
+          fontSrc: ["'self'", "data:", "https:"],
+          // XHR/fetch endpoints (adjust if you call external APIs from frontend)
+          connectSrc: ["'self'"],
+        },
+      },
+    })
+  );
 
   const origins = env.corsOrigins.length ? env.corsOrigins : undefined;
   app.use(
