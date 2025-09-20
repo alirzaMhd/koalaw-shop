@@ -70,7 +70,7 @@
         title: "اکسیر درخشش طلایی",
         price: 480000,
         qty: 1,
-        image: "../images/product.png",
+        image: "/assets/images/product.png",
         variant: "30ml",
       },
       {
@@ -78,7 +78,7 @@
         title: "رژ لب بوسه مخملی",
         price: 320000,
         qty: 2,
-        image: "../images/cosmetic.png",
+        image: "/assets/images/cosmetic.png",
         variant: "Shade 03",
       },
     ];
@@ -87,25 +87,25 @@
         id: "r-1",
         title: "سرم هیالورونیک",
         price: 290000,
-        image: "../images/skin.png",
+        image: "/assets/images/skin.png",
       },
       {
         id: "r-2",
         title: "عطر راز نیمه‌شب",
         price: 780000,
-        image: "../images/perfume.png",
+        image: "/assets/images/perfume.png",
       },
       {
         id: "r-3",
         title: "ماسک مو تغذیه‌کننده",
         price: 350000,
-        image: "../images/hair.png",
+        image: "/assets/images/hair.png",
       },
       {
         id: "r-4",
         title: "رژ گونه لطیف",
         price: 260000,
-        image: "../images/cosmetic.png",
+        image: "/assets/images/cosmetic.png",
       },
     ];
 

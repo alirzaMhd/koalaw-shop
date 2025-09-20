@@ -48,11 +48,16 @@
     "@types/dotenv": "^6.1.1",
     "@types/express": "^4.17.21",
     "@types/node": "^20.14.9",
+    "autoprefixer": "^10.4.21",
     "dotenv": "^17.2.2",
     "eslint": "^9.9.0",
+    "postcss": "^8.5.6",
     "prettier": "^3.3.3",
     "prisma": "^6.16.2",
+    "tailwindcss": "^4.1.13",
     "tsx": "^4.20.5",
     "typescript": "^5.5.4"
-  }
+  },
+  "keywords": [],
+  "author": ""
 }

@@ -5,9 +5,9 @@ import compression from "compression";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import path from "node:path";
+import fs from "node:fs";
 
 import { env } from "./config/env";
-import { logger } from "./config/logger";
 import { requestLogger } from "./common/middlewares/requestLogger";
 import { errorHandler } from "./common/middlewares/errorHandler";
 import { rateLimiter } from "./common/middlewares/rateLimiter";
@@ -44,26 +44,65 @@ export function createApp() {
     })
   );
 
-  // Serve static assets (put your 404.html under public/404.html)
-  app.use(express.static(path.resolve(process.cwd(), "public")));
+  // Resolve important paths relative to this file
+  // __dirname -> .../backend/dist (in build) or .../backend/src (in dev)
+  const backendRoot = path.resolve(__dirname, ".."); // .../backend
+  const repoRoot = path.resolve(backendRoot, "..");  // repo root
+  const frontendRoot = path.join(repoRoot, "frontend", "src");
+  const frontendAssets = path.join(frontendRoot, "assets");
+  const frontendPages = path.join(frontendRoot, "pages");
+  const backendPublic = path.join(backendRoot, "public"); // optional folder for favicon, etc.
+
+  // Serve static assets from frontend/src/assets at /assets
+  app.use("/assets", express.static(frontendAssets));
+
+  // Backward-compatible alias so old links like /frontend/src/assets/... still work
+  app.use("/frontend/src/assets", express.static(frontendAssets));
+
+  // Optional backend public directory (use /static/favicon.ico, etc.)
+  app.use("/static", express.static(backendPublic));
 
   // API routes
   app.use("/api", buildApiRouter());
 
-  // 404 handler for API (JSON)
+  // API 404 (JSON)
   app.use("/api", (_req, res) => {
-    res
-      .status(404)
-      .json({ success: false, error: { code: "NOT_FOUND", message: "مسیر مورد نظر یافت نشد." } });
+    res.status(404).json({
+      success: false,
+      error: { code: "NOT_FOUND", message: "مسیر مورد نظر یافت نشد." },
+    });
   });
 
-  // Optional root
-  app.get("/", (_req, res) => res.send(`${env.APP_NAME} API is running`));
+  // Root route - serve index.html
+  app.get("/", (_req, res) => {
+    res.sendFile(path.join(frontendPages, "index.html"));
+  });
+
+  // Simple page router: /shop -> pages/shop.html, /login -> pages/login.html, etc.
+  app.get("/:page", (req, res, next) => {
+    const p = req.path;
+
+    // Don't hijack API or static routes
+    if (
+      p.startsWith("/api") ||
+      p.startsWith("/assets") ||
+      p.startsWith("/static") ||
+      p.startsWith("/frontend/src/assets")
+    ) {
+      return next();
+    }
+
+    const file = path.join(frontendPages, `${req.params.page}.html`);
+    if (fs.existsSync(file)) {
+      return res.sendFile(file);
+    }
+    return next();
+  });
 
   // Non-API 404 -> serve 404.html
   app.use((req, res, next) => {
-    if (req.path.startsWith("/api")) return next(); // safety, though API 404 above handles it
-    res.status(404).sendFile(path.resolve(process.cwd(), "../../frontend/src/pages/404.html"));
+    if (req.path.startsWith("/api")) return next();
+    res.status(404).sendFile(path.join(frontendPages, "404.html"));
   });
 
   // Error handler LAST

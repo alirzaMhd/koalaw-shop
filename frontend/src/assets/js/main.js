@@ -91,7 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
             <svg viewBox="0 0 200 200"><path d="M48.1,-58.9C62.2,-51.9,73.4,-37.2,77,-21.2C80.6,-5.2,76.5,12.2,68.4,26.1C60.3,40,48.2,50.4,34.5,58.3C20.8,66.2,5.5,71.6,-9.3,71.1C-24.1,70.7,-38.4,64.4,-50.9,54.7C-63.4,44.9,-74,31.7,-77.8,16.5C-81.6,1.2,-78.6,-16,-69.8,-29.3C-61,-42.6,-46.4,-52,-32.1,-59.5C-17.8,-67,-3.9,-72.6,9.6,-71.7C23.1,-70.8,48.1,-58.9,48.1,-58.9Z" transform="translate(100 100)"></path></svg>
           </div>
           <div class="card-image-wrapper">
-            <img src="../images/product.png" alt="${
+            <img src="/assets/images/product.png" alt="${
               p.t
             }" class="card-image">
           </div>
