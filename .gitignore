@@ -3,3 +3,5 @@ html_files.txt
 node_modules
 schema
 .env
+package-lock.json
+backend/package-lock.json

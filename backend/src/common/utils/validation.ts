@@ -1,6 +1,7 @@
 // src/common/utils/validation.ts
 // Shared validation helpers: safe Zod parsing, phone normalization, Persian/Arabic digits.
 
+import { Request, Response, NextFunction } from "express";
 import { z, ZodSchema } from "zod";
 
 export function toLatinDigits(input: string = ""): string {
@@ -45,4 +46,22 @@ export function isValidIranMobile(n: string): boolean {
 
 export async function parseSafe<T>(schema: ZodSchema<T>, data: unknown): Promise<T> {
   return schema.parseAsync(data);
+}
+export function validate(schema: ZodSchema<any>) {
+  return async (req: Request, _res: Response, next: NextFunction) => {
+    try {
+      const parsed = await parseSafe(schema, {
+        body: req.body,
+        query: req.query,
+        params: req.params,
+      });
+      if (parsed?.body) req.body = parsed.body;
+      if (parsed?.query) req.query = parsed.query as any; // Express' req.query is a plain object
+      if (parsed?.params) req.params = parsed.params;
+
+      next();
+    } catch (err) {
+      next(err); // Let your centralized error handler deal with ZodError
+    }
+  };
 }

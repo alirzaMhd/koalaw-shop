@@ -8,5 +8,8 @@
   "scripts": {
     "dev:css": "tailwindcss -i frontend/src/assets/css/main.css -o frontend/src/assets/css/tailwind.css --watch",
     "build:css": "tailwindcss -i frontend/src/assets/css/main.css -o frontend/src/assets/css/tailwind.css --minify"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.16.2"
   }
 }
