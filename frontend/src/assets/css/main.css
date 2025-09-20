@@ -1120,3 +1120,6 @@ section[id] { scroll-margin-top: 7rem; }
   border-radius: 50%; /* This rounds the square into a perfect circle */
   animation: scroll-down 2s ease-in-out infinite;
 }
+@media (min-width: 1024px) {
+.hamburger-button { display: none !important; }
+}

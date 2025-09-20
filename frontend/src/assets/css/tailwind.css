@@ -5764,3 +5764,6 @@ section[id] {
     }
   }
 }
+@media (min-width: 1024px) {
+.hamburger-button { display: none !important; }
+}
