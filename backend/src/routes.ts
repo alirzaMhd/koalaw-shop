@@ -15,6 +15,7 @@ import paymentRouter from "./modules/payments/payment.routes";
 import shippingRouter from "./modules/shipping/shipping.routes";
 import reviewRouter from "./modules/reviews/review.routes";
 import notificationRouter from "./modules/notifications/notification.routes";
+import searchRouter from "./modules/search/search.routes";
 
 export function buildApiRouter() {
   const api = Router();
@@ -34,6 +35,7 @@ export function buildApiRouter() {
   api.use("/shipping", shippingRouter);
   api.use("/reviews", reviewRouter);
   api.use("/notifications", notificationRouter);
+  api.use("/search", searchRouter); // <-- added
 
   return api;
 }

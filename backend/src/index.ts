@@ -16,17 +16,29 @@ import { bindOrderCreatedHandler } from "./events/handlers/order.created.handler
 import { bindPaymentSucceededHandler } from "./events/handlers/payment.succeeded.handler";
 import { notificationService } from "./modules/notifications/notification.service";
 
+// Elasticsearch
+import { ping as esPing } from "./infrastructure/search/elastic.client";
+import { ensureSearchIndices } from "./modules/search/search.service";
+
 async function bootstrap() {
   // Bind domain event handlers
   bindOrderCreatedHandler();
   bindPaymentSucceededHandler();
 
-  // Bind default notification handlers (order.created -> confirmation, payment.succeeded -> receipt)
-  // Safe to call multiple times; internal guards prevent double-binding.
+  // Bind default notification handlers
   notificationService.bindDefaultHandlers();
 
   // Optionally start default email worker if queue + mailer are configured
   bindDefaultEmailWorker();
+
+  // Ensure Elasticsearch is reachable and indices exist
+  try {
+    const ok = await esPing();
+    if (!ok) logger.warn("Elasticsearch not reachable at startup");
+    await ensureSearchIndices();
+  } catch (e) {
+    logger.warn({ err: e }, "Failed ensuring Elasticsearch indices");
+  }
 
   // Create and start HTTP server
   const app = createApp();
@@ -36,7 +48,10 @@ async function bootstrap() {
   const server = http.createServer(app);
 
   server.listen(port, host, () => {
-    logger.info({ port, env: env.NODE_ENV }, `${env.APP_NAME} API listening on ${host}:${port}`);
+    logger.info(
+      { port, env: env.NODE_ENV },
+      `${env.APP_NAME} API listening on ${host}:${port}`
+    );
   });
 
   // ---- Graceful shutdown ----
