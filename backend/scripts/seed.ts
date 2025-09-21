@@ -86,11 +86,9 @@ async function main() {
     // Original Pastel Colors
     prisma.colorTheme.create({ data: { name: "نعنای تازه", slug: "fresh-mint", hexCode: "#c5f4e5" } }),
     prisma.colorTheme.create({ data: { name: "اسطوخودوس ملایم", slug: "soft-lavender", hexCode: "#e0d9fe" } }),
-    prisma.colorTheme.create({ data: { name: "زرد کره‌ای", slug: "buttercream-yellow", hexCode: "#fef9e3" } }),
     prisma.colorTheme.create({ data: { name: "صورتی رژگونه‌ای", slug: "blush-pink", hexCode: "#ffeef5" } }),
     prisma.colorTheme.create({ data: { name: "هلویی ملایم", slug: "soft-peach", hexCode: "#FFDAB9" } }),
     prisma.colorTheme.create({ data: { name: "آبی پودری", slug: "powder-blue", hexCode: "#D1E8FF" } }),
-    prisma.colorTheme.create({ data: { name: "سبز مریم‌گلی", slug: "sage-green", hexCode: "#C3E6CB" } }),
     prisma.colorTheme.create({ data: { name: "جو دوسر گرم", slug: "warm-oat", hexCode: "#F3EAD3" } }),
     prisma.colorTheme.create({ data: { name: "سنگ روشن", slug: "light-stone", hexCode: "#E5E4E2" } }),
   ]);
