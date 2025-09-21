@@ -1,3 +1,4 @@
+// /assets/js/pages/magazine.js
 (function () {
   document.addEventListener("DOMContentLoaded", () => {
     const grid = document.getElementById("articles-grid");
@@ -35,7 +36,7 @@
       tutorial: "TUTORIAL",
       trends: "TRENDS",
       lifestyle: "LIFESTYLE",
-      general: "GENERAL"
+      general: "GENERAL",
     };
 
     // Format date to Persian
@@ -103,27 +104,38 @@
       isLoading = true;
 
       try {
+        let url;
         const params = new URLSearchParams({
           page: page.toString(),
-          pageSize: "9",
-          onlyPublished: "true",
+          size: "9",
         });
 
-        // Add category filter if not "all"
-        if (activeFilter !== "all" && categoryMap[activeFilter]) {
-          params.append("category", categoryMap[activeFilter]);
-        }
-
-        // Add search query
+        // Use search endpoint if there's a search query
         if (searchQuery) {
+          url = "/api/search/magazine";
           params.append("q", searchQuery);
+          if (activeFilter !== "all" && categoryMap[activeFilter]) {
+            params.append("category", categoryMap[activeFilter]);
+          }
+        } else {
+          // Use regular API for browsing
+          url = "/api/magazine/posts";
+          params.append("onlyPublished", "true");
+          if (activeFilter !== "all" && categoryMap[activeFilter]) {
+            params.append("category", categoryMap[activeFilter]);
+          }
         }
 
-        const response = await fetch(`/api/magazine/posts?${params}`);
+        const response = await fetch(`${url}?${params}`);
         const data = await response.json();
 
-        if (data.success) {
-          const { items, meta } = data;
+        if (data.success || data.ok) {
+          const items = data.items || data.data?.items || [];
+          const meta = data.meta || {
+            totalPages: Math.ceil((data.total || 0) / 9),
+            page: data.page || page,
+          };
+
           totalPages = meta.totalPages;
           currentPage = meta.page;
 
@@ -131,10 +143,36 @@
             grid.innerHTML = "";
           }
 
+          // If no results
+          if (items.length === 0 && !append) {
+            grid.innerHTML = `
+              <div class="col-span-full text-center py-12">
+                <p class="text-gray-600">
+                  ${
+                    searchQuery
+                      ? "نتیجه‌ای برای جستجوی شما یافت نشد."
+                      : "مقاله‌ای موجود نیست."
+                  }
+                </p>
+              </div>`;
+            return;
+          }
+
           // Create and append article cards
           const fragment = document.createDocumentFragment();
           items.forEach((article, index) => {
             const wrapper = document.createElement("div");
+
+            // Handle highlights from search results
+            if (article._highlights) {
+              if (article._highlights.title) {
+                article.title = article._highlights.title[0];
+              }
+              if (article._highlights.excerpt) {
+                article.excerpt = article._highlights.excerpt[0];
+              }
+            }
+
             wrapper.innerHTML = createArticleCard(
               article,
               100 + (index % 3) * 50

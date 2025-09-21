@@ -1,8 +1,10 @@
+// src/modules/magazine/magazine.service.ts
 import { magazineRepo, ListPostsFilter } from '../../infrastructure/db/repositories/magazine.repo';
 import { prisma } from '../../infrastructure/db/prismaClient';
 import AppError from '../../common/errors/AppError';
+import { onMagazinePostSaved, onMagazinePostDeleted } from './magazine.hooks';
 
-// Types local to this service (kept lightweight to avoid coupling to Prisma’s generated types)
+// Types local to this service (kept lightweight to avoid coupling to Prisma's generated types)
 export type AuthorDTO =
   | {
       id: string;
@@ -220,7 +222,12 @@ export class MagazineService {
     };
 
     const created = await magazineRepo.createPost(data, tagIds, input.relatedPostIds ?? []);
-    return toPostDTO(created);
+    const dto = toPostDTO(created);
+
+    // Index in Elasticsearch
+    await onMagazinePostSaved(created!.id);
+
+    return dto;
   }
 
   async updatePost(
@@ -270,11 +277,19 @@ export class MagazineService {
         : undefined;
 
     const updated = await magazineRepo.updatePost(id, data, tagIds, input.relatedPostIds);
-    return toPostDTO(updated);
+    const dto = toPostDTO(updated);
+
+    // Re-index in Elasticsearch
+    await onMagazinePostSaved(updated!.id);
+
+    return dto;
   }
 
   async deletePost(id: string) {
     await magazineRepo.deletePost(id);
+    
+    // Remove from Elasticsearch
+    await onMagazinePostDeleted(id);
   }
 
   // AUTHORS
