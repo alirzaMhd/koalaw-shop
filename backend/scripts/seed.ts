@@ -262,6 +262,7 @@ async function main() {
         name: "تیم بیوتی",
         slug: "beauty-team",
         bio: "تیم متخصصان زیبایی ما",
+        avatarUrl: "/assets/images/authors/sara-ahmadi.jpg",
       },
     }),
   ]);
@@ -368,7 +369,7 @@ async function main() {
     prisma.magazinePost.create({
       data: {
         authorId: authors[2].id,
-        category: 'LIFESTYLE',
+        category: 'GENERAL',
         title: "یکشنبه‌ی مراقبت از خود: ساختن روتین ایده‌آل برای آرامش",
         slug: "self-care-sunday-pamper-routine",
         excerpt: "یکشنبه‌ی خود را به یک روز اسپای لوکس در خانه تبدیل کنید",

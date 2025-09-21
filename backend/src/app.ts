@@ -126,6 +126,9 @@ export function createApp() {
   app.get("/tos", (_req, res) => {
     res.sendFile(path.join(frontendPages, "tos.html"));
   });
+  app.get("/magazine/:slug", (req, res) => {
+    res.sendFile(path.join(frontendPages, "article.html"));
+  });
 
   // Simple page router: /shop -> pages/shop.html, /login -> pages/login.html, etc.
   app.get("/:page", (req, res, next) => {
