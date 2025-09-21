@@ -372,21 +372,117 @@
     const openFilterBtn = document.getElementById("open-filter-btn");
     const closeFilterBtn = document.getElementById("close-filter-btn");
     const shopSidebar = document.getElementById("shop-sidebar");
-    const filterOverlay = document.createElement("div");
-    filterOverlay.className = "mobile-menu-overlay";
-    document.body.appendChild(filterOverlay);
+
+    // Reuse the global overlay already in DOM (fallback to create if missing)
+    let filterOverlay = document.getElementById("mobile-menu-overlay");
+    if (!filterOverlay) {
+      filterOverlay = document.createElement("div");
+      filterOverlay.id = "mobile-menu-overlay";
+      filterOverlay.className = "mobile-menu-overlay";
+      document.body.appendChild(filterOverlay);
+    }
+
+    // Footer bar (اعمال فیلتر container) — sticky inside sidebar on mobile
+    const applyFiltersBtnEl = document.getElementById("apply-filters-btn");
+    const filterFooter = applyFiltersBtnEl?.parentElement || null;
+
+    // Move sidebar to <body> on mobile so it sits in the root stacking context
+    const mq = window.matchMedia("(max-width: 1024px)");
+    const originalParent = shopSidebar?.parentNode || null;
+    const placeholder = document.createComment("shop-sidebar-placeholder");
+
+    function adjustMobileUI(isMobile) {
+      if (shopSidebar) {
+        // Remove border radius on mobile filter menu
+        shopSidebar.style.borderRadius = isMobile ? "0" : "";
+      }
+      // Make sure the sticky footer has no extra bottom spacing; the sidebar gets just enough padding
+      syncStickyFooterPadding();
+    }
+
+    function moveSidebar(e) {
+      if (!shopSidebar || !originalParent) return;
+      const isMobile = e?.matches ?? mq.matches;
+
+      if (isMobile) {
+        // Mobile: portal into <body>
+        if (shopSidebar.parentNode === originalParent) {
+          originalParent.insertBefore(placeholder, shopSidebar);
+          document.body.appendChild(shopSidebar);
+        }
+      } else {
+        // Desktop: move back where it was
+        if (placeholder.parentNode) {
+          placeholder.parentNode.insertBefore(shopSidebar, placeholder);
+          placeholder.remove();
+        }
+      }
+
+      adjustMobileUI(isMobile);
+    }
+    moveSidebar(mq);
+    if (typeof mq.addEventListener === "function") {
+      mq.addEventListener("change", moveSidebar);
+    } else if (typeof mq.addListener === "function") {
+      // Safari < 14 fallback
+      mq.addListener(moveSidebar);
+    }
+
+    function openFilterMenu() {
+      shopSidebar?.classList.add("is-active");
+      filterOverlay?.classList.add("is-active");
+      document.body.classList.add("filter-menu-open");
+      // Ensure sticky footer + padding are correct on open
+      syncStickyFooterPadding();
+    }
+
+    function closeFilterMenu() {
+      shopSidebar?.classList.remove("is-active");
+      document.body.classList.remove("filter-menu-open");
+
+      // If mobile menu isn't open, we can safely hide the overlay
+      const mobileMenu = document.getElementById("mobile-menu");
+      if (!mobileMenu || !mobileMenu.classList.contains("is-active")) {
+        filterOverlay?.classList.remove("is-active");
+      }
+    }
 
     function toggleFilterMenu() {
-      shopSidebar?.classList.toggle("is-active");
-      filterOverlay.classList.toggle("is-active");
-      document.body.classList.toggle("filter-menu-open");
+      if (shopSidebar?.classList.contains("is-active")) {
+        closeFilterMenu();
+      } else {
+        openFilterMenu();
+      }
     }
-    openFilterBtn &&
-      closeFilterBtn &&
-      shopSidebar &&
-      (openFilterBtn.addEventListener("click", toggleFilterMenu),
-      closeFilterBtn.addEventListener("click", toggleFilterMenu),
-      filterOverlay.addEventListener("click", toggleFilterMenu));
+
+    openFilterBtn?.addEventListener("click", toggleFilterMenu);
+    closeFilterBtn?.addEventListener("click", toggleFilterMenu);
+    filterOverlay?.addEventListener("click", () => {
+      if (shopSidebar?.classList.contains("is-active")) {
+        closeFilterMenu();
+      }
+    });
+
+    // Ensure the sticky footer really sticks without huge bottom gap:
+    // Set sidebar's padding-bottom equal to footer's height (instead of pb-24)
+    function syncStickyFooterPadding() {
+      if (!mq.matches || !shopSidebar || !filterFooter) {
+        if (shopSidebar) shopSidebar.style.paddingBottom = "";
+        return;
+      }
+      // Defer to after layout to get correct heights
+      requestAnimationFrame(() => {
+        const h = filterFooter.offsetHeight || 0;
+        // Add a tiny breathing space; avoid big bottom padding (replaces pb-24)
+        const extra = 8; // px
+        shopSidebar.style.paddingBottom = `30px`;
+      });
+    }
+
+    // Keep padding in sync on resize/orientation/content changes
+    window.addEventListener("resize", syncStickyFooterPadding);
+    // Also recalc after icons (feather) render might change footer height
+    setTimeout(syncStickyFooterPadding, 0);
 
     // ---------- Price range UI ----------
     const rangeInputs = document.querySelectorAll(".range-input input");
@@ -457,7 +553,9 @@
       resetGrid();
       fetchPage();
 
-      if (shopSidebar?.classList.contains("is-active")) toggleFilterMenu();
+      if (shopSidebar?.classList.contains("is-active")) {
+        closeFilterMenu();
+      }
     }
     applyFiltersBtn && applyFiltersBtn.addEventListener("click", applyFilters);
 
