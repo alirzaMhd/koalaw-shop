@@ -1,4 +1,3 @@
-
 import { PrismaClient } from "@prisma/client";
 import path from "path";
 import dotenv from "dotenv";
@@ -46,8 +45,8 @@ async function main() {
       data: {
         phone: "+989123456789",
         email: "admin@beauty.com",
-        firstName: "Admin",
-        lastName: "User",
+        firstName: "ادمین",
+        lastName: "کاربر",
         gender: 'FEMALE',
         customerTier: 'VIP',
         phoneVerifiedAt: new Date(),
@@ -65,8 +64,8 @@ async function main() {
       data: {
         phone: "+989123456788",
         email: "customer@example.com",
-        firstName: "Sarah",
-        lastName: "Johnson",
+        firstName: "سارا",
+        lastName: "رضایی",
         gender: 'FEMALE',
         birthDate: new Date("1990-05-15"),
         phoneVerifiedAt: new Date(),
@@ -76,18 +75,18 @@ async function main() {
 
   // Create brands
   const brands = await Promise.all([
-    prisma.brand.create({ data: { name: "Luxe Beauty", slug: "luxe-beauty" } }),
-    prisma.brand.create({ data: { name: "Natural Glow", slug: "natural-glow" } }),
-    prisma.brand.create({ data: { name: "Urban Chic", slug: "urban-chic" } }),
-    prisma.brand.create({ data: { name: "Pure Essence", slug: "pure-essence" } }),
+    prisma.brand.create({ data: { name: "لوکس بیوتی", slug: "luxe-beauty" } }),
+    prisma.brand.create({ data: { name: "درخشش طبیعی", slug: "natural-glow" } }),
+    prisma.brand.create({ data: { name: "شیک شهری", slug: "urban-chic" } }),
+    prisma.brand.create({ data: { name: "اسانس خالص", slug: "pure-essence" } }),
   ]);
 
   // Create color themes
   const colorThemes = await Promise.all([
-    prisma.colorTheme.create({ data: { name: "Nude Collection", slug: "nude-collection", hexCode: "#F5DEB3" } }),
-    prisma.colorTheme.create({ data: { name: "Berry Tones", slug: "berry-tones", hexCode: "#8B0051" } }),
-    prisma.colorTheme.create({ data: { name: "Coral Dreams", slug: "coral-dreams", hexCode: "#FF7F50" } }),
-    prisma.colorTheme.create({ data: { name: "Classic Reds", slug: "classic-reds", hexCode: "#DC143C" } }),
+    prisma.colorTheme.create({ data: { name: "کالکشن نود", slug: "nude-collection", hexCode: "#F5DEB3" } }),
+    prisma.colorTheme.create({ data: { name: "طیف رنگ‌های توت", slug: "berry-tones", hexCode: "#8B0051" } }),
+    prisma.colorTheme.create({ data: { name: "رویاهای مرجانی", slug: "coral-dreams", hexCode: "#FF7F50" } }),
+    prisma.colorTheme.create({ data: { name: "قرمزهای کلاسیک", slug: "classic-reds", hexCode: "#DC143C" } }),
   ]);
 
   // Create collections
@@ -95,16 +94,16 @@ async function main() {
     prisma.collection.create({
       data: {
         slug: "valentines-special",
-        title: "Valentine's Special",
-        description: "Romance your beauty routine with our curated Valentine's collection",
+        title: "ویژه ولنتاین",
+        description: "روتین زیبایی خود را با کالکشن منتخب ولنتاین ما رمانتیک کنید",
         isActive: true,
       },
     }),
     prisma.collection.create({
       data: {
         slug: "summer-essentials",
-        title: "Summer Essentials",
-        description: "Stay fresh and glowing all summer long",
+        title: "ضروریات تابستان",
+        description: "در تمام طول تابستان شاداب و درخشان بمانید",
         isActive: true,
       },
     }),
@@ -115,32 +114,32 @@ async function main() {
     prisma.product.create({
       data: {
         brandId: brands[0].id,
-        colorThemeId: colorThemes[0].id,
+        colorThemeId: colorThemes[3].id,
         category: 'MAKEUP',
-        title: "Velvet Matte Lipstick",
-        subtitle: "Long-lasting comfort",
+        title: "رژ لب مات مخملی",
+        subtitle: "ماندگاری بالا و احساس راحتی",
         slug: "velvet-matte-lipstick",
-        description: "A revolutionary matte lipstick that doesn't dry your lips",
-        ingredients: "Vitamin E, Shea Butter, Jojoba Oil",
-        howToUse: "Apply directly to lips starting from the center",
+        description: "یک رژ لب مات انقلابی که لب‌های شما را خشک نمی‌کند و پوششی کامل و مخملی ارائه می‌دهد.",
+        ingredients: "ویتامین E، شی باتر، روغن جوجوبا",
+        howToUse: "مستقیماً از مرکز لب شروع کرده و به سمت گوشه‌ها بکشید.",
         price: 450000,
         compareAtPrice: 550000,
         ratingAvg: 4.5,
         ratingCount: 125,
         isBestseller: true,
         isFeatured: true,
-        heroImageUrl: "/images/products/lipstick-hero.jpg",
+        heroImageUrl: "/assets/images/products/lipstick-hero.jpg",
         images: {
           create: [
-            { url: "/images/products/lipstick-1.jpg", alt: "Lipstick front view", position: 0 },
-            { url: "/images/products/lipstick-2.jpg", alt: "Lipstick swatches", position: 1 },
+            { url: "/assets/images/products/lipstick-1.jpg", alt: "نمای جلوی رژ لب", position: 0 },
+            { url: "/assets/images/products/lipstick-2.jpg", alt: "سوآچ‌های رژ لب", position: 1 },
           ],
         },
         variants: {
           create: [
-            { variantName: "Ruby Red", sku: "LIP-001-RR", colorName: "Ruby Red", colorHexCode: "#E0115F", stock: 50 },
-            { variantName: "Pink Rose", sku: "LIP-001-PR", colorName: "Pink Rose", colorHexCode: "#FF69B4", stock: 30 },
-            { variantName: "Nude Beige", sku: "LIP-001-NB", colorName: "Nude Beige", colorHexCode: "#F5DEB3", stock: 45 },
+            { variantName: "قرمز یاقوتی", sku: "LIP-001-RR", colorName: "قرمز یاقوتی", colorHexCode: "#E0115F", stock: 50 },
+            { variantName: "رز صورتی", sku: "LIP-001-PR", colorName: "رز صورتی", colorHexCode: "#FF69B4", stock: 30 },
+            { variantName: "بژ نود", sku: "LIP-001-NB", colorName: "بژ نود", colorHexCode: "#F5DEB3", stock: 45 },
           ],
         },
         collections: {
@@ -154,21 +153,21 @@ async function main() {
       data: {
         brandId: brands[1].id,
         category: 'SKINCARE',
-        title: "Vitamin C Brightening Serum",
-        subtitle: "Radiance in a bottle",
+        title: "سرم روشن‌کننده ویتامین C",
+        subtitle: "درخشندگی در یک بطری",
         slug: "vitamin-c-brightening-serum",
-        description: "Powerful antioxidant serum for glowing skin",
-        ingredients: "20% Vitamin C, Hyaluronic Acid, Vitamin E",
-        howToUse: "Apply 2-3 drops to clean face morning and evening",
+        description: "سرم آنتی‌اکسیدان قوی برای پوستی درخشان و یکدست. به کاهش لک‌های تیره کمک می‌کند.",
+        ingredients: "۲۰٪ ویتامین C، هیالورونیک اسید، ویتامین E",
+        howToUse: "۲ تا ۳ قطره را صبح و شب روی پوست تمیز صورت بمالید.",
         price: 850000,
         ratingAvg: 4.8,
         ratingCount: 89,
         isFeatured: true,
-        heroImageUrl: "/images/products/serum-hero.jpg",
+        heroImageUrl: "/assets/images/products/serum-hero.jpg",
         variants: {
           create: [
-            { variantName: "30ml", sku: "SER-001-30", stock: 25 },
-            { variantName: "50ml", sku: "SER-001-50", price: 1200000, stock: 15 },
+            { variantName: "۳۰ میل", sku: "SER-001-30", stock: 25 },
+            { variantName: "۵۰ میل", sku: "SER-001-50", price: 1200000, stock: 15 },
           ],
         },
       },
@@ -178,9 +177,9 @@ async function main() {
         brandId: brands[2].id,
         colorThemeId: colorThemes[1].id,
         category: 'MAKEUP',
-        title: "Eyeshadow Palette - Berry Sunset",
+        title: "پالت سایه چشم - غروب توت",
         slug: "eyeshadow-palette-berry-sunset",
-        description: "12 stunning shades inspired by sunset colors",
+        description: "۱۲ رنگ خیره‌کننده با الهام از رنگ‌های غروب آفتاب",
         price: 980000,
         compareAtPrice: 1200000,
         ratingAvg: 4.6,
@@ -188,7 +187,7 @@ async function main() {
         isSpecialProduct: true,
         variants: {
           create: [
-            { variantName: "Default", sku: "EYE-001", stock: 40 },
+            { variantName: "پیش‌فرض", sku: "EYE-001", stock: 40 },
           ],
         },
       },
@@ -202,17 +201,17 @@ async function main() {
         productId: products[0].id,
         userId: users[1].id,
         rating: 5,
-        title: "Perfect matte finish!",
-        body: "This lipstick is amazing! It stays on all day without drying my lips.",
+        title: "فینیش مات بی‌نقص!",
+        body: "این رژ لب فوق‌العاده است! تمام روز بدون خشک کردن لب‌هایم باقی می‌ماند.",
         status: "APPROVED",
       },
     }),
     prisma.productReview.create({
       data: {
         productId: products[1].id,
-        guestName: "Anonymous",
+        guestName: "ناشناس",
         rating: 4,
-        body: "Great serum, saw results in 2 weeks",
+        body: "سرم عالی بود، در ۲ هفته نتیجه را دیدم.",
         status: "APPROVED",
       },
     }),
@@ -244,37 +243,37 @@ async function main() {
   const authors = await Promise.all([
     prisma.magazineAuthor.create({
       data: {
-        name: "Dr. Emma Watson",
-        slug: "dr-emma-watson",
-        bio: "Board-certified dermatologist with 15 years of experience in skincare",
-        avatarUrl: "/images/authors/emma-watson.jpg",
+        name: "دکتر سارا احمدی",
+        slug: "dr-sara-ahmadi",
+        bio: "متخصص پوست دارای بورد تخصصی با ۱۵ سال تجربه در زمینه مراقبت از پوست",
+        avatarUrl: "/assets/images/authors/sara-ahmadi.jpg",
       },
     }),
     prisma.magazineAuthor.create({
       data: {
-        name: "Sophia Chen",
-        slug: "sophia-chen",
-        bio: "Professional makeup artist and beauty influencer",
-        avatarUrl: "/images/authors/sophia-chen.jpg",
+        name: "مریم رضایی",
+        slug: "maryam-rezaei",
+        bio: "میکاپ آرتیست حرفه‌ای و اینفلوئنسر زیبایی",
+        avatarUrl: "/assets/images/authors/maryam-rezaei.jpg",
       },
     }),
     prisma.magazineAuthor.create({
       data: {
-        name: "Beauty Team",
+        name: "تیم بیوتی",
         slug: "beauty-team",
-        bio: "Our expert team of beauty professionals",
+        bio: "تیم متخصصان زیبایی ما",
       },
     }),
   ]);
 
   // Create magazine tags
   const tags = await Promise.all([
-    prisma.magazineTag.create({ data: { name: "Skincare Routine", slug: "skincare-routine" } }),
-    prisma.magazineTag.create({ data: { name: "Makeup Tips", slug: "makeup-tips" } }),
-    prisma.magazineTag.create({ data: { name: "Anti-Aging", slug: "anti-aging" } }),
-    prisma.magazineTag.create({ data: { name: "Natural Beauty", slug: "natural-beauty" } }),
-    prisma.magazineTag.create({ data: { name: "Summer Beauty", slug: "summer-beauty" } }),
-    prisma.magazineTag.create({ data: { name: "K-Beauty", slug: "k-beauty" } }),
+    prisma.magazineTag.create({ data: { name: "روتین مراقبت از پوست", slug: "skincare-routine" } }),
+    prisma.magazineTag.create({ data: { name: "نکات آرایشی", slug: "makeup-tips" } }),
+    prisma.magazineTag.create({ data: { name: "ضد پیری", slug: "anti-aging" } }),
+    prisma.magazineTag.create({ data: { name: "زیبایی طبیعی", slug: "natural-beauty" } }),
+    prisma.magazineTag.create({ data: { name: "زیبایی در تابستان", slug: "summer-beauty" } }),
+    prisma.magazineTag.create({ data: { name: "کی-بیوتی (K-Beauty)", slug: "k-beauty" } }),
   ]);
 
   // Create magazine posts
@@ -283,23 +282,23 @@ async function main() {
       data: {
         authorId: authors[0].id,
         category: 'GUIDE',
-        title: "The Ultimate 10-Step Korean Skincare Routine",
+        title: "روتین کامل ۱۰ مرحله‌ای مراقبت از پوست کره‌ای",
         slug: "ultimate-10-step-korean-skincare-routine",
-        excerpt: "Discover the secrets behind flawless Korean skin with our comprehensive guide",
+        excerpt: "با راهنمای جامع ما، رازهای پوست بی‌نقص کره‌ای را کشف کنید",
         content: `
-# The Ultimate 10-Step Korean Skincare Routine
+# روتین کامل ۱۰ مرحله‌ای مراقبت از پوست کره‌ای
 
-Korean skincare has taken the beauty world by storm, and for good reason. The meticulous attention to hydration, gentle ingredients, and layering techniques can transform your skin...
+مراقبت از پوست کره‌ای دنیای زیبایی را متحول کرده است، و دلیل خوبی هم دارد. توجه دقیق به آبرسانی، ترکیبات ملایم و تکنیک‌های لایه‌لایه می‌تواند پوست شما را دگرگون کند...
 
-## Step 1: Oil Cleanser
-Start your routine with an oil-based cleanser to remove makeup and sunscreen...
+## مرحله ۱: پاک‌کننده بر پایه‌ی روغن
+روتین خود را با یک پاک‌کننده‌ی بر پایه‌ی روغن شروع کنید تا آرایش و ضدآفتاب را پاک کنید...
 
-## Step 2: Water-Based Cleanser
-Follow up with a gentle foam or gel cleanser...
+## مرحله ۲: پاک‌کننده بر پایه‌ی آب
+سپس از یک شوینده‌ی ملایم فومی یا ژلی استفاده کنید...
 
-[Content continues...]
+[ادامه‌ی مطلب...]
         `,
-        heroImageUrl: "/images/magazine/korean-skincare-hero.jpg",
+        heroImageUrl: "/assets/images/magazine/article1.jpg",
         readTimeMinutes: 12,
         publishedAt: new Date("2024-01-15"),
         tags: {
@@ -314,24 +313,24 @@ Follow up with a gentle foam or gel cleanser...
       data: {
         authorId: authors[1].id,
         category: 'TUTORIAL',
-        title: "5 Minute Makeup: Get Ready Fast Without Compromising Style",
+        title: "آرایش ۵ دقیقه‌ای: بدون فدا کردن استایل، سریع آماده شوید",
         slug: "5-minute-makeup-tutorial",
-        excerpt: "Master the art of quick makeup application with these time-saving techniques",
+        excerpt: "با این تکنیک‌های صرفه‌جویی در زمان، در هنر آرایش سریع استاد شوید",
         content: `
-# 5 Minute Makeup Tutorial
+# آموزش آرایش ۵ دقیقه‌ای
 
-We all have those mornings when time is not on our side. Here's how to look polished in just 5 minutes...
+برای همه‌ی ما صبح‌هایی پیش می‌آید که زمان کافی نداریم. در اینجا یاد می‌گیرید که چطور فقط در ۵ دقیقه آراسته به نظر برسید...
 
-## The Essential Products
-- Tinted moisturizer or BB cream
-- Cream blush
-- Mascara
-- Tinted lip balm
-- Setting spray
+## محصولات ضروری
+- مرطوب‌کننده‌ی رنگی یا بی‌بی کرم
+- رژگونه کرمی
+- ریمل
+- بالم لب رنگی
+- اسپری تثبیت‌کننده آرایش (فیکساتور)
 
-[Tutorial steps...]
+[مراحل آموزش...]
         `,
-        heroImageUrl: "/images/magazine/quick-makeup-hero.jpg",
+        heroImageUrl: "/assets/images/magazine/article2.jpg",
         readTimeMinutes: 5,
         publishedAt: new Date("2024-01-20"),
         tags: {
@@ -345,23 +344,23 @@ We all have those mornings when time is not on our side. Here's how to look poli
       data: {
         authorId: authors[0].id,
         category: 'TRENDS',
-        title: "2024 Beauty Trends: What's Hot This Year",
+        title: "ترندهای زیبایی سال ۲۰۲۴: امسال چه چیزهایی مد است؟",
         slug: "2024-beauty-trends",
-        excerpt: "From glossy skin to bold lips, discover the beauty trends dominating 2024",
+        excerpt: "از پوست درخشان تا لب‌های پررنگ، با ترندهای زیبایی برتر سال ۲۰۲۴ آشنا شوید",
         content: `
-# 2024 Beauty Trends
+# ترندهای زیبایی سال ۲۰۲۴
 
-This year is all about embracing natural beauty with a twist. Here are the top trends...
+امسال همه چیز درباره‌ی پذیرش زیبایی طبیعی با کمی خلاقیت است. در اینجا برترین ترندها را معرفی می‌کنیم...
 
-## 1. Glass Skin
-The Korean beauty trend continues to influence global beauty...
+## ۱. پوست شیشه‌ای
+ترند زیبایی کره‌ای همچنان بر زیبایی جهانی تأثیر می‌گذارد...
 
-## 2. Berry-Stained Lips
-Move over nude lips, berry tones are having a moment...
+## ۲. لب‌هایی به رنگ توت
+رژ لب‌های نود را کنار بگذارید، نوبت به رنگ‌های خانواده توت رسیده است...
 
-[More trends...]
+[ترندهای بیشتر...]
         `,
-        heroImageUrl: "/images/magazine/2024-trends-hero.jpg",
+        heroImageUrl: "/assets/images/magazine/article2.jpg",
         readTimeMinutes: 8,
         publishedAt: new Date("2024-01-10"),
       },
@@ -370,23 +369,23 @@ Move over nude lips, berry tones are having a moment...
       data: {
         authorId: authors[2].id,
         category: 'LIFESTYLE',
-        title: "Self-Care Sunday: Creating Your Perfect Pamper Routine",
+        title: "یکشنبه‌ی مراقبت از خود: ساختن روتین ایده‌آل برای آرامش",
         slug: "self-care-sunday-pamper-routine",
-        excerpt: "Transform your Sunday into a luxurious spa day at home",
+        excerpt: "یکشنبه‌ی خود را به یک روز اسپای لوکس در خانه تبدیل کنید",
         content: `
-# Self-Care Sunday Routine
+# روتین یکشنبه برای مراقبت از خود
 
-Taking time for yourself isn't selfish—it's essential. Here's how to create the perfect Sunday pamper session...
+وقت گذاشتن برای خودتان خودخواهی نیست، بلکه ضروری است. در اینجا روش ایجاد یک روز عالی برای رسیدگی به خودتان در یکشنبه آمده است...
 
-## Morning Ritual
-Start with a gentle yoga session or meditation...
+## آداب صبحگاهی
+روز را با یک جلسه یوگای آرام یا مدیتیشن شروع کنید...
 
-## The Perfect Bath
-Add epsom salts, essential oils, and light some candles...
+## یک حمام بی‌نقص
+نمک اپسوم، روغن‌های اسانسی (عطری) اضافه کنید و چند شمع روشن کنید...
 
-[Content continues...]
+[ادامه‌ی مطلب...]
         `,
-        heroImageUrl: "/images/magazine/self-care-hero.jpg",
+        heroImageUrl: "/assets/images/magazine/article3.jpg",
         readTimeMinutes: 6,
         publishedAt: new Date("2024-01-25"),
         tags: {
@@ -420,10 +419,10 @@ Add epsom salts, essential oils, and light some candles...
       data: {
         key: "shipping_rates",
         value: {
-          standard: { price: 50000, days: "3-5" },
-          express: { price: 100000, days: "1-2" },
+          standard: { price: 50000, days: "۳-۵" },
+          express: { price: 100000, days: "۱-۲" },
         },
-        description: "Shipping rates and delivery times",
+        description: "نرخ‌های ارسال و زمان تحویل",
       },
     }),
     prisma.siteSetting.create({
@@ -431,14 +430,14 @@ Add epsom salts, essential oils, and light some candles...
         key: "homepage_banners",
         value: {
           hero: {
-            title: "New Year, New Beauty",
-            subtitle: "Discover our latest collection",
-            imageUrl: "/images/banners/hero-banner.jpg",
-            ctaText: "Shop Now",
+            title: "سال نو، زیبایی نو",
+            subtitle: "جدیدترین کالکشن ما را کشف کنید",
+            imageUrl: "/assets/images/banners/hero-banner.jpg",
+            ctaText: "اکنون خرید کنید",
             ctaUrl: "/shop",
           },
         },
-        description: "Homepage banner configuration",
+        description: "پیکربندی بنرهای صفحه اصلی",
       },
     }),
   ]);
