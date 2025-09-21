@@ -33,16 +33,8 @@ export const listProductsQuerySchema = z.object({
   perPage: z.coerce.number().int().min(1).max(100).default(20),
   
   // Sorting
-  sort: z.enum([
-    "createdAt:desc",
-    "createdAt:asc", 
-    "price:asc",
-    "price:desc",
-    "title:asc",
-    "title:desc",
-    "bestseller",
-    "featured"
-  ]).optional(),
+  // Sorting
+  sort: z.enum(["newest", "popular", "price-asc", "price-desc"]).optional(),
   
   // Include relations
   includeImages: z.coerce.boolean().default(false),

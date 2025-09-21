@@ -13,7 +13,10 @@ export interface BrandRef {
   name: string;
   slug: string;
 }
-
+export interface ColorChip {
+  hex: string;
+  name?: string | null;
+}
 export interface ColorThemeRef {
   id: string;
   name: string;
@@ -109,6 +112,10 @@ export interface ProductCardDto {
   isBestseller: boolean;
   isSpecialProduct: boolean;
   heroImageUrl?: string | null;
+
+  // NEW
+  colorTheme?: ColorThemeRef | null;
+  colorChips?: ColorChip[];
 }
 
 export interface ProductDetailDto extends ProductCardDto {
@@ -179,12 +186,14 @@ export function mapDbVariantToEntity(row: any): ProductVariant {
 }
 
 export function mapDbProductToEntity(row: any): Product {
-  // brand: either nested relation or brand fields on row.brandId? We expect nested for convenience
-  const brand = row.brand ? mapDbBrandToRef(row.brand) : mapDbBrandToRef({
-    id: row.brandId ?? row.brand_id,
-    name: row.brandName ?? row.brand_name,
-    slug: row.brandSlug ?? row.brand_slug,
-  });
+  // brand: nested relation preferred
+  const brand = row.brand
+    ? mapDbBrandToRef(row.brand)
+    : mapDbBrandToRef({
+        id: row.brandId ?? row.brand_id,
+        name: row.brandName ?? row.brand_name,
+        slug: row.brandSlug ?? row.brand_slug,
+      });
 
   const colorTheme =
     row.colorTheme
@@ -211,7 +220,7 @@ export function mapDbProductToEntity(row: any): Product {
     brand,
     colorTheme,
 
-    category: (row.category as ProductCategory),
+    category: row.category as ProductCategory,
     title: row.title,
     subtitle: row.subtitle ?? null,
     slug: row.slug,
@@ -256,6 +265,18 @@ export function effectiveVariantPrice(p: Product, v?: ProductVariant | null): nu
 }
 
 export function toProductCardDto(p: Product): ProductCardDto {
+  // build unique color chips from variants if any
+  const chips: ColorChip[] = Array.from(
+    new Map(
+      (p.variants ?? [])
+        .filter((v) => v.isActive && v.colorHexCode)
+        .map((v) => {
+          const hex = (v.colorHexCode as string).toLowerCase();
+          return [hex, { hex, name: v.colorName ?? null }];
+        })
+    ).values()
+  );
+
   return {
     id: p.id,
     slug: p.slug,
@@ -270,6 +291,10 @@ export function toProductCardDto(p: Product): ProductCardDto {
     isBestseller: p.isBestseller,
     isSpecialProduct: p.isSpecialProduct || isDiscounted(p),
     heroImageUrl: p.heroImageUrl ?? p.images?.sort((a, b) => a.position - b.position)[0]?.url ?? null,
+
+    // NEW
+    colorTheme: p.colorTheme ?? null,
+    colorChips: chips,
   };
 }
 
@@ -344,12 +369,14 @@ export function toPrismaWhere(filters: ProductFilters = {}) {
   }
   if (filters.collectionIds?.length) {
     AND.push({
-      collectionProducts: { some: { collectionId: { in: filters.collectionIds } } },
+      // FIX: relation field is "collections" (not "collectionProducts")
+      collections: { some: { collectionId: { in: filters.collectionIds } } },
     });
   }
   if (filters.collectionSlugs?.length) {
     AND.push({
-      collectionProducts: { some: { collection: { slug: { in: filters.collectionSlugs } } } },
+      // FIX: relation field is "collections" (not "collectionProducts")
+      collections: { some: { collection: { slug: { in: filters.collectionSlugs } } } },
     });
   }
   if (filters.colorThemeIds?.length) {
@@ -362,7 +389,6 @@ export function toPrismaWhere(filters: ProductFilters = {}) {
     AND.push({ price: { lte: filters.maxPrice } });
   }
   if (filters.specialOnly) {
-    // Prefer explicit flag if set, otherwise treat discounted (compareAt > price) as special
     AND.push({
       OR: [{ isSpecialProduct: true }, { compareAtPrice: { not: null } }],
     });

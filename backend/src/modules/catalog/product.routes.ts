@@ -8,8 +8,16 @@ import { AppError } from "../../common/errors/AppError";
 
 export const productRouter = Router();
 
+// API responses should not be cached
+productRouter.use((_req, res, next) => {
+  res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+  res.setHeader("Pragma", "no-cache");
+  res.setHeader("Expires", "0");
+  res.setHeader("Surrogate-Control", "no-store");
+  next();
+});
+
 // Optional simple role guard (adjust to your roles)
-// If you already have a reusable roleGuard, replace this with that import.
 interface AuthenticatedRequest extends Request {
   user?: { id?: string; sub?: string; role?: string };
 }
@@ -21,8 +29,8 @@ const requireAdmin = (req: AuthenticatedRequest, _res: Response, next: NextFunct
 
 // Public endpoints
 productRouter.get("/", productController.list);
-productRouter.get("/:id", productController.getById);
 productRouter.get("/slug/:slug", productController.getBySlug);
+productRouter.get("/:id", productController.getById);
 
 // Protected (admin) endpoints
 productRouter.post("/", authGuard, requireAdmin, productController.create);
@@ -38,5 +46,4 @@ productRouter.post("/:id/variants", authGuard, requireAdmin, productController.a
 productRouter.patch("/:id/variants/:variantId", authGuard, requireAdmin, productController.updateVariant);
 productRouter.delete("/:id/variants/:variantId", authGuard, requireAdmin, productController.deleteVariant);
 
-// Default export for router registration convenience
 export default productRouter;

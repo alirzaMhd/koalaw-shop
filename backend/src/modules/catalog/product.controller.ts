@@ -10,29 +10,54 @@ import { productService } from "./product.service";
 
 import {
   listProductsQuerySchema,
-  productIdParamSchema,
-  productSlugParamSchema,
-  createProductSchema,
-  updateProductSchema,
-  addImageSchema,
-  updateImageSchema,
-  addVariantSchema,
-  updateVariantSchema,
+  createProductInputSchema as createProductSchema,
+  updateProductInputSchema as updateProductSchema,
+  addImageInputSchema as addImageSchema,
+  updateImageInputSchema as updateImageSchema,
+  addVariantInputSchema as addVariantSchema,
+  updateVariantInputSchema as updateVariantSchema,
 } from "./product.validators";
 
-const uuidParam = z.object({ id: z.string().uuid({ message: "شناسه نامعتبر است." }) });
-const imageIdParam = z.object({ imageId: z.string().uuid({ message: "شناسه تصویر نامعتبر است." }) });
-const variantIdParam = z.object({ variantId: z.string().uuid({ message: "شناسه واریانت نامعتبر است." }) });
+// Param schemas
+const productIdParamSchema = z.object({ id: z.string().uuid({ message: "شناسه نامعتبر است." }) });
+const productSlugParamSchema = z.object({ slug: z.string().min(1, "اسلاگ نامعتبر است.") });
+const imageIdParamSchema = z.object({ imageId: z.string().uuid({ message: "شناسه تصویر نامعتبر است." }) });
+const variantIdParamSchema = z.object({ variantId: z.string().uuid({ message: "شناسه واریانت نامعتبر است." }) });
 
+// Standard OK wrapper with no-cache headers to avoid 304
 function ok(res: Response, data: any, status = 200) {
+  res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+  res.setHeader("Pragma", "no-cache");
+  res.setHeader("Expires", "0");
+  res.setHeader("Surrogate-Control", "no-store");
+  // Set a per-response ETag so If-None-Match never matches (prevents 304)
+  res.setHeader("ETag", `${Date.now()}-${Math.random().toString(36).slice(2)}`);
   return res.status(status).json({ success: true, data });
+}
+
+// Normalize FE array params with [] into schema keys without []
+function normalizeArrayParams(q: any) {
+  const out: any = { ...q };
+  const alias: [string, string][] = [
+    ["categories[]", "categories"],
+    ["brandIds[]", "brandIds"],
+    ["brandSlugs[]", "brandSlugs"],
+    ["collectionIds[]", "collectionIds"],
+    ["collectionSlugs[]", "collectionSlugs"],
+    ["colorThemeIds[]", "colorThemeIds"],
+  ];
+  for (const [from, to] of alias) {
+    if (from in out && !(to in out)) out[to] = out[from];
+  }
+  return out;
 }
 
 class ProductController {
   // GET /products
   list: RequestHandler = async (req, res, next) => {
     try {
-      const query = await listProductsQuerySchema.parseAsync(req.query);
+      const normalized = normalizeArrayParams(req.query);
+      const query = await listProductsQuerySchema.parseAsync(normalized);
       const result = await productService.list(query);
       return ok(res, result, 200);
     } catch (err: any) {
@@ -109,7 +134,7 @@ class ProductController {
   updateImage: RequestHandler = async (req, res, next) => {
     try {
       const { id } = await productIdParamSchema.parseAsync(req.params);
-      const { imageId } = await imageIdParam.parseAsync(req.params);
+      const { imageId } = await imageIdParamSchema.parseAsync(req.params);
       const body = await updateImageSchema.parseAsync(req.body ?? {});
       const image = await productService.updateImage(id, imageId, body);
       return ok(res, { image }, 200);
@@ -123,7 +148,7 @@ class ProductController {
   deleteImage: RequestHandler = async (req, res, next) => {
     try {
       const { id } = await productIdParamSchema.parseAsync(req.params);
-      const { imageId } = await imageIdParam.parseAsync(req.params);
+      const { imageId } = await imageIdParamSchema.parseAsync(req.params);
       const result = await productService.deleteImage(id, imageId);
       return ok(res, result, 200);
     } catch (err: any) {
@@ -151,7 +176,7 @@ class ProductController {
   updateVariant: RequestHandler = async (req, res, next) => {
     try {
       const { id } = await productIdParamSchema.parseAsync(req.params);
-      const { variantId } = await variantIdParam.parseAsync(req.params);
+      const { variantId } = await variantIdParamSchema.parseAsync(req.params);
       const body = await updateVariantSchema.parseAsync(req.body ?? {});
       const variant = await productService.updateVariant(id, variantId, body);
       return ok(res, { variant }, 200);
@@ -165,7 +190,7 @@ class ProductController {
   deleteVariant: RequestHandler = async (req, res, next) => {
     try {
       const { id } = await productIdParamSchema.parseAsync(req.params);
-      const { variantId } = await variantIdParam.parseAsync(req.params);
+      const { variantId } = await variantIdParamSchema.parseAsync(req.params);
       const result = await productService.deleteVariant(id, variantId);
       return ok(res, result, 200);
     } catch (err: any) {
