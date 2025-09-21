@@ -1072,8 +1072,6 @@ section[id] { scroll-margin-top: 7rem; }
 @keyframes wave { from { transform: rotate(0); } to   { transform: rotate(360deg); } }
 @keyframes float { 0%,100% { transform: translate(-50%, -50%) translateY(0) rotate(0); } 33% { transform: translate(-50%, -50%) translateY(-20px) rotate(-2deg); } 66% { transform: translate(-50%, -50%) translateY(-10px) rotate(2deg); } }
 @keyframes pulse { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.05); opacity: .8; } }
-.pulse-animation { animation: pulse 2s ease-in-out infinite; }
-.float-animation { animation: float 6s ease-in-out infinite; }
 @keyframes scroll-brands { from { transform: translateX(0); } to { transform: translateX(var(--marquee-shift, -100%)); } }
 @media (prefers-reduced-motion: reduce) {
   .cloud, .particle, .sprinkle, .floating-heart, #backToTop:hover, body [class*=animation] { animation: none !important; }
@@ -1108,4 +1106,130 @@ section[id] { scroll-margin-top: 7rem; }
 .card-swatches .swatch {
   width: 14px; height: 14px; border-radius: 999px;
   border: 1px solid rgba(0,0,0,.08); box-shadow: 0 1px 2px rgba(0,0,0,.06) inset;
+}
+
+/* ============================================
+   Mobile "Pro" Product Card (<= 640px)
+   Cleaner, minimal, consistent height
+   ============================================ */
+@media (max-width: 640px) {
+  .product-card-v3 {
+    /* Professional white card */
+    background: #fff;
+    border: 1px solid rgba(61,33,20,0.08);
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+    aspect-ratio: auto;                /* let content decide */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: box-shadow .25s ease, transform .25s ease;
+  }
+  .product-card-v3:active {
+    transform: translateY(1px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  }
+
+  /* Remove playful shapes/gradients on mobile */
+  .product-card-v3 .card-bg,
+  .product-card-v3 .card-blob {
+    display: none !important;
+  }
+
+  /* Image area = full width square with subtle top gradient */
+  .product-card-v3 .card-image-wrapper {
+    position: relative; top: 0; left: 0; transform: none;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    padding: 10px 10px 0;
+    z-index: 0;
+    background: linear-gradient(180deg, var(--card-color-2), #fff 65%);
+    border-bottom: 1px solid rgba(61,33,20,0.06);
+  }
+  .product-card-v3 .card-image {
+    width: 100%; height: 100%;
+    object-fit: contain;
+    filter: none; /* remove extra drop-shadow */
+    border-radius: 16px;
+  }
+
+  /* Content area — tidy and right-aligned for RTL */
+  .product-card-v3 .card-content {
+    position: relative;
+    bottom: auto; right: auto; left: auto;
+    padding: 12px;
+    text-align: right;
+    z-index: 1;
+  }
+
+  /* Category becomes subtle meta (no badge style) */
+  .product-card-v3 .card-category {
+    background: transparent;
+    padding: 0;
+    font-size: .75rem;
+    color: #9ca3af;
+    font-weight: 600;
+    letter-spacing: 0;
+    margin-bottom: 4px;
+    text-transform: none;
+  }
+
+  /* Brand muted, small */
+  .product-card-v3 .card-brand {
+    font-size: .8rem;
+    color: #6b7280;
+    margin-bottom: 4px;
+    font-weight: 600;
+  }
+
+  /* Two-line title with clamp (uniform height) */
+  .product-card-v3 .card-title {
+    color: #1f2937;
+    font-size: .95rem;
+    line-height: 1.5;
+    margin-bottom: 6px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;       /* clamp to 2 lines */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: 3em;              /* keep cards same height */
+    text-align: right;
+  }
+
+  /* Rating left-aligned and compact */
+  .product-card-v3 .card-rating {
+    justify-content: flex-start;
+    color: #f59e0b;
+    margin: 4px 0 2px;
+    gap: 2px;
+  }
+  .product-card-v3 .card-rating span {
+    font-size: .78rem;
+    color: #a16207;
+    margin-right: 4px;
+    font-weight: 700;
+  }
+  .product-card-v3 .card-rating svg {
+    width: 14px; height: 14px;
+  }
+
+  /* Swatches left-aligned */
+  .product-card-v3 .card-swatches {
+    justify-content: flex-start;
+    margin-top: 6px;
+    gap: 6px;
+  }
+  .product-card-v3 .card-swatches .swatch {
+    width: 14px; height: 14px;
+    border-radius: 999px;
+  }
+
+  /* Price: bolder and clear */
+  .product-card-v3 .card-price {
+    margin-top: 8px;
+    font-size: 1.05rem;
+    color: #111827;
+    font-weight: 800;
+    text-align: right;
+  }
 }
