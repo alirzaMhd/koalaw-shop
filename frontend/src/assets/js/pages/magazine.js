@@ -48,15 +48,15 @@
     // Create article card HTML
     function createArticleCard(article, delay = 100) {
       const categoryDisplay =
-        article.category === "TECHNOLOGY"
+        article.category === "GUIDE"
           ? "راهنما"
-          : article.category === "BUSINESS"
+          : article.category === "TUTORIAL"
           ? "آموزش"
           : article.category === "LIFESTYLE"
           ? "لایف‌استایل"
-          : article.category === "GENERAL"
-          ? "عمومی"
-          : '';
+          : article.category === "TRENDS"
+          ? "ترندها"
+          : "عمومی";
 
       const readTime = article.readTimeMinutes || 5;
       const publishDate = article.publishedAt
