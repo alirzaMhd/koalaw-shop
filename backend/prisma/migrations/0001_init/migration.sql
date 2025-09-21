@@ -12,7 +12,7 @@ CREATE TYPE payment_status_enum    AS ENUM ('pending','paid','failed','refunded'
 CREATE TYPE shipping_method_enum   AS ENUM ('standard','express');
 CREATE TYPE coupon_type_enum       AS ENUM ('percent','amount','free_shipping');
 CREATE TYPE review_status_enum     AS ENUM ('pending','approved','rejected');
-CREATE TYPE magazine_category_enum AS ENUM ('guide','tutorial','trends','lifestyle');
+CREATE TYPE magazine_category_enum AS ENUM ('guide','tutorial','trends','lifestyle', 'general');
 CREATE TYPE customer_tier_enum     AS ENUM ('standard','vip');
 CREATE TYPE cart_status_enum       AS ENUM ('active','converted','abandoned');
 CREATE TYPE otp_purpose_enum       AS ENUM ('login','verify','reset');

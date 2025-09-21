@@ -35,6 +35,7 @@
       tutorial: "TUTORIAL",
       trends: "TRENDS",
       lifestyle: "LIFESTYLE",
+      general: "GENERAL"
     };
 
     // Format date to Persian
@@ -53,7 +54,9 @@
           ? "آموزش"
           : article.category === "LIFESTYLE"
           ? "لایف‌استایل"
-          : "عمومی";
+          : article.category === "GENERAL"
+          ? "عمومی"
+          : '';
 
       const readTime = article.readTimeMinutes || 5;
       const publishDate = article.publishedAt

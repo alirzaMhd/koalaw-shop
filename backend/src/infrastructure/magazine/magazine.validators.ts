@@ -4,7 +4,8 @@ export enum MagazineCategory {
   GUIDE = "GUIDE",
   TUTORIAL = "TUTORIAL",
   TRENDS = "TRENDS",
-  LIFESTYLE = "LIFESTYLE"
+  LIFESTYLE = "LIFESTYLE",
+  GENERAL = "GENERAL"
 }
 
 const pagination = {

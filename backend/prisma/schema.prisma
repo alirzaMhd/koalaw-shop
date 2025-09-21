@@ -82,6 +82,7 @@ enum MagazineCategory {
   TUTORIAL  @map("tutorial")
   TRENDS    @map("trends")
   LIFESTYLE @map("lifestyle")
+  GENERAL @map("general")
 
   @@map("magazine_category_enum")
 }
