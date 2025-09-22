@@ -63,7 +63,7 @@
   const DEFAULT_FOOTER_LINKS = {
     فروشگاه: [
       { label: "تازه‌ها", href: "/shop?sort=new" },
-      { label: "پرفروش‌ترین‌ها", href: "/shop?sort=best" },
+      { label: "پرفروش‌ترین‌ها", href: "/shop?sort=popular" },
       { label: "مراقبت از پوست", href: "/shop?category=skincare" },
       { label: "آرایش", href: "/shop?category=makeup" },
       { label: "عطر", href: "/shop?category=fragrance" },

@@ -253,6 +253,21 @@
         const inp = document.getElementById("search-input");
         if (inp) inp.value = q;
       }
+
+      // sort (supports newest, popular, price-asc, price-desc)
+      const allowedSorts = new Set([
+        "newest",
+        "popular",
+        "price-asc",
+        "price-desc",
+      ]);
+      const s = (sp.get("sort") || "")
+        .trim()
+        .toLowerCase()
+        .replace(/[_\s]+/g, "-");
+      if (allowedSorts.has(s)) {
+        sortKey = s;
+      }
     }
 
     // ---------- Fetch DB filters and render ----------
@@ -459,12 +474,35 @@
         window.KUtils?.refreshIcons?.();
       } catch {}
     }
+
+    // Keep URL in sync with state (sort, categories, search)
+    function syncUrlFromState() {
+      const sp = new URLSearchParams(window.location.search);
+
+      // sort
+      if (sortKey && sortKey !== "newest") sp.set("sort", sortKey);
+      else sp.delete("sort");
+
+      // categories
+      sp.delete("category");
+      filters.categories.forEach((c) => sp.append("category", c));
+
+      // search
+      if (filters.search) sp.set("search", filters.search);
+      else sp.delete("search");
+
+      const qs = sp.toString();
+      const newUrl = window.location.pathname + (qs ? "?" + qs : "");
+      window.history.replaceState({}, "", newUrl);
+    }
+
     function applySort(key = "newest") {
       sortKey = key;
       updateSortUI(key);
       resetGrid();
       fetchPage();
       closeSort();
+      syncUrlFromState(); // keep URL updated
     }
     sortTrigger?.addEventListener("click", (e) => {
       e.stopPropagation();
@@ -655,14 +693,17 @@
       if (shopSidebar?.classList.contains("is-active")) {
         closeFilterMenu();
       }
+
+      syncUrlFromState(); // keep URL updated
     }
     applyFiltersBtn && applyFiltersBtn.addEventListener("click", applyFilters);
 
     // ---------- Initial load ----------
-    initFromUrl(); // read ?category= & ?search=
+    initFromUrl(); // read ?category=, ?search=, ?sort=
     await loadFilters();
-    (function applySortInitial(key = "newest") {
-      sortKey = key;
+    (function applySortInitial() {
+      // sortKey is already set by initFromUrl()
+      updateSortUI(sortKey);
       resetGrid();
       fetchPage();
     })();
