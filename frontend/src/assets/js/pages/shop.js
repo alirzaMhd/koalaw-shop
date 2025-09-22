@@ -1,10 +1,9 @@
 // frontend/src/assets/js/pages/shop.js
 (function () {
-  document.addEventListener("DOMContentLoaded", () => {
+  document.addEventListener("DOMContentLoaded", async () => {
     const productGrid = document.getElementById("shop-product-grid");
     if (!productGrid) return;
 
-    // Init page stuff (guarded)
     try {
       window.AOS &&
         AOS.init({
@@ -21,35 +20,34 @@
 
     // ---------- Config ----------
     const API = "/api/products";
+    const API_FILTERS = `${API}/filters`;
     const PER_PAGE = 12;
 
-    // Provided color map (normalize keys to lowercase)
-    const colorMap = {
-      "#ffeef5": "#ffd7e5", // Blush
-      "#e0d9fe": "#eae2ff", // Lavender
-      "#c5f4e5": "#dff8ef", // Mint
-      "#ffd9b9": "#ffcbb3", // Soft Peach -> Peachy Glow
-      "#d1e8ff": "#cce4ff", // Powder Blue -> Sky Blue
-      "#f3ead3": "#efe2c9", // Warm Oat -> Toasted Almond
-      "#e5e4e2": "#dcdbdd", // Light Stone -> Cloud Gray
-    };
-    const DEFAULT_BG_2 = "#ffeef5"; // fallback second color
-    const DEFAULT_BG_1 = colorMap[DEFAULT_BG_2]; // fallback first color
+    const CATEGORY_SLUGS = [
+      "skincare",
+      "makeup",
+      "fragrance",
+      "haircare",
+      "body-bath",
+    ];
+    const CATEGORY_SET = new Set(CATEGORY_SLUGS);
 
-    // State
+    // ---------- State ----------
     let page = 1;
     let totalPages = 1;
-    let sortKey = "newest"; // newest | popular | price-asc | price-desc
+    let sortKey = "newest";
     let filters = {
-      categories: [], // enum values like ["SKINCARE", "MAKEUP"]
-      collectionSlugs: [], // e.g. ["valentines-special"]
+      categories: [], // e.g., ['skincare', 'makeup'] (backend normalizes)
+      brandIds: [],
+      collectionIds: [],
       specialOnly: false,
       minPrice: undefined,
       maxPrice: undefined,
+      search: undefined,
     };
     let isLoading = false;
 
-    // ---------- Safe helpers ----------
+    // ---------- Helpers ----------
     const escapeHtml = (v) =>
       String(v ?? "")
         .replace(/&/g, "&amp;")
@@ -64,6 +62,12 @@
       } catch {}
       return new Intl.NumberFormat("fa-IR").format(Number(n || 0)) + " تومان";
     };
+    const toFa = (n) => {
+      try {
+        if (window.KUtils?.toFa) return window.KUtils.toFa(n);
+      } catch {}
+      return String(n);
+    };
 
     const normalizeHex = (hex) => {
       if (!hex || typeof hex !== "string") return null;
@@ -71,28 +75,25 @@
       return /^#[0-9a-f]{6}$/.test(s) ? s : null;
     };
 
-    // Adjust hex by percent (-100..100)
     function shadeHex(hex, percent = -6) {
       const h = normalizeHex(hex);
-      if (!h) return hex || DEFAULT_BG_2;
+      if (!h) return hex || "#ffeef5";
       const num = parseInt(h.slice(1), 16);
-      let r = (num >> 16) & 0xff;
-      let g = (num >> 8) & 0xff;
-      let b = num & 0xff;
-      const factor = (100 + percent) / 100;
-      r = Math.min(255, Math.max(0, Math.round(r * factor)));
-      g = Math.min(255, Math.max(0, Math.round(g * factor)));
-      b = Math.min(255, Math.max(0, Math.round(b * factor)));
+      let r = (num >> 16) & 0xff,
+        g = (num >> 8) & 0xff,
+        b = num & 0xff;
+      const f = (100 + percent) / 100;
+      r = Math.min(255, Math.max(0, Math.round(r * f)));
+      g = Math.min(255, Math.max(0, Math.round(g * f)));
+      b = Math.min(255, Math.max(0, Math.round(b * f)));
       return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
     }
 
-    // Choose background pair using colorTheme or variant chips + colorMap
     function deriveCardColors(item) {
       const themeHex = normalizeHex(item?.colorTheme?.hexCode);
       const chipHex = normalizeHex(item?.colorChips?.[0]?.hex);
-      const base2 = themeHex || chipHex || DEFAULT_BG_2;
-      const mapped1 = colorMap[base2] || colorMap[chipHex || ""] || null;
-      const c1 = mapped1 || shadeHex(base2, -8); // slight darken if not mapped
+      const base2 = themeHex || chipHex || "#ffeef5";
+      const c1 = shadeHex(base2, -8);
       const c2 = base2;
       return { c1, c2 };
     }
@@ -117,16 +118,16 @@
         ? item.colorChips.slice(0, 5)
         : [];
       if (!chips.length) return "";
-      const swatches = chips
+      return `<div class="card-swatches">${chips
         .map((c) => {
           const hex = normalizeHex(c.hex);
-          if (!hex) return "";
-          return `<span class="swatch" title="${escapeHtml(
-            c.name || ""
-          )}" style="background-color:${hex}"></span>`;
+          return hex
+            ? `<span class="swatch" title="${escapeHtml(
+                c.name || ""
+              )}" style="background-color:${hex}"></span>`
+            : "";
         })
-        .join("");
-      return `<div class="card-swatches">${swatches}</div>`;
+        .join("")}</div>`;
     }
 
     function ratingStars(r) {
@@ -135,7 +136,10 @@
         .fill(0)
         .map(
           () =>
-            `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-star"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>`
+            `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                 viewBox="0 0 24 24" fill="currentColor" stroke="currentColor"
+                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                 class="feather feather-star"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>`
         )
         .join("");
       return `${stars}<span>${(r || 0).toLocaleString("fa-IR", {
@@ -155,11 +159,10 @@
         .replace("_", "-")}`;
 
       const a = document.createElement("a");
-      a.href = `/product/${encodeURIComponent(item.slug)}`; // link to product detail if available
+      a.href = `/product/${encodeURIComponent(item.slug)}`;
       a.className = `product-card-v3 ${catCls}`;
       a.setAttribute("data-aos", "fade-up");
       a.setAttribute("style", `--card-color-1:${c1}; --card-color-2:${c2};`);
-
       a.innerHTML = `
         <div class="card-bg" style="background: linear-gradient(160deg, var(--card-color-2), #fff 70%);"></div>
 
@@ -203,6 +206,150 @@
       }
     }
 
+    // ---------- URL -> initial filters ----------
+    function normalizeCategorySlug(s) {
+      const t = String(s || "")
+        .trim()
+        .toLowerCase()
+        .replace(/[\s_]+/g, "-");
+      return CATEGORY_SET.has(t) ? t : null;
+    }
+    function parseCategoriesFromUrl(sp) {
+      const raw = sp.getAll("category");
+      const parts = [];
+      for (const v of raw) {
+        String(v || "")
+          .split(",")
+          .map((x) => x.trim())
+          .filter(Boolean)
+          .forEach((x) => parts.push(x));
+      }
+      const slugs = [];
+      for (const p of parts) {
+        const s = normalizeCategorySlug(p);
+        if (s && !slugs.includes(s)) slugs.push(s);
+      }
+      return slugs;
+    }
+    function setCategoryCheckboxes(slugs) {
+      document.querySelectorAll('input[name="category"]').forEach((el) => {
+        el.checked = slugs.includes(el.value);
+      });
+    }
+    function initFromUrl() {
+      const sp = new URL(window.location.href).searchParams;
+
+      // categories (slug form)
+      const catSlugs = parseCategoriesFromUrl(sp);
+      if (catSlugs.length) {
+        setCategoryCheckboxes(catSlugs);
+        filters.categories = catSlugs; // backend normalizes to enum-slugs
+      }
+
+      // search term
+      const q = (sp.get("search") || "").trim();
+      if (q) {
+        filters.search = q;
+        const inp = document.getElementById("search-input");
+        if (inp) inp.value = q;
+      }
+    }
+
+    // ---------- Fetch DB filters and render ----------
+    async function loadFilters() {
+      try {
+        const res = await fetch(API_FILTERS, { cache: "no-store" });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const { data } = await res.json();
+
+        // Brands
+        const brandRoot = document.getElementById("brand-filter-list");
+        if (brandRoot && Array.isArray(data?.brands)) {
+          brandRoot.innerHTML = data.brands
+            .map(
+              (b) => `
+              <label class="cute-checkbox">
+                <input type="checkbox" name="brandId" value="${escapeHtml(
+                  b.id
+                )}" />
+                <span class="checkmark">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                      viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                      stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </span>
+                <label>${escapeHtml(b.name)}${
+                b.count ? " (" + toFa(b.count) + ")" : ""
+              }</label>
+              </label>`
+            )
+            .join("");
+        }
+
+        // Collections
+        const collectionRoot = document.getElementById(
+          "collection-filter-list"
+        );
+        if (collectionRoot && Array.isArray(data?.collections)) {
+          collectionRoot.innerHTML = data.collections
+            .map(
+              (c) => `
+              <label class="cute-checkbox">
+                <input type="checkbox" name="collectionId" value="${escapeHtml(
+                  c.id
+                )}" />
+                <span class="checkmark">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                      viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                      stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </span>
+                <label>${escapeHtml(c.name)}${
+                c.count ? " (" + toFa(c.count) + ")" : ""
+              }</label>
+              </label>`
+            )
+            .join("");
+        }
+
+        // Price range init
+        const pr = data?.priceRange || {};
+        const minIn = document.querySelector(".range-min");
+        const maxIn = document.querySelector(".range-max");
+        const progress = document.querySelector(
+          ".price-range-slider .progress"
+        );
+        const minDisp = document.getElementById("price-min-display");
+        const maxDisp = document.getElementById("price-max-display");
+        if (minIn && maxIn && progress && minDisp && maxDisp) {
+          const min = Number.isFinite(pr.min) ? pr.min : 0;
+          const max = Number.isFinite(pr.max) ? pr.max : 1000000;
+          const finalMin = Math.min(min, max);
+          const finalMax = Math.max(max, finalMin + 10000);
+          minIn.min = String(finalMin);
+          minIn.max = String(finalMax);
+          maxIn.min = String(finalMin);
+          maxIn.max = String(finalMax);
+          minIn.value = String(finalMin);
+          maxIn.value = String(finalMax);
+          progress.style.right =
+            (parseInt(minIn.value) / parseInt(minIn.max)) * 100 + "%";
+          progress.style.left =
+            100 - (parseInt(maxIn.value) / parseInt(maxIn.max)) * 100 + "%";
+          minDisp.textContent = toFa(parseInt(minIn.value)) + " تومان";
+          maxDisp.textContent = toFa(parseInt(maxIn.value)) + " تومان";
+        }
+      } catch (e) {
+        console.warn("Failed to load filter options", e);
+      } finally {
+        try {
+          window.KUtils?.refreshIcons?.();
+        } catch {}
+      }
+    }
+
     // ---------- Fetching ----------
     async function fetchPage() {
       if (isLoading || page > totalPages) return;
@@ -214,58 +361,44 @@
       params.set("sort", sortKey);
       params.set("includeImages", "true");
       params.set("includeVariants", "true");
-      // Show all regardless of isActive flag defaults
       params.set("activeOnly", "false");
 
-      if (filters.categories.length) {
-        filters.categories.forEach((c) => params.append("categories", c));
-      }
-      if (filters.collectionSlugs.length) {
-        filters.collectionSlugs.forEach((s) =>
-          params.append("collectionSlugs", s)
+      if (filters.search) params.set("search", filters.search);
+      if (filters.categories.length)
+        filters.categories.forEach((c) => params.append("categories[]", c));
+      if (filters.brandIds.length)
+        filters.brandIds.forEach((id) => params.append("brandIds[]", id));
+      if (filters.collectionIds.length)
+        filters.collectionIds.forEach((id) =>
+          params.append("collectionIds[]", id)
         );
-      }
       if (filters.specialOnly) params.set("specialOnly", "true");
       if (typeof filters.minPrice === "number")
         params.set("minPrice", String(filters.minPrice));
       if (typeof filters.maxPrice === "number")
         params.set("maxPrice", String(filters.maxPrice));
 
-      const reqUrl = `${API}?${params.toString()}`;
-      let res;
       try {
-        res = await fetch(reqUrl, {
+        const res = await fetch(`${API}?${params.toString()}`, {
           cache: "no-store",
           headers: { "Cache-Control": "no-store" },
         });
+        if (!res.ok) {
+          console.error(
+            "Failed to load products",
+            res.status,
+            await res.text()
+          );
+          isLoading = false;
+          return;
+        }
+        const json = await res.json();
+        handleProductsResponse(json);
       } catch (e) {
         console.error("Network error loading products", e);
+      } finally {
         isLoading = false;
-        return;
       }
-
-      if (!res.ok) {
-        console.error("Failed to load products", res.status, await res.text());
-        isLoading = false;
-        return;
-      }
-
-      let json;
-      try {
-        json = await res.json();
-      } catch (e) {
-        console.error("Invalid JSON from /api/products", e);
-        isLoading = false;
-        return;
-      }
-
-      console.log(
-        "Products response:",
-        json?.data?.items?.length ?? 0,
-        "items"
-      );
-      handleProductsResponse(json);
-      isLoading = false;
     }
 
     function handleProductsResponse(json) {
@@ -275,15 +408,13 @@
       const frag = document.createDocumentFragment();
       for (const item of items) {
         try {
-          const card = createProductCard(item);
-          frag.appendChild(card);
+          frag.appendChild(createProductCard(item));
         } catch (e) {
-          console.error("Card render failed for item:", item, e);
+          console.error("Card render failed", item, e);
         }
       }
       productGrid.appendChild(frag);
 
-      // update counters
       totalPages = meta.totalPages || 1;
       writeCount(meta);
 
@@ -323,7 +454,7 @@
       const activeText =
         sortItems.find((b) => b.dataset.sort === key)?.querySelector("span")
           ?.textContent || "جدیدترین";
-      sortCurrent && (sortCurrent.textContent = "مرتب‌سازی: " + activeText);
+      if (sortCurrent) sortCurrent.textContent = "مرتب‌سازی: " + activeText;
       try {
         window.KUtils?.refreshIcons?.();
       } catch {}
@@ -373,7 +504,6 @@
     const closeFilterBtn = document.getElementById("close-filter-btn");
     const shopSidebar = document.getElementById("shop-sidebar");
 
-    // Reuse the global overlay already in DOM (fallback to create if missing)
     let filterOverlay = document.getElementById("mobile-menu-overlay");
     if (!filterOverlay) {
       filterOverlay = document.createElement("div");
@@ -382,21 +512,17 @@
       document.body.appendChild(filterOverlay);
     }
 
-    // Footer bar (اعمال فیلتر container) — sticky inside sidebar on mobile
     const applyFiltersBtnEl = document.getElementById("apply-filters-btn");
     const filterFooter = applyFiltersBtnEl?.parentElement || null;
 
-    // Move sidebar to <body> on mobile so it sits in the root stacking context
     const mq = window.matchMedia("(max-width: 1024px)");
     const originalParent = shopSidebar?.parentNode || null;
     const placeholder = document.createComment("shop-sidebar-placeholder");
 
     function adjustMobileUI(isMobile) {
       if (shopSidebar) {
-        // Remove border radius on mobile filter menu
         shopSidebar.style.borderRadius = isMobile ? "0" : "";
       }
-      // Make sure the sticky footer has no extra bottom spacing; the sidebar gets just enough padding
       syncStickyFooterPadding();
     }
 
@@ -405,13 +531,11 @@
       const isMobile = e?.matches ?? mq.matches;
 
       if (isMobile) {
-        // Mobile: portal into <body>
         if (shopSidebar.parentNode === originalParent) {
           originalParent.insertBefore(placeholder, shopSidebar);
           document.body.appendChild(shopSidebar);
         }
       } else {
-        // Desktop: move back where it was
         if (placeholder.parentNode) {
           placeholder.parentNode.insertBefore(shopSidebar, placeholder);
           placeholder.remove();
@@ -424,7 +548,6 @@
     if (typeof mq.addEventListener === "function") {
       mq.addEventListener("change", moveSidebar);
     } else if (typeof mq.addListener === "function") {
-      // Safari < 14 fallback
       mq.addListener(moveSidebar);
     }
 
@@ -432,7 +555,6 @@
       shopSidebar?.classList.add("is-active");
       filterOverlay?.classList.add("is-active");
       document.body.classList.add("filter-menu-open");
-      // Ensure sticky footer + padding are correct on open
       syncStickyFooterPadding();
     }
 
@@ -440,7 +562,6 @@
       shopSidebar?.classList.remove("is-active");
       document.body.classList.remove("filter-menu-open");
 
-      // If mobile menu isn't open, we can safely hide the overlay
       const mobileMenu = document.getElementById("mobile-menu");
       if (!mobileMenu || !mobileMenu.classList.contains("is-active")) {
         filterOverlay?.classList.remove("is-active");
@@ -463,25 +584,16 @@
       }
     });
 
-    // Ensure the sticky footer really sticks without huge bottom gap:
-    // Set sidebar's padding-bottom equal to footer's height (instead of pb-24)
     function syncStickyFooterPadding() {
       if (!mq.matches || !shopSidebar || !filterFooter) {
         if (shopSidebar) shopSidebar.style.paddingBottom = "";
         return;
       }
-      // Defer to after layout to get correct heights
       requestAnimationFrame(() => {
-        const h = filterFooter.offsetHeight || 0;
-        // Add a tiny breathing space; avoid big bottom padding (replaces pb-24)
-        const extra = 8; // px
         shopSidebar.style.paddingBottom = `30px`;
       });
     }
-
-    // Keep padding in sync on resize/orientation/content changes
     window.addEventListener("resize", syncStickyFooterPadding);
-    // Also recalc after icons (feather) render might change footer height
     setTimeout(syncStickyFooterPadding, 0);
 
     // ---------- Price range UI ----------
@@ -496,12 +608,8 @@
         let maxVal = parseInt(rangeInputs[1].value);
         progress.style.right = (minVal / rangeInputs[0].max) * 100 + "%";
         progress.style.left = 100 - (maxVal / rangeInputs[1].max) * 100 + "%";
-        minDisp.textContent =
-          (window.KUtils?.toFa ? KUtils.toFa(minVal) : String(minVal)) +
-          " تومان";
-        maxDisp.textContent =
-          (window.KUtils?.toFa ? KUtils.toFa(maxVal) : String(maxVal)) +
-          " تومان";
+        minDisp.textContent = toFa(minVal) + " تومان";
+        maxDisp.textContent = toFa(maxVal) + " تومان";
       }
       rangeInputs.forEach((input) =>
         input.addEventListener("input", (e) => {
@@ -514,10 +622,10 @@
           } else updateUI();
         })
       );
-      updateUI();
+      // initial values set in loadFilters()
     }
 
-    // ---------- Apply filters (server-side) ----------
+    // ---------- Apply filters ----------
     const applyFiltersBtn = document.getElementById("apply-filters-btn");
     function getCheckedValues(name) {
       return Array.from(
@@ -525,27 +633,18 @@
       ).map((el) => el.value);
     }
     function applyFilters() {
-      const cats = getCheckedValues("category"); // ['skincare', 'makeup', ...]
-      const catEnums = cats.map((c) => c.toUpperCase().replace("-", "_")); // ['SKINCARE', 'MAKEUP', ...]
-
-      const collectionsMap = {
-        valentine: "valentines-special",
-        spring: "spring-collection",
-        summer: "summer-essentials",
-      };
-      const colVals = getCheckedValues("collection")
-        .map((v) => collectionsMap[v])
-        .filter(Boolean);
-
+      const catSlugs = getCheckedValues("category");
+      const brandIds = getCheckedValues("brandId");
+      const collectionIds = getCheckedValues("collectionId");
       const specialChecked = getCheckedValues("special").includes("discount");
-
       const minVal = parseInt(document.querySelector(".range-min")?.value || 0);
       const maxVal = parseInt(
         document.querySelector(".range-max")?.value || Number.MAX_SAFE_INTEGER
       );
 
-      filters.categories = catEnums;
-      filters.collectionSlugs = colVals;
+      filters.categories = catSlugs;
+      filters.brandIds = brandIds;
+      filters.collectionIds = collectionIds;
       filters.specialOnly = specialChecked;
       filters.minPrice = minVal;
       filters.maxPrice = maxVal;
@@ -560,6 +659,12 @@
     applyFiltersBtn && applyFiltersBtn.addEventListener("click", applyFilters);
 
     // ---------- Initial load ----------
-    applySort("newest"); // triggers fetchPage()
+    initFromUrl(); // read ?category= & ?search=
+    await loadFilters();
+    (function applySortInitial(key = "newest") {
+      sortKey = key;
+      resetGrid();
+      fetchPage();
+    })();
   });
 })();

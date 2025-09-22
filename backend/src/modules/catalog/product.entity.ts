@@ -3,6 +3,7 @@
 // Aligned with your SQL migration while keeping camelCase in the domain layer.
 
 import type { ProductCategory } from "./category.entity";
+import type { Prisma } from "@prisma/client"; // type-only for enum typing
 
 // ---------- Primitive/refs ----------
 
@@ -130,7 +131,7 @@ export interface ProductDetailDto extends ProductCardDto {
   updatedAt: string; // ISO
 }
 
-// ---------- Mappers (handles camelCase or snake_case rows) ----------
+// ---------- Mappers ----------
 
 function toDate(v: any): Date {
   return v instanceof Date ? v : new Date(v);
@@ -186,7 +187,6 @@ export function mapDbVariantToEntity(row: any): ProductVariant {
 }
 
 export function mapDbProductToEntity(row: any): Product {
-  // brand: nested relation preferred
   const brand = row.brand
     ? mapDbBrandToRef(row.brand)
     : mapDbBrandToRef({
@@ -265,7 +265,6 @@ export function effectiveVariantPrice(p: Product, v?: ProductVariant | null): nu
 }
 
 export function toProductCardDto(p: Product): ProductCardDto {
-  // build unique color chips from variants if any
   const chips: ColorChip[] = Array.from(
     new Map(
       (p.variants ?? [])
@@ -290,7 +289,10 @@ export function toProductCardDto(p: Product): ProductCardDto {
     ratingCount: p.ratingCount,
     isBestseller: p.isBestseller,
     isSpecialProduct: p.isSpecialProduct || isDiscounted(p),
-    heroImageUrl: p.heroImageUrl ?? p.images?.sort((a, b) => a.position - b.position)[0]?.url ?? null,
+    heroImageUrl:
+      p.heroImageUrl ??
+      p.images?.sort((a, b) => a.position - b.position)[0]?.url ??
+      null,
 
     // NEW
     colorTheme: p.colorTheme ?? null,
@@ -319,7 +321,7 @@ export type ProductSortKey = "newest" | "popular" | "price-asc" | "price-desc";
 
 export interface ProductFilters {
   search?: string;
-  categories?: ProductCategory[];
+  categories?: ProductCategory[]; // lowercase slugs in domain
   brandIds?: string[];
   brandSlugs?: string[];
   collectionIds?: string[];
@@ -334,6 +336,25 @@ export interface ProductFilters {
   bestsellerOnly?: boolean;
 
   activeOnly?: boolean; // default true
+}
+
+// Prisma v5: use string enum literals for values; type via Prisma.$Enums
+type DbProductCategory = Prisma.$Enums.ProductCategory;
+const CategoryEnumBySlug: Record<string, DbProductCategory> = {
+  skincare: "SKINCARE",
+  makeup: "MAKEUP",
+  fragrance: "FRAGRANCE",
+  haircare: "HAIRCARE",
+  "body-bath": "BODY_BATH",
+};
+
+// Map domain category slugs -> Prisma enum (string) values
+function toPrismaCategoryEnumValue(x: unknown): DbProductCategory | null {
+  const slug = String(x ?? "")
+    .trim()
+    .toLowerCase()
+    .replace(/[\s_]+/g, "-");
+  return CategoryEnumBySlug[slug] ?? null;
 }
 
 export function toPrismaOrderBy(sort: ProductSortKey | undefined) {
@@ -358,27 +379,28 @@ export function toPrismaWhere(filters: ProductFilters = {}) {
   if (filters.activeOnly !== false) {
     AND.push({ isActive: true });
   }
+
   if (filters.categories?.length) {
-    AND.push({ category: { in: filters.categories } });
+    const enumVals = filters.categories
+      .map(toPrismaCategoryEnumValue)
+      .filter((v): v is DbProductCategory => v !== null);
+    if (enumVals.length) {
+      AND.push({ category: { in: enumVals } });
+    }
   }
+
   if (filters.brandIds?.length) {
     AND.push({ brandId: { in: filters.brandIds } });
   }
   if (filters.brandSlugs?.length) {
     AND.push({ brand: { slug: { in: filters.brandSlugs } } });
   }
+
+  // One-to-many collection relation
   if (filters.collectionIds?.length) {
-    AND.push({
-      // FIX: relation field is "collections" (not "collectionProducts")
-      collections: { some: { collectionId: { in: filters.collectionIds } } },
-    });
+    AND.push({ collectionId: { in: filters.collectionIds } });
   }
-  if (filters.collectionSlugs?.length) {
-    AND.push({
-      // FIX: relation field is "collections" (not "collectionProducts")
-      collections: { some: { collection: { slug: { in: filters.collectionSlugs } } } },
-    });
-  }
+
   if (filters.colorThemeIds?.length) {
     AND.push({ colorThemeId: { in: filters.colorThemeIds } });
   }

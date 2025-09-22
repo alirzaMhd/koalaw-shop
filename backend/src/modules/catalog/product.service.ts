@@ -29,6 +29,7 @@ import {
   type AddImageInput,
   type UpdateImageInput,
 } from "./product.validators";
+import { listCategories, normalizeCategories } from "./category.entity"; // NEW
 
 // ---------------- Utils ----------------
 
@@ -131,14 +132,17 @@ class ProductService {
   async list(query: ListProductsQuery) {
     const { page, perPage, sort, includeImages, includeVariants, ...rest } = query;
 
+    // Normalize categories into canonical slugs (skincare/makeup/...) regardless of input format
+    const normalizedCategories = normalizeCategories(rest.categories);
+
     const where = toPrismaWhere({
       search: rest.search,
-      categories: rest.categories,
-      brandIds: rest.brandIds,
-      brandSlugs: rest.brandSlugs,
-      collectionIds: rest.collectionIds,
-      collectionSlugs: rest.collectionSlugs,
-      colorThemeIds: rest.colorThemeIds,
+      categories: normalizedCategories as any,
+      brandIds: rest.brandIds as any,
+      brandSlugs: rest.brandSlugs as any,
+      collectionIds: rest.collectionIds as any,
+      collectionSlugs: rest.collectionSlugs as any,
+      colorThemeIds: rest.colorThemeIds as any,
       minPrice: rest.minPrice,
       maxPrice: rest.maxPrice,
       specialOnly: rest.specialOnly,
@@ -409,6 +413,71 @@ class ProductService {
     await prisma.productVariant.delete({ where: { id: variantId } });
     eventBus.emit("product.variant.deleted", { productId, variantId });
     return { deleted: true };
+  }
+
+  // ---------------- Filters for sidebar (NEW) ----------------
+
+  async getFilterOptions() {
+    // Brands with active product counts
+    const brandCounts = await prisma.product.groupBy({
+      by: ["brandId"],
+      where: { isActive: true },
+      _count: { _all: true },
+    });
+
+    const brandIdList = brandCounts.map((b) => b.brandId);
+    const brands = await prisma.brand.findMany({
+      where: { id: { in: brandIdList.length ? brandIdList : ["00000000-0000-0000-0000-000000000000"] } },
+      select: { id: true, name: true, slug: true },
+    });
+    const brandCountMap = new Map(brandCounts.map((b) => [b.brandId, b._count._all]));
+    const brandOptions = brands
+      .map((b) => ({
+        id: b.id,
+        name: b.name,
+        slug: b.slug,
+        count: brandCountMap.get(b.id) ?? 0,
+      }))
+      .sort((a, b) => a.name.localeCompare(b.name, "fa"));
+
+    // Collections (all) with counts of active products
+    const allCollections = await prisma.collection.findMany({
+      select: { id: true, name: true },
+    });
+    const collectionCounts = await prisma.product.groupBy({
+      by: ["collectionId"],
+      where: { isActive: true, collectionId: { not: null } },
+      _count: { _all: true },
+    });
+    const collCountMap = new Map<string, number>();
+    for (const c of collectionCounts) {
+      if (c.collectionId) collCountMap.set(c.collectionId, c._count._all);
+    }
+    const collectionOptions = allCollections
+      .map((c) => ({
+        id: c.id,
+        name: c.name,
+        count: collCountMap.get(c.id) ?? 0,
+      }))
+      .sort((a, b) => a.name.localeCompare(b.name, "fa"));
+
+    // Price range from active products
+    const agg = await prisma.product.aggregate({
+      where: { isActive: true },
+      _min: { price: true },
+      _max: { price: true },
+    });
+    const priceRange = {
+      min: agg._min.price ?? 0,
+      max: agg._max.price ?? 0,
+    };
+
+    return {
+      categories: listCategories(),
+      brands: brandOptions,
+      collections: collectionOptions,
+      priceRange,
+    };
   }
 }
 

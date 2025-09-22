@@ -35,7 +35,10 @@ function ok(res: Response, data: any, status = 200) {
   return res.status(status).json({ success: true, data });
 }
 
-// Normalize FE array params with [] into schema keys without []
+// Normalize FE array params:
+// - Accept categories[] -> categories (alias)
+// - Accept single string -> array
+// - Accept CSV "a,b" -> ["a","b"]
 function normalizeArrayParams(q: any) {
   const out: any = { ...q };
   const alias: [string, string][] = [
@@ -48,6 +51,22 @@ function normalizeArrayParams(q: any) {
   ];
   for (const [from, to] of alias) {
     if (from in out && !(to in out)) out[to] = out[from];
+  }
+  const arrayKeys = ["categories", "brandIds", "brandSlugs", "collectionIds", "collectionSlugs", "colorThemeIds"];
+  for (const key of arrayKeys) {
+    if (!(key in out)) continue;
+    const v = out[key];
+    if (Array.isArray(v)) continue;
+    if (typeof v === "string") {
+      out[key] = v
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean);
+    } else if (v == null) {
+      delete out[key];
+    } else {
+      out[key] = [v];
+    }
   }
   return out;
 }
@@ -62,6 +81,16 @@ class ProductController {
       return ok(res, result, 200);
     } catch (err: any) {
       if (err?.issues?.length) return next(new AppError(err.issues[0].message, 422, "VALIDATION_ERROR"));
+      next(err);
+    }
+  };
+
+  // GET /products/filters
+  filters: RequestHandler = async (_req, res, next) => {
+    try {
+      const result = await productService.getFilterOptions();
+      return ok(res, result, 200);
+    } catch (err: any) {
       next(err);
     }
   };
@@ -116,8 +145,6 @@ class ProductController {
   };
 
   // ------- Images -------
-
-  // POST /products/:id/images
   addImage: RequestHandler = async (req, res, next) => {
     try {
       const { id } = await productIdParamSchema.parseAsync(req.params);
@@ -130,7 +157,6 @@ class ProductController {
     }
   };
 
-  // PATCH /products/:id/images/:imageId
   updateImage: RequestHandler = async (req, res, next) => {
     try {
       const { id } = await productIdParamSchema.parseAsync(req.params);
@@ -144,7 +170,6 @@ class ProductController {
     }
   };
 
-  // DELETE /products/:id/images/:imageId
   deleteImage: RequestHandler = async (req, res, next) => {
     try {
       const { id } = await productIdParamSchema.parseAsync(req.params);
@@ -158,8 +183,6 @@ class ProductController {
   };
 
   // ------- Variants -------
-
-  // POST /products/:id/variants
   addVariant: RequestHandler = async (req, res, next) => {
     try {
       const { id } = await productIdParamSchema.parseAsync(req.params);
@@ -172,7 +195,6 @@ class ProductController {
     }
   };
 
-  // PATCH /products/:id/variants/:variantId
   updateVariant: RequestHandler = async (req, res, next) => {
     try {
       const { id } = await productIdParamSchema.parseAsync(req.params);
@@ -186,7 +208,6 @@ class ProductController {
     }
   };
 
-  // DELETE /products/:id/variants/:variantId
   deleteVariant: RequestHandler = async (req, res, next) => {
     try {
       const { id } = await productIdParamSchema.parseAsync(req.params);
