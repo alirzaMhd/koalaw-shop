@@ -2,8 +2,8 @@
 // Domain types and helpers for products, variants, images, brand, and color theme.
 // Aligned with your SQL migration while keeping camelCase in the domain layer.
 
-import type { ProductCategory } from "./category.entity";
-import type { Prisma } from "@prisma/client"; // type-only for enum typing
+import type { ProductCategory as DomainProductCategory } from "./category.entity";
+import type { Prisma, ProductCategory } from "@prisma/client"; // type-only for enum typing
 
 // ---------- Primitive/refs ----------
 
@@ -63,7 +63,7 @@ export interface Product {
   brand: BrandRef;
   colorTheme?: ColorThemeRef | null;
 
-  category: ProductCategory;
+  category: DomainProductCategory;
   title: string;
   subtitle?: string | null;
   slug: string;
@@ -104,7 +104,7 @@ export interface ProductCardDto {
   slug: string;
   title: string;
   brand: { id: string; name: string; slug: string };
-  category: ProductCategory;
+  category: DomainProductCategory;
   price: number;
   compareAtPrice?: number | null;
   currencyCode: CurrencyCode;
@@ -220,7 +220,7 @@ export function mapDbProductToEntity(row: any): Product {
     brand,
     colorTheme,
 
-    category: row.category as ProductCategory,
+    category: row.category as DomainProductCategory,
     title: row.title,
     subtitle: row.subtitle ?? null,
     slug: row.slug,
@@ -321,7 +321,7 @@ export type ProductSortKey = "newest" | "popular" | "price-asc" | "price-desc";
 
 export interface ProductFilters {
   search?: string;
-  categories?: ProductCategory[]; // lowercase slugs in domain
+  categories?: DomainProductCategory[]; // lowercase slugs in domain
   brandIds?: string[];
   brandSlugs?: string[];
   collectionIds?: string[];
@@ -339,7 +339,7 @@ export interface ProductFilters {
 }
 
 // Prisma v5: use string enum literals for values; type via Prisma.$Enums
-type DbProductCategory = Prisma.$Enums.ProductCategory;
+type DbProductCategory = ProductCategory;
 const CategoryEnumBySlug: Record<string, DbProductCategory> = {
   skincare: "SKINCARE",
   makeup: "MAKEUP",
