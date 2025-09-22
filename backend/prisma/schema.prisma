@@ -82,7 +82,7 @@ enum MagazineCategory {
   TUTORIAL  @map("tutorial")
   TRENDS    @map("trends")
   LIFESTYLE @map("lifestyle")
-  GENERAL @map("general")
+  GENERAL   @map("general")
 
   @@map("magazine_category_enum")
 }
@@ -191,6 +191,7 @@ model Product {
   id               String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   brandId          String           @map("brand_id") @db.Uuid
   colorThemeId     String?          @map("color_theme_id") @db.Uuid
+  collectionId     String?          @map("collection_id") @db.Uuid
   category         ProductCategory
   title            String           @db.Text
   subtitle         String?          @db.Text
@@ -212,17 +213,20 @@ model Product {
   createdAt        DateTime         @default(now()) @map("created_at") @db.Timestamptz
   updatedAt        DateTime         @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 
-  brand       Brand       @relation(fields: [brandId], references: [id], onDelete: Restrict)
-  colorTheme  ColorTheme? @relation(fields: [colorThemeId], references: [id], onDelete: SetNull)
+  brand       Brand        @relation(fields: [brandId], references: [id], onDelete: Restrict)
+  colorTheme  ColorTheme?  @relation(fields: [colorThemeId], references: [id], onDelete: SetNull)
+  collection  Collection?  @relation(fields: [collectionId], references: [id], onDelete: SetNull)
   images      ProductImage[]
   variants    ProductVariant[]
   reviews     ProductReview[]
-  collections CollectionProduct[]
 
   relatedOut  RelatedProduct[] @relation("ProductRelations")
   relatedIn   RelatedProduct[] @relation("ProductRelationsInverse")
   cartItems   CartItem[]
   orderItems  OrderItem[]
+
+  // many-to-many with Badge
+  badges      Badge[]
 
   @@map("products")
 }
@@ -283,30 +287,23 @@ model ProductReview {
 }
 
 model Collection {
-  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  slug         String    @unique @db.Text
-  title        String    @db.Text
-  description  String?   @db.Text
-  heroImageUrl String?   @map("hero_image_url") @db.Text
-  isActive     Boolean   @map("is_active") @default(true)
-  createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt    DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+  id   String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name String @db.Text
 
-  products CollectionProduct[]
+  products Product[]
 
   @@map("collections")
 }
 
-model CollectionProduct {
-  collectionId String  @map("collection_id") @db.Uuid
-  productId    String  @map("product_id") @db.Uuid
-  position     Int     @default(0)
+model Badge {
+  id    String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title String  @db.Text
+  icon  String  @db.Text
 
-  collection Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
-  product    Product    @relation(fields: [productId], references: [id], onDelete: Cascade)
+  // many-to-many back to Product
+  products Product[]
 
-  @@id([collectionId, productId])
-  @@map("collection_products")
+  @@map("badges")
 }
 
 model RelatedProduct {
