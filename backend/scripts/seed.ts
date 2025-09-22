@@ -273,6 +273,37 @@ async function main() {
     }),
   ]);
 
+  // 6.1) Related products
+  logger.info("Seeding related products...");
+  await prisma.relatedProduct.createMany({
+    data: [
+      // Lipstick -> Eyeshadow, Serum, Perfume
+      { productId: products[0].id, relatedProductId: products[2].id, position: 0 },
+      { productId: products[0].id, relatedProductId: products[1].id, position: 1 },
+      { productId: products[0].id, relatedProductId: products[3].id, position: 2 },
+
+      // Serum -> Lipstick, Shampoo, Eyeshadow
+      { productId: products[1].id, relatedProductId: products[0].id, position: 0 },
+      { productId: products[1].id, relatedProductId: products[4].id, position: 1 },
+      { productId: products[1].id, relatedProductId: products[2].id, position: 2 },
+
+      // Eyeshadow -> Lipstick, Serum, Perfume
+      { productId: products[2].id, relatedProductId: products[0].id, position: 0 },
+      { productId: products[2].id, relatedProductId: products[1].id, position: 1 },
+      { productId: products[2].id, relatedProductId: products[3].id, position: 2 },
+
+      // Perfume -> Lipstick, Eyeshadow, Serum
+      { productId: products[3].id, relatedProductId: products[0].id, position: 0 },
+      { productId: products[3].id, relatedProductId: products[2].id, position: 1 },
+      { productId: products[3].id, relatedProductId: products[1].id, position: 2 },
+
+      // Shampoo -> Serum, Perfume, Lipstick
+      { productId: products[4].id, relatedProductId: products[1].id, position: 0 },
+      { productId: products[4].id, relatedProductId: products[3].id, position: 1 },
+      { productId: products[4].id, relatedProductId: products[0].id, position: 2 },
+    ],
+  });
+
   // 7) Product reviews (5)
   logger.info("Seeding product reviews...");
   await Promise.all([

@@ -1,6 +1,6 @@
 // src/modules/catalog/product.service.ts
 // Products service: listing, read (id/slug), create/update, and child resources (images/variants).
-// Works with your SQL schema via Prisma and maps rows to domain entities/DTOs.
+// Now also loads badges, approved reviews, and related products from DB.
 
 import { prisma } from "../../infrastructure/db/prismaClient";
 import { logger } from "../../config/logger";
@@ -28,6 +28,8 @@ import {
   type UpdateProductInput,
   type AddImageInput,
   type UpdateImageInput,
+  type AddReviewInput,
+  type ListReviewsQuery,
 } from "./product.validators";
 import { listCategories, normalizeCategories } from "./category.entity"; // NEW
 
@@ -123,6 +125,21 @@ const includeForDetail = {
   colorTheme: true,
   images: { orderBy: { position: "asc" as const } },
   variants: { orderBy: { position: "asc" as const } },
+  badges: { select: { id: true, title: true, icon: true} },
+  reviews: {
+    where: { status: "APPROVED" },
+    orderBy: { createdAt: "desc" as const },
+    take: 20, // latest 20 approved
+    include: { user: { select: { id: true, firstName: true, lastName: true } } },
+  },
+  relatedOut: {
+    orderBy: { position: "asc" as const },
+    include: {
+      relatedProduct: {
+        include: includeForList({ includeImages: true, includeVariants: true }) as any,
+      },
+    },
+  },
 };
 
 // ---------------- Service ----------------
@@ -182,8 +199,28 @@ class ProductService {
       include: includeForDetail as any,
     });
     if (!row) throw new AppError("محصول یافت نشد.", 404, "PRODUCT_NOT_FOUND");
+
+    // Aggregate approved reviews (full count/avg)
+    const agg = await prisma.productReview.aggregate({
+      where: { productId: id, status: "APPROVED" },
+      _avg: { rating: true },
+      _count: true,
+    });
+
     const entity = mapDbProductToEntity(row);
-    return toProductDetailDto(entity);
+    entity.ratingAvg = Number((agg as any)._avg?.rating ?? 0);
+    entity.ratingCount = Number((agg as any)._count ?? 0);
+
+    // Related cards (ordered by position)
+    const relatedCards =
+      (row.relatedOut ?? [])
+        .map((rp: any) => rp.relatedProduct)
+        .filter(Boolean)
+        .map((p: any) => toProductCardDto(mapDbProductToEntity(p)));
+
+    const dto = toProductDetailDto(entity);
+    dto.related = relatedCards;
+    return dto;
   }
 
   // Get one product by slug (detailed)
@@ -193,8 +230,28 @@ class ProductService {
       include: includeForDetail as any,
     });
     if (!row) throw new AppError("محصول یافت نشد.", 404, "PRODUCT_NOT_FOUND");
+
+    // Aggregate approved reviews (full count/avg)
+    const agg = await prisma.productReview.aggregate({
+      where: { productId: row.id, status: "APPROVED" },
+      _avg: { rating: true },
+      _count: true,
+    });
+
     const entity = mapDbProductToEntity(row);
-    return toProductDetailDto(entity);
+    entity.ratingAvg = Number((agg as any)._avg?.rating ?? 0);
+    entity.ratingCount = Number((agg as any)._count ?? 0);
+
+    // Related cards (ordered by position)
+    const relatedCards =
+      (row.relatedOut ?? [])
+        .map((rp: any) => rp.relatedProduct)
+        .filter(Boolean)
+        .map((p: any) => toProductCardDto(mapDbProductToEntity(p)));
+
+    const dto = toProductDetailDto(entity);
+    dto.related = relatedCards;
+    return dto;
   }
 
   // Create product with optional images/variants
@@ -248,7 +305,17 @@ class ProductService {
 
     const entity = mapDbProductToEntity(created);
     eventBus.emit("product.created", { productId: entity.id, slug: entity.slug, category: entity.category });
-    return toProductDetailDto(entity);
+
+    // Related cards (likely empty right after create)
+    const relatedCards =
+      (created?.relatedOut ?? [])
+        .map((rp: any) => rp.relatedProduct)
+        .filter(Boolean)
+        .map((p: any) => toProductCardDto(mapDbProductToEntity(p)));
+
+    const dto = toProductDetailDto(entity);
+    dto.related = relatedCards;
+    return dto;
   }
 
   // Update product. If images/variants provided, replace the set transactionally.
@@ -312,7 +379,16 @@ class ProductService {
 
     const entity = mapDbProductToEntity(updated);
     eventBus.emit("product.updated", { productId: entity.id, slug: entity.slug });
-    return toProductDetailDto(entity);
+
+    const relatedCards =
+      (updated?.relatedOut ?? [])
+        .map((rp: any) => rp.relatedProduct)
+        .filter(Boolean)
+        .map((p: any) => toProductCardDto(mapDbProductToEntity(p)));
+
+    const dto = toProductDetailDto(entity);
+    dto.related = relatedCards;
+    return dto;
   }
 
   // ---------------- Images ----------------
@@ -415,10 +491,89 @@ class ProductService {
     return { deleted: true };
   }
 
+  // ---------------- Reviews (existing, unchanged from previous step) ----------------
+
+  async listReviewsByProductId(productId: string, query: ListReviewsQuery) {
+    const exists = await prisma.product.findUnique({ where: { id: productId }, select: { id: true } });
+    if (!exists) throw new AppError("محصول یافت نشد.", 404, "PRODUCT_NOT_FOUND");
+
+    const { page, perPage } = query;
+    const where = { productId, status: "APPROVED" as const };
+    const [total, rows] = await Promise.all([
+      prisma.productReview.count({ where }),
+      prisma.productReview.findMany({
+        where,
+        orderBy: { createdAt: "desc" },
+        skip: (page - 1) * perPage,
+        take: perPage,
+        include: { user: { select: { firstName: true, lastName: true, id: true } } },
+      }),
+    ]);
+
+    const items = rows.map((r) => {
+      const firstName = (r as any).user?.firstName ?? "";
+      const lastName = (r as any).user?.lastName ?? "";
+      const full = `${firstName} ${lastName}`.trim();
+      const authorName = full || (r as any).guestName || "کاربر";
+      return {
+        id: r.id,
+        authorName,
+        rating: r.rating,
+        title: r.title,
+        body: r.body,
+        createdAt: r.createdAt.toISOString(),
+      };
+    });
+
+    const totalPages = Math.max(1, Math.ceil(total / perPage));
+    return { items, meta: { page, perPage, total, totalPages } };
+  }
+
+  async listReviewsBySlug(slug: string, query: ListReviewsQuery) {
+    const product = await prisma.product.findUnique({ where: { slug }, select: { id: true } });
+    if (!product) throw new AppError("محصول یافت نشد.", 404, "PRODUCT_NOT_FOUND");
+    return this.listReviewsByProductId(product.id, query);
+  }
+
+  async addReviewByProductId(productId: string, input: AddReviewInput, userId?: string | null) {
+    const exists = await prisma.product.findUnique({ where: { id: productId }, select: { id: true } });
+    if (!exists) throw new AppError("محصول یافت نشد.", 404, "PRODUCT_NOT_FOUND");
+
+    const row = await prisma.productReview.create({
+      data: {
+        productId,
+        userId: userId ?? null,
+        rating: input.rating,
+        title: input.title ?? null,
+        body: input.body,
+        guestName: userId ? null : input.guestName ?? null,
+        status: "APPROVED",
+      },
+    });
+
+    eventBus.emit("product.review.added", { productId, reviewId: row.id, rating: row.rating });
+
+    const authorName = userId ? "کاربر" : (input.guestName || "کاربر");
+
+    return {
+      id: row.id,
+      authorName,
+      rating: row.rating,
+      title: row.title,
+      body: row.body,
+      createdAt: row.createdAt.toISOString(),
+    };
+  }
+
+  async addReviewBySlug(slug: string, input: AddReviewInput, userId?: string | null) {
+    const product = await prisma.product.findUnique({ where: { slug }, select: { id: true } });
+    if (!product) throw new AppError("محصول یافت نشد.", 404, "PRODUCT_NOT_FOUND");
+    return this.addReviewByProductId(product.id, input, userId);
+  }
+
   // ---------------- Filters for sidebar (NEW) ----------------
 
   async getFilterOptions() {
-    // Brands with active product counts
     const brandCounts = await prisma.product.groupBy({
       by: ["brandId"],
       where: { isActive: true },
@@ -440,7 +595,6 @@ class ProductService {
       }))
       .sort((a, b) => a.name.localeCompare(b.name, "fa"));
 
-    // Collections (all) with counts of active products
     const allCollections = await prisma.collection.findMany({
       select: { id: true, name: true },
     });
@@ -461,7 +615,6 @@ class ProductService {
       }))
       .sort((a, b) => a.name.localeCompare(b.name, "fa"));
 
-    // Price range from active products
     const agg = await prisma.product.aggregate({
       where: { isActive: true },
       _min: { price: true },

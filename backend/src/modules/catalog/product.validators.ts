@@ -33,7 +33,6 @@ export const listProductsQuerySchema = z.object({
   perPage: z.coerce.number().int().min(1).max(100).default(20),
   
   // Sorting
-  // Sorting
   sort: z.enum(["newest", "popular", "price-asc", "price-desc"]).optional(),
   
   // Include relations
@@ -171,6 +170,19 @@ export const updateVariantInputSchema = z.object({
   position: positionSchema,
 });
 
+// Reviews
+export const addReviewInputSchema = z.object({
+  rating: z.coerce.number().int().min(1, "حداقل امتیاز ۱ است").max(5, "حداکثر امتیاز ۵ است"),
+  title: z.string().max(200).optional(),
+  body: z.string().min(5, "متن نظر بسیار کوتاه است").max(2000, "حداکثر ۲۰۰۰ کاراکتر"),
+  guestName: z.string().max(100).optional(),
+});
+
+export const listReviewsQuerySchema = z.object({
+  page: z.coerce.number().int().min(1).default(1),
+  perPage: z.coerce.number().int().min(1).max(100).default(20),
+});
+
 // Type exports
 export type ListProductsQuery = z.infer<typeof listProductsQuerySchema>;
 export type CreateProductInput = z.infer<typeof createProductInputSchema>;
@@ -179,6 +191,8 @@ export type AddImageInput = z.infer<typeof addImageInputSchema>;
 export type UpdateImageInput = z.infer<typeof updateImageInputSchema>;
 export type AddVariantInput = z.infer<typeof addVariantInputSchema>;
 export type UpdateVariantInput = z.infer<typeof updateVariantInputSchema>;
+export type AddReviewInput = z.infer<typeof addReviewInputSchema>;
+export type ListReviewsQuery = z.infer<typeof listReviewsQuerySchema>;
 
 // Validation middleware factory
 export const validateProductInput = {
@@ -189,4 +203,6 @@ export const validateProductInput = {
   updateImage: (data: unknown) => updateImageInputSchema.parse(data),
   addVariant: (data: unknown) => addVariantInputSchema.parse(data),
   updateVariant: (data: unknown) => updateVariantInputSchema.parse(data),
+  addReview: (data: unknown) => addReviewInputSchema.parse(data),
+  listReviews: (data: unknown) => listReviewsQuerySchema.parse(data),
 };

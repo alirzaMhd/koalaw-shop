@@ -30,6 +30,14 @@ const requireAdmin = (req: AuthenticatedRequest, _res: Response, next: NextFunct
 // Public endpoints
 productRouter.get("/", productController.list);
 productRouter.get("/filters", productController.filters); // NEW
+
+// Reviews (public)
+productRouter.get("/slug/:slug/reviews", productController.listReviewsBySlug);
+productRouter.post("/slug/:slug/reviews", productController.addReviewBySlug);
+productRouter.get("/:id/reviews", productController.listReviewsById);
+productRouter.post("/:id/reviews", productController.addReviewById);
+
+// Product detail
 productRouter.get("/slug/:slug", productController.getBySlug);
 productRouter.get("/:id", productController.getById);
 

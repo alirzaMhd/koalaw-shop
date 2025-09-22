@@ -1,5 +1,5 @@
 // src/modules/catalog/product.controller.ts
-// Thin HTTP handlers for product listing, details, create/update, images, and variants.
+// Thin HTTP handlers for product listing, details, create/update, images, variants, and reviews.
 
 import type { Request, Response, NextFunction, RequestHandler } from "express";
 import { z } from "zod";
@@ -16,6 +16,8 @@ import {
   updateImageInputSchema as updateImageSchema,
   addVariantInputSchema as addVariantSchema,
   updateVariantInputSchema as updateVariantSchema,
+  addReviewInputSchema as addReviewSchema,
+  listReviewsQuerySchema as listReviewsSchema,
 } from "./product.validators";
 
 // Param schemas
@@ -35,10 +37,6 @@ function ok(res: Response, data: any, status = 200) {
   return res.status(status).json({ success: true, data });
 }
 
-// Normalize FE array params:
-// - Accept categories[] -> categories (alias)
-// - Accept single string -> array
-// - Accept CSV "a,b" -> ["a","b"]
 function normalizeArrayParams(q: any) {
   const out: any = { ...q };
   const alias: [string, string][] = [
@@ -214,6 +212,58 @@ class ProductController {
       const { variantId } = await variantIdParamSchema.parseAsync(req.params);
       const result = await productService.deleteVariant(id, variantId);
       return ok(res, result, 200);
+    } catch (err: any) {
+      if (err?.issues?.length) return next(new AppError(err.issues[0].message, 422, "VALIDATION_ERROR"));
+      next(err);
+    }
+  };
+
+  // ------- Reviews (NEW) -------
+
+  listReviewsById: RequestHandler = async (req, res, next) => {
+    try {
+      const { id } = await productIdParamSchema.parseAsync(req.params);
+      const query = await listReviewsSchema.parseAsync(req.query ?? {});
+      const data = await productService.listReviewsByProductId(id, query);
+      return ok(res, data, 200);
+    } catch (err: any) {
+      if (err?.issues?.length) return next(new AppError(err.issues[0].message, 422, "VALIDATION_ERROR"));
+      next(err);
+    }
+  };
+
+  listReviewsBySlug: RequestHandler = async (req, res, next) => {
+    try {
+      const { slug } = await productSlugParamSchema.parseAsync(req.params);
+      const query = await listReviewsSchema.parseAsync(req.query ?? {});
+      const data = await productService.listReviewsBySlug(slug, query);
+      return ok(res, data, 200);
+    } catch (err: any) {
+      if (err?.issues?.length) return next(new AppError(err.issues[0].message, 422, "VALIDATION_ERROR"));
+      next(err);
+    }
+  };
+
+  addReviewById: RequestHandler = async (req: Request, res, next) => {
+    try {
+      const { id } = await productIdParamSchema.parseAsync(req.params);
+      const body = await addReviewSchema.parseAsync(req.body ?? {});
+      const userId = (req as any).user?.id || (req as any).user?.sub || null;
+      const review = await productService.addReviewByProductId(id, body, userId);
+      return ok(res, { review }, 201);
+    } catch (err: any) {
+      if (err?.issues?.length) return next(new AppError(err.issues[0].message, 422, "VALIDATION_ERROR"));
+      next(err);
+    }
+  };
+
+  addReviewBySlug: RequestHandler = async (req: Request, res, next) => {
+    try {
+      const { slug } = await productSlugParamSchema.parseAsync(req.params);
+      const body = await addReviewSchema.parseAsync(req.body ?? {});
+      const userId = (req as any).user?.id || (req as any).user?.sub || null;
+      const review = await productService.addReviewBySlug(slug, body, userId);
+      return ok(res, { review }, 201);
     } catch (err: any) {
       if (err?.issues?.length) return next(new AppError(err.issues[0].message, 422, "VALIDATION_ERROR"));
       next(err);

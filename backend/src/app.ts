@@ -41,15 +41,8 @@ export function createApp() {
             "https://*.google.com",
             "https://*.gstatic.com",
           ],
-          // Images (local, data URIs, Wikimedia logos, Google assets)
-          imgSrc: [
-            "'self'",
-            "data:",
-            "blob:",
-            "https://*.google.com",
-            "https://*.gstatic.com",
-            "https://upload.wikimedia.org",
-          ],
+          // Images: allow self, data/blob, and any https CDN (Unsplash, etc.)
+          imgSrc: ["'self'", "data:", "blob:", "https:"],
           // Your page uses some inline styles; allow them
           styleSrc: ["'self'", "'unsafe-inline'", "https:"],
           // All scripts are local; allow inline init (feather.replace(), etc.)
@@ -126,11 +119,27 @@ export function createApp() {
   app.get("/tos", (_req, res) => {
     res.sendFile(path.join(frontendPages, "tos.html"));
   });
-  app.get("/magazine/:slug", (req, res) => {
+
+  // Magazine article
+  app.get("/magazine/:slug", (_req, res) => {
     res.sendFile(path.join(frontendPages, "article.html"));
   });
 
+  // Shop category page (e.g., /shop/skincare)
+  app.get("/shop/:category", (_req, res) => {
+    res.sendFile(path.join(frontendPages, "shop.html"));
+  });
+
+  // Product detail routes (serve product.html for slugged routes)
+  app.get(
+    ["/product/:slug", "/products/:slug", "/p/:slug", "/shop/:category/:slug"],
+    (_req, res) => {
+      res.sendFile(path.join(frontendPages, "product.html"));
+    }
+  );
+
   // Simple page router: /shop -> pages/shop.html, /login -> pages/login.html, etc.
+  // NOTE: keep this AFTER the more specific routes above
   app.get("/:page", (req, res, next) => {
     const p = req.path;
 

@@ -31,6 +31,12 @@ export interface CollectionRef {
   title?: string | null;
 }
 
+export interface BadgeRef {
+  id: string;
+  title: string;
+  icon: string; // Feather icon name or asset key
+}
+
 // ---------- Core entities ----------
 
 export interface ProductImage {
@@ -56,6 +62,18 @@ export interface ProductVariant {
   position: number;
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface ProductReview {
+  id: string;
+  productId: string;
+  userId?: string | null;
+  authorName: string;
+  rating: number;
+  title?: string | null;
+  body: string;
+  createdAt: Date;
+  status?: string; // internal
 }
 
 export interface Product {
@@ -92,6 +110,8 @@ export interface Product {
   // Optional loaded relations
   images?: ProductImage[];
   variants?: ProductVariant[];
+  badges?: BadgeRef[];
+  reviews?: ProductReview[];
 
   // Internal/private (not for clients)
   internalNotes?: string | null;
@@ -119,6 +139,15 @@ export interface ProductCardDto {
   colorChips?: ColorChip[];
 }
 
+export interface ProductReviewDto {
+  id: string;
+  authorName: string;
+  rating: number;
+  title?: string | null;
+  body: string;
+  createdAt: string; // ISO
+}
+
 export interface ProductDetailDto extends ProductCardDto {
   subtitle?: string | null;
   description?: string | null;
@@ -127,8 +156,16 @@ export interface ProductDetailDto extends ProductCardDto {
   colorTheme?: ColorThemeRef | null;
   images: ProductImage[];
   variants: ProductVariant[];
+  badges: BadgeRef[];
+  reviews: ProductReviewDto[];
   createdAt: string; // ISO
   updatedAt: string; // ISO
+
+  // Review summary (approved-only)
+  reviewSummary?: { ratingAvg: number; ratingCount: number };
+
+  // Related products (cards)
+  related?: ProductCardDto[];
 }
 
 // ---------- Mappers ----------
@@ -154,6 +191,14 @@ export function mapDbColorThemeToRef(row: any): ColorThemeRef | null {
     name: src.name,
     slug: src.slug,
     hexCode: src.hexCode ?? src.hex_code ?? null,
+  };
+}
+
+export function mapDbBadgeToRef(row: any): BadgeRef {
+  return {
+    id: row.id,
+    title: row.title,
+    icon: row.icon,
   };
 }
 
@@ -186,6 +231,25 @@ export function mapDbVariantToEntity(row: any): ProductVariant {
   };
 }
 
+export function mapDbReviewToEntity(row: any): ProductReview {
+  const user = row.user ?? null;
+  const firstName = user?.firstName ?? user?.first_name ?? "";
+  const lastName = user?.lastName ?? user?.last_name ?? "";
+  const full = `${firstName} ${lastName}`.trim();
+  const authorName = full || row.guestName || row.guest_name || "کاربر";
+  return {
+    id: row.id,
+    productId: row.productId ?? row.product_id,
+    userId: row.userId ?? row.user_id ?? null,
+    authorName,
+    rating: Number(row.rating ?? 0),
+    title: row.title ?? null,
+    body: row.body ?? "",
+    createdAt: toDate(row.createdAt ?? row.created_at),
+    status: row.status ?? undefined,
+  };
+}
+
 export function mapDbProductToEntity(row: any): Product {
   const brand = row.brand
     ? mapDbBrandToRef(row.brand)
@@ -213,6 +277,14 @@ export function mapDbProductToEntity(row: any): Product {
 
   const variants: ProductVariant[] | undefined = Array.isArray(row.variants)
     ? row.variants.map(mapDbVariantToEntity)
+    : undefined;
+
+  const badges: BadgeRef[] | undefined = Array.isArray(row.badges)
+    ? row.badges.map(mapDbBadgeToRef)
+    : undefined;
+
+  const reviews: ProductReview[] | undefined = Array.isArray(row.reviews)
+    ? row.reviews.map(mapDbReviewToEntity)
     : undefined;
 
   return {
@@ -248,6 +320,8 @@ export function mapDbProductToEntity(row: any): Product {
 
     images,
     variants,
+    badges,
+    reviews,
 
     internalNotes: row.internalNotes ?? row.internal_notes ?? null,
   };
@@ -301,7 +375,7 @@ export function toProductCardDto(p: Product): ProductCardDto {
 }
 
 export function toProductDetailDto(p: Product): ProductDetailDto {
-  return {
+  const dto: ProductDetailDto = {
     ...toProductCardDto(p),
     subtitle: p.subtitle ?? null,
     description: p.description ?? null,
@@ -310,9 +384,24 @@ export function toProductDetailDto(p: Product): ProductDetailDto {
     colorTheme: p.colorTheme ?? null,
     images: (p.images ?? []).slice().sort((a, b) => a.position - b.position),
     variants: (p.variants ?? []).slice().sort((a, b) => a.position - b.position),
+    badges: (p.badges ?? []).slice(),
+    reviews: (p.reviews ?? [])
+      .slice()
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+      .map((r) => ({
+        id: r.id,
+        authorName: r.authorName,
+        rating: r.rating,
+        title: r.title ?? null,
+        body: r.body,
+        createdAt: r.createdAt.toISOString(),
+      })),
     createdAt: p.createdAt.toISOString(),
     updatedAt: p.updatedAt.toISOString(),
+    reviewSummary: { ratingAvg: p.ratingAvg, ratingCount: p.ratingCount },
+    related: [], // will be filled by service
   };
+  return dto;
 }
 
 // ---------- Query/filter helpers (service-level) ----------
