@@ -12,6 +12,8 @@ import { requestLogger } from "./common/middlewares/requestLogger";
 import { errorHandler } from "./common/middlewares/errorHandler";
 import { rateLimiter } from "./common/middlewares/rateLimiter";
 import buildApiRouter from "./routes";
+// NEW: import the auth router to expose /auth alias
+import { authRouter } from "./modules/auth/auth.routes";
 
 export function createApp() {
   const app = express();
@@ -99,7 +101,10 @@ export function createApp() {
   // Optional backend public directory (use /static/favicon.ico, etc.)
   app.use("/static", express.static(backendPublic));
 
-  // API routes
+  // NEW: expose /auth alias (so frontend calling /auth/... works)
+  app.use("/auth", authRouter);
+
+  // API routes under /api
   app.use("/api", buildApiRouter());
 
   // API 404 (JSON)

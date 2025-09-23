@@ -45,7 +45,7 @@
       try {
         await new Promise(res => setTimeout(res, 900));
         localStorage.setItem("signup_phone", normalized);
-        window.location.href = `verify.html?phone=${encodeURIComponent(normalized)}`;
+        window.location.href = `/verify?phone=${encodeURIComponent(normalized)}`;
       } catch {
         msg.textContent = "خطا در ارسال کد. لطفاً دوباره تلاش کنید.";
         btn.textContent = "ارسال کد"; btn.disabled = false;

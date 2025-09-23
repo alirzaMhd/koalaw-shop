@@ -15,6 +15,13 @@ enum Gender {
   @@map("gender_enum")
 }
 
+enum UserRole {
+  CUSTOMER @map("customer")
+  ADMIN @map("admin")
+  STAFF @map("staff")
+  @@map("user_role_enum")
+}
+
 enum ProductCategory {
   SKINCARE   @map("skincare")
   MAKEUP     @map("makeup")
@@ -122,7 +129,8 @@ model User {
   phoneVerifiedAt  DateTime?     @map("phone_verified_at") @db.Timestamptz
   createdAt        DateTime      @default(now()) @map("created_at") @db.Timestamptz
   updatedAt        DateTime      @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
-
+  
+  role UserRole @default(CUSTOMER) @map("role")
   notificationPrefs UserNotificationPrefs?
   addresses         UserAddress[]
   carts             Cart[]

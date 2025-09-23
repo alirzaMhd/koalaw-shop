@@ -15,6 +15,8 @@ import { emailQueue, webhooksQueue, bindDefaultEmailWorker } from "./infrastruct
 import { bindOrderCreatedHandler } from "./events/handlers/order.created.handler";
 import { bindPaymentSucceededHandler } from "./events/handlers/payment.succeeded.handler";
 import { notificationService } from "./modules/notifications/notification.service";
+// NEW: bind OTP SMS handler
+import { bindAuthOtpSentHandler } from "./events/handlers/auth.otp.handler";
 
 // Elasticsearch
 import { ping as esPing } from "./infrastructure/search/elastic.client";
@@ -24,6 +26,8 @@ async function bootstrap() {
   // Bind domain event handlers
   bindOrderCreatedHandler();
   bindPaymentSucceededHandler();
+  // NEW: bind Kavenegar OTP sender
+  bindAuthOtpSentHandler();
 
   // Bind default notification handlers
   notificationService.bindDefaultHandlers();
