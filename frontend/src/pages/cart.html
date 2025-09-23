@@ -19,7 +19,6 @@
     <div class="cursor-face"></div>
     <div class="cursor-follower"></div>
 
-
     <nav class="fixed w-full z-50 transition-all duration-300" id="navbar">
       <div class="container mx-auto px-6 py-5">
         <div class="flex items-center justify-between" dir="ltr">
@@ -62,6 +61,8 @@
             >
               <i data-feather="search" class="w-5 h-5"></i></button
             ><button
+              id="profile-button"
+              type="button"
               class="text-gray-700 hover:text-gray-900 transition-all duration-300 hover:scale-110"
             >
               <i data-feather="user" class="w-5 h-5"></i></button
@@ -690,7 +691,8 @@
             <div class="flex gap-3">
               <a
                 href="https://instagram.com/koalaw.shop"
-                target="_blank" rel="noopener"
+                target="_blank"
+                rel="noopener"
                 class="bg-gray-800 p-3 rounded-full hover:bg-gray-700 transition-all duration-300 transform hover:scale-110"
                 ><i data-feather="instagram" class="w-5 h-5"></i
               ></a>

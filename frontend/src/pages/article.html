@@ -65,6 +65,8 @@
             >
               <i data-feather="search" class="w-5 h-5"></i></button
             ><button
+              id="profile-button"
+              type="button"
               class="text-gray-700 hover:text-gray-900 transition-all duration-300 hover:scale-110"
             >
               <i data-feather="user" class="w-5 h-5"></i></button
@@ -117,7 +119,10 @@
               >
                 در حال بارگذاری مقاله...
               </h1>
-              <p id="article-excerpt" class="text-lg text-gray-500 mb-8 max-w-2xl mx-auto">
+              <p
+                id="article-excerpt"
+                class="text-lg text-gray-500 mb-8 max-w-2xl mx-auto"
+              >
                 لطفاً کمی صبر کنید...
               </p>
               <div
@@ -136,7 +141,8 @@
                 <span id="article-date">...</span>
                 <span class="hidden sm:inline">|</span>
                 <span id="read-time" class="flex items-center gap-1"
-                  ><i data-feather="clock" class="w-4 h-4"></i><span>...</span></span
+                  ><i data-feather="clock" class="w-4 h-4"></i
+                  ><span>...</span></span
                 >
               </div>
             </header>
@@ -161,7 +167,9 @@
               <!-- Loading state -->
               <div class="text-center py-12">
                 <div class="inline-flex items-center gap-2 text-gray-500">
-                  <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-rose-600"></div>
+                  <div
+                    class="animate-spin rounded-full h-5 w-5 border-b-2 border-rose-600"
+                  ></div>
                   <span>در حال بارگذاری محتوای مقاله...</span>
                 </div>
               </div>
@@ -207,7 +215,9 @@
                     class="w-14 h-14 rounded-full"
                   />
                   <div>
-                    <h4 id="author-box-name" class="font-bold text-gray-800">...</h4>
+                    <h4 id="author-box-name" class="font-bold text-gray-800">
+                      ...
+                    </h4>
                     <p id="author-box-bio" class="text-sm text-gray-500">
                       نویسنده مجله KOALAW
                     </p>
@@ -228,11 +238,16 @@
           >
             مقالات مرتبط
           </h2>
-          <div id="related-articles" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div
+            id="related-articles"
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          >
             <!-- Loading state for related articles -->
             <div class="col-span-full text-center py-8">
               <div class="inline-flex items-center gap-2 text-gray-500">
-                <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-rose-600"></div>
+                <div
+                  class="animate-spin rounded-full h-5 w-5 border-b-2 border-rose-600"
+                ></div>
                 <span>در حال بارگذاری مقالات مرتبط...</span>
               </div>
             </div>
@@ -255,10 +270,10 @@
               زیبایی متخصصان ما باخبر می‌شود.
             </p>
             <form class="flex flex-col sm:flex-row max-w-xl mx-auto gap-4">
-              <input 
-                type="email" 
-                placeholder="ایمیل خود را وارد کنید" 
-                class="flex-grow px-6 py-4 rounded-full bg-white text-gray-800 placeholder-gray-500 shadow-sm focus:outline-none focus:ring-4 focus:ring-rose-300/50 transition-all duration-300" 
+              <input
+                type="email"
+                placeholder="ایمیل خود را وارد کنید"
+                class="flex-grow px-6 py-4 rounded-full bg-white text-gray-800 placeholder-gray-500 shadow-sm focus:outline-none focus:ring-4 focus:ring-rose-300/50 transition-all duration-300"
               />
               <button
                 type="submit"
@@ -344,7 +359,8 @@
             <div class="flex gap-3">
               <a
                 href="https://instagram.com/koalaw.shop"
-                target="_blank" rel="noopener"
+                target="_blank"
+                rel="noopener"
                 class="bg-gray-800 p-3 rounded-full hover:bg-gray-700 transition-all duration-300 transform hover:scale-110"
                 ><i data-feather="instagram" class="w-5 h-5"></i
               ></a>

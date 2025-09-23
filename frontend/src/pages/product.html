@@ -65,6 +65,8 @@
             >
               <i data-feather="search" class="w-5 h-5"></i></button
             ><button
+              id="profile-button"
+              type="button"
               class="text-gray-700 hover:text-gray-900 transition-all duration-300 hover:scale-110"
             >
               <i data-feather="user" class="w-5 h-5"></i></button
@@ -189,8 +191,14 @@
             <!-- Price & Add to Cart -->
             <div class="mb-8">
               <div class="flex items-center gap-4 mb-6">
-                <span id="product-price" class="text-3xl font-bold text-gray-800"></span>
-                <span id="product-compare" class="text-xl text-gray-400 line-through hidden"></span>
+                <span
+                  id="product-price"
+                  class="text-3xl font-bold text-gray-800"
+                ></span>
+                <span
+                  id="product-compare"
+                  class="text-xl text-gray-400 line-through hidden"
+                ></span>
                 <span
                   id="product-discount-badge"
                   class="bg-red-100 text-red-800 px-2 py-1 rounded-full text-sm font-semibold hidden"
@@ -224,7 +232,10 @@
             </div>
 
             <!-- Product Features (badges from DB) -->
-            <div id="product-badges-grid" class="grid grid-cols-2 gap-4 mb-8"></div>
+            <div
+              id="product-badges-grid"
+              class="grid grid-cols-2 gap-4 mb-8"
+            ></div>
           </div>
         </div>
 
@@ -388,7 +399,8 @@
             <div class="flex gap-3">
               <a
                 href="https://instagram.com/koalaw.shop"
-                target="_blank" rel="noopener"
+                target="_blank"
+                rel="noopener"
                 class="bg-gray-800 p-3 rounded-full hover:bg-gray-700 transition-all duration-300 transform hover:scale-110"
                 ><i data-feather="instagram" class="w-5 h-5"></i
               ></a>

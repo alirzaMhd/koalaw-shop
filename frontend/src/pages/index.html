@@ -41,7 +41,6 @@
       "
     ></div>
 
-
     <nav class="fixed w-full z-50 transition-all duration-300" id="navbar">
       <div class="container mx-auto px-6 py-5">
         <div class="flex items-center justify-between" dir="ltr">
@@ -84,6 +83,8 @@
             >
               <i data-feather="search" class="w-5 h-5"></i></button
             ><button
+              id="profile-button"
+              type="button"
               class="text-gray-700 hover:text-gray-900 transition-all duration-300 hover:scale-110"
             >
               <i data-feather="user" class="w-5 h-5"></i></button
@@ -112,7 +113,7 @@
       ><a href="#about" class="nav-link">درباره ما</a>
     </div>
     <div id="mobile-menu-overlay" class="mobile-menu-overlay"></div>
-    
+
     <section
       class="min-h-screen relative flex items-center justify-center text-center overflow-hidden"
     >
@@ -905,7 +906,11 @@
             زیبایی متخصصان ما باخبر می‌شود.
           </p>
           <form class="flex flex-col sm:flex-row max-w-xl mx-auto gap-4">
-            <input type="email" placeholder="ایمیل خود را وارد کنید" class="flex-grow px-6 py-4 rounded-full bg-white text-gray-800 placeholder-gray-500 shadow-sm focus:outline-none focus:ring-4 focus:ring-rose-300/50 transition-all duration-300" />
+            <input
+              type="email"
+              placeholder="ایمیل خود را وارد کنید"
+              class="flex-grow px-6 py-4 rounded-full bg-white text-gray-800 placeholder-gray-500 shadow-sm focus:outline-none focus:ring-4 focus:ring-rose-300/50 transition-all duration-300"
+            />
             <button
               type="submit"
               class="px-8 py-4 bg-white text-gray-900 rounded-full font-semibold hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 hover:shadow-xl"
@@ -948,7 +953,6 @@
       </div>
     </div>
 
-    
     <footer
       id="about"
       class="bg-gradient-to-b from-gray-900 to-black text-white py-20"
@@ -991,7 +995,8 @@
             <div class="flex gap-3">
               <a
                 href="https://instagram.com/koalaw.shop"
-                target="_blank" rel="noopener"
+                target="_blank"
+                rel="noopener"
                 class="bg-gray-800 p-3 rounded-full hover:bg-gray-700 transition-all duration-300 transform hover:scale-110"
                 ><i data-feather="instagram" class="w-5 h-5"></i
               ></a>
