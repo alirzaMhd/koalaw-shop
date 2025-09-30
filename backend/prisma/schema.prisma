@@ -109,23 +109,17 @@ enum CartStatus {
   @@map("cart_status_enum")
 }
 
-enum OtpPurpose {
-  LOGIN  @map("login")
-  VERIFY @map("verify")
-  RESET  @map("reset")
-
-  @@map("otp_purpose_enum")
-}
-
 model User {
   id               String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  phone            String        @unique @db.VarChar(20)
-  email            String?       @unique @db.Citext
+  email            String        @unique @db.Citext
+  passwordHash     String        @map("password_hash") @db.Text
+  phone            String?       @unique @db.VarChar(20)
   firstName        String?       @map("first_name") @db.VarChar(100)
   lastName         String?       @map("last_name")  @db.VarChar(100)
   birthDate        DateTime?     @map("birth_date") @db.Date
   gender           Gender        @default(UNDISCLOSED)
   customerTier     CustomerTier  @map("customer_tier") @default(STANDARD)
+  emailVerifiedAt  DateTime?     @map("email_verified_at") @db.Timestamptz
   phoneVerifiedAt  DateTime?     @map("phone_verified_at") @db.Timestamptz
   createdAt        DateTime      @default(now()) @map("created_at") @db.Timestamptz
   updatedAt        DateTime      @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
@@ -153,21 +147,6 @@ model UserNotificationPrefs {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("user_notification_prefs")
-}
-
-model OtpCode {
-  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  phone        String    @db.VarChar(20)
-  purpose      OtpPurpose
-  code         String    @db.VarChar(10)
-  attempts     Int       @default(0) @db.SmallInt
-  maxAttempts  Int       @map("max_attempts") @default(5) @db.SmallInt
-  expiresAt    DateTime  @map("expires_at") @db.Timestamptz
-  consumedAt   DateTime? @map("consumed_at") @db.Timestamptz
-  createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz
-
-  @@unique([phone, purpose, code])
-  @@map("otp_codes")
 }
 
 model Brand {
@@ -233,7 +212,6 @@ model Product {
   cartItems   CartItem[]
   orderItems  OrderItem[]
 
-  // many-to-many with Badge
   badges      Badge[]
 
   @@map("products")
@@ -308,7 +286,6 @@ model Badge {
   title String  @db.Text
   icon  String  @db.Text
 
-  // many-to-many back to Product
   products Product[]
 
   @@map("badges")

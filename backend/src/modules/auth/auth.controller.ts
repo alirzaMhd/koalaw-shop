@@ -1,17 +1,15 @@
 // src/modules/auth/auth.controller.ts
-// Thin HTTP handlers for OTP auth flows. Uses zod validators and authService.
-
 import type { Request, Response, NextFunction, RequestHandler } from "express";
 import jwt from "jsonwebtoken";
-
-import { authService } from "./auth.service";
+import { authService } from "./auth.service.ts";
 import {
-  sendOtpSchema,
-  verifyOtpSchema,
+  registerSchema,
+  loginSchema,
   refreshTokenSchema,
   logoutSchema,
-} from "./auth.validators";
-
+  verifyEmailSchema,
+  resendVerificationSchema,
+} from "./auth.validators.ts";
 import { AppError } from "../../common/errors/AppError";
 import { env } from "../../config/env";
 import { logger } from "../../config/logger";
@@ -26,8 +24,6 @@ const COOKIE_SECURE =
     ? env.COOKIE_SECURE === "true"
     : env.NODE_ENV === "production";
 const COOKIE_SAME_SITE = (env.COOKIE_SAME_SITE as "lax" | "strict" | "none") || "lax";
-
-// JWT secrets (for decoding logout jti if needed)
 const REFRESH_SECRET = String(env.JWT_REFRESH_SECRET || env.JWT_SECRET || "refresh-secret-dev");
 
 type SameSiteOpt = boolean | "lax" | "strict" | "none";
@@ -45,9 +41,9 @@ function setAuthCookies(
   res: Response,
   opts: {
     accessToken: string;
-    accessTokenExpiresAt: number; // epoch ms
+    accessTokenExpiresAt: number;
     refreshToken: string;
-    refreshTokenExpiresAt: number; // epoch ms
+    refreshTokenExpiresAt: number;
   }
 ) {
   const now = Date.now();
@@ -78,18 +74,26 @@ function clearAuthCookies(res: Response) {
   res.clearCookie(REFRESH_COOKIE, base);
 }
 
-// If you attach user on req in authGuard, you can add a local type
 interface AuthenticatedRequest extends Request {
   user?: { id?: string; sub?: string; role?: string };
 }
 
 class AuthController {
-  sendOtp: RequestHandler = async (req, res, next) => {
+  register: RequestHandler = async (req, res, next) => {
     try {
-      const { phone, recaptchaToken } = await sendOtpSchema.parseAsync(req.body);
+      const { email, password } = await registerSchema.parseAsync(req.body);
       const ip = getClientIp(req);
-      const result = await authService.sendOtp({ phone, ip, recaptchaToken });
-      return ok(res, result, 200);
+
+      const result = await authService.register({ email, password, ip });
+
+      return ok(
+        res,
+        {
+          user: result.user,
+          needsVerification: result.needsVerification,
+        },
+        201
+      );
     } catch (err: any) {
       if (err?.issues?.length) {
         return next(new AppError(err.issues[0].message, 422, "VALIDATION_ERROR"));
@@ -98,15 +102,14 @@ class AuthController {
     }
   };
 
-  verifyOtp: RequestHandler = async (req, res, next) => {
+  login: RequestHandler = async (req, res, next) => {
     try {
-      const { phone, code } = await verifyOtpSchema.parseAsync(req.body);
+      const { email, password } = await loginSchema.parseAsync(req.body);
       const ip = getClientIp(req);
       const userAgent = req.get("user-agent") || undefined;
 
-      const { user, tokens } = await authService.verifyOtp({ phone, code, ip, userAgent });
+      const { user, tokens } = await authService.login({ email, password, ip, userAgent });
 
-      // Set httpOnly cookies
       setAuthCookies(res, {
         accessToken: tokens.accessToken,
         accessTokenExpiresAt: tokens.accessTokenExpiresAt,
@@ -114,7 +117,6 @@ class AuthController {
         refreshTokenExpiresAt: tokens.refreshTokenExpiresAt,
       });
 
-      // Return user and token meta (omit raw refreshToken if you prefer cookie-only)
       return ok(
         res,
         {
@@ -128,6 +130,53 @@ class AuthController {
         },
         200
       );
+    } catch (err: any) {
+      if (err?.issues?.length) {
+        return next(new AppError(err.issues[0].message, 422, "VALIDATION_ERROR"));
+      }
+      return next(err);
+    }
+  };
+
+  verifyEmail: RequestHandler = async (req, res, next) => {
+    try {
+      const { email, code } = await verifyEmailSchema.parseAsync(req.body);
+
+      const { user, tokens } = await authService.verifyEmail({ email, code });
+
+      setAuthCookies(res, {
+        accessToken: tokens.accessToken,
+        accessTokenExpiresAt: tokens.accessTokenExpiresAt,
+        refreshToken: tokens.refreshToken,
+        refreshTokenExpiresAt: tokens.refreshTokenExpiresAt,
+      });
+
+      return ok(
+        res,
+        {
+          user,
+          tokens: {
+            accessToken: tokens.accessToken,
+            accessTokenExpiresAt: tokens.accessTokenExpiresAt,
+            refreshTokenExpiresAt: tokens.refreshTokenExpiresAt,
+            jti: tokens.jti,
+          },
+        },
+        200
+      );
+    } catch (err: any) {
+      if (err?.issues?.length) {
+        return next(new AppError(err.issues[0].message, 422, "VALIDATION_ERROR"));
+      }
+      return next(err);
+    }
+  };
+
+  resendVerification: RequestHandler = async (req, res, next) => {
+    try {
+      const { email } = await resendVerificationSchema.parseAsync(req.body);
+      const result = await authService.resendVerificationCode({ email });
+      return ok(res, result, 200);
     } catch (err: any) {
       if (err?.issues?.length) {
         return next(new AppError(err.issues[0].message, 422, "VALIDATION_ERROR"));
@@ -180,7 +229,6 @@ class AuthController {
       const userId = req.user?.id || req.user?.sub;
       if (!userId) throw new AppError("احراز هویت انجام نشد.", 401, "UNAUTHORIZED");
 
-      // Try to extract jti from refresh cookie if present
       const rt = req.cookies?.[REFRESH_COOKIE] as string | undefined;
       let jti: string | undefined;
       if (rt) {

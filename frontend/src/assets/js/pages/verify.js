@@ -15,33 +15,39 @@
     KUtils.createClouds(".cloud-animation", 6);
     KUtils.createParticles(".particle-overlay", 9);
 
-    // Adjust this if your API is under a different prefix (e.g. "/api/auth")
-    const API_BASE = "/auth";
+    const API_BASE = "/auth"; // ✓ Correct - uses the /auth alias
 
     const qs = (s) => document.querySelector(s);
     const qsa = (s) => Array.from(document.querySelectorAll(s));
 
-    function normalizeIranPhone(p) {
-      const d = (p || "").replace(/\D/g, "");
-      if (d.startsWith("0098")) return "0" + d.slice(4);
-      if (d.startsWith("98")) return "0" + d.slice(2);
-      if (d.startsWith("0")) return d;
-      if (d.startsWith("9")) return "0" + d;
-      return p || "";
-    }
-    function maskPhone(p) {
-      const n = normalizeIranPhone(p).replace(/\D/g, "");
-      if (!n) return "";
-      return n.replace(/\d(?=\d{4})/g, "•");
+    function maskEmail(email) {
+      if (!email) return "";
+      const [local, domain] = email.split("@");
+      if (!local || !domain) return email;
+      const visibleChars = Math.min(3, Math.floor(local.length / 2));
+      const masked =
+        local.substring(0, visibleChars) +
+        "•".repeat(local.length - visibleChars);
+      return `${masked}@${domain}`;
     }
 
+    // ✅ FIX: Properly decode the email from URL
     const params = new URLSearchParams(location.search);
-    const phoneRaw =
-      params.get("phone") || localStorage.getItem("signup_phone") || "";
-    const phoneInfo = qs("#phoneInfo");
-    const masked = phoneRaw ? maskPhone(phoneRaw) : "";
-    if (masked && phoneInfo)
-      phoneInfo.innerHTML = `کد ۶ رقمی به شماره <span class="ltr-numbers" dir="ltr">${masked}</span> ارسال شد.`;
+    const emailRaw = decodeURIComponent(
+      params.get("email") || localStorage.getItem("verify_email") || ""
+    );
+
+    const emailInfo = qs("#emailInfo");
+    const masked = emailRaw ? maskEmail(emailRaw) : "";
+
+    if (masked && emailInfo) {
+      emailInfo.innerHTML = `کد ۶ رقمی به ایمیل <span class="ltr-numbers" dir="ltr">${masked}</span> ارسال شد.`;
+    }
+
+    // ✅ Store email for later use
+    if (emailRaw) {
+      localStorage.setItem("verify_email", emailRaw);
+    }
 
     const inputs = qsa(".otp-input");
     const btnVerify = qs("#btnVerify");
@@ -49,6 +55,7 @@
     inputs[0]?.focus();
 
     const getCode = () => inputs.map((i) => i.value).join("");
+
     function updateBtn() {
       const filled = getCode().length === inputs.length;
       if (btnVerify) btnVerify.disabled = !filled;
@@ -62,6 +69,7 @@
         if (v && idx < inputs.length - 1) inputs[idx + 1].focus();
         updateBtn();
       });
+
       inp.addEventListener("keydown", (e) => {
         if (
           (e.key === "Backspace" || e.key === "Delete") &&
@@ -73,6 +81,7 @@
         if (e.key === "ArrowRight" && idx < inputs.length - 1)
           inputs[idx + 1].focus();
       });
+
       inp.addEventListener("paste", (e) => {
         const pasted = (e.clipboardData || window.clipboardData)
           .getData("text")
@@ -90,7 +99,7 @@
       });
     });
 
-    // Submit: verify with backend, set httpOnly cookies, redirect
+    // Submit verification
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
 
@@ -100,9 +109,13 @@
         return;
       }
 
-      const phone = normalizeIranPhone(phoneRaw || "");
-      if (!/^09\d{9}$/.test(phone)) {
-        otpMsg.textContent = "شماره موبایل نامعتبر است. ویرایش شماره را بزنید.";
+      // ✅ FIX: Properly validate and clean email
+      const email = emailRaw.trim().toLowerCase();
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        otpMsg.textContent = "ایمیل نامعتبر است. به صفحه ورود بازگردید.";
+        setTimeout(() => {
+          window.location.href = "/login.html";
+        }, 2000);
         return;
       }
 
@@ -117,34 +130,42 @@
         </svg> در حال بررسی...</span>`;
 
         try {
-          const res = await fetch(`${API_BASE}/otp/verify`, {
+          const res = await fetch(`${API_BASE}/verify-email`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            credentials: "include", // allow server to set httpOnly cookies
-            body: JSON.stringify({ phone, code }),
+            credentials: "include",
+            body: JSON.stringify({ email, code }),
           });
 
           const data = await res.json().catch(() => null);
 
           if (!res.ok || !data?.success) {
             const msg =
-              data?.message ||
               data?.error?.message ||
-              data?.data?.message ||
+              data?.message ||
               "احراز هویت ناموفق بود. دوباره تلاش کنید.";
             throw new Error(msg);
           }
 
-          // Optionally keep user profile client-side (no tokens; they are in httpOnly cookies)
+          // Store user data
           if (data?.data?.user) {
-            localStorage.setItem("auth_user", JSON.stringify(data.data.user));
+            localStorage.setItem("user", JSON.stringify(data.data.user));
           }
-          localStorage.removeItem("signup_phone");
+          localStorage.removeItem("verify_email");
 
-          const redirect =
-            new URLSearchParams(location.search).get("redirect") || "/";
-          window.location.href = redirect;
+          // ✅ Show success message before redirect
+          otpMsg.className = "min-h-[20px] text-sm text-green-500";
+          otpMsg.textContent = "✓ تایید موفق! در حال انتقال...";
+
+          // Redirect to profile
+          setTimeout(() => {
+            const redirect =
+              new URLSearchParams(location.search).get("redirect") ||
+              "/profile";
+            window.location.href = redirect;
+          }, 1000);
         } catch (err) {
+          otpMsg.className = "min-h-[20px] text-sm text-red-500";
           otpMsg.textContent =
             err?.message || "خطا در اتصال. لطفاً دوباره تلاش کنید.";
           btnVerify.disabled = false;
@@ -156,8 +177,8 @@
     // Resend timer
     const btnResend = qs("#btnResend");
     const resendTimer = qs("#resendTimer");
-    let timeLeft = 60,
-      handle;
+    let timeLeft = 600; // ✅ FIX: Start with 600 seconds (10 minutes)
+    let handle;
 
     function setResendVisualState(enabled) {
       if (!btnResend) return;
@@ -177,6 +198,7 @@
         btnResend.classList.remove("text-primary", "hover:underline");
       }
     }
+
     function tick() {
       timeLeft -= 1;
       if (timeLeft <= 0) {
@@ -186,61 +208,89 @@
         if (resendTimer) resendTimer.textContent = "";
         return;
       }
-      if (resendTimer) resendTimer.textContent = `(${timeLeft} ثانیه)`;
+      // ✅ FIX: Format time nicely
+      const minutes = Math.floor(timeLeft / 60);
+      const seconds = timeLeft % 60;
+      if (resendTimer) {
+        resendTimer.textContent = `(${minutes}:${seconds
+          .toString()
+          .padStart(2, "0")})`;
+      }
     }
+
     function startTimer(ttlSec) {
       if (!btnResend) return;
       btnResend.disabled = true;
       setResendVisualState(false);
-      timeLeft = Number(ttlSec) > 0 ? Number(ttlSec) : 60;
-      if (resendTimer) resendTimer.textContent = `(${timeLeft} ثانیه)`;
+      timeLeft = Number(ttlSec) > 0 ? Number(ttlSec) : 600;
+
+      const minutes = Math.floor(timeLeft / 60);
+      const seconds = timeLeft % 60;
+      if (resendTimer) {
+        resendTimer.textContent = `(${minutes}:${seconds
+          .toString()
+          .padStart(2, "0")})`;
+      }
+
       clearInterval(handle);
       handle = setInterval(tick, 1000);
     }
 
-    // Resend via backend
+    // Resend code
     async function resendCode() {
       if (!btnResend) return;
       try {
         btnResend.disabled = true;
         setResendVisualState(false);
 
-        const phone = normalizeIranPhone(phoneRaw || "");
-        if (!/^09\d{9}$/.test(phone)) {
-          throw new Error("شماره موبایل نامعتبر است.");
+        const email = emailRaw.trim().toLowerCase();
+        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          throw new Error("ایمیل نامعتبر است.");
         }
 
-        const res = await fetch(`${API_BASE}/otp/send`, {
+        const res = await fetch(`${API_BASE}/resend-verification`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: "include",
-          body: JSON.stringify({ phone }),
+          body: JSON.stringify({ email }),
         });
+
         const data = await res.json().catch(() => null);
+
         if (!res.ok || !data?.success) {
           const msg =
-            data?.message || data?.error?.message || "ارسال کد ناموفق بود.";
+            data?.error?.message || data?.message || "ارسال کد ناموفق بود.";
           throw new Error(msg);
         }
-        const ttlSec = data?.data?.ttlSec || 60;
+
+        // ✅ Show success message
+        otpMsg.className = "min-h-[20px] text-sm text-green-500";
+        otpMsg.textContent = "✓ کد جدید ارسال شد!";
+        setTimeout(() => {
+          otpMsg.textContent = "";
+          otpMsg.className = "min-h-[20px] text-sm text-red-500";
+        }, 3000);
+
+        const ttlSec = data?.data?.ttlSec || 600;
         startTimer(ttlSec);
       } catch (err) {
+        otpMsg.className = "min-h-[20px] text-sm text-red-500";
         otpMsg.textContent = err?.message || "خطا در ارسال مجدد کد.";
         btnResend.disabled = false;
         setResendVisualState(true);
       }
     }
 
-    // Send once on page load
-    resendCode();
+    // Start timer on page load
+    startTimer(600); // 10 minutes
     btnResend && btnResend.addEventListener("click", resendCode);
 
-    // "ویرایش شماره"
-    const editPhone = document.getElementById("editPhone");
-    editPhone &&
-      editPhone.addEventListener("click", () => {
-        if (document.referrer) history.back();
-        else window.location.href = "/login.html";
+    // Edit email
+    const editEmail = document.getElementById("editEmail");
+    editEmail &&
+      editEmail.addEventListener("click", () => {
+        localStorage.removeItem("verify_email");
+        window.location.href = "/login";
       });
   });
 })();

@@ -54,41 +54,56 @@
         <h1 class="text-2xl font-bold text-deep-brown">ورود | ثبت نام</h1>
 
         <!-- Subtitle -->
-        <p class="text-gray-600">برای ادامه، شماره موبایل خود را وارد کنید.</p>
+        <p class="text-gray-600">برای ادامه، ایمیل و رمز عبور خود را وارد کنید.</p>
 
         <!-- Form -->
         <form id="loginForm" class="space-y-6">
-          <!-- Phone Input Group -->
+          <!-- Email Input -->
           <div class="relative">
-            <div
-              class="absolute inset-y-0 left-0 flex items-center pl-6 pointer-events-none"
-              dir="ltr"
-            >
-              <span class="text-gray-500 font-semibold">+98</span>
-              <span class="w-px h-6 bg-gray-300 mx-3"></span>
-            </div>
             <input
-              type="tel"
-              id="phone"
-              name="phone"
-              placeholder="912 345 6789"
-              class="w-full bg-cream/50 border-2 border-rose-200/50 rounded-full px-6 py-4 pl-28 text-lg text-left tracking-wider text-deep-brown placeholder:text-gray-400 focus:outline-none focus:ring-4 focus:ring-primary/30 focus:border-primary transition-all duration-300"
+              type="email"
+              id="email"
+              name="email"
+              placeholder="example@email.com"
+              class="w-full bg-cream/50 border-2 border-rose-200/50 rounded-full px-6 py-4 text-lg text-left tracking-wider text-deep-brown placeholder:text-gray-400 focus:outline-none focus:ring-4 focus:ring-primary/30 focus:border-primary transition-all duration-300"
               dir="ltr"
-              autocomplete="tel"
+              autocomplete="email"
               required
             />
-            <p id="phoneMsg" class="text-red-500 text-sm mt-2 text-right"></p>
+            <p id="emailMsg" class="text-red-500 text-sm mt-2 text-right"></p>
+          </div>
+
+          <!-- Password Input -->
+          <div class="relative">
+            <input
+              type="password"
+              id="password"
+              name="password"
+              dir="ltr"
+              placeholder="رمز عبور (حداقل ۸ کاراکتر)"
+              class="w-full bg-cream/50 border-2 border-rose-200/50 rounded-full px-6 py-4 text-lg text-deep-brown placeholder:text-gray-400 focus:outline-none focus:ring-4 focus:ring-primary/30 focus:border-primary transition-all duration-300"
+              autocomplete="current-password"
+              required
+            />
+            <p id="passwordMsg" class="text-red-500 text-sm mt-2 text-right"></p>
           </div>
 
           <!-- Submit Button -->
           <button
-            id="btnSend"
+            id="btnSubmit"
             type="submit"
             class="w-full px-8 py-4 bg-pink-500 text-white rounded-full font-semibold text-lg hover:shadow-2xl hover:shadow-pink-500/40 hover:bg-pink-600 transition-all duration-300 transform hover:-translate-y-1 disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            ارسال کد
+            ورود / ثبت نام
           </button>
         </form>
+
+        <!-- Additional Info -->
+        <p class="text-sm text-gray-600">
+          با ورود یا ثبت نام، شما 
+          <a href="/tos" class="text-primary hover:underline">شرایط و قوانین</a>
+          را می‌پذیرید.
+        </p>
 
         <!-- Back -->
         <div>

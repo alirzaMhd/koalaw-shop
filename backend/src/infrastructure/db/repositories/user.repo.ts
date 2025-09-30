@@ -1,6 +1,4 @@
 // src/infrastructure/db/repositories/user.repo.ts
-// User-centric data access (no business logic). Wraps Prisma for consistency.
-
 import { Prisma } from "@prisma/client";
 import { prisma } from "../prismaClient";
 
@@ -21,9 +19,9 @@ export const userRepo = {
   update(id: string, data: Prisma.UserUpdateInput) {
     return prisma.user.update({ where: { id }, data });
   },
-  upsertByPhone(phone: string, createData: Prisma.UserCreateInput, updateData: Prisma.UserUpdateInput) {
+  upsertByEmail(email: string, createData: Prisma.UserCreateInput, updateData: Prisma.UserUpdateInput) {
     return prisma.user.upsert({
-      where: { phone },
+      where: { email },
       create: createData,
       update: updateData,
     });
