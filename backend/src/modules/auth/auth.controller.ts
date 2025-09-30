@@ -9,6 +9,9 @@ import {
   logoutSchema,
   verifyEmailSchema,
   resendVerificationSchema,
+  // NEW:
+  forgotPasswordSchema,
+  resetPasswordSchema,
 } from "./auth.validators.ts";
 import { AppError } from "../../common/errors/AppError";
 import { env } from "../../config/env";
@@ -176,6 +179,34 @@ class AuthController {
     try {
       const { email } = await resendVerificationSchema.parseAsync(req.body);
       const result = await authService.resendVerificationCode({ email });
+      return ok(res, result, 200);
+    } catch (err: any) {
+      if (err?.issues?.length) {
+        return next(new AppError(err.issues[0].message, 422, "VALIDATION_ERROR"));
+      }
+      return next(err);
+    }
+  };
+
+  // NEW: Forgot Password
+  forgotPassword: RequestHandler = async (req, res, next) => {
+    try {
+      const { email } = await forgotPasswordSchema.parseAsync(req.body);
+      const result = await authService.forgotPassword({ email });
+      return ok(res, result, 200);
+    } catch (err: any) {
+      if (err?.issues?.length) {
+        return next(new AppError(err.issues[0].message, 422, "VALIDATION_ERROR"));
+      }
+      return next(err);
+    }
+  };
+
+  // NEW: Reset Password
+  resetPassword: RequestHandler = async (req, res, next) => {
+    try {
+      const { email, code, newPassword } = await resetPasswordSchema.parseAsync(req.body);
+      const result = await authService.resetPassword({ email, code, newPassword });
       return ok(res, result, 200);
     } catch (err: any) {
       if (err?.issues?.length) {

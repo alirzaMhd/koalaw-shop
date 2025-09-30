@@ -87,6 +87,21 @@ async function deleteVerificationCode(email: string) {
   await redis.del(key);
 }
 
+async function storePasswordResetCode(email: string, code: string) {
+  const key = `password:reset:${email}`;
+  await redis.set(key, code, "EX", EMAIL_VERIFICATION_TTL_SEC);
+}
+
+async function getPasswordResetCode(email: string): Promise<string | null> {
+  const key = `password:reset:${email}`;
+  return await redis.get(key);
+}
+
+async function deletePasswordResetCode(email: string) {
+  const key = `password:reset:${email}`;
+  await redis.del(key);
+}
+
 export const authService = {
   async register(args: { email: string; password: string; ip?: string }) {
     const { email, password } = args;
@@ -314,6 +329,121 @@ export const authService = {
     return { ttlSec: EMAIL_VERIFICATION_TTL_SEC };
   },
 
+  // In src/modules/auth/auth.service.ts
+
+  async forgotPassword(args: { email: string }) {
+    const { email } = args;
+
+    // 1) Check if user exists — if not, don't send any code
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user) {
+      throw new AppError("کاربر یافت نشد.", 404, "NOT_FOUND");
+    }
+
+    // Optional: Require verified email to reset password
+    if (!user.emailVerifiedAt) {
+      throw new AppError(
+        "لطفاً ابتدا ایمیل خود را تایید کنید.",
+        403,
+        "EMAIL_NOT_VERIFIED"
+      );
+    }
+
+    // 2) Generate and store reset code
+    const code = generateVerificationCode();
+    await storePasswordResetCode(email, code);
+
+    // 3) Send email with reset code
+    try {
+      await mailer.sendMail({
+        to: email,
+        subject: "بازیابی رمز عبور - KOALAW",
+        html: `
+          <div dir="rtl" style="font-family: Tahoma, Arial, sans-serif; padding: 20px; background: #faf8f3;">
+            <div style="max-width: 600px; margin: 0 auto; background: white; border-radius: 16px; padding: 40px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+              <h1 style="color: #ec4899; text-align: center; margin-bottom: 20px;">بازیابی رمز عبور</h1>
+              <p style="font-size: 16px; color: #374151; margin-bottom: 30px;">برای تنظیم رمز عبور جدید، کد زیر را وارد کنید:</p>
+              <div style="background: #fef2f2; border: 2px dashed #ec4899; border-radius: 12px; padding: 30px; text-align: center; margin: 30px 0;">
+                <h2 style="font-size: 36px; color: #ec4899; margin: 0; letter-spacing: 8px; font-family: 'Courier New', monospace;">${code}</h2>
+              </div>
+              <p style="font-size: 14px; color: #6b7280; text-align: center;">این کد تا ۱۰ دقیقه دیگر معتبر است.</p>
+              <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 30px 0;" />
+              <p style="font-size: 12px; color: #9ca3af; text-align: center;">اگر شما این درخواست را نداده‌اید، این ایمیل را نادیده بگیرید.</p>
+            </div>
+          </div>
+        `,
+        text: `بازیابی رمز عبور - KOALAW\n\nکد بازیابی شما: ${code}\n\nاین کد تا ۱۰ دقیقه دیگر معتبر است.`,
+      });
+    } catch (err) {
+      logger.error({ err }, "Failed to send password reset email");
+      throw new AppError("خطا در ارسال ایمیل.", 500, "EMAIL_SEND_FAILED");
+    }
+
+    return { ttlSec: EMAIL_VERIFICATION_TTL_SEC };
+  },
+
+  async resetPassword(args: { email: string; code: string; newPassword: string }) {
+    const { email, code, newPassword } = args;
+
+    // Verify code
+    const storedCode = await getPasswordResetCode(email);
+
+    if (!storedCode) {
+      throw new AppError("کد بازیابی منقضی شده یا یافت نشد.", 400, "CODE_EXPIRED");
+    }
+
+    if (storedCode !== code) {
+      throw new AppError("کد بازیابی اشتباه است.", 400, "INVALID_CODE");
+    }
+
+    // Find user
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user) {
+      throw new AppError("کاربر یافت نشد.", 404, "NOT_FOUND");
+    }
+
+    // Hash new password
+    const passwordHash = await hashPassword(newPassword);
+
+    // Update password
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { passwordHash },
+    });
+
+    // Delete reset code
+    await deletePasswordResetCode(email);
+
+    // Emit event for security logging
+    eventBus.emit("user.password.reset", {
+      userId: user.id,
+      email: user.email,
+      timestamp: new Date().toISOString(),
+    });
+
+    // Optional: Revoke all existing refresh tokens for security
+    // This forces user to login again on all devices
+    try {
+      const pattern = `session:rt:*`;
+      const keys = await redis.keys(pattern);
+      
+      for (const key of keys) {
+        const sessionData = await redis.get(key);
+        if (sessionData) {
+          const session = JSON.parse(sessionData);
+          if (session.userId === String(user.id)) {
+            await redis.del(key);
+          }
+        }
+      }
+    } catch (err) {
+      logger.warn({ err, userId: user.id }, "Failed to revoke sessions after password reset");
+      // Don't throw error, password was already reset successfully
+    }
+
+    return { success: true };
+  },
+
   async refresh(args: { refreshToken?: string; ip?: string; userAgent?: string }) {
     if (!args.refreshToken) {
       throw new AppError("توکن یافت نشد.", 401, "UNAUTHORIZED");
@@ -351,7 +481,7 @@ export const authService = {
       expiresAt: refreshTokenExpiresAt,
       jti: newJti,
     } = signRefreshToken(userId);
-    
+
     await storeRefreshSession(newJti, {
       userId,
       email: user.email,
@@ -383,6 +513,32 @@ export const authService = {
     if (args.jti) {
       revoked = await revokeRefreshSession(args.jti);
     }
+    
+    // If logout all sessions
+    if (args.all) {
+      try {
+        const pattern = `session:rt:*`;
+        const keys = await redis.keys(pattern);
+        let count = 0;
+        
+        for (const key of keys) {
+          const sessionData = await redis.get(key);
+          if (sessionData) {
+            const session = JSON.parse(sessionData);
+            if (session.userId === args.userId) {
+              await redis.del(key);
+              count++;
+            }
+          }
+        }
+        
+        logger.info({ userId: args.userId, count }, "Revoked all sessions for user");
+        revoked = count > 0;
+      } catch (err) {
+        logger.error({ err, userId: args.userId }, "Failed to revoke all sessions");
+      }
+    }
+    
     return { revoked };
   },
 

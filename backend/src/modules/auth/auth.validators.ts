@@ -58,3 +58,16 @@ export type LogoutInput = z.infer<typeof logoutSchema>;
 
 export const meSchema = z.object({});
 export type MeInput = z.infer<typeof meSchema>;
+
+// NEW: Forgot/Reset password
+export const forgotPasswordSchema = z.object({
+  email: emailSchema,
+});
+export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>;
+
+export const resetPasswordSchema = z.object({
+  email: emailSchema,
+  code: z.string().length(6, "کد باید ۶ رقم باشد."),
+  newPassword: passwordSchema,
+});
+export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>; 

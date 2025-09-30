@@ -1,7 +1,7 @@
-// src/assets/js/pages/verify.js
+// src/assets/js/pages/reset-password.js
 (function () {
   document.addEventListener("DOMContentLoaded", () => {
-    const form = document.getElementById("otpForm");
+    const form = document.getElementById("resetPasswordForm");
     if (!form) return;
 
     window.AOS &&
@@ -15,7 +15,7 @@
     KUtils.createClouds(".cloud-animation", 6);
     KUtils.createParticles(".particle-overlay", 9);
 
-    const API_BASE = "/auth"; // ✓ Correct - uses the /auth alias
+    const API_BASE = "/auth";
 
     const qs = (s) => document.querySelector(s);
     const qsa = (s) => Array.from(document.querySelectorAll(s));
@@ -31,37 +31,45 @@
       return `${masked}@${domain}`;
     }
 
-    // ✅ FIX: Properly decode the email from URL
+    // Get email from URL or localStorage
     const params = new URLSearchParams(location.search);
     const emailRaw = decodeURIComponent(
-      params.get("email") || localStorage.getItem("verify_email") || ""
+      params.get("email") || localStorage.getItem("reset_email") || ""
     );
 
     const emailInfo = qs("#emailInfo");
     const masked = emailRaw ? maskEmail(emailRaw) : "";
 
     if (masked && emailInfo) {
-      emailInfo.innerHTML = `کد ۶ رقمی به ایمیل <span class="ltr-numbers" dir="ltr">${masked}</span> ارسال شد.`;
+      emailInfo.innerHTML = `کد ۶ رقمی ارسال شده به <span class="ltr-numbers" dir="ltr">${masked}</span> و رمز عبور جدید را وارد کنید.`;
     }
 
-    // ✅ Store email for later use
     if (emailRaw) {
-      localStorage.setItem("verify_email", emailRaw);
+      localStorage.setItem("reset_email", emailRaw);
     }
 
     const inputs = qsa(".otp-input");
-    const btnVerify = qs("#btnVerify");
-    const otpMsg = qs("#otpMsg");
+    const newPassword = qs("#newPassword");
+    const confirmPassword = qs("#confirmPassword");
+    const btnReset = qs("#btnReset");
+    const passwordMsg = qs("#passwordMsg");
+    const confirmMsg = qs("#confirmMsg");
+    const formMsg = qs("#formMsg");
+
     inputs[0]?.focus();
 
     const getCode = () => inputs.map((i) => i.value).join("");
 
     function updateBtn() {
-      const filled = getCode().length === inputs.length;
-      if (btnVerify) btnVerify.disabled = !filled;
-      if (filled && otpMsg) otpMsg.textContent = "";
+      const codeFilled = getCode().length === inputs.length;
+      const passwordFilled = newPassword?.value.length >= 8;
+      const confirmFilled = confirmPassword?.value.length >= 8;
+      if (btnReset) {
+        btnReset.disabled = !(codeFilled && passwordFilled && confirmFilled);
+      }
     }
 
+    // OTP input handling
     inputs.forEach((inp, idx) => {
       inp.addEventListener("input", (e) => {
         const v = e.target.value.replace(/\D/g, "");
@@ -99,42 +107,79 @@
       });
     });
 
-    // Submit verification
+    // Password validation
+    newPassword &&
+      newPassword.addEventListener("input", () => {
+        passwordMsg.textContent = "";
+        updateBtn();
+      });
+    confirmPassword &&
+      confirmPassword.addEventListener("input", () => {
+        confirmMsg.textContent = "";
+        updateBtn();
+      });
+
+    // Submit form
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
 
       const code = getCode();
+      const newPass = newPassword.value;
+      const confirmPass = confirmPassword.value;
+
+      // Validate code
       if (code.length !== inputs.length) {
-        otpMsg.textContent = "لطفاً کد ۶ رقمی را کامل وارد کنید.";
+        formMsg.textContent = "لطفاً کد ۶ رقمی را کامل وارد کنید.";
         return;
       }
 
-      // ✅ FIX: Properly validate and clean email
+      // Validate email
       const email = emailRaw.trim().toLowerCase();
       if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        otpMsg.textContent = "ایمیل نامعتبر است. به صفحه ورود بازگردید.";
-        setTimeout(() => {
-          window.location.href = "/login";
-        }, 2000);
+        formMsg.textContent = "ایمیل نامعتبر است.";
         return;
       }
 
-      otpMsg.textContent = "";
-      if (btnVerify) {
-        btnVerify.disabled = true;
-        const originalHTML = btnVerify.innerHTML;
-        btnVerify.innerHTML = `<span class="inline-flex items-center justify-center gap-2">
+      // Validate password
+      if (newPass.length < 8) {
+        passwordMsg.textContent = "رمز عبور باید حداقل ۸ کاراکتر باشد.";
+        return;
+      }
+      if (!/^(?=.*[A-Za-z])(?=.*\d)/.test(newPass)) {
+        passwordMsg.textContent = "رمز عبور باید شامل حروف و اعداد باشد.";
+        return;
+      }
+
+      // Check password match
+      if (newPass !== confirmPass) {
+        confirmMsg.textContent = "رمز عبور و تکرار آن مطابقت ندارند.";
+        return;
+      }
+
+      // Clear messages
+      passwordMsg.textContent = "";
+      confirmMsg.textContent = "";
+      formMsg.textContent = "";
+
+      if (btnReset) {
+        btnReset.disabled = true;
+        const originalHTML = btnReset.innerHTML;
+        btnReset.innerHTML = `<span class="inline-flex items-center justify-center gap-2">
         <svg class="w-5 h-5 animate-spin" viewBox="0 0 24 24" fill="none">
           <circle class="opacity-25" cx="12" cy="12" r="10" stroke="white" stroke-width="4"></circle>
           <path class="opacity-75" fill="white" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
-        </svg> در حال بررسی...</span>`;
+        </svg> در حال تنظیم رمز عبور...</span>`;
 
         try {
-          const res = await fetch(`${API_BASE}/verify-email`, {
+          const res = await fetch(`${API_BASE}/reset-password`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             credentials: "include",
-            body: JSON.stringify({ email, code }),
+            body: JSON.stringify({
+              email,
+              code,
+              newPassword: newPass,
+            }),
           });
 
           const data = await res.json().catch(() => null);
@@ -143,33 +188,25 @@
             const msg =
               data?.error?.message ||
               data?.message ||
-              "احراز هویت ناموفق بود. دوباره تلاش کنید.";
+              "خطا در تنظیم رمز عبور. دوباره تلاش کنید.";
             throw new Error(msg);
           }
 
-          // Store user data
-          if (data?.data?.user) {
-            localStorage.setItem("user", JSON.stringify(data.data.user));
-          }
-          localStorage.removeItem("verify_email");
+          // Success
+          localStorage.removeItem("reset_email");
+          formMsg.className = "min-h-[20px] text-sm text-green-500";
+          formMsg.textContent =
+            "✓ رمز عبور با موفقیت تغییر یافت! در حال انتقال...";
 
-          // ✅ Show success message before redirect
-          otpMsg.className = "min-h-[20px] text-sm text-green-500";
-          otpMsg.textContent = "✓ تایید موفق! در حال انتقال...";
-
-          // Redirect to profile
           setTimeout(() => {
-            const redirect =
-              new URLSearchParams(location.search).get("redirect") ||
-              "/profile";
-            window.location.href = redirect;
-          }, 1000);
+            window.location.href = "/login";
+          }, 1500);
         } catch (err) {
-          otpMsg.className = "min-h-[20px] text-sm text-red-500";
-          otpMsg.textContent =
+          formMsg.className = "min-h-[20px] text-sm text-red-500";
+          formMsg.textContent =
             err?.message || "خطا در اتصال. لطفاً دوباره تلاش کنید.";
-          btnVerify.disabled = false;
-          btnVerify.innerHTML = originalHTML;
+          btnReset.disabled = false;
+          btnReset.innerHTML = originalHTML;
         }
       }
     });
@@ -177,7 +214,7 @@
     // Resend timer
     const btnResend = qs("#btnResend");
     const resendTimer = qs("#resendTimer");
-    let timeLeft = 600; // ✅ FIX: Start with 600 seconds (10 minutes)
+    let timeLeft = 600;
     let handle;
 
     function setResendVisualState(enabled) {
@@ -208,7 +245,6 @@
         if (resendTimer) resendTimer.textContent = "";
         return;
       }
-      // ✅ FIX: Format time nicely
       const minutes = Math.floor(timeLeft / 60);
       const seconds = timeLeft % 60;
       if (resendTimer) {
@@ -248,7 +284,7 @@
           throw new Error("ایمیل نامعتبر است.");
         }
 
-        const res = await fetch(`${API_BASE}/resend-verification`, {
+        const res = await fetch(`${API_BASE}/forgot-password`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: "include",
@@ -263,34 +299,24 @@
           throw new Error(msg);
         }
 
-        // ✅ Show success message
-        otpMsg.className = "min-h-[20px] text-sm text-green-500";
-        otpMsg.textContent = "✓ کد جدید ارسال شد!";
+        formMsg.className = "min-h-[20px] text-sm text-green-500";
+        formMsg.textContent = "✓ کد جدید ارسال شد!";
         setTimeout(() => {
-          otpMsg.textContent = "";
-          otpMsg.className = "min-h-[20px] text-sm text-red-500";
+          formMsg.textContent = "";
+          formMsg.className = "min-h-[20px] text-sm text-red-500";
         }, 3000);
 
         const ttlSec = data?.data?.ttlSec || 600;
         startTimer(ttlSec);
       } catch (err) {
-        otpMsg.className = "min-h-[20px] text-sm text-red-500";
-        otpMsg.textContent = err?.message || "خطا در ارسال مجدد کد.";
+        formMsg.className = "min-h-[20px] text-sm text-red-500";
+        formMsg.textContent = err?.message || "خطا در ارسال مجدد کد.";
         btnResend.disabled = false;
         setResendVisualState(true);
       }
     }
 
-    // Start timer on page load
-    startTimer(600); // 10 minutes
+    startTimer(600);
     btnResend && btnResend.addEventListener("click", resendCode);
-
-    // Edit email
-    const editEmail = document.getElementById("editEmail");
-    editEmail &&
-      editEmail.addEventListener("click", () => {
-        localStorage.removeItem("verify_email");
-        window.location.href = "/login";
-      });
   });
 })();
