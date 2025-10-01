@@ -272,8 +272,13 @@
     document.addEventListener("click", (e) => {
       const btn = e.target.closest(".quantity-btn");
       if (!btn) return;
-      const isMinus = btn.querySelector('[data-feather="minus"]');
-      quantity = Math.max(1, quantity + (isMinus ? -1 : +1));
+
+      // Robust detection: works with dataset and with Feather-replaced SVG
+      const isMinus =
+        btn.dataset.action === "dec" ||
+        !!btn.querySelector('[data-feather="minus"], svg.feather.feather-minus');
+
+      quantity = Math.max(1, quantity + (isMinus ? -1 : 1));
       renderQty();
     });
 
@@ -601,28 +606,39 @@
             </div>
           `;
           const list = variantsContainer.querySelector("#variant-list");
+
+          // Requested styles
+          const SELECTED = ["border-black", "bg-rose-50"];
+          const UNSELECTED = ["border-gray-300", "bg-white"];
+
           p.variants.forEach((v, idx) => {
             const disabled = v.stock <= 0 || v.isActive === false;
             const btn = document.createElement("button");
             btn.type = "button";
-            btn.className = `px-3 py-1 rounded-lg border ${
-              idx === 0
-                ? "border-rose-400 bg-rose-50"
-                : "border-gray-200 bg-white"
-            } text-sm hover:border-rose-400 transition ${
+            btn.className = `px-3 py-1 rounded-lg border text-sm transition hover:border-black ${
               disabled ? "opacity-60 cursor-not-allowed" : ""
             }`;
             btn.textContent = v.variantName;
             btn.dataset.variantId = v.id;
+
+            // Initial state
+            if (idx === 0) btn.classList.add(...SELECTED);
+            else btn.classList.add(...UNSELECTED);
+
             if (!disabled) {
               btn.addEventListener("click", () => {
                 selectedVariantId = v.id;
-                list
-                  .querySelectorAll("button")
-                  .forEach((b) =>
-                    b.classList.remove("border-rose-400", "bg-rose-50")
-                  );
-                btn.classList.add("border-rose-400", "bg-rose-50");
+
+                // Reset all to unselected
+                list.querySelectorAll("button").forEach((b) => {
+                  b.classList.remove(...SELECTED);
+                  b.classList.add(...UNSELECTED);
+                });
+
+                // Apply selected to clicked
+                btn.classList.remove(...UNSELECTED);
+                btn.classList.add(...SELECTED);
+
                 renderPrice();
               });
             }
@@ -845,7 +861,7 @@
           const href = `/product/${encodeURIComponent(item.slug)}`;
           const hero = item.heroImageUrl || "/assets/images/product.png";
 
-          const card = document.createElement("a");
+        const card = document.createElement("a");
           card.href = href;
           card.className = `w-3/4 sm:w-1/2 md:w-1/3 lg:w-auto flex-shrink-0 snap-start product-card-v3 ${categoryClass}`;
           card.setAttribute("data-aos", "fade-up");
