@@ -123,7 +123,10 @@ model User {
   phoneVerifiedAt  DateTime?     @map("phone_verified_at") @db.Timestamptz
   createdAt        DateTime      @default(now()) @map("created_at") @db.Timestamptz
   updatedAt        DateTime      @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
-  
+
+  // NEW: profile image url
+  profileImageUrl  String?       @map("profile_image_url") @db.Text
+
   role UserRole @default(CUSTOMER) @map("role")
   notificationPrefs UserNotificationPrefs?
   addresses         UserAddress[]
