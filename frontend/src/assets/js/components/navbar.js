@@ -233,24 +233,16 @@
 
     // Delegate clicks so it also works if the button renders later
     document.body.addEventListener("click", (e) => {
-      const el = e.target?.closest ? e.target.closest("a, button") : null;
+      const el = e.target?.closest?.(
+        "#nav-cart, [data-nav-cart], .js-nav-cart"
+      );
       if (!el) return;
 
-      const isCart =
-        el.matches("#nav-cart, [data-nav-cart], .js-nav-cart") ||
-        !!el.querySelector?.(
-          "i[data-feather='shopping-bag'], svg.feather-shopping-bag"
-        );
-
-      if (!isCart) return;
-
-      // If it's an anchor, enforce href=/cart and let default happen
       if (el.tagName.toLowerCase() === "a") {
         if (el.getAttribute("href") !== "/cart")
           el.setAttribute("href", "/cart");
         return;
       }
-      // Else navigate programmatically
       e.preventDefault();
       window.location.href = "/cart";
     });

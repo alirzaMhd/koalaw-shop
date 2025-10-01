@@ -46,6 +46,75 @@
     KUtils.refreshIcons();
     KUtils.buildFooterLinks();
 
+    // ---- Cart + Toast helpers ----
+    const CART_KEY = "koalaw_cart";
+
+    const safeGetJSON = (key, fallback = []) => {
+      try {
+        if (typeof KUtils?.getJSON === "function")
+          return KUtils.getJSON(key, fallback);
+        const raw = localStorage.getItem(key);
+        return raw ? JSON.parse(raw) : fallback;
+      } catch {
+        return fallback;
+      }
+    };
+    const safeSetJSON = (key, val) => {
+      try {
+        if (typeof KUtils?.setJSON === "function")
+          return KUtils.setJSON(key, val);
+        localStorage.setItem(key, JSON.stringify(val));
+      } catch {}
+    };
+
+    const loadCart = () => {
+      const saved = safeGetJSON(CART_KEY, []);
+      return Array.isArray(saved) ? saved : [];
+    };
+    const saveCart = (cart) => safeSetJSON(CART_KEY, cart);
+
+    const getCartCount = () =>
+      loadCart().reduce((sum, item) => sum + (parseInt(item?.qty, 10) || 0), 0);
+
+    const updateNavCartCount = () => {
+      const el = document.getElementById("nav-cart-count");
+      if (!el) return;
+      const n = getCartCount();
+      const toFaFn =
+        typeof KUtils?.toFa === "function" ? KUtils.toFa : (x) => String(x);
+      el.textContent = toFaFn(n);
+    };
+
+    // Toast (re-uses global if present, creates one if not)
+    function ensureToast() {
+      let t = document.getElementById("toast");
+      if (!t) {
+        t = document.createElement("div");
+        t.id = "toast";
+        t.className = "toast";
+        t.innerHTML = `<i data-feather="check-circle"></i><span id="toast-text">انجام شد</span>`;
+        document.body.appendChild(t);
+        KUtils?.refreshIcons?.();
+      }
+      return t;
+    }
+    function showToast(msg, icon = "check-circle") {
+      const t = ensureToast();
+      const text = t.querySelector("#toast-text") || t.querySelector("span");
+      if (text) text.textContent = msg;
+      t.querySelector("svg")?.remove();
+      const i = document.createElement("i");
+      i.setAttribute("data-feather", icon);
+      t.insertBefore(i, text);
+      KUtils?.refreshIcons?.();
+      t.classList.add("show");
+      clearTimeout(t._to);
+      t._to = setTimeout(() => t.classList.remove("show"), 2200);
+    }
+
+    // keep navbar badge fresh on page load
+    updateNavCartCount();
+
     // ----------- Helpers -----------
     const API_BASE = "/api/products";
 
@@ -594,17 +663,51 @@
       };
       renderPrice();
 
-      // Add to cart payload (log for now)
+      // Add to cart (localStorage) + toast + update navbar badge
       const addBtn = document.querySelector(".add-to-cart-btn");
       if (addBtn) {
         addBtn.addEventListener("click", () => {
-          const payload = {
-            productId: p.id,
-            variantId: selectedVariantId,
-            qty: quantity,
-          };
-          console.log("Add to cart:", payload);
-          // TODO: integrate with your cart API
+          const vObj =
+            selectedVariantId && Array.isArray(p.variants)
+              ? p.variants.find((v) => v.id === selectedVariantId)
+              : null;
+
+          // Build a unique line id (supports variants)
+          const lineId = selectedVariantId
+            ? `${p.id}__${selectedVariantId}`
+            : String(p.id);
+
+          // Safe hero image fallback
+          const imageUrl =
+            document.getElementById("main-product-image")?.src ||
+            p.heroImageUrl ||
+            (Array.isArray(p.images) && p.images[0]?.url) ||
+            "/assets/images/product.png";
+
+          const cart = loadCart();
+          const idx = cart.findIndex((x) => x.id === lineId);
+
+          if (idx > -1) {
+            cart[idx].qty += quantity;
+          } else {
+            cart.push({
+              id: lineId,
+              title: p.title || "محصول",
+              price:
+                typeof currentPrice === "function" ? currentPrice() : p.price,
+              qty: quantity,
+              image: imageUrl,
+              variant: vObj?.variantName || "",
+            });
+          }
+
+          saveCart(cart);
+          updateNavCartCount();
+          showToast("به سبد اضافه شد", "check-circle");
+
+          // Optional: small click feedback
+          addBtn.classList.add("opacity-90");
+          setTimeout(() => addBtn.classList.remove("opacity-90"), 200);
         });
       }
 
