@@ -851,7 +851,6 @@
         });
     });
 
-    if (!location.hash) location.hash = "#/cart";
     window.addEventListener("hashchange", renderRoute);
     renderRoute();
   });

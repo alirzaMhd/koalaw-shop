@@ -88,15 +88,18 @@
               class="text-gray-700 hover:text-gray-900 transition-all duration-300 hover:scale-110"
             >
               <i data-feather="user" class="w-5 h-5"></i></button
-            ><button
+            ><a
+              href="/cart"
+              id="nav-cart"
               class="text-gray-700 hover:text-gray-900 relative transition-all duration-300 hover:scale-110"
+              aria-label="سبد خرید"
             >
-              <i data-feather="shopping-bag" class="w-5 h-5"></i
-              ><span
+              <i data-feather="shopping-bag" class="w-5 h-5"></i>
+              <span
+                id="nav-cart-count"
                 class="absolute -top-2 -right-2 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center pulse-animation"
-                >۳</span
-              ></button
-            ><button id="mobile-menu-button" class="hamburger-button lg:hidden">
+              >۰</span>
+            </a><button id="mobile-menu-button" class="hamburger-button lg:hidden">
               <span></span><span></span><span></span>
             </button>
           </div>

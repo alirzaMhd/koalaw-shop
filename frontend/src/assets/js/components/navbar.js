@@ -9,6 +9,9 @@
     // Try these API bases in order. Adjust if you only use one.
     const API_BASES = ["/auth", "/api/auth"];
 
+    // Same key used by cart.js
+    const CART_KEY = "koalaw_cart";
+
     function toggleMenu() {
       mB && mB.classList.toggle("is-active");
       mM && mM.classList.toggle("is-active");
@@ -124,17 +127,154 @@
       setProfileHref(isLoggedInLocal() ? "/profile" : "/login");
     }
 
-    // Keep button href in sync across tabs/windows
+    // -------- Cart button + badge helpers --------
+    function safeGetJSON(key, fallback) {
+      try {
+        if (
+          typeof KUtils !== "undefined" &&
+          typeof KUtils.getJSON === "function"
+        ) {
+          return KUtils.getJSON(key, fallback);
+        }
+        const raw = localStorage.getItem(key);
+        return raw ? JSON.parse(raw) : fallback;
+      } catch {
+        return fallback;
+      }
+    }
+
+    function toFaNum(n) {
+      try {
+        return KUtils && typeof KUtils.toFa === "function"
+          ? KUtils.toFa(n)
+          : String(n);
+      } catch {
+        return String(n);
+      }
+    }
+
+    function getCartCount() {
+      const cart = safeGetJSON(CART_KEY, []);
+      if (!Array.isArray(cart)) return 0;
+      return cart.reduce(
+        (sum, item) => sum + (parseInt(item?.qty, 10) || 0),
+        0
+      );
+    }
+
+    function findCartRoot() {
+      // Prefer explicit selectors if present
+      let root =
+        document.getElementById("nav-cart") ||
+        document.querySelector("[data-nav-cart], .js-nav-cart");
+      if (root) return root;
+
+      // Fallback: find a button/link in the navbar that contains the shopping-bag icon
+      const scope = nav || document;
+      const candidates = scope.querySelectorAll("a, button");
+      for (const el of candidates) {
+        if (
+          el.querySelector(
+            "i[data-feather='shopping-bag'], svg.feather-shopping-bag"
+          )
+        ) {
+          return el;
+        }
+      }
+      return null;
+    }
+
+    function findCartBadge(createIfMissing = false) {
+      let badge = document.getElementById("nav-cart-count");
+      if (badge) return badge;
+
+      const root = findCartRoot();
+      if (!root) return null;
+
+      badge =
+        root.querySelector(
+          "#nav-cart-count, .pulse-animation, .js-nav-cart-count, [data-cart-count]"
+        ) || null;
+
+      if (!badge && createIfMissing) {
+        badge = document.createElement("span");
+        badge.id = "nav-cart-count";
+        badge.className =
+          "absolute -top-2 -right-2 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center pulse-animation";
+        badge.textContent = "0";
+        root.appendChild(badge);
+      } else if (badge && !badge.id) {
+        badge.id = "nav-cart-count";
+      }
+      return badge;
+    }
+
+    function syncCartCount() {
+      const el = findCartBadge(true);
+      if (!el) return;
+      el.textContent = toFaNum(getCartCount());
+    }
+
+    // Ensure cart button navigates to /cart
+    const cartCtrl = findCartRoot();
+    if (cartCtrl) {
+      const tag = (cartCtrl.tagName || "").toLowerCase();
+      if (tag === "a") {
+        cartCtrl.setAttribute("href", "/cart");
+      } else {
+        cartCtrl.setAttribute("role", "button");
+        cartCtrl.style.cursor = cartCtrl.style.cursor || "pointer";
+        cartCtrl.addEventListener("click", (ev) => {
+          ev.preventDefault();
+          window.location.href = "/cart";
+        });
+      }
+    }
+
+    // Delegate clicks so it also works if the button renders later
+    document.body.addEventListener("click", (e) => {
+      const el = e.target?.closest ? e.target.closest("a, button") : null;
+      if (!el) return;
+
+      const isCart =
+        el.matches("#nav-cart, [data-nav-cart], .js-nav-cart") ||
+        !!el.querySelector?.(
+          "i[data-feather='shopping-bag'], svg.feather-shopping-bag"
+        );
+
+      if (!isCart) return;
+
+      // If it's an anchor, enforce href=/cart and let default happen
+      if (el.tagName.toLowerCase() === "a") {
+        if (el.getAttribute("href") !== "/cart")
+          el.setAttribute("href", "/cart");
+        return;
+      }
+      // Else navigate programmatically
+      e.preventDefault();
+      window.location.href = "/cart";
+    });
+
+    // Keep button href + badge in sync across tabs/windows
     window.addEventListener("storage", (e) => {
       if (e.key === "auth_user") {
         syncProfileButtonsHref();
       }
+      if (e.key === CART_KEY) {
+        syncCartCount();
+      }
+    });
+
+    // Also refresh the badge when the tab becomes active
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden) syncCartCount();
     });
 
     // Initial sync on load
     syncProfileButtonsHref();
+    syncCartCount();
 
-    // Delegate clicks so it also works if the button renders later
+    // Delegate clicks for profile (works if the button renders later)
     document.body.addEventListener("click", async (e) => {
       const target =
         e.target &&
