@@ -6,6 +6,7 @@
     "tailwindcss": "^4.1.13"
   },
   "scripts": {
+    "start": "node backend/src/index.ts",
     "dev:css": "tailwindcss -i frontend/src/assets/css/main.css -o frontend/src/assets/css/tailwind.css --watch",
     "build:css": "tailwindcss -i frontend/src/assets/css/main.css -o frontend/src/assets/css/tailwind.css --minify"
   },
