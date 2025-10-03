@@ -152,6 +152,7 @@ const env = {
     windowMs: parsed.RATE_LIMIT_WINDOW_MS ?? 60_000,
     max: parsed.RATE_LIMIT_MAX ?? 120,
   },
+  REVIEWS_AUTO_APPROVE: bool(false),
 };
 
 export type Env = typeof env;

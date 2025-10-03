@@ -18,7 +18,7 @@ interface AuthenticatedRequest extends Request {
 
 const uuid = z.string().uuid({ message: "شناسه نامعتبر است." });
 const posInt = z.coerce.number().int().min(1).default(1);
-const statusEnum = z.enum(["pending", "approved", "rejected"]) as z.ZodType<ReviewStatus>;
+const statusEnum = z.enum(["PENDING", "APPROVED", "REJECTED"]) as z.ZodType<ReviewStatus>;
 
 const listQuerySchema = z
   .object({
@@ -26,11 +26,17 @@ const listQuerySchema = z
     perPage: z.coerce.number().int().min(1).max(100).default(12),
     status: statusEnum.optional(),
   })
-  .transform((q) => ({
-    page: q.page,
-    perPage: q.perPage,
-    status: q.status,
-  }));
+  .transform((q) => {
+    // FIX 1: Only include status if defined
+    const result: { page: number; perPage: number; status?: ReviewStatus } = {
+      page: q.page,
+      perPage: q.perPage,
+    };
+    if (q.status !== undefined) {
+      result.status = q.status;
+    }
+    return result;
+  });
 
 const adminListQuerySchema = z
   .object({
@@ -41,7 +47,25 @@ const adminListQuerySchema = z
     userId: uuid.optional(),
     search: z.string().trim().max(300).optional(),
   })
-  .transform((q) => q);
+  .transform((q) => {
+    // FIX 2: Only include optional properties if defined
+    const result: {
+      page: number;
+      perPage: number;
+      productId?: string;
+      status?: ReviewStatus;
+      userId?: string;
+      search?: string;
+    } = {
+      page: q.page,
+      perPage: q.perPage,
+    };
+    if (q.productId !== undefined) result.productId = q.productId;
+    if (q.status !== undefined) result.status = q.status;
+    if (q.userId !== undefined) result.userId = q.userId;
+    if (q.search !== undefined) result.search = q.search;
+    return result;
+  });
 
 const idParam = z.object({ id: uuid });
 const productParam = z.object({ productId: uuid });
@@ -167,14 +191,25 @@ class ReviewController {
       const body = await updateContentSchema.parseAsync(req.body ?? {});
       const { userId, isAdmin } = getRequester(req);
 
-      const review = await reviewService.updateContent({
+      // FIX 3: Only include properties that are defined
+      const updateData: {
+        id: string;
+        rating?: number;
+        title?: string | null;
+        body?: string | null;
+        requesterUserId?: string | null;
+        isAdmin?: boolean;
+      } = {
         id,
-        rating: body.rating,
-        title: body.title ?? undefined,
-        body: body.body ?? undefined,
         requesterUserId: userId ?? null,
         isAdmin,
-      });
+      };
+
+      if (body.rating !== undefined) updateData.rating = body.rating;
+      if (body.title !== undefined) updateData.title = body.title;
+      if (body.body !== undefined) updateData.body = body.body;
+
+      const review = await reviewService.updateContent(updateData);
 
       return ok(res, { review }, 200);
     } catch (err: any) {

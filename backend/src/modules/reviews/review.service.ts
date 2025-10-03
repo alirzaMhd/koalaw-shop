@@ -16,12 +16,12 @@
 import { prisma } from "../../infrastructure/db/prismaClient.js";
 import { AppError } from "../../common/errors/AppError.js";
 import { env } from "../../config/env.js";
-import { eventBus } from "../../events/eventBus";
+import { eventBus } from "../../events/eventBus.js";
 import { logger } from "../../config/logger.js";
 
 // ---- Types & helpers ----
 
-export type ReviewStatus = "pending" | "approved" | "rejected";
+export type ReviewStatus = "PENDING" | "APPROVED" | "REJECTED";
 
 export interface Review {
   id: string;
@@ -187,7 +187,7 @@ class ReviewService {
       if (exists) throw new AppError("شما قبلاً برای این محصول نظر ثبت کرده‌اید.", 409, "REVIEW_EXISTS");
     }
 
-    const status: ReviewStatus = AUTO_APPROVE ? "approved" : "pending";
+    const status: ReviewStatus = AUTO_APPROVE ? "APPROVED" : "PENDING";
 
     const created = await prisma.productReview.create({
       data: {
@@ -202,7 +202,7 @@ class ReviewService {
     });
 
     // Update aggregates immediately if approved
-    if (status === "approved") {
+    if (status === "APPROVED") {
       await this.recalcProductRating(productId);
     }
 
@@ -234,23 +234,37 @@ class ReviewService {
     const canEdit =
       args.isAdmin ||
       // Allow owner edits while pending/rejected; if already approved, require admin (to keep moderation consistent)
-      (isOwner && review.status !== "approved");
+      (isOwner && review.status !== "APPROVED");
 
     if (!canEdit) throw new AppError("اجازه ویرایش ندارید.", 403, "FORBIDDEN");
 
     const rating = typeof args.rating === "number" ? clampRating(args.rating) : undefined;
+    
+    // Build update data object conditionally - only include properties that are being updated
+    // This is required for exactOptionalPropertyTypes: true
+    const data: {
+      rating?: number;
+      title?: string | null;
+      body?: string;
+    } = {};
+    
+    if (typeof rating === "number") {
+      data.rating = rating;
+    }
+    if (typeof args.title !== "undefined") {
+      data.title = args.title;
+    }
+    if (typeof args.body !== "undefined") {
+      data.body = (args.body || "").trim();
+    }
+
     const updated = await prisma.productReview.update({
       where: { id: args.id },
-      data: {
-        rating: typeof rating === "number" ? rating : undefined,
-        title: typeof args.title !== "undefined" ? args.title : undefined,
-        body: typeof args.body !== "undefined" ? (args.body || "").trim() : undefined,
-        // If admin edits approved review and rating changes, aggregates will be re-evaluated below on demand
-      },
+      data,
     });
 
     // If already approved and rating changed, recompute aggregates
-    if (updated.status === "approved" && typeof rating === "number" && rating !== review.rating) {
+    if (updated.status === "APPROVED" && typeof rating === "number" && rating !== review.rating) {
       await this.recalcProductRating(updated.productId);
     }
 
@@ -268,12 +282,12 @@ class ReviewService {
       data: { status },
     });
 
-    if (status === "approved") {
+    if (status === "APPROVED") {
       await this.recalcProductRating(updated.productId);
       eventBus.emit("review.approved", { reviewId: id, productId: updated.productId });
     } else {
       // For reject, recompute only if it was previously approved (so aggregates may drop)
-      if (review.status === "approved") {
+      if (review.status === "APPROVED") {
         await this.recalcProductRating(updated.productId);
       }
       eventBus.emit("review.rejected", { reviewId: id, productId: updated.productId });
@@ -289,13 +303,13 @@ class ReviewService {
 
     const ownerId = review.userId ?? null;
     const isOwner = !!ownerId && ownerId === (args?.requesterUserId ?? null);
-    const canDelete = args?.isAdmin || (isOwner && review.status !== "approved");
+    const canDelete = args?.isAdmin || (isOwner && review.status !== "APPROVED");
     if (!canDelete) throw new AppError("اجازه حذف ندارید.", 403, "FORBIDDEN");
 
     await prisma.productReview.delete({ where: { id } });
 
     // If an approved review was deleted, recompute aggregates
-    if (review.status === "approved") {
+    if (review.status === "APPROVED") {
       await this.recalcProductRating(review.productId);
     }
 
@@ -307,7 +321,7 @@ class ReviewService {
 
   async recalcProductRating(productId: string): Promise<{ ratingAvg: number; ratingCount: number }> {
     const agg = await prisma.productReview.aggregate({
-      where: { productId, status: "approved" },
+      where: { productId, status: "APPROVED" },
       _avg: { rating: true },
       _count: { _all: true },
     });
