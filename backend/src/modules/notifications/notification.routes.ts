@@ -2,9 +2,9 @@
 // Registers notification endpoints
 
 import { Router, Request, Response, NextFunction } from "express";
-import { notificationController } from "./notification.controller";
-import { authGuard } from "../../common/middlewares/authGuard";
-import { AppError } from "../../common/errors/AppError";
+import { notificationController } from "./notification.controller.js";
+import { authGuard } from "../../common/middlewares/authGuard.js";
+import { AppError } from "../../common/errors/AppError.js";
 
 export const notificationRouter = Router();
 

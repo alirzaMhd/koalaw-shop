@@ -3,11 +3,11 @@
 // Uses DB stock on product_variants.stock and transactional updates for correctness.
 // Backorders can be enabled via env.INVENTORY_ALLOW_BACKORDER (default: false).
 
-import { prisma } from "../../infrastructure/db/prismaClient";
-import { AppError } from "../../common/errors/AppError";
-import { logger } from "../../config/logger";
+import { prisma } from "../../infrastructure/db/prismaClient.js";
+import { AppError } from "../../common/errors/AppError.js";
+import { logger } from "../../config/logger.js";
 import { eventBus } from "../../events/eventBus";
-import { env } from "../../config/env";
+import { env } from "../../config/env.js";
 
 const ALLOW_BACKORDER = String(env.INVENTORY_ALLOW_BACKORDER || "false") === "true";
 

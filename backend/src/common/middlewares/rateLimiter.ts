@@ -2,8 +2,8 @@
 // Simple rate limiter middleware using Redis if available, otherwise in-memory fallback.
 
 import type { RequestHandler } from "express";
-import { AppError } from "../errors/AppError";
-import { logger } from "../../config/logger";
+import { AppError } from "../errors/AppError.js";
+import { logger } from "../../config/logger.js";
 
 // Try to use shared redis client if present
 let redis: any = null;

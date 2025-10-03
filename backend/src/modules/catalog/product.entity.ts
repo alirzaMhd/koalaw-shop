@@ -2,7 +2,7 @@
 // Domain types and helpers for products, variants, images, brand, and color theme.
 // Aligned with your SQL migration while keeping camelCase in the domain layer.
 
-import type { ProductCategory as DomainProductCategory } from "./category.entity";
+import type { ProductCategory as DomainProductCategory } from "./category.entity.js";
 import type { Prisma, ProductCategory } from "@prisma/client"; // type-only for enum typing
 
 // ---------- Primitive/refs ----------

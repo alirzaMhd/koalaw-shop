@@ -1,6 +1,6 @@
 // src/modules/profile/profile.service.ts
-import { prisma } from "../../infrastructure/db/prismaClient";
-import { AppError } from "../../common/errors/AppError";
+import { prisma } from "../../infrastructure/db/prismaClient.js";
+import { AppError } from "../../common/errors/AppError.js";
 
 const KOALA_DEFAULTS = {
   firstName: "کوالا",

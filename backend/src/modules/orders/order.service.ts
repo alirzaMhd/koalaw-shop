@@ -2,9 +2,9 @@
 // Orders domain service: fetch, list, state transitions, and payment state updates.
 // Integrates with inventory reservations (release on cancel) and coupon redemptions on payment success.
 
-import { prisma } from "../../infrastructure/db/prismaClient";
-import { AppError } from "../../common/errors/AppError";
-import { logger } from "../../config/logger";
+import { prisma } from "../../infrastructure/db/prismaClient.js";
+import { AppError } from "../../common/errors/AppError.js";
+import { logger } from "../../config/logger.js";
 import { eventBus } from "../../events/eventBus";
 import {
   emitOrderStatusChanged,
@@ -13,8 +13,8 @@ import {
   emitPaymentFailed,
   type OrderCreatedEvent,
 } from "./order.events";
-import { inventoryService } from "../inventory/inventory.service";
-import { normalizeCouponCode } from "../pricing/coupon.entity";
+import { inventoryService } from "../inventory/inventory.service.js";
+import { normalizeCouponCode } from "../pricing/coupon.entity.js";
 
 // ---- Types ----
 

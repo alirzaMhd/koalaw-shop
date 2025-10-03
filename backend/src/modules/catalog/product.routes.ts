@@ -2,9 +2,9 @@
 // Registers product endpoints
 
 import { Router, Request, Response, NextFunction } from "express";
-import { productController } from "./product.controller";
-import { authGuard } from "../../common/middlewares/authGuard";
-import { AppError } from "../../common/errors/AppError";
+import { productController } from "./product.controller.js";
+import { authGuard } from "../../common/middlewares/authGuard.js";
+import { AppError } from "../../common/errors/AppError.js";
 
 export const productRouter = Router();
 

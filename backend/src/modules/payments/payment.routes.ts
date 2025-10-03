@@ -2,9 +2,9 @@
 // Registers payment endpoints
 
 import express, { Router, Request, Response, NextFunction } from "express";
-import { paymentController } from "./payment.controller";
-import { authGuard } from "../../common/middlewares/authGuard";
-import { AppError } from "../../common/errors/AppError";
+import { paymentController } from "./payment.controller.js";
+import { authGuard } from "../../common/middlewares/authGuard.js";
+import { AppError } from "../../common/errors/AppError.js";
 
 export const paymentRouter = Router();
 

@@ -3,11 +3,11 @@
 // merge guest cart on login, and compute quotes via pricing.service.
 // Uses snapshot fields on cart_items (title, variant_name, unit_price, image_url, currency_code).
 
-import { prisma } from "../../infrastructure/db/prismaClient";
-import { AppError } from "../../common/errors/AppError";
+import { prisma } from "../../infrastructure/db/prismaClient.js";
+import { AppError } from "../../common/errors/AppError.js";
 import { eventBus } from "../../events/eventBus";
-import { logger } from "../../config/logger";
-import { pricingService, type QuoteOptions, type QuoteResult } from "../pricing/pricing.service";
+import { logger } from "../../config/logger.js";
+import { pricingService, type QuoteOptions, type QuoteResult } from "../pricing/pricing.service.js";
 
 export type CartStatus = "active" | "converted" | "abandoned";
 

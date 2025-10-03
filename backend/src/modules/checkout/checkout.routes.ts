@@ -2,9 +2,9 @@
 // Registers checkout endpoints
 
 import { Router } from "express";
-import { checkoutController } from "./checkout.controller";
+import { checkoutController } from "./checkout.controller.js";
 // If you want to require auth for checkout, uncomment the next line and apply to routes
-// import { authGuard } from "../../common/middlewares/authGuard";
+// import { authGuard } from "../../common/middlewares/authGuard.js";
 
 export const checkoutRouter = Router();
 

@@ -2,9 +2,9 @@
 // Registers cart endpoints
 
 import { Router, Request, Response, NextFunction } from "express";
-import { cartController } from "./cart.controller";
-import { authGuard } from "../../common/middlewares/authGuard";
-import { AppError } from "../../common/errors/AppError";
+import { cartController } from "./cart.controller.js";
+import { authGuard } from "../../common/middlewares/authGuard.js";
+import { AppError } from "../../common/errors/AppError.js";
 
 export const cartRouter = Router();
 

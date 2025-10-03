@@ -2,23 +2,23 @@
 // Server bootstrap: loads env, creates Express app, binds event handlers/workers, and starts HTTP.
 import "dotenv/config";
 import http from "http";
-import { env } from "./config/env";
-import { logger } from "./config/logger";
+import { env } from "./config/env.js";
+import { logger } from "./config/logger.js";
 import createApp from "./app";
 
 // Infra for graceful shutdown
-import { prisma } from "./infrastructure/db/prismaClient";
+import { prisma } from "./infrastructure/db/prismaClient.js";
 import { redis } from "./infrastructure/cache/redisClient";
 import { emailQueue, webhooksQueue, bindDefaultEmailWorker } from "./infrastructure/queue/bullmq";
 
 // Domain event handlers
 import { bindOrderCreatedHandler } from "./events/handlers/order.created.handler";
 import { bindPaymentSucceededHandler } from "./events/handlers/payment.succeeded.handler";
-import { notificationService } from "./modules/notifications/notification.service";
+import { notificationService } from "./modules/notifications/notification.service.js";
 
 // Elasticsearch
 import { ping as esPing } from "./infrastructure/search/elastic.client";
-import { ensureSearchIndices } from "./modules/search/search.service";
+import { ensureSearchIndices } from "./modules/search/search.service.js";
 
 async function bootstrap() {
   // Bind domain event handlers

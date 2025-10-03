@@ -4,7 +4,7 @@
 //        eventBus.emit("order.created", { orderId, ... });
 
 import { EventEmitter } from "events";
-import { logger } from "../config/logger";
+import { logger } from "../config/logger.js";
 
 class EventBus extends EventEmitter {
   constructor() {

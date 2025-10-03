@@ -4,20 +4,20 @@
 import { Router } from "express";
 
 // Module routers
-import authRouter from "./modules/auth/auth.routes";
-import userRouter from "./modules/users/user.routes";
-import productRouter from "./modules/catalog/product.routes";
-import inventoryRouter from "./modules/inventory/inventory.routes";
-import cartRouter from "./modules/cart/cart.routes";
-import checkoutRouter from "./modules/checkout/checkout.routes";
-import orderRouter from "./modules/orders/order.routes";
-import paymentRouter from "./modules/payments/payment.routes";
-import shippingRouter from "./modules/shipping/shipping.routes";
-import reviewRouter from "./modules/reviews/review.routes";
-import notificationRouter from "./modules/notifications/notification.routes";
-import searchRouter from "./modules/search/search.routes";
-import magazineRoutes from "./modules/magazine/magazine.routes";
-import profileRoutes from "./modules/profile/profile.routes";
+import authRouter from "./modules/auth/auth.routes.js";
+import userRouter from "./modules/users/user.routes.js";
+import productRouter from "./modules/catalog/product.routes.js";
+import inventoryRouter from "./modules/inventory/inventory.routes.js";
+import cartRouter from "./modules/cart/cart.routes.js";
+import checkoutRouter from "./modules/checkout/checkout.routes.js";
+import orderRouter from "./modules/orders/order.routes.js";
+import paymentRouter from "./modules/payments/payment.routes.js";
+import shippingRouter from "./modules/shipping/shipping.routes.js";
+import reviewRouter from "./modules/reviews/review.routes.js";
+import notificationRouter from "./modules/notifications/notification.routes.js";
+import searchRouter from "./modules/search/search.routes.js";
+import magazineRoutes from "./modules/magazine/magazine.routes.js";
+import profileRoutes from "./modules/profile/profile.routes.js";
 
 export function buildApiRouter() {
   const api = Router();

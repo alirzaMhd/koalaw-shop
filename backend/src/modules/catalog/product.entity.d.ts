@@ -1,4 +1,4 @@
-import type { ProductCategory as DomainProductCategory } from "./category.entity";
+import type { ProductCategory as DomainProductCategory } from "./category.entity.js";
 export type CurrencyCode = string;
 export interface BrandRef {
     id: string;

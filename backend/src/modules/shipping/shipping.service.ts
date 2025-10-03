@@ -17,11 +17,11 @@
 //   SHIPPING_REGION_OVERRIDES='[{"province":"tehran","multiplier":1,"extra":0}]'
 //   CURRENCY_DEFAULT=IRR
 
-import { prisma } from "../../infrastructure/db/prismaClient";
-import { env } from "../../config/env";
-import { logger } from "../../config/logger";
-import { AppError } from "../../common/errors/AppError";
-import { pricingService, type QuoteResult } from "../pricing/pricing.service";
+import { prisma } from "../../infrastructure/db/prismaClient.js";
+import { env } from "../../config/env.js";
+import { logger } from "../../config/logger.js";
+import { AppError } from "../../common/errors/AppError.js";
+import { pricingService, type QuoteResult } from "../pricing/pricing.service.js";
 
 export type ShippingMethod = "standard" | "express";
 

@@ -2,10 +2,10 @@
 // Profile, addresses, and notification preferences service.
 // Works with the SQL schema you provided and maps rows to domain entities.
 
-import { prisma } from "../../infrastructure/db/prismaClient";
-import { logger } from "../../config/logger";
-import { eventBus } from "../../events/eventBus";
-import { AppError } from "../../common/errors/AppError";
+import { prisma } from "../../infrastructure/db/prismaClient.js";
+import { logger } from "../../config/logger.js";
+import { eventBus } from "../../events/eventBus.js";
+import { AppError } from "../../common/errors/AppError.js";
 
 import {
   User,
@@ -19,7 +19,7 @@ import {
   DEFAULT_NOTIFICATION_PREFS,
   makeUserSummary,
   UserSummary,
-} from "./user.entity";
+} from "./user.entity.js";
 
 // Inputs
 export type UpdateProfileInput = Partial<{

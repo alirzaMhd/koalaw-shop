@@ -2,10 +2,10 @@
 // Products service: listing, read (id/slug), create/update, and child resources (images/variants).
 // Now also loads badges, approved reviews, and related products from DB.
 
-import { prisma } from "../../infrastructure/db/prismaClient";
-import { logger } from "../../config/logger";
+import { prisma } from "../../infrastructure/db/prismaClient.js";
+import { logger } from "../../config/logger.js";
 import { eventBus } from "../../events/eventBus";
-import { AppError } from "../../common/errors/AppError";
+import { AppError } from "../../common/errors/AppError.js";
 
 import {
   mapDbProductToEntity,
@@ -20,7 +20,7 @@ import {
   type Product,
   type ProductImage,
   type ProductVariant,
-} from "./product.entity";
+} from "./product.entity.js";
 
 import {
   type ListProductsQuery,
@@ -31,7 +31,7 @@ import {
   type AddReviewInput,
   type ListReviewsQuery,
 } from "./product.validators";
-import { listCategories, normalizeCategories } from "./category.entity"; // NEW
+import { listCategories, normalizeCategories } from "./category.entity.js"; // NEW
 
 // ---------------- Utils ----------------
 

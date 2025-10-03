@@ -1,4 +1,4 @@
-import { type QuoteOptions, type QuoteResult } from "../pricing/pricing.service";
+import { type QuoteOptions, type QuoteResult } from "../pricing/pricing.service.js";
 export type CartStatus = "active" | "converted" | "abandoned";
 export interface Cart {
     id: string;

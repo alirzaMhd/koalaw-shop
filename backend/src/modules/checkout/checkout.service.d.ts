@@ -1,4 +1,4 @@
-import { type QuoteOptions, type QuoteResult, type ShippingMethod } from "../pricing/pricing.service";
+import { type QuoteOptions, type QuoteResult, type ShippingMethod } from "../pricing/pricing.service.js";
 export type PaymentMethod = "gateway" | "cod";
 export interface CheckoutAddress {
     firstName: string;

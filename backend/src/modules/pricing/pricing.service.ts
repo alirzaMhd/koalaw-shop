@@ -25,16 +25,16 @@
 //   tax = 0 (placeholder; integrate tax.service later if needed)
 //   total = postSubtotal + shipping + giftWrap + tax
 
-import { prisma } from "../../infrastructure/db/prismaClient";
-import { env } from "../../config/env";
-import { logger } from "../../config/logger";
+import { prisma } from "../../infrastructure/db/prismaClient.js";
+import { env } from "../../config/env.js";
+import { logger } from "../../config/logger.js";
 import {
   Coupon,
   normalizeCouponCode,
   mapDbCouponToEntity,
   evaluateCoupon,
   isCouponActive,
-} from "./coupon.entity";
+} from "./coupon.entity.js";
 
 export type ShippingMethod = "standard" | "express";
 

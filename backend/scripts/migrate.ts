@@ -8,8 +8,8 @@
 import { spawn } from "child_process";
 import path from "path";
 import dotenv from "dotenv";
-import { prisma } from "../src/infrastructure/db/prismaClient";
-import { logger } from "../src/config/logger";
+import { prisma } from "../src/infrastructure/db/prismaClient.js";
+import { logger } from "../src/config/logger.js";
 
 // Load .env from project root
 dotenv.config({ path: path.resolve(process.cwd(), ".env") });

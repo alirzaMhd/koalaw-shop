@@ -4,8 +4,8 @@
 import type { Request, Response, NextFunction, RequestHandler } from "express";
 import { z } from "zod";
 
-import { AppError } from "../../common/errors/AppError";
-import { checkoutService } from "./checkout.service";
+import { AppError } from "../../common/errors/AppError.js";
+import { checkoutService } from "./checkout.service.js";
 
 // If your authGuard attaches the decoded JWT here:
 interface AuthenticatedRequest extends Request {

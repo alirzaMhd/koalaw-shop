@@ -2,8 +2,8 @@
 // Registers /users endpoints (profile, preferences, addresses, summary)
 
 import { Router } from "express";
-import { userController } from "./user.controller";
-import { authGuard } from "../../common/middlewares/authGuard";
+import { userController } from "./user.controller.js";
+import { authGuard } from "../../common/middlewares/authGuard.js";
 
 export const userRouter = Router();
 

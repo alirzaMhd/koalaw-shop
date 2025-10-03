@@ -17,9 +17,9 @@
 // Note: The service is stateless and safe to reuse. It does not persist any tax data.
 //       Integrate with pricing.service by calling computeForLines and adding the tax totals to your quote.
 
-import { prisma } from "../../infrastructure/db/prismaClient";
-import { env } from "../../config/env";
-import { logger } from "../../config/logger";
+import { prisma } from "../../infrastructure/db/prismaClient.js";
+import { env } from "../../config/env.js";
+import { logger } from "../../config/logger.js";
 
 const TAX_ENABLED = String(env.TAX_ENABLED ?? "true") === "true";
 const DEFAULT_RATE = Number(env.TAX_RATE_PERCENT ?? 9); // IR VAT ~9%

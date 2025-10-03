@@ -3,7 +3,7 @@
 // Requires: npm i @elastic/elasticsearch
 
 import { Client } from "@elastic/elasticsearch";
-import { logger } from "../../config/logger";
+import { logger } from "../../config/logger.js";
 
 const node = process.env.ELASTICSEARCH_NODE || "http://localhost:9200";
 

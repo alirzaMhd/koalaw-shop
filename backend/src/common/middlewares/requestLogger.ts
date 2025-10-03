@@ -2,7 +2,7 @@
 // Request logger (method, path, status, duration) + request id propagation.
 
 import type { RequestHandler } from "express";
-import { logger } from "../../config/logger";
+import { logger } from "../../config/logger.js";
 import crypto from "crypto";
 
 export const requestLogger: RequestHandler = (req, res, next) => {

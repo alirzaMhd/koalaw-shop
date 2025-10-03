@@ -2,8 +2,8 @@
 // Minimal PayPal adapter: create order via REST API (v2).
 // Requires PAYPAL_CLIENT_ID and PAYPAL_SECRET; uses sandbox if PAYPAL_ENV=sandbox.
 
-import { env } from "../../config/env";
-import { logger } from "../../config/logger";
+import { env } from "../../config/env.js";
+import { logger } from "../../config/logger.js";
 
 const BASE = String(env.PAYPAL_ENV || "sandbox") === "live"
   ? "https://api-m.paypal.com"

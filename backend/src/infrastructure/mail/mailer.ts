@@ -2,8 +2,8 @@
 // Nodemailer transporter factory. Falls back to JSON/logging transport if SMTP not configured.
 
 import nodemailer, { Transporter } from "nodemailer";
-import { env } from "../../config/env";
-import { logger } from "../../config/logger";
+import { env } from "../../config/env.js";
+import { logger } from "../../config/logger.js";
 
 function buildTransport(): Transporter {
   const host = env.SMTP_HOST;

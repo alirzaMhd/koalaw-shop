@@ -3,15 +3,15 @@ import type { Request, RequestHandler } from "express";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
-import { profileService } from "./profile.service";
+import { profileService } from "./profile.service.js";
 import {
   updateProfileSchema,
   updateNotificationPrefsSchema,
   createAddressSchema,
   updateAddressSchema,
 } from "./profile.validators";
-import { AppError } from "../../common/errors/AppError";
-import { prisma } from "../../infrastructure/db/prismaClient"; // NEW
+import { AppError } from "../../common/errors/AppError.js";
+import { prisma } from "../../infrastructure/db/prismaClient.js"; // NEW
 
 interface AuthenticatedRequest extends Request {
   user?: { id?: string; sub?: string; role?: string };

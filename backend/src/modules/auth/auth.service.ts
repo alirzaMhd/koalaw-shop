@@ -2,13 +2,13 @@
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import { prisma } from "../../infrastructure/db/prismaClient";
+import { prisma } from "../../infrastructure/db/prismaClient.js";
 import { redis } from "../../infrastructure/cache/redisClient";
 import { eventBus } from "../../events/eventBus";
 import { mailer } from "../../infrastructure/mail/mailer";
-import { AppError } from "../../common/errors/AppError";
-import { env } from "../../config/env";
-import { logger } from "../../config/logger";
+import { AppError } from "../../common/errors/AppError.js";
+import { env } from "../../config/env.js";
+import { logger } from "../../config/logger.js";
 
 // JWT
 const ACCESS_SECRET = String(env.JWT_ACCESS_SECRET || env.JWT_SECRET || "access-secret-dev");

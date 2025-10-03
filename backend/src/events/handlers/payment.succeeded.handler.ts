@@ -3,9 +3,9 @@
 // and optionally send payment receipt (if not already handled elsewhere).
 
 import { eventBus, logBinding } from "../eventBus";
-import { logger } from "../../config/logger";
-import { shippingService } from "../../modules/shipping/shipping.service";
-import { notificationService } from "../../modules/notifications/notification.service";
+import { logger } from "../../config/logger.js";
+import { shippingService } from "../../modules/shipping/shipping.service.js";
+import { notificationService } from "../../modules/notifications/notification.service.js";
 
 let BOUND = false;
 

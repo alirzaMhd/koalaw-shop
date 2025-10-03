@@ -13,10 +13,10 @@
 import path from "path";
 import fs from "fs/promises";
 import Handlebars from "handlebars";
-import { prisma } from "../../infrastructure/db/prismaClient";
-import { env } from "../../config/env";
-import { logger } from "../../config/logger";
-import { AppError } from "../../common/errors/AppError";
+import { prisma } from "../../infrastructure/db/prismaClient.js";
+import { env } from "../../config/env.js";
+import { logger } from "../../config/logger.js";
+import { AppError } from "../../common/errors/AppError.js";
 import { eventBus } from "../../events/eventBus";
 import { onOrderCreated, onPaymentSucceeded, type OrderCreatedEvent, type PaymentSucceededEvent } from "../orders/order.events";
 

@@ -3,7 +3,7 @@
 // Use these helpers instead of string literals to avoid typos across the codebase.
 
 import { eventBus } from "../../events/eventBus";
-import { logger } from "../../config/logger";
+import { logger } from "../../config/logger.js";
 
 // ---- Event names (frozen) ----
 export const OrderEvent = Object.freeze({

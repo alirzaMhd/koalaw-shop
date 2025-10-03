@@ -2,8 +2,8 @@
 // Redis client singleton (ioredis) with helpers for JSON, counters, and graceful logs.
 
 import Redis, { RedisOptions } from "ioredis";
-import { env } from "../../config/env";
-import { logger } from "../../config/logger";
+import { env } from "../../config/env.js";
+import { logger } from "../../config/logger.js";
 
 function buildOptions(): RedisOptions | string {
   if (env.REDIS_URL) return String(env.REDIS_URL);

@@ -1,4 +1,4 @@
-import { type QuoteResult } from "../pricing/pricing.service";
+import { type QuoteResult } from "../pricing/pricing.service.js";
 export type ShippingMethod = "standard" | "express";
 export interface Address {
     firstName?: string;

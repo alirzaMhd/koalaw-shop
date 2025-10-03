@@ -2,9 +2,9 @@
 // Registers order endpoints
 
 import { Router, Request, Response, NextFunction } from "express";
-import { orderController } from "./order.controller";
-import { authGuard } from "../../common/middlewares/authGuard";
-import { AppError } from "../../common/errors/AppError";
+import { orderController } from "./order.controller.js";
+import { authGuard } from "../../common/middlewares/authGuard.js";
+import { AppError } from "../../common/errors/AppError.js";
 
 export const orderRouter = Router();
 

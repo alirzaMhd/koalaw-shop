@@ -1,7 +1,7 @@
 // src/modules/search/search.service.ts
-import { prisma } from "../../infrastructure/db/prismaClient";
+import { prisma } from "../../infrastructure/db/prismaClient.js";
 import { elastic, ensureIndex } from "../../infrastructure/search/elastic.client";
-import { logger } from "../../config/logger";
+import { logger } from "../../config/logger.js";
 
 export const PRODUCTS_INDEX = process.env.ELASTICSEARCH_PRODUCTS_INDEX || "products";
 export const MAGAZINE_INDEX = process.env.ELASTICSEARCH_MAGAZINE_INDEX || "magazine";

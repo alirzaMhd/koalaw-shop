@@ -2,8 +2,8 @@
 // Minimal Stripe adapter: createPaymentIntent (used by checkout.service)
 
 import Stripe from "stripe";
-import { env } from "../../config/env";
-import { logger } from "../../config/logger";
+import { env } from "../../config/env.js";
+import { logger } from "../../config/logger.js";
 
 const STRIPE_KEY = env.STRIPE_SECRET_KEY;
 export const stripeClient = STRIPE_KEY ? new Stripe(STRIPE_KEY, { apiVersion: "2022-11-15" }) : null;

@@ -2,9 +2,9 @@
 // Registers shipping endpoints
 
 import { Router, Request, Response, NextFunction } from "express";
-import { shippingController } from "./shipping.controller";
-import { authGuard } from "../../common/middlewares/authGuard";
-import { AppError } from "../../common/errors/AppError";
+import { shippingController } from "./shipping.controller.js";
+import { authGuard } from "../../common/middlewares/authGuard.js";
+import { AppError } from "../../common/errors/AppError.js";
 
 export const shippingRouter = Router();
 

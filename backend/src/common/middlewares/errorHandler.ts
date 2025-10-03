@@ -3,8 +3,8 @@
 
 import type { ErrorRequestHandler } from "express";
 import { ZodError } from "zod";
-import { AppError } from "../errors/AppError";
-import { logger } from "../../config/logger";
+import { AppError } from "../errors/AppError.js";
+import { logger } from "../../config/logger.js";
 
 export const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
   // Zod validation

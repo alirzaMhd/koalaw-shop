@@ -1,11 +1,11 @@
 // src/infrastructure/queue/bullmq.ts
 // BullMQ queues and optional default workers. Uses the same Redis as cache (by URL or host configs).
 
-import { Queue, Worker, QueueEvents, JobsOptions, ConnectionOptions } from "bullmq";
-import { env } from "../../config/env";
-import { logger } from "../../config/logger";
+import { Queue, Worker, QueueEvents } from "bullmq";
+import { env } from "../../config/env.js";
+import { logger } from "../../config/logger.js";
 
-function connection(): ConnectionOptions {
+function connection() {
   if (env.REDIS_URL) return { url: String(env.REDIS_URL) };
   return {
     host: env.REDIS_HOST || "127.0.0.1",

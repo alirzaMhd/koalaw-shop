@@ -3,8 +3,8 @@
 
 import type { Request, Response, NextFunction, RequestHandler } from "express";
 import { z } from "zod";
-import { AppError } from "../../common/errors/AppError";
-import { reviewService, type ReviewStatus } from "./review.service";
+import { AppError } from "../../common/errors/AppError.js";
+import { reviewService, type ReviewStatus } from "./review.service.js";
 
 function ok(res: Response, data: any, status = 200) {
   return res.status(status).json({ success: true, data });

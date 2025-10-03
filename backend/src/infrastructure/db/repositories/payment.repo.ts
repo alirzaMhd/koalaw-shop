@@ -2,7 +2,7 @@
 // Payments data access (lookup by authority, by order, update states).
 
 import { Prisma } from "@prisma/client";
-import { prisma } from "../prismaClient";
+import { prisma } from "../prismaClient.js";
 
 export const paymentRepo = {
   findById(id: string) {

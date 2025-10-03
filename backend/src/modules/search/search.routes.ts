@@ -7,7 +7,7 @@ import {
   searchProducts,
   reindexAllMagazinePosts,
   searchMagazinePosts,
-} from "./search.service";
+} from "./search.service.js";
 
 const router = Router();
 

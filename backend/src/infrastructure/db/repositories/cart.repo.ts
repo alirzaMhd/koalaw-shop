@@ -2,7 +2,7 @@
 // Cart data access operations (snapshots live on cart_items).
 
 import { Prisma } from "@prisma/client";
-import { prisma } from "../prismaClient";
+import { prisma } from "../prismaClient.js";
 
 export const cartRepo = {
   // Carts

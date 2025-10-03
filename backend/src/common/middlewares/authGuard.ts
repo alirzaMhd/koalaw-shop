@@ -3,8 +3,8 @@
 
 import type { RequestHandler } from "express";
 import jwt from "jsonwebtoken";
-import { AppError } from "../errors/AppError";
-import { env } from "../../config/env";
+import { AppError } from "../errors/AppError.js";
+import { env } from "../../config/env.js";
 
 const ACCESS_COOKIE = env.ACCESS_TOKEN_COOKIE_NAME || "at";
 const ACCESS_SECRET = String(env.JWT_ACCESS_SECRET || env.JWT_SECRET || "access-secret-dev");

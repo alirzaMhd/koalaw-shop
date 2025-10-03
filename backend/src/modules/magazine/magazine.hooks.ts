@@ -1,7 +1,7 @@
 // src/modules/magazine/magazine.hooks.ts
-import { prisma } from "../../infrastructure/db/prismaClient";
-import { indexMagazinePostById, deleteMagazinePostById } from "../search/search.service";
-import { logger } from "../../config/logger";
+import { prisma } from "../../infrastructure/db/prismaClient.js";
+import { indexMagazinePostById, deleteMagazinePostById } from "../search/search.service.js";
+import { logger } from "../../config/logger.js";
 
 // Call this after creating or updating a magazine post
 export async function onMagazinePostSaved(postId: string) {

@@ -1,4 +1,4 @@
-import { type ProductImage, type ProductVariant } from "./product.entity";
+import { type ProductImage, type ProductVariant } from "./product.entity.js";
 import { type ListProductsQuery, type CreateProductInput, type UpdateProductInput, type AddImageInput, type UpdateImageInput, type AddReviewInput, type ListReviewsQuery } from "./product.validators";
 declare class ProductService {
     list(query: ListProductsQuery): Promise<{

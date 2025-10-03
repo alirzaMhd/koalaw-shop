@@ -3,7 +3,7 @@
 
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
-import { env } from "../../config/env";
+import { env } from "../../config/env.js";
 
 export function hashSHA256(input: string): string {
   return crypto.createHash("sha256").update(input, "utf8").digest("hex");

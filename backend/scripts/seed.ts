@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import path from "path";
 import dotenv from "dotenv";
-import { logger } from "../src/config/logger";
+import { logger } from "../src/config/logger.js";
 
 // Load .env from project root
 dotenv.config({ path: path.resolve(process.cwd(), ".env") });

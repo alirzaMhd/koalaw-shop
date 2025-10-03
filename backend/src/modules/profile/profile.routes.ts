@@ -1,7 +1,7 @@
 // src/modules/profile/profile.routes.ts
 import { Router } from "express";
-import { profileController, uploadMiddleware } from "./profile.controller";
-import { authGuard } from "../../common/middlewares/authGuard";
+import { profileController, uploadMiddleware } from "./profile.controller.js";
+import { authGuard } from "../../common/middlewares/authGuard.js";
 
 export const profileRouter = Router();
 

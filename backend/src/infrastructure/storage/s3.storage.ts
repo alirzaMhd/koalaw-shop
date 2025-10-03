@@ -10,8 +10,8 @@ import {
   HeadObjectCommand,
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { env } from "../../config/env";
-import { logger } from "../../config/logger";
+import { env } from "../../config/env.js";
+import { logger } from "../../config/logger.js";
 
 const region = env.S3_REGION || "auto";
 const endpoint = env.S3_ENDPOINT || undefined;

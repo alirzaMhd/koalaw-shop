@@ -4,8 +4,8 @@
 
 import type { Request, Response, NextFunction, RequestHandler } from "express";
 import { z } from "zod";
-import { AppError } from "../../common/errors/AppError";
-import { orderService, type OrderStatus } from "./order.service";
+import { AppError } from "../../common/errors/AppError.js";
+import { orderService, type OrderStatus } from "./order.service.js";
 
 interface AuthenticatedRequest extends Request {
   user?: { id?: string; sub?: string; role?: string };

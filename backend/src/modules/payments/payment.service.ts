@@ -13,11 +13,11 @@
 // - PayPal webhook handler (best-effort; expects authority to match provider order id)
 // - Generic gateway return handler (for PSPs that redirect back with query/body)
 
-import { prisma } from "../../infrastructure/db/prismaClient";
-import { AppError } from "../../common/errors/AppError";
-import { logger } from "../../config/logger";
-import { env } from "../../config/env";
-import { orderService } from "../orders/order.service";
+import { prisma } from "../../infrastructure/db/prismaClient.js";
+import { AppError } from "../../common/errors/AppError.js";
+import { logger } from "../../config/logger.js";
+import { env } from "../../config/env.js";
+import { orderService } from "../orders/order.service.js";
 
 // Optional Stripe dynamic import (keeps build lightweight if not using Stripe)
 type StripeSDK = any;

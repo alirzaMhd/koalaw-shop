@@ -2,7 +2,7 @@
 // Orders data access (reads/writes, includes items and payments when needed).
 
 import { Prisma } from "@prisma/client";
-import { prisma } from "../prismaClient";
+import { prisma } from "../prismaClient.js";
 
 const includeDetail = {
   items: { orderBy: { position: "asc" as const } },

@@ -4,9 +4,9 @@
 import type { Request, Response, NextFunction, RequestHandler } from "express";
 import { z } from "zod";
 
-import { AppError } from "../../common/errors/AppError";
-import { logger } from "../../config/logger";
-import { productService } from "./product.service";
+import { AppError } from "../../common/errors/AppError.js";
+import { logger } from "../../config/logger.js";
+import { productService } from "./product.service.js";
 
 import {
   listProductsQuerySchema,

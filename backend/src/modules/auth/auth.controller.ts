@@ -1,7 +1,7 @@
 // src/modules/auth/auth.controller.ts
 import type { Request, Response, NextFunction, RequestHandler } from "express";
 import jwt from "jsonwebtoken";
-import { authService } from "./auth.service.ts";
+import { authService } from "./auth.service.js";
 import {
   registerSchema,
   loginSchema,
@@ -12,10 +12,10 @@ import {
   // NEW:
   forgotPasswordSchema,
   resetPasswordSchema,
-} from "./auth.validators.ts";
-import { AppError } from "../../common/errors/AppError";
-import { env } from "../../config/env";
-import { logger } from "../../config/logger";
+} from "./auth.validators.js";
+import { AppError } from "../../common/errors/AppError.js";
+import { env } from "../../config/env.js";
+import { logger } from "../../config/logger.js";
 
 // Cookie config
 const ACCESS_COOKIE = env.ACCESS_TOKEN_COOKIE_NAME || "at";

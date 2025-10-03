@@ -7,7 +7,7 @@ import cookieParser from "cookie-parser";
 import path from "node:path";
 import fs from "node:fs";
 
-import { env } from "./config/env";
+import { env } from "./config/env.js";
 import { requestLogger } from "./common/middlewares/requestLogger";
 import { errorHandler } from "./common/middlewares/errorHandler";
 import { rateLimiter } from "./common/middlewares/rateLimiter";

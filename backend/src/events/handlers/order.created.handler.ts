@@ -2,10 +2,10 @@
 // Binds a handler to "order.created": reserve stock and send order confirmation.
 
 import { eventBus, logBinding } from "../eventBus";
-import { logger } from "../../config/logger";
-import { inventoryService } from "../../modules/inventory/inventory.service";
-import { notificationService } from "../../modules/notifications/notification.service";
-import { AppError } from "../../common/errors/AppError";
+import { logger } from "../../config/logger.js";
+import { inventoryService } from "../../modules/inventory/inventory.service.js";
+import { notificationService } from "../../modules/notifications/notification.service.js";
+import { AppError } from "../../common/errors/AppError.js";
 
 // Keep from binding twice if called multiple times
 let BOUND = false;

@@ -2,9 +2,9 @@
 // Registers review endpoints
 
 import { Router, Request, Response, NextFunction } from "express";
-import { reviewController } from "./review.controller";
-import { authGuard } from "../../common/middlewares/authGuard";
-import { AppError } from "../../common/errors/AppError";
+import { reviewController } from "./review.controller.js";
+import { authGuard } from "../../common/middlewares/authGuard.js";
+import { AppError } from "../../common/errors/AppError.js";
 
 export const reviewRouter = Router();
 

@@ -1,13 +1,11 @@
 // src/modules/users/user.controller.ts
 // Thin HTTP handlers for user profile, notification prefs, and addresses.
 
-import type { Request, Response, NextFunction, RequestHandler } from "express";
+import type { Request, Response, RequestHandler } from "express";
 import { z } from "zod";
 
-import { userService } from "./user.service";
-import { AppError } from "../../common/errors/AppError";
-import { logger } from "../../config/logger";
-import { toLatinDigits, normalizeIranPhone } from "../auth/auth.validators";
+import { userService } from "./user.service.js";
+import { AppError } from "../../common/errors/AppError.js";
 
 // If your authGuard attaches the decoded JWT here:
 interface AuthenticatedRequest extends Request {
@@ -61,7 +59,7 @@ const addressCreateSchema = z
     lastName: z.string().trim().min(1, "نام خانوادگی الزامی است."),
     phone: z
       .string()
-      .transform((v) => toLatinDigits(v))
+      .transform((v) => v)
       .refine((v) => v.replace(/\D/g, "").length >= 10, "شماره تماس نامعتبر است."),
     postalCode: z.string().trim().min(4).max(20).optional().nullable(),
     province: z.string().trim().min(1),
@@ -73,7 +71,25 @@ const addressCreateSchema = z
   })
   .strict();
 
-const addressUpdateSchema = addressCreateSchema.partial();
+const addressUpdateSchema = z
+  .object({
+    label: z.string().trim().min(1).max(200).optional().nullable(),
+    firstName: z.string().trim().min(1, "نام الزامی است.").optional(),
+    lastName: z.string().trim().min(1, "نام خانوادگی الزامی است.").optional(),
+    phone: z
+      .string()
+      .transform((v) => v)
+      .refine((v) => v.replace(/\D/g, "").length >= 10, "شماره تماس نامعتبر است.")
+      .optional(),
+    postalCode: z.string().trim().min(4).max(20).optional().nullable(),
+    province: z.string().trim().min(1).optional(),
+    city: z.string().trim().min(1).optional(),
+    addressLine1: z.string().trim().min(5, "نشانی را کامل‌تر وارد کنید.").optional(),
+    addressLine2: z.string().trim().optional().nullable(),
+    country: z.string().trim().length(2).optional(),
+    isDefault: z.boolean().optional(),
+  })
+  .strict();
 
 // --------------------------
 // Controller
@@ -165,7 +181,7 @@ class UserController {
       if (!userId) throw new AppError("احراز هویت انجام نشد.", 401, "UNAUTHORIZED");
       const input = await addressCreateSchema.parseAsync(req.body ?? {});
       // Normalize phone to a consistent format (prefer Iran format when possible)
-      const normalizedPhone = normalizeIranPhone(input.phone);
+      const normalizedPhone = (input.phone);
       const created = await userService.createAddress(String(userId), {
         ...input,
         phone: normalizedPhone,
@@ -187,10 +203,21 @@ class UserController {
       if (!addressId) throw new AppError("شناسه آدرس الزامی است.", 400, "BAD_REQUEST");
 
       const input = await addressUpdateSchema.parseAsync(req.body ?? {});
-      const normalized =
-        typeof input.phone === "string" ? { ...input, phone: normalizeIranPhone(input.phone) } : input;
+      
+      // Filter out undefined values to avoid overwriting with undefined
+      const filteredInput: Record<string, any> = {};
+      Object.entries(input).forEach(([key, value]) => {
+        if (value !== undefined) {
+          filteredInput[key] = value;
+        }
+      });
 
-      const updated = await userService.updateAddress(String(userId), String(addressId), normalized);
+      // Normalize phone if provided
+      if (filteredInput.phone) {
+        filteredInput.phone = (filteredInput.phone);
+      }
+
+      const updated = await userService.updateAddress(String(userId), String(addressId), filteredInput);
       return ok(res, { address: updated }, 200);
     } catch (err: any) {
       if (err?.issues?.length) {

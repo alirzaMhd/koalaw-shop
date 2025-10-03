@@ -2,7 +2,7 @@
 // Product data access layer. Keep logic in services; repos only encapsulate Prisma calls.
 
 import { Prisma } from "@prisma/client";
-import { prisma } from "../prismaClient";
+import { prisma } from "../prismaClient.js";
 
 export type ProductWhere = Prisma.ProductWhereInput;
 export type ProductOrderBy = Prisma.ProductOrderByWithRelationInput;

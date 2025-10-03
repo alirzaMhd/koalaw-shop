@@ -2,9 +2,9 @@
 // Registers inventory endpoints
 
 import { Router, Request, Response, NextFunction } from "express";
-import { inventoryController } from "./inventory.controller";
-import { authGuard } from "../../common/middlewares/authGuard";
-import { AppError } from "../../common/errors/AppError";
+import { inventoryController } from "./inventory.controller.js";
+import { authGuard } from "../../common/middlewares/authGuard.js";
+import { AppError } from "../../common/errors/AppError.js";
 
 export const inventoryRouter = Router();
 

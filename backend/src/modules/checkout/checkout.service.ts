@@ -12,19 +12,19 @@
 // Note: inventory reservation and coupon redemption recording are deferred to domain event handlers
 // (e.g., order.created.handler.ts and payment.succeeded.handler.ts) per your architecture.
 
-import { prisma } from "../../infrastructure/db/prismaClient";
-import { env } from "../../config/env";
-import { logger } from "../../config/logger";
+import { prisma } from "../../infrastructure/db/prismaClient.js";
+import { env } from "../../config/env.js";
+import { logger } from "../../config/logger.js";
 import { eventBus } from "../../events/eventBus";
-import { AppError } from "../../common/errors/AppError";
+import { AppError } from "../../common/errors/AppError.js";
 
 import {
   pricingService,
   type QuoteOptions,
   type QuoteResult,
   type ShippingMethod,
-} from "../pricing/pricing.service";
-import { taxService, type TaxContext } from "../pricing/tax.service";
+} from "../pricing/pricing.service.js";
+import { taxService, type TaxContext } from "../pricing/tax.service.js";
 import { toLatinDigits, normalizeIranPhone } from "../auth/auth.validators";
 
 // Optional payment gateways (stripe/paypal) – initialize if configured

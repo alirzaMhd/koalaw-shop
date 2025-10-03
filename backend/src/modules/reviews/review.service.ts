@@ -13,11 +13,11 @@
 // - Auto-approve can be enabled via env.REVIEWS_AUTO_APPROVE=true
 // - On approve/reject/delete, product aggregates are recalculated.
 
-import { prisma } from "../../infrastructure/db/prismaClient";
-import { AppError } from "../../common/errors/AppError";
-import { env } from "../../config/env";
+import { prisma } from "../../infrastructure/db/prismaClient.js";
+import { AppError } from "../../common/errors/AppError.js";
+import { env } from "../../config/env.js";
 import { eventBus } from "../../events/eventBus";
-import { logger } from "../../config/logger";
+import { logger } from "../../config/logger.js";
 
 // ---- Types & helpers ----
 
