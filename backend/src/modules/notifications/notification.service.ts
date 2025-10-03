@@ -102,6 +102,12 @@ const APP_NAME = env.APP_NAME || "KOALAW";
 const MAIL_FROM = env.MAIL_FROM || `no-reply@${(env.APP_URL || "example.com").replace(/^https?:\/\//, "")}`;
 
 // Paths for templates
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 const TEMPLATE_DIR = path.resolve(__dirname, "../../infrastructure/mail/templates");
 
 // ---------------- Utility helpers ----------------
