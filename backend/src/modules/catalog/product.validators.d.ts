@@ -1,0 +1,657 @@
+import { z } from "zod";
+export declare const listProductsQuerySchema: z.ZodObject<{
+    page: z.ZodDefault<z.ZodNumber>;
+    perPage: z.ZodDefault<z.ZodNumber>;
+    sort: z.ZodOptional<z.ZodEnum<["newest", "popular", "price-asc", "price-desc"]>>;
+    includeImages: z.ZodDefault<z.ZodBoolean>;
+    includeVariants: z.ZodDefault<z.ZodBoolean>;
+    search: z.ZodOptional<z.ZodString>;
+    categories: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+    brandIds: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+    brandSlugs: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+    collectionIds: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+    collectionSlugs: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+    colorThemeIds: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+    minPrice: z.ZodOptional<z.ZodNumber>;
+    maxPrice: z.ZodOptional<z.ZodNumber>;
+    specialOnly: z.ZodOptional<z.ZodBoolean>;
+    featuredOnly: z.ZodOptional<z.ZodBoolean>;
+    bestsellerOnly: z.ZodOptional<z.ZodBoolean>;
+    activeOnly: z.ZodOptional<z.ZodBoolean>;
+}, "strip", z.ZodTypeAny, {
+    page: number;
+    includeImages: boolean;
+    includeVariants: boolean;
+    perPage: number;
+    search?: string | undefined;
+    sort?: "newest" | "popular" | "price-asc" | "price-desc" | undefined;
+    categories?: string[] | undefined;
+    brandIds?: string[] | undefined;
+    brandSlugs?: string[] | undefined;
+    collectionIds?: string[] | undefined;
+    collectionSlugs?: string[] | undefined;
+    colorThemeIds?: string[] | undefined;
+    minPrice?: number | undefined;
+    maxPrice?: number | undefined;
+    specialOnly?: boolean | undefined;
+    featuredOnly?: boolean | undefined;
+    bestsellerOnly?: boolean | undefined;
+    activeOnly?: boolean | undefined;
+}, {
+    page?: number | undefined;
+    search?: string | undefined;
+    sort?: "newest" | "popular" | "price-asc" | "price-desc" | undefined;
+    categories?: string[] | undefined;
+    brandIds?: string[] | undefined;
+    brandSlugs?: string[] | undefined;
+    collectionIds?: string[] | undefined;
+    collectionSlugs?: string[] | undefined;
+    colorThemeIds?: string[] | undefined;
+    includeImages?: boolean | undefined;
+    includeVariants?: boolean | undefined;
+    perPage?: number | undefined;
+    minPrice?: number | undefined;
+    maxPrice?: number | undefined;
+    specialOnly?: boolean | undefined;
+    featuredOnly?: boolean | undefined;
+    bestsellerOnly?: boolean | undefined;
+    activeOnly?: boolean | undefined;
+}>;
+export declare const createProductInputSchema: z.ZodEffects<z.ZodObject<{
+    brandId: z.ZodOptional<z.ZodString>;
+    brandSlug: z.ZodOptional<z.ZodString>;
+    colorThemeId: z.ZodOptional<z.ZodString>;
+    category: z.ZodString;
+    title: z.ZodString;
+    subtitle: z.ZodOptional<z.ZodString>;
+    slug: z.ZodOptional<z.ZodString>;
+    description: z.ZodOptional<z.ZodString>;
+    ingredients: z.ZodOptional<z.ZodString>;
+    howToUse: z.ZodOptional<z.ZodString>;
+    price: z.ZodNumber;
+    compareAtPrice: z.ZodOptional<z.ZodNumber>;
+    currencyCode: z.ZodDefault<z.ZodEnum<["IRR", "USD", "EUR"]>>;
+    isBestseller: z.ZodDefault<z.ZodBoolean>;
+    isFeatured: z.ZodDefault<z.ZodBoolean>;
+    isSpecialProduct: z.ZodDefault<z.ZodBoolean>;
+    isActive: z.ZodDefault<z.ZodBoolean>;
+    heroImageUrl: z.ZodOptional<z.ZodString>;
+    images: z.ZodOptional<z.ZodArray<z.ZodObject<{
+        url: z.ZodString;
+        alt: z.ZodOptional<z.ZodString>;
+        position: z.ZodOptional<z.ZodNumber>;
+    }, "strip", z.ZodTypeAny, {
+        url: string;
+        position?: number | undefined;
+        alt?: string | undefined;
+    }, {
+        url: string;
+        position?: number | undefined;
+        alt?: string | undefined;
+    }>, "many">>;
+    variants: z.ZodOptional<z.ZodArray<z.ZodObject<{
+        variantName: z.ZodString;
+        sku: z.ZodOptional<z.ZodString>;
+        price: z.ZodOptional<z.ZodNumber>;
+        currencyCode: z.ZodDefault<z.ZodEnum<["IRR", "USD", "EUR"]>>;
+        stock: z.ZodDefault<z.ZodNumber>;
+        colorName: z.ZodOptional<z.ZodString>;
+        colorHexCode: z.ZodOptional<z.ZodString>;
+        isActive: z.ZodDefault<z.ZodBoolean>;
+        position: z.ZodOptional<z.ZodNumber>;
+    }, "strip", z.ZodTypeAny, {
+        isActive: boolean;
+        variantName: string;
+        currencyCode: "IRR" | "USD" | "EUR";
+        stock: number;
+        price?: number | undefined;
+        position?: number | undefined;
+        sku?: string | undefined;
+        colorName?: string | undefined;
+        colorHexCode?: string | undefined;
+    }, {
+        variantName: string;
+        price?: number | undefined;
+        position?: number | undefined;
+        isActive?: boolean | undefined;
+        currencyCode?: "IRR" | "USD" | "EUR" | undefined;
+        sku?: string | undefined;
+        stock?: number | undefined;
+        colorName?: string | undefined;
+        colorHexCode?: string | undefined;
+    }>, "many">>;
+}, "strip", z.ZodTypeAny, {
+    price: number;
+    category: string;
+    title: string;
+    isActive: boolean;
+    currencyCode: "IRR" | "USD" | "EUR";
+    isBestseller: boolean;
+    isFeatured: boolean;
+    isSpecialProduct: boolean;
+    slug?: string | undefined;
+    subtitle?: string | undefined;
+    description?: string | undefined;
+    ingredients?: string | undefined;
+    howToUse?: string | undefined;
+    compareAtPrice?: number | undefined;
+    heroImageUrl?: string | undefined;
+    images?: {
+        url: string;
+        position?: number | undefined;
+        alt?: string | undefined;
+    }[] | undefined;
+    variants?: {
+        isActive: boolean;
+        variantName: string;
+        currencyCode: "IRR" | "USD" | "EUR";
+        stock: number;
+        price?: number | undefined;
+        position?: number | undefined;
+        sku?: string | undefined;
+        colorName?: string | undefined;
+        colorHexCode?: string | undefined;
+    }[] | undefined;
+    brandId?: string | undefined;
+    colorThemeId?: string | undefined;
+    brandSlug?: string | undefined;
+}, {
+    price: number;
+    category: string;
+    title: string;
+    slug?: string | undefined;
+    isActive?: boolean | undefined;
+    currencyCode?: "IRR" | "USD" | "EUR" | undefined;
+    subtitle?: string | undefined;
+    description?: string | undefined;
+    ingredients?: string | undefined;
+    howToUse?: string | undefined;
+    compareAtPrice?: number | undefined;
+    isBestseller?: boolean | undefined;
+    isFeatured?: boolean | undefined;
+    isSpecialProduct?: boolean | undefined;
+    heroImageUrl?: string | undefined;
+    images?: {
+        url: string;
+        position?: number | undefined;
+        alt?: string | undefined;
+    }[] | undefined;
+    variants?: {
+        variantName: string;
+        price?: number | undefined;
+        position?: number | undefined;
+        isActive?: boolean | undefined;
+        currencyCode?: "IRR" | "USD" | "EUR" | undefined;
+        sku?: string | undefined;
+        stock?: number | undefined;
+        colorName?: string | undefined;
+        colorHexCode?: string | undefined;
+    }[] | undefined;
+    brandId?: string | undefined;
+    colorThemeId?: string | undefined;
+    brandSlug?: string | undefined;
+}>, {
+    price: number;
+    category: string;
+    title: string;
+    isActive: boolean;
+    currencyCode: "IRR" | "USD" | "EUR";
+    isBestseller: boolean;
+    isFeatured: boolean;
+    isSpecialProduct: boolean;
+    slug?: string | undefined;
+    subtitle?: string | undefined;
+    description?: string | undefined;
+    ingredients?: string | undefined;
+    howToUse?: string | undefined;
+    compareAtPrice?: number | undefined;
+    heroImageUrl?: string | undefined;
+    images?: {
+        url: string;
+        position?: number | undefined;
+        alt?: string | undefined;
+    }[] | undefined;
+    variants?: {
+        isActive: boolean;
+        variantName: string;
+        currencyCode: "IRR" | "USD" | "EUR";
+        stock: number;
+        price?: number | undefined;
+        position?: number | undefined;
+        sku?: string | undefined;
+        colorName?: string | undefined;
+        colorHexCode?: string | undefined;
+    }[] | undefined;
+    brandId?: string | undefined;
+    colorThemeId?: string | undefined;
+    brandSlug?: string | undefined;
+}, {
+    price: number;
+    category: string;
+    title: string;
+    slug?: string | undefined;
+    isActive?: boolean | undefined;
+    currencyCode?: "IRR" | "USD" | "EUR" | undefined;
+    subtitle?: string | undefined;
+    description?: string | undefined;
+    ingredients?: string | undefined;
+    howToUse?: string | undefined;
+    compareAtPrice?: number | undefined;
+    isBestseller?: boolean | undefined;
+    isFeatured?: boolean | undefined;
+    isSpecialProduct?: boolean | undefined;
+    heroImageUrl?: string | undefined;
+    images?: {
+        url: string;
+        position?: number | undefined;
+        alt?: string | undefined;
+    }[] | undefined;
+    variants?: {
+        variantName: string;
+        price?: number | undefined;
+        position?: number | undefined;
+        isActive?: boolean | undefined;
+        currencyCode?: "IRR" | "USD" | "EUR" | undefined;
+        sku?: string | undefined;
+        stock?: number | undefined;
+        colorName?: string | undefined;
+        colorHexCode?: string | undefined;
+    }[] | undefined;
+    brandId?: string | undefined;
+    colorThemeId?: string | undefined;
+    brandSlug?: string | undefined;
+}>;
+export declare const updateProductInputSchema: z.ZodObject<{
+    brandId: z.ZodOptional<z.ZodString>;
+    brandSlug: z.ZodOptional<z.ZodString>;
+    colorThemeId: z.ZodOptional<z.ZodString>;
+    category: z.ZodOptional<z.ZodString>;
+    title: z.ZodOptional<z.ZodString>;
+    subtitle: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    slug: z.ZodOptional<z.ZodString>;
+    description: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    ingredients: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    howToUse: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    price: z.ZodOptional<z.ZodNumber>;
+    compareAtPrice: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+    currencyCode: z.ZodOptional<z.ZodDefault<z.ZodEnum<["IRR", "USD", "EUR"]>>>;
+    isBestseller: z.ZodOptional<z.ZodBoolean>;
+    isFeatured: z.ZodOptional<z.ZodBoolean>;
+    isSpecialProduct: z.ZodOptional<z.ZodBoolean>;
+    isActive: z.ZodOptional<z.ZodBoolean>;
+    heroImageUrl: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    images: z.ZodOptional<z.ZodArray<z.ZodObject<{
+        url: z.ZodString;
+        alt: z.ZodOptional<z.ZodString>;
+        position: z.ZodOptional<z.ZodNumber>;
+    }, "strip", z.ZodTypeAny, {
+        url: string;
+        position?: number | undefined;
+        alt?: string | undefined;
+    }, {
+        url: string;
+        position?: number | undefined;
+        alt?: string | undefined;
+    }>, "many">>;
+    variants: z.ZodOptional<z.ZodArray<z.ZodObject<{
+        variantName: z.ZodString;
+        sku: z.ZodOptional<z.ZodString>;
+        price: z.ZodOptional<z.ZodNumber>;
+        currencyCode: z.ZodDefault<z.ZodEnum<["IRR", "USD", "EUR"]>>;
+        stock: z.ZodDefault<z.ZodNumber>;
+        colorName: z.ZodOptional<z.ZodString>;
+        colorHexCode: z.ZodOptional<z.ZodString>;
+        isActive: z.ZodDefault<z.ZodBoolean>;
+        position: z.ZodOptional<z.ZodNumber>;
+    }, "strip", z.ZodTypeAny, {
+        isActive: boolean;
+        variantName: string;
+        currencyCode: "IRR" | "USD" | "EUR";
+        stock: number;
+        price?: number | undefined;
+        position?: number | undefined;
+        sku?: string | undefined;
+        colorName?: string | undefined;
+        colorHexCode?: string | undefined;
+    }, {
+        variantName: string;
+        price?: number | undefined;
+        position?: number | undefined;
+        isActive?: boolean | undefined;
+        currencyCode?: "IRR" | "USD" | "EUR" | undefined;
+        sku?: string | undefined;
+        stock?: number | undefined;
+        colorName?: string | undefined;
+        colorHexCode?: string | undefined;
+    }>, "many">>;
+}, "strip", z.ZodTypeAny, {
+    price?: number | undefined;
+    slug?: string | undefined;
+    category?: string | undefined;
+    title?: string | undefined;
+    isActive?: boolean | undefined;
+    currencyCode?: "IRR" | "USD" | "EUR" | undefined;
+    subtitle?: string | null | undefined;
+    description?: string | null | undefined;
+    ingredients?: string | null | undefined;
+    howToUse?: string | null | undefined;
+    compareAtPrice?: number | null | undefined;
+    isBestseller?: boolean | undefined;
+    isFeatured?: boolean | undefined;
+    isSpecialProduct?: boolean | undefined;
+    heroImageUrl?: string | null | undefined;
+    images?: {
+        url: string;
+        position?: number | undefined;
+        alt?: string | undefined;
+    }[] | undefined;
+    variants?: {
+        isActive: boolean;
+        variantName: string;
+        currencyCode: "IRR" | "USD" | "EUR";
+        stock: number;
+        price?: number | undefined;
+        position?: number | undefined;
+        sku?: string | undefined;
+        colorName?: string | undefined;
+        colorHexCode?: string | undefined;
+    }[] | undefined;
+    brandId?: string | undefined;
+    colorThemeId?: string | undefined;
+    brandSlug?: string | undefined;
+}, {
+    price?: number | undefined;
+    slug?: string | undefined;
+    category?: string | undefined;
+    title?: string | undefined;
+    isActive?: boolean | undefined;
+    currencyCode?: "IRR" | "USD" | "EUR" | undefined;
+    subtitle?: string | null | undefined;
+    description?: string | null | undefined;
+    ingredients?: string | null | undefined;
+    howToUse?: string | null | undefined;
+    compareAtPrice?: number | null | undefined;
+    isBestseller?: boolean | undefined;
+    isFeatured?: boolean | undefined;
+    isSpecialProduct?: boolean | undefined;
+    heroImageUrl?: string | null | undefined;
+    images?: {
+        url: string;
+        position?: number | undefined;
+        alt?: string | undefined;
+    }[] | undefined;
+    variants?: {
+        variantName: string;
+        price?: number | undefined;
+        position?: number | undefined;
+        isActive?: boolean | undefined;
+        currencyCode?: "IRR" | "USD" | "EUR" | undefined;
+        sku?: string | undefined;
+        stock?: number | undefined;
+        colorName?: string | undefined;
+        colorHexCode?: string | undefined;
+    }[] | undefined;
+    brandId?: string | undefined;
+    colorThemeId?: string | undefined;
+    brandSlug?: string | undefined;
+}>;
+export declare const addImageInputSchema: z.ZodObject<{
+    url: z.ZodString;
+    alt: z.ZodOptional<z.ZodString>;
+    position: z.ZodDefault<z.ZodOptional<z.ZodNumber>>;
+}, "strip", z.ZodTypeAny, {
+    url: string;
+    position: number;
+    alt?: string | undefined;
+}, {
+    url: string;
+    position?: number | undefined;
+    alt?: string | undefined;
+}>;
+export declare const updateImageInputSchema: z.ZodObject<{
+    url: z.ZodOptional<z.ZodString>;
+    alt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    position: z.ZodOptional<z.ZodNumber>;
+}, "strip", z.ZodTypeAny, {
+    url?: string | undefined;
+    position?: number | undefined;
+    alt?: string | null | undefined;
+}, {
+    url?: string | undefined;
+    position?: number | undefined;
+    alt?: string | null | undefined;
+}>;
+export declare const addVariantInputSchema: z.ZodObject<{
+    variantName: z.ZodString;
+    sku: z.ZodOptional<z.ZodString>;
+    price: z.ZodOptional<z.ZodNumber>;
+    currencyCode: z.ZodDefault<z.ZodEnum<["IRR", "USD", "EUR"]>>;
+    stock: z.ZodDefault<z.ZodNumber>;
+    colorName: z.ZodOptional<z.ZodString>;
+    colorHexCode: z.ZodOptional<z.ZodString>;
+    isActive: z.ZodDefault<z.ZodBoolean>;
+    position: z.ZodDefault<z.ZodOptional<z.ZodNumber>>;
+}, "strip", z.ZodTypeAny, {
+    position: number;
+    isActive: boolean;
+    variantName: string;
+    currencyCode: "IRR" | "USD" | "EUR";
+    stock: number;
+    price?: number | undefined;
+    sku?: string | undefined;
+    colorName?: string | undefined;
+    colorHexCode?: string | undefined;
+}, {
+    variantName: string;
+    price?: number | undefined;
+    position?: number | undefined;
+    isActive?: boolean | undefined;
+    currencyCode?: "IRR" | "USD" | "EUR" | undefined;
+    sku?: string | undefined;
+    stock?: number | undefined;
+    colorName?: string | undefined;
+    colorHexCode?: string | undefined;
+}>;
+export declare const updateVariantInputSchema: z.ZodObject<{
+    variantName: z.ZodOptional<z.ZodString>;
+    sku: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    price: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+    currencyCode: z.ZodOptional<z.ZodDefault<z.ZodEnum<["IRR", "USD", "EUR"]>>>;
+    stock: z.ZodOptional<z.ZodNumber>;
+    colorName: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    colorHexCode: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    isActive: z.ZodOptional<z.ZodBoolean>;
+    position: z.ZodOptional<z.ZodNumber>;
+}, "strip", z.ZodTypeAny, {
+    price?: number | null | undefined;
+    position?: number | undefined;
+    isActive?: boolean | undefined;
+    variantName?: string | undefined;
+    currencyCode?: "IRR" | "USD" | "EUR" | undefined;
+    sku?: string | null | undefined;
+    stock?: number | undefined;
+    colorName?: string | null | undefined;
+    colorHexCode?: string | null | undefined;
+}, {
+    price?: number | null | undefined;
+    position?: number | undefined;
+    isActive?: boolean | undefined;
+    variantName?: string | undefined;
+    currencyCode?: "IRR" | "USD" | "EUR" | undefined;
+    sku?: string | null | undefined;
+    stock?: number | undefined;
+    colorName?: string | null | undefined;
+    colorHexCode?: string | null | undefined;
+}>;
+export declare const addReviewInputSchema: z.ZodObject<{
+    rating: z.ZodNumber;
+    title: z.ZodOptional<z.ZodString>;
+    body: z.ZodString;
+    guestName: z.ZodOptional<z.ZodString>;
+}, "strip", z.ZodTypeAny, {
+    body: string;
+    rating: number;
+    title?: string | undefined;
+    guestName?: string | undefined;
+}, {
+    body: string;
+    rating: number;
+    title?: string | undefined;
+    guestName?: string | undefined;
+}>;
+export declare const listReviewsQuerySchema: z.ZodObject<{
+    page: z.ZodDefault<z.ZodNumber>;
+    perPage: z.ZodDefault<z.ZodNumber>;
+}, "strip", z.ZodTypeAny, {
+    page: number;
+    perPage: number;
+}, {
+    page?: number | undefined;
+    perPage?: number | undefined;
+}>;
+export type ListProductsQuery = z.infer<typeof listProductsQuerySchema>;
+export type CreateProductInput = z.infer<typeof createProductInputSchema>;
+export type UpdateProductInput = z.infer<typeof updateProductInputSchema>;
+export type AddImageInput = z.infer<typeof addImageInputSchema>;
+export type UpdateImageInput = z.infer<typeof updateImageInputSchema>;
+export type AddVariantInput = z.infer<typeof addVariantInputSchema>;
+export type UpdateVariantInput = z.infer<typeof updateVariantInputSchema>;
+export type AddReviewInput = z.infer<typeof addReviewInputSchema>;
+export type ListReviewsQuery = z.infer<typeof listReviewsQuerySchema>;
+export declare const validateProductInput: {
+    list: (data: unknown) => {
+        page: number;
+        includeImages: boolean;
+        includeVariants: boolean;
+        perPage: number;
+        search?: string | undefined;
+        sort?: "newest" | "popular" | "price-asc" | "price-desc" | undefined;
+        categories?: string[] | undefined;
+        brandIds?: string[] | undefined;
+        brandSlugs?: string[] | undefined;
+        collectionIds?: string[] | undefined;
+        collectionSlugs?: string[] | undefined;
+        colorThemeIds?: string[] | undefined;
+        minPrice?: number | undefined;
+        maxPrice?: number | undefined;
+        specialOnly?: boolean | undefined;
+        featuredOnly?: boolean | undefined;
+        bestsellerOnly?: boolean | undefined;
+        activeOnly?: boolean | undefined;
+    };
+    create: (data: unknown) => {
+        price: number;
+        category: string;
+        title: string;
+        isActive: boolean;
+        currencyCode: "IRR" | "USD" | "EUR";
+        isBestseller: boolean;
+        isFeatured: boolean;
+        isSpecialProduct: boolean;
+        slug?: string | undefined;
+        subtitle?: string | undefined;
+        description?: string | undefined;
+        ingredients?: string | undefined;
+        howToUse?: string | undefined;
+        compareAtPrice?: number | undefined;
+        heroImageUrl?: string | undefined;
+        images?: {
+            url: string;
+            position?: number | undefined;
+            alt?: string | undefined;
+        }[] | undefined;
+        variants?: {
+            isActive: boolean;
+            variantName: string;
+            currencyCode: "IRR" | "USD" | "EUR";
+            stock: number;
+            price?: number | undefined;
+            position?: number | undefined;
+            sku?: string | undefined;
+            colorName?: string | undefined;
+            colorHexCode?: string | undefined;
+        }[] | undefined;
+        brandId?: string | undefined;
+        colorThemeId?: string | undefined;
+        brandSlug?: string | undefined;
+    };
+    update: (data: unknown) => {
+        price?: number | undefined;
+        slug?: string | undefined;
+        category?: string | undefined;
+        title?: string | undefined;
+        isActive?: boolean | undefined;
+        currencyCode?: "IRR" | "USD" | "EUR" | undefined;
+        subtitle?: string | null | undefined;
+        description?: string | null | undefined;
+        ingredients?: string | null | undefined;
+        howToUse?: string | null | undefined;
+        compareAtPrice?: number | null | undefined;
+        isBestseller?: boolean | undefined;
+        isFeatured?: boolean | undefined;
+        isSpecialProduct?: boolean | undefined;
+        heroImageUrl?: string | null | undefined;
+        images?: {
+            url: string;
+            position?: number | undefined;
+            alt?: string | undefined;
+        }[] | undefined;
+        variants?: {
+            isActive: boolean;
+            variantName: string;
+            currencyCode: "IRR" | "USD" | "EUR";
+            stock: number;
+            price?: number | undefined;
+            position?: number | undefined;
+            sku?: string | undefined;
+            colorName?: string | undefined;
+            colorHexCode?: string | undefined;
+        }[] | undefined;
+        brandId?: string | undefined;
+        colorThemeId?: string | undefined;
+        brandSlug?: string | undefined;
+    };
+    addImage: (data: unknown) => {
+        url: string;
+        position: number;
+        alt?: string | undefined;
+    };
+    updateImage: (data: unknown) => {
+        url?: string | undefined;
+        position?: number | undefined;
+        alt?: string | null | undefined;
+    };
+    addVariant: (data: unknown) => {
+        position: number;
+        isActive: boolean;
+        variantName: string;
+        currencyCode: "IRR" | "USD" | "EUR";
+        stock: number;
+        price?: number | undefined;
+        sku?: string | undefined;
+        colorName?: string | undefined;
+        colorHexCode?: string | undefined;
+    };
+    updateVariant: (data: unknown) => {
+        price?: number | null | undefined;
+        position?: number | undefined;
+        isActive?: boolean | undefined;
+        variantName?: string | undefined;
+        currencyCode?: "IRR" | "USD" | "EUR" | undefined;
+        sku?: string | null | undefined;
+        stock?: number | undefined;
+        colorName?: string | null | undefined;
+        colorHexCode?: string | null | undefined;
+    };
+    addReview: (data: unknown) => {
+        body: string;
+        rating: number;
+        title?: string | undefined;
+        guestName?: string | undefined;
+    };
+    listReviews: (data: unknown) => {
+        page: number;
+        perPage: number;
+    };
+};
+//# sourceMappingURL=product.validators.d.ts.map

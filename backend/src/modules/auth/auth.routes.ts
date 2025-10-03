@@ -1,7 +1,7 @@
 // src/modules/auth/auth.routes.ts
 import { Router } from "express";
-import { authController } from "./auth.controller";
-import { authGuard } from "../../common/middlewares/authGuard";
+import { authController } from "./auth.controller.js";
+import { authGuard } from "../../common/middlewares/authGuard.js";
 
 export const authRouter = Router();
 

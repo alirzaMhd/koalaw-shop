@@ -1,0 +1,1 @@
+{"version":3,"file":"shipping.controller.d.ts","sourceRoot":"","sources":["shipping.controller.ts"],"names":[],"mappings":"AAGA,OAAO,KAAK,EAAmC,cAAc,EAAE,MAAM,SAAS,CAAC;AAoE/E,cAAM,kBAAkB;IAGtB,KAAK,EAAE,cAAc,CAuBnB;IAIF,WAAW,EAAE,cAAc,CASzB;IAGF,KAAK,EAAE,cAAc,CASnB;CACH;AAED,eAAO,MAAM,kBAAkB,oBAA2B,CAAC"}

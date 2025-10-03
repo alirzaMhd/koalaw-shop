@@ -4,6 +4,7 @@
   "private": true,
   "description": "KOALAW backend API (Node + TypeScript + Express + Prisma)",
   "license": "MIT",
+  "type": "module",
   "engines": {
     "node": ">=18.16"
   },
@@ -18,7 +19,9 @@
     "db:seed": "tsx scripts/seed.ts",
     "db:studio": "prisma studio",
     "db:push": "prisma db push",
-    "db:reset": "prisma migrate reset --force"
+    "db:reset": "prisma migrate reset --force",
+    "dev:css": "tailwindcss -i frontend/src/assets/css/main.css -o frontend/src/assets/css/tailwind.css --watch",
+    "build:css": "tailwindcss -i frontend/src/assets/css/main.css -o frontend/src/assets/css/tailwind.css --minify"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.601.0",
@@ -62,6 +65,7 @@
     "prettier": "^3.3.3",
     "prisma": "^6.16.2",
     "tailwindcss": "^4.1.13",
+    "@tailwindcss/cli": "^4.1.13",
     "tsx": "^4.20.5",
     "typescript": "^5.5.4"
   },

@@ -1,16 +1,74 @@
 {
-  "devDependencies": {
-    "@tailwindcss/cli": "^4.1.13",
-    "autoprefixer": "^10.4.21",
-    "postcss": "^8.5.6",
-    "tailwindcss": "^4.1.13"
+  "name": "koalaw-api",
+  "version": "1.0.0",
+  "private": true,
+  "description": "KOALAW backend API (Node + TypeScript + Express + Prisma)",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=18.16"
   },
+  "main": "dist/index.js",
   "scripts": {
-    "start": "node backend/src/index.ts",
+    "dev": "tsx watch backend/src/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "node backend/src/index.js",
+    "db:generate": "prisma generate",
+    "db:migrate:dev": "prisma migrate dev",
+    "db:migrate:deploy": "prisma migrate deploy",
+    "db:seed": "tsx backend/scripts/seed.ts",
+    "db:studio": "prisma studio",
+    "db:push": "prisma db push",
+    "db:reset": "prisma migrate reset --force",
     "dev:css": "tailwindcss -i frontend/src/assets/css/main.css -o frontend/src/assets/css/tailwind.css --watch",
     "build:css": "tailwindcss -i frontend/src/assets/css/main.css -o frontend/src/assets/css/tailwind.css --minify"
   },
   "dependencies": {
-    "@prisma/client": "^6.16.2"
-  }
+    "@aws-sdk/client-s3": "^3.601.0",
+    "@aws-sdk/s3-request-presigner": "^3.601.0",
+    "@elastic/elasticsearch": "^8.19.1",
+    "@prisma/client": "^6.16.2",
+    "@types/compression": "^1.8.1",
+    "@types/cors": "^2.8.19",
+    "@types/helmet": "^0.0.48",
+    "bcrypt": "^6.0.0",
+    "bullmq": "^5.7.9",
+    "compression": "^1.7.4",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "handlebars": "^4.7.8",
+    "helmet": "^7.2.0",
+    "ioredis": "^5.7.0",
+    "jsonwebtoken": "^9.0.2",
+    "kavenegar": "^1.1.4",
+    "multer": "^2.0.2",
+    "nodemailer": "^6.10.1",
+    "package.json": "^0.0.0",
+    "pino": "^9.1.0",
+    "pino-pretty": "^11.2.2",
+    "stripe": "^14.25.0",
+    "ts-node": "^10.9.2",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
+    "@types/cookie-parser": "^1.4.7",
+    "@types/dotenv": "^6.1.1",
+    "@types/express": "^4.17.21",
+    "@types/multer": "^2.0.0",
+    "@types/node": "^20.19.17",
+    "autoprefixer": "^10.4.21",
+    "dotenv": "^17.2.3",
+    "eslint": "^9.9.0",
+    "postcss": "^8.5.6",
+    "prettier": "^3.3.3",
+    "prisma": "^6.16.2",
+    "tailwindcss": "^4.1.13",
+    "@tailwindcss/cli": "^4.1.13",
+    "tsx": "^4.20.5",
+    "typescript": "^5.5.4"
+  },
+  "keywords": [],
+  "author": ""
 }
