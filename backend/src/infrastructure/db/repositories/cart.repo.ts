@@ -10,18 +10,18 @@ export const cartRepo = {
     return prisma.cart.findUnique({ where: { id } });
   },
   findActiveByUser(userId: string) {
-    return prisma.cart.findFirst({ where: { userId, status: "active" } });
+    return prisma.cart.findFirst({ where: { userId, status: "ACTIVE" } });
   },
   findByAnonymousId(anonymousId: string) {
     return prisma.cart.findFirst({ where: { anonymousId } });
   },
   createForUser(userId: string) {
-    return prisma.cart.create({ data: { userId, status: "active" } });
+    return prisma.cart.create({ data: { userId, status: "ACTIVE" } });
   },
   createForAnonymous(anonymousId: string) {
-    return prisma.cart.create({ data: { anonymousId, status: "active" } });
+    return prisma.cart.create({ data: { anonymousId, status: "ACTIVE" } });
   },
-  updateStatus(id: string, status: "active" | "converted" | "abandoned") {
+  updateStatus(id: string, status: "ACTIVE" | "CONVERTED" | "ABANDONED") {
     return prisma.cart.update({ where: { id }, data: { status } });
   },
 

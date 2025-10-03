@@ -3,9 +3,9 @@ import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { prisma } from "../../infrastructure/db/prismaClient.js";
-import { redis } from "../../infrastructure/cache/redisClient";
-import { eventBus } from "../../events/eventBus";
-import { mailer } from "../../infrastructure/mail/mailer";
+import { redis } from "../../infrastructure/cache/redisClient.js";
+import { eventBus } from "../../events/eventBus.js";
+import { mailer } from "../../infrastructure/mail/mailer.js";
 import { AppError } from "../../common/errors/AppError.js";
 import { env } from "../../config/env.js";
 import { logger } from "../../config/logger.js";
@@ -444,7 +444,7 @@ export const authService = {
     return { success: true };
   },
 
-  async refresh(args: { refreshToken?: string; ip?: string; userAgent?: string }) {
+  async refresh(args: { refreshToken?: string | undefined; ip?: string | undefined; userAgent?: string | undefined }) {
     if (!args.refreshToken) {
       throw new AppError("توکن یافت نشد.", 401, "UNAUTHORIZED");
     }
@@ -508,7 +508,7 @@ export const authService = {
     };
   },
 
-  async logout(args: { userId: string; jti?: string; all?: boolean }) {
+  async logout(args: { userId: string; jti?: string | undefined; all?: boolean | undefined }) {
     let revoked = false;
     if (args.jti) {
       revoked = await revokeRefreshSession(args.jti);

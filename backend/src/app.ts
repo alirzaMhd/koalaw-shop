@@ -8,12 +8,12 @@ import path from "node:path";
 import fs from "node:fs";
 
 import { env } from "./config/env.js";
-import { requestLogger } from "./common/middlewares/requestLogger";
-import { errorHandler } from "./common/middlewares/errorHandler";
-import { rateLimiter } from "./common/middlewares/rateLimiter";
-import buildApiRouter from "./routes";
+import { requestLogger } from "./common/middlewares/requestLogger.js";
+import { errorHandler } from "./common/middlewares/errorHandler.js";
+import { rateLimiter } from "./common/middlewares/rateLimiter.js";
+import buildApiRouter from "./routes.js";
 // NEW: import the auth router to expose /auth alias
-import { authRouter } from "./modules/auth/auth.routes";
+import { authRouter } from "./modules/auth/auth.routes.js";
 
 export function createApp() {
   const app = express();

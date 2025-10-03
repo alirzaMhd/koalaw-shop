@@ -2,7 +2,7 @@
 // Binds a handler to "payment.succeeded": trigger fulfillment (e.g., create shipping label stub)
 // and optionally send payment receipt (if not already handled elsewhere).
 
-import { eventBus, logBinding } from "../eventBus";
+import { eventBus, logBinding } from "../eventBus.js";
 import { logger } from "../../config/logger.js";
 import { shippingService } from "../../modules/shipping/shipping.service.js";
 import { notificationService } from "../../modules/notifications/notification.service.js";

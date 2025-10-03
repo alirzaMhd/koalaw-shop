@@ -71,9 +71,10 @@ class CheckoutController {
 
       const quote = await checkoutService.prepareQuote(body.cartId, {
         couponCode: body.couponCode || undefined,
-        shippingMethod: body.shippingMethod,
         giftWrap: body.giftWrap,
         userId,
+        // Conditionally add shippingMethod only if it's provided
+        ...(body.shippingMethod && { shippingMethod: body.shippingMethod }),
       });
 
       return ok(res, { quote }, 200);
@@ -97,11 +98,12 @@ class CheckoutController {
         address: body.address,
         options: {
           paymentMethod: body.paymentMethod,
-          shippingMethod: body.shippingMethod,
           couponCode: body.couponCode || undefined,
           giftWrap: body.giftWrap,
           note: body.note || null,
           userId, // for coupon usage caps
+          // Conditionally add shippingMethod only if it's provided
+          ...(body.shippingMethod && { shippingMethod: body.shippingMethod }),
         },
         returnUrl: body.returnUrl,
         cancelUrl: body.cancelUrl,

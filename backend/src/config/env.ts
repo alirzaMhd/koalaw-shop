@@ -117,6 +117,19 @@ const EnvSchema = z.object({
   // Rate limiting (global)
   RATE_LIMIT_WINDOW_MS: z.coerce.number().optional(),
   RATE_LIMIT_MAX: z.coerce.number().optional(),
+
+  // Shipping
+  SHIPPING_REGION_OVERRIDES: z.string().optional(),
+  SHIPPING_ESTIMATED_DAYS_EXPRESS: z.string().optional(),
+  SHIPPING_ESTIMATED_DAYS_STANDARD: z.string().optional(),
+
+  //jwt
+  JWT_ACCESS_TTL_SEC: z.coerce.number().optional(),
+  JWT_REFRESH_TTL_SEC: z.coerce.number().optional(),
+  BCRYPT_ROUNDS: z.coerce.number().optional(),
+
+  // checkout
+  ORDER_PREFIX: z.string().optional(),
 });
 
 const parsed = EnvSchema.parse(process.env);

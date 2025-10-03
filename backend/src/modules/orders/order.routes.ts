@@ -1,7 +1,7 @@
 // src/modules/orders/order.routes.ts
 // Registers order endpoints
 
-import { Router, Request, Response, NextFunction } from "express";
+import { Router, type Request, type Response, type NextFunction } from "express";
 import { orderController } from "./order.controller.js";
 import { authGuard } from "../../common/middlewares/authGuard.js";
 import { AppError } from "../../common/errors/AppError.js";

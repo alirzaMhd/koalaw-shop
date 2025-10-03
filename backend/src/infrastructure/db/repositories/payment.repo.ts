@@ -19,7 +19,7 @@ export const paymentRepo = {
   },
   findPendingGatewayByOrder(orderId: string) {
     return prisma.payment.findFirst({
-      where: { orderId, method: "gateway", status: "pending" },
+      where: { orderId, method: "GATEWAY", status: "PENDING" },
       orderBy: { createdAt: "desc" },
     });
   },

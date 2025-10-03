@@ -27,7 +27,7 @@ const getAnonCartSchema = z.object({
 
 const addItemSchema = z.object({
   productId: uuidSchema,
-  variantId: z.string().uuid().optional().nullable(),
+  variantId: z.string().uuid().nullable().default(null),
   quantity: z.coerce.number().int("تعداد باید صحیح باشد.").min(1, "حداقل تعداد ۱ است.").optional().default(1),
 });
 
@@ -46,7 +46,7 @@ const mergeSchema = z.object({
 });
 
 const setStatusSchema = z.object({
-  status: z.enum(["active", "converted", "abandoned"]),
+  status: z.enum(["ACTIVE", "CONVERTED", "ABANDONED"]),
 });
 
 // ---------------- Controller ----------------

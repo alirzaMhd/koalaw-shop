@@ -26,7 +26,7 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.601.0",
     "@aws-sdk/s3-request-presigner": "^3.601.0",
-    "@elastic/elasticsearch": "^8.19.1",
+    "@elastic/elasticsearch": "^9.1.1",
     "@prisma/client": "^6.16.2",
     "@types/compression": "^1.8.1",
     "@types/cors": "^2.8.19",
@@ -52,12 +52,14 @@
     "zod": "^3.25.76"
   },
   "devDependencies": {
+    "@tailwindcss/cli": "^4.1.13",
     "@types/bcrypt": "^6.0.0",
     "@types/cookie-parser": "^1.4.7",
     "@types/dotenv": "^6.1.1",
     "@types/express": "^4.17.21",
     "@types/multer": "^2.0.0",
     "@types/node": "^20.19.17",
+    "@types/nodemailer": "^7.0.2",
     "autoprefixer": "^10.4.21",
     "dotenv": "^17.2.3",
     "eslint": "^9.9.0",
@@ -65,7 +67,6 @@
     "prettier": "^3.3.3",
     "prisma": "^6.16.2",
     "tailwindcss": "^4.1.13",
-    "@tailwindcss/cli": "^4.1.13",
     "tsx": "^4.20.5",
     "typescript": "^5.5.4"
   },

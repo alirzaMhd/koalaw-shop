@@ -22,6 +22,12 @@ declare module "express-serve-static-core" {
   }
 }
 
+function assertHasSub(p: Decoded): asserts p is Decoded & { sub: string } {
+  if (typeof p.sub !== "string" || p.sub.length === 0) {
+    throw AppError.unauthorized("payload 'sub' is missing.");
+  }
+}
+
 export const authGuard: RequestHandler = (req, _res, next) => {
   try {
     const h = req.headers.authorization || "";
@@ -35,7 +41,7 @@ export const authGuard: RequestHandler = (req, _res, next) => {
 
     let decoded: Decoded;
     try {
-      decoded = jwt.verify(token, ACCESS_SECRET) as any;
+      decoded = jwt.verify(token, ACCESS_SECRET) as Decoded;
     } catch {
       throw AppError.unauthorized("توکن نامعتبر یا منقضی است.");
     }
@@ -43,12 +49,19 @@ export const authGuard: RequestHandler = (req, _res, next) => {
       throw AppError.unauthorized("نوع توکن نامعتبر است.");
     }
 
+    // Ensure 'sub' exists so we don't assign undefined to 'id' or 'sub'
+    assertHasSub(decoded);
+
+    // Avoid spreading undefined for role/sub which would violate exactOptionalPropertyTypes
+    const { sub, role, ...rest } = decoded;
+
     req.user = {
-      id: decoded.sub,
-      sub: decoded.sub,
-      role: decoded.role,
-      ...decoded,
+      ...rest, // other claims
+      id: sub,
+      sub,
+      ...(typeof role === "string" ? { role } : {}),
     };
+
     next();
   } catch (e) {
     next(e);

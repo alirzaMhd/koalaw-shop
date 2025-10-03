@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { magazineController } from './magazine.controller';
-import { authGuard } from '../../common/middlewares/authGuard';
-import { validate } from '../../common/utils/validation';
+import { magazineController } from './magazine.controller.js';
+import { authGuard } from '../../common/middlewares/authGuard.js';
+import { validate } from '../../common/utils/validation.js';
 import {
   listPostsSchema,
   getPostBySlugSchema,
@@ -14,7 +14,7 @@ import {
   createTagSchema,
   updateTagSchema,
   deleteTagSchema,
-} from './magazine.validators';
+} from './magazine.validators.js';
 
 const router = Router();
 

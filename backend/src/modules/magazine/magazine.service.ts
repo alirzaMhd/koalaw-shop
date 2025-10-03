@@ -1,8 +1,8 @@
 // src/modules/magazine/magazine.service.ts
-import { magazineRepo, ListPostsFilter } from '../../infrastructure/db/repositories/magazine.repo';
-import { prisma } from '../../infrastructure/db/prismaClient';
-import AppError from '../../common/errors/AppError';
-import { onMagazinePostSaved, onMagazinePostDeleted } from './magazine.hooks';
+import { magazineRepo, type ListPostsFilter } from '../../infrastructure/db/repositories/magazine.repo.js';
+import { prisma } from '../../infrastructure/db/prismaClient.js';
+import AppError from '../../common/errors/AppError.js';
+import { onMagazinePostSaved, onMagazinePostDeleted } from './magazine.hooks.js';
 
 // Types local to this service (kept lightweight to avoid coupling to Prisma's generated types)
 export type AuthorDTO =
@@ -150,11 +150,13 @@ export class MagazineService {
     const filter: ListPostsFilter = {
       page: params.page,
       pageSize: safePageSize,
-      category: params.category as any,
-      tagSlugs: params.tagSlugs,
-      authorSlug: params.authorSlug,
-      q: params.q,
       onlyPublished: params.onlyPublished ?? true,
+      // Conditionally add optional properties only if they have a non-falsy value.
+      // This avoids assigning `undefined` and satisfies `exactOptionalPropertyTypes`.
+      ...(params.category && { category: params.category as any }),
+      ...(params.tagSlugs && { tagSlugs: params.tagSlugs }),
+      ...(params.authorSlug && { authorSlug: params.authorSlug }),
+      ...(params.q && { q: params.q }),
     };
 
     const { items, total } = await magazineRepo.listPosts(filter);
@@ -287,7 +289,7 @@ export class MagazineService {
 
   async deletePost(id: string) {
     await magazineRepo.deletePost(id);
-    
+
     // Remove from Elasticsearch
     await onMagazinePostDeleted(id);
   }

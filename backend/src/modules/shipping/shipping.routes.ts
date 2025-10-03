@@ -1,7 +1,7 @@
 // src/modules/shipping/shipping.routes.ts
 // Registers shipping endpoints
 
-import { Router, Request, Response, NextFunction } from "express";
+import { Router, type Request, type Response, type NextFunction } from "express";
 import { shippingController } from "./shipping.controller.js";
 import { authGuard } from "../../common/middlewares/authGuard.js";
 import { AppError } from "../../common/errors/AppError.js";

@@ -18,7 +18,7 @@ import {
   updateVariantInputSchema as updateVariantSchema,
   addReviewInputSchema as addReviewSchema,
   listReviewsQuerySchema as listReviewsSchema,
-} from "./product.validators";
+} from "./product.validators.js";
 
 // Param schemas
 const productIdParamSchema = z.object({ id: z.string().uuid({ message: "شناسه نامعتبر است." }) });

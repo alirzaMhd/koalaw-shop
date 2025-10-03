@@ -1,6 +1,6 @@
-import { Request, Response, NextFunction } from 'express';
-import { magazineService } from './magazine.service';
-import AppError from '../../common/errors/AppError';
+import type { Request, Response, NextFunction } from 'express';
+import { magazineService } from './magazine.service.js';
+import AppError from '../../common/errors/AppError.js';
 
 export class MagazineController {
   // POSTS
@@ -20,15 +20,33 @@ export class MagazineController {
       // merge single tag and tags[]
       const tagSlugs = (tags as string[] | undefined) ?? (tag ? [String(tag)] : undefined);
 
-      const result = await magazineService.listPosts({
+      // --- FIX: Conditionally build the options object to satisfy "exactOptionalPropertyTypes" ---
+      // This helper type infers the exact options type from the service method.
+      type ListPostOptions = Parameters<typeof magazineService.listPosts>[0];
+
+      // Start with the required properties.
+      const options: ListPostOptions = {
         page: Number(page),
         pageSize: Number(pageSize),
-        category,
-        tagSlugs,
-        authorSlug: authorSlug as string | undefined,
-        q: q as string | undefined,
         onlyPublished: onlyPublished === true || String(onlyPublished) === 'true',
-      });
+      };
+
+      // Only add optional properties if they have a value.
+      if (category) {
+        options.category = category;
+      }
+      if (tagSlugs) {
+        options.tagSlugs = tagSlugs;
+      }
+      if (authorSlug) {
+        options.authorSlug = authorSlug as string;
+      }
+      if (q) {
+        options.q = q as string;
+      }
+      // --- End of Fix ---
+
+      const result = await magazineService.listPosts(options);
 
       res.json({ success: true, ...result });
     } catch (err) {
@@ -39,7 +57,7 @@ export class MagazineController {
   getPostBySlug = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { slug } = req.params;
-      const post = await magazineService.getPostBySlug(slug);
+      const post = await magazineService.getPostBySlug(slug!);
       res.json({ success: true, data: post });
     } catch (err) {
       next(err);
@@ -57,7 +75,7 @@ export class MagazineController {
 
   updatePost = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const post = await magazineService.updatePost(req.params.id, req.body);
+      const post = await magazineService.updatePost(req.params.id!, req.body);
       res.json({ success: true, data: post });
     } catch (err) {
       next(err);
@@ -66,7 +84,7 @@ export class MagazineController {
 
   deletePost = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      await magazineService.deletePost(req.params.id);
+      await magazineService.deletePost(req.params.id!);
       res.status(204).send();
     } catch (err) {
       next(err);
@@ -86,7 +104,7 @@ export class MagazineController {
   getAuthorBySlug = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { slug } = req.params;
-      const author = await magazineService.getAuthorBySlug(slug);
+      const author = await magazineService.getAuthorBySlug(slug!);
       res.json({ success: true, data: author });
     } catch (err) {
       next(err);
@@ -104,7 +122,7 @@ export class MagazineController {
 
   updateAuthor = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const author = await magazineService.updateAuthor(req.params.id, req.body);
+      const author = await magazineService.updateAuthor(req.params.id!, req.body);
       res.json({ success: true, data: author });
     } catch (err) {
       next(err);
@@ -113,7 +131,7 @@ export class MagazineController {
 
   deleteAuthor = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      await magazineService.deleteAuthor(req.params.id);
+      await magazineService.deleteAuthor(req.params.id!);
       res.status(204).send();
     } catch (err) {
       next(err);
@@ -141,7 +159,7 @@ export class MagazineController {
 
   updateTag = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const tag = await magazineService.updateTag(req.params.id, req.body);
+      const tag = await magazineService.updateTag(req.params.id!, req.body);
       res.json({ success: true, data: tag });
     } catch (err) {
       next(err);
@@ -150,7 +168,7 @@ export class MagazineController {
 
   deleteTag = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      await magazineService.deleteTag(req.params.id);
+      await magazineService.deleteTag(req.params.id!);
       res.status(204).send();
     } catch (err) {
       next(err);

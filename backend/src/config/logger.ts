@@ -1,25 +1,25 @@
 // src/config/logger.ts
-// Pino logger with pretty transport in development.
-
 import pino from "pino";
-import { env } from "./env";
+import { env } from "./env.js";
 
-const transport = !env.isProd
-  ? {
-      target: "pino-pretty",
-      options: {
-        colorize: true,
-        translateTime: "SYS:standard",
-        ignore: "pid,hostname",
-        singleLine: true,
-      },
-    }
-  : undefined;
+const level = process.env.LOG_LEVEL ?? (env.isProd ? "info" : "debug");
 
 export const logger = pino({
-  level: process.env.LOG_LEVEL || (env.isProd ? "info" : "debug"),
-  base: undefined,
-  transport: transport as any,
+  level,
+  base: null, // null is allowed; undefined is not with exactOptionalPropertyTypes
+  ...(env.isProd
+    ? {}
+    : {
+        transport: {
+          target: "pino-pretty",
+          options: {
+            colorize: true,
+            translateTime: "SYS:standard",
+            ignore: "pid,hostname",
+            singleLine: true,
+          },
+        },
+      }),
 });
 
 export default logger;

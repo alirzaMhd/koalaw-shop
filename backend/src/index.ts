@@ -4,20 +4,20 @@ import "dotenv/config";
 import http from "http";
 import { env } from "./config/env.js";
 import { logger } from "./config/logger.js";
-import createApp from "./app";
+import createApp from "./app.js";
 
 // Infra for graceful shutdown
 import { prisma } from "./infrastructure/db/prismaClient.js";
-import { redis } from "./infrastructure/cache/redisClient";
-import { emailQueue, webhooksQueue, bindDefaultEmailWorker } from "./infrastructure/queue/bullmq";
+import { redis } from "./infrastructure/cache/redisClient.js";
+import { emailQueue, webhooksQueue, bindDefaultEmailWorker } from "./infrastructure/queue/bullmq.js";
 
 // Domain event handlers
-import { bindOrderCreatedHandler } from "./events/handlers/order.created.handler";
-import { bindPaymentSucceededHandler } from "./events/handlers/payment.succeeded.handler";
+import { bindOrderCreatedHandler } from "./events/handlers/order.created.handler.js";
+import { bindPaymentSucceededHandler } from "./events/handlers/payment.succeeded.handler.js";
 import { notificationService } from "./modules/notifications/notification.service.js";
 
 // Elasticsearch
-import { ping as esPing } from "./infrastructure/search/elastic.client";
+import { ping as esPing } from "./infrastructure/search/elastic.client.js";
 import { ensureSearchIndices } from "./modules/search/search.service.js";
 
 async function bootstrap() {

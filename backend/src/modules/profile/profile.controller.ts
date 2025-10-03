@@ -9,7 +9,7 @@ import {
   updateNotificationPrefsSchema,
   createAddressSchema,
   updateAddressSchema,
-} from "./profile.validators";
+} from "./profile.validators.js";
 import { AppError } from "../../common/errors/AppError.js";
 import { prisma } from "../../infrastructure/db/prismaClient.js"; // NEW
 
@@ -96,8 +96,14 @@ class ProfileController {
       const userId = req.user?.id || req.user?.sub;
       if (!userId) throw new AppError("احراز هویت انجام نشد.", 401, "UNAUTHORIZED");
 
-      const data = await updateProfileSchema.parseAsync(req.body);
-      const profile = await profileService.updateProfile(String(userId), data);
+      const parsed = await updateProfileSchema.parseAsync(req.body);
+      // Normalize nullable fields (convert null -> undefined) so they match service signature
+      const sanitized = {
+        ...parsed,
+        phone: (parsed as any).phone ?? undefined,
+        birthDate: (parsed as any).birthDate ?? undefined,
+      };
+      const profile = await profileService.updateProfile(String(userId), sanitized);
       return ok(res, { profile }, 200);
     } catch (err: any) {
       if (err?.issues?.length) {
@@ -182,7 +188,16 @@ class ProfileController {
       if (!userId) throw new AppError("احراز هویت انجام نشد.", 401, "UNAUTHORIZED");
 
       const data = await createAddressSchema.parseAsync(req.body);
-      const address = await profileService.createAddress(String(userId), data);
+      // Normalize nullable fields (e.g. label, postalCode, addressLine2, country may be null)
+      // to match service signature expecting string | undefined
+      const sanitized = {
+        ...data,
+        label: (data as any).label ?? undefined,
+        postalCode: (data as any).postalCode ?? undefined,
+        addressLine2: (data as any).addressLine2 ?? undefined,
+        country: (data as any).country ?? undefined,
+      };
+      const address = await profileService.createAddress(String(userId), sanitized);
       return ok(res, { address }, 201);
     } catch (err: any) {
       if (err?.issues?.length) {
@@ -203,7 +218,16 @@ class ProfileController {
       }
 
       const data = await updateAddressSchema.parseAsync(req.body);
-      const address = await profileService.updateAddress(String(userId), addressId, data);
+      // Normalize nullable fields (e.g. label, postalCode, addressLine2) to undefined
+      // so they match the service signature which does not accept null.
+      const sanitized = {
+        ...data,
+        label: (data as any).label ?? undefined,
+        postalCode: (data as any).postalCode ?? undefined,
+        addressLine2: (data as any).addressLine2 ?? undefined,
+      };
+
+      const address = await profileService.updateAddress(String(userId), addressId, sanitized);
       return ok(res, { address }, 200);
     } catch (err: any) {
       if (err?.issues?.length) {

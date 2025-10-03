@@ -1,35 +1,24 @@
 // src/modules/checkout/checkout.service.ts
 // Checkout orchestration: quote -> order creation -> payment initialization.
 // Integrates pricing.service (totals), emits order.created event, and initializes payment gateway or COD.
-//
-// Flow (happy path):
-// 1) Client builds/updates cart items (server-side snapshots are in cart_items).
-// 2) Client calls prepareQuote(cartId, { couponCode, shippingMethod, giftWrap }).
-// 3) Client submits address + payment method.
-// 4) createOrderFromCart(...) creates order + order_items + pending payment record,
-//    marks cart as converted, initializes gateway intent (if any), emits order.created.
-//
-// Note: inventory reservation and coupon redemption recording are deferred to domain event handlers
-// (e.g., order.created.handler.ts and payment.succeeded.handler.ts) per your architecture.
 
 import { prisma } from "../../infrastructure/db/prismaClient.js";
 import { env } from "../../config/env.js";
 import { logger } from "../../config/logger.js";
-import { eventBus } from "../../events/eventBus";
+import { eventBus } from "../../events/eventBus.js";
 import { AppError } from "../../common/errors/AppError.js";
+import { $Enums } from "@prisma/client";
 
 import {
   pricingService,
   type QuoteOptions,
   type QuoteResult,
-  type ShippingMethod,
+  type ShippingMethod as QuoteShippingMethod, // alias to avoid Prisma enum confusion
 } from "../pricing/pricing.service.js";
 import { taxService, type TaxContext } from "../pricing/tax.service.js";
-import { toLatinDigits, normalizeIranPhone } from "../auth/auth.validators";
+import { toLatinDigits, normalizeIranPhone } from "../../common/utils/validation.js";
 
-// Optional payment gateways (stripe/paypal) – initialize if configured
-// You can implement these adapters under src/infrastructure/payment/*.
-// The type signatures below are minimal for our use here.
+// Optional payment gateways (stripe/paypal)
 type GatewayPaymentInit = {
   id: string;
   clientSecret?: string; // Stripe-like
@@ -50,7 +39,7 @@ interface PaypalGateway {
   }): Promise<GatewayPaymentInit>;
 }
 
-// Lazy imports (avoid hard crash if not provided)
+// Lazy imports
 let stripeGateway: StripeGateway | null = null;
 let paypalGateway: PaypalGateway | null = null;
 try {
@@ -66,30 +55,30 @@ try {
 
 // ------------ Types ------------
 
-export type PaymentMethod = "gateway" | "cod";
+export type PaymentMethod = "gateway" | "cod"; // public API shape
 
 export interface CheckoutAddress {
   firstName: string;
   lastName: string;
   phone: string;
-  postalCode?: string | null;
+  postalCode?: string | null | undefined;
   province: string;
   city: string;
   addressLine1: string;
-  addressLine2?: string | null;
-  country?: string; // default IR
+  addressLine2?: string | null | undefined;
+  country?: string | undefined; // default IR
 }
 
 export interface CheckoutOptions extends QuoteOptions {
   paymentMethod: PaymentMethod;
-  shippingMethod?: ShippingMethod; // standard | express
+  shippingMethod?: QuoteShippingMethod; // standard | express (public)
   note?: string | null;
 }
 
 export interface CheckoutResult {
   orderId: string;
   orderNumber: string;
-  status: "awaiting_payment" | "processing";
+  status: "awaiting_payment" | "processing"; // public API shape
   amounts: {
     subtotal: number;
     discount: number;
@@ -152,62 +141,46 @@ async function generateOrderNumber(): Promise<string> {
   const mm = String(d.getMonth() + 1).padStart(2, "0");
   const dd = String(d.getDate()).padStart(2, "0");
   const base = `${ORDER_PREFIX}-${yyyy}${mm}${dd}`;
-  // We'll try a few times to avoid unique collisions
   for (let i = 0; i < 6; i++) {
-    const suffix = Math.floor(Math.random() * 1_000_000)
-      .toString()
-      .padStart(6, "0");
+    const suffix = Math.floor(Math.random() * 1_000_000).toString().padStart(6, "0");
     const orderNumber = `${base}-${suffix}`;
     const exists = await prisma.order.findFirst({ where: { orderNumber }, select: { id: true } });
     if (!exists) return orderNumber;
   }
-  // Fallback with timestamp tail
   return `${base}-${Date.now().toString().slice(-6)}`;
 }
 
 function toTaxCtx(addr: Required<CheckoutAddress>): TaxContext {
+  // postalCode must be string | null when present (no undefined)
   return {
-    country: addr.country,
+    country: addr.country || null,
     province: addr.province,
     city: addr.city,
-    postalCode: addr.postalCode || undefined,
+    ...(addr.postalCode ? { postalCode: addr.postalCode } : { postalCode: null }),
   };
 }
 
 // ------------ Service ------------
 
 class CheckoutService {
-  /**
-   * Compute quote (and optional taxes) for a cart.
-   * This mirrors the frontend constants and coupon behavior.
-   */
   async prepareQuote(cartId: string, opts: QuoteOptions = {}): Promise<QuoteResult> {
     return pricingService.quoteCart(cartId, opts);
   }
 
-  /**
-   * Create an order from a cart and initialize payment.
-   * - Validates cart has items
-   * - Computes quote via pricing.service (no tax line in DB schema; tax kept 0)
-   * - Persists order, items, and a pending payment record
-   * - For "gateway": initializes payment intent and returns clientSecret/approvalUrl
-   * - Emits "order.created" event
-   */
   async createOrderFromCart(args: {
     cartId: string;
-    userId?: string | null;
+    userId?: string | null | undefined;
     address: CheckoutAddress;
     options: CheckoutOptions;
-    // Optional PayPal return/cancel URLs if you enable PayPal:
-    returnUrl?: string;
-    cancelUrl?: string;
+    returnUrl?: string | undefined;
+    cancelUrl?: string | undefined;
   }): Promise<CheckoutResult> {
     const { cartId, userId, address, options } = args;
 
-    // 1) Load cart items (ensure not empty)
+    // 1) Load cart items
     const cart = await prisma.cart.findUnique({ where: { id: cartId }, select: { id: true, status: true } });
     if (!cart) throw new AppError("سبد خرید یافت نشد.", 404, "CART_NOT_FOUND");
-    if (cart.status !== "active") throw new AppError("سبد خرید فعال نیست.", 400, "CART_INACTIVE");
+    if (cart.status !== "ACTIVE") throw new AppError("سبد خرید فعال نیست.", 400, "CART_INACTIVE");
 
     const items = await prisma.cartItem.findMany({
       where: { cartId },
@@ -226,31 +199,46 @@ class CheckoutService {
     });
     if (!items.length) throw new AppError("سبد خرید خالی است.", 400, "CART_EMPTY");
 
-    // 2) Compute quote (discount, shipping, gift, total)
+    // 2) Compute quote (normalize fields to satisfy exactOptionalPropertyTypes)
     const quote = await pricingService.quoteCart(cartId, {
-      couponCode: options.couponCode,
-      shippingMethod: options.shippingMethod,
-      giftWrap: options.giftWrap,
-      userId: userId || undefined,
+      couponCode: options.couponCode ?? null, // never undefined
+      ...(options.shippingMethod !== undefined ? { shippingMethod: options.shippingMethod } : {}),
+      ...(options.giftWrap !== undefined ? { giftWrap: options.giftWrap } : {}),
+      ...(userId ? { userId } : {}),
     });
 
-    // 3) (Optional) compute taxes if you later add tax columns to orders
-    // const tax = await taxService.computeForLines({
-    //   lines: items.map((it) => ({ id: it.id, unitPrice: it.unitPrice, quantity: it.quantity })),
-    //   shippingAmount: quote.shipping,
-    // }, toTaxCtx(ensureAddress(address)));
-    // For now, schema has no tax field; we keep 0.
+    // 3) (Optional tax) - left commented out; toTaxCtx now returns postalCode as string|null
+    // const tax = await taxService.computeForLines(
+    //   {
+    //     lines: items.map((it) => ({ id: it.id, unitPrice: it.unitPrice, quantity: it.quantity })),
+    //     shippingAmount: quote.shipping,
+    //   },
+    //   toTaxCtx(ensureAddress(address))
+    // );
 
     // 4) Normalize address
     const addr = ensureAddress(address);
 
     // 5) Prepare order persistence data
     const orderNumber = await generateOrderNumber();
-    const paymentMethod = options.paymentMethod; // 'gateway' | 'cod'
-    const shippingMethod = options.shippingMethod === "express" ? "express" : "standard";
-    const currency = quote.currencyCode;
 
-    const status: "awaiting_payment" | "processing" = paymentMethod === "cod" ? "processing" : "awaiting_payment";
+    // Public API method (lowercase) and DB enum (uppercase)
+    const paymentMethod: PaymentMethod = options.paymentMethod; // "gateway" | "cod"
+    const dbPaymentMethod: $Enums.PaymentMethod = paymentMethod === "cod" ? "COD" : "GATEWAY";
+
+    // Public shipping method (lowercase) vs DB enum (uppercase)
+    const shippingMethodLower: QuoteShippingMethod =
+      options.shippingMethod === "express" ? "express" : "standard";
+    const dbShippingMethod: $Enums.ShippingMethod =
+      shippingMethodLower === "express" ? "EXPRESS" : "STANDARD";
+
+    // Public vs DB status
+    const publicStatus: CheckoutResult["status"] =
+      paymentMethod === "cod" ? "processing" : "awaiting_payment";
+    const dbStatus: $Enums.OrderStatus =
+      paymentMethod === "cod" ? "PROCESSING" : "AWAITING_PAYMENT";
+
+    const currency = quote.currencyCode;
 
     const couponCode = (options.couponCode || "").trim();
     const appliedCouponCode = couponCode ? couponCode.toUpperCase() : null;
@@ -262,9 +250,9 @@ class CheckoutService {
         data: {
           orderNumber,
           userId: userId || null,
-          status,
-          shippingMethod,                 // enum shipping_method_enum
-          paymentMethod,                  // enum payment_method_enum
+          status: dbStatus,
+          shippingMethod: dbShippingMethod,
+          paymentMethod: dbPaymentMethod,
           couponCode: appliedCouponCode,
           giftWrap: !!options.giftWrap,
           note: options.note || null,
@@ -284,7 +272,7 @@ class CheckoutService {
           shippingCity: addr.city,
           shippingAddressLine1: addr.addressLine1,
           shippingAddressLine2: addr.addressLine2 || null,
-          shippingCountry: addr.country,
+          shippingCountry: addr.country!,
 
           placedAt: new Date(),
         },
@@ -309,12 +297,12 @@ class CheckoutService {
         });
       }
 
-      // Create pending payment record
+      // Create pending payment record (DB enum values)
       const payment = await tx.payment.create({
         data: {
           orderId: order.id,
-          method: paymentMethod,
-          status: "pending",
+          method: dbPaymentMethod,
+          status: "PENDING",
           amount: quote.total,
           currencyCode: currency,
           authority: null,
@@ -323,8 +311,8 @@ class CheckoutService {
         },
       });
 
-      // Mark cart as converted (do not delete items to keep snapshot; optional: clear after order)
-      await tx.cart.update({ where: { id: cartId }, data: { status: "converted" } });
+      // Mark cart as converted
+      await tx.cart.update({ where: { id: cartId }, data: { status: "CONVERTED" } });
 
       return { order, payment };
     });
@@ -345,10 +333,7 @@ class CheckoutService {
         const intent = await stripeGateway.createPaymentIntent({
           amount: result.order.total,
           currency,
-          metadata: {
-            orderId: result.order.id,
-            orderNumber,
-          },
+          metadata: { orderId: result.order.id, orderNumber },
         });
         clientSecret = intent.clientSecret;
         paymentAuthority = intent.id;
@@ -367,7 +352,6 @@ class CheckoutService {
         approvalUrl = pp.approvalUrl;
         paymentAuthority = pp.id;
       } else {
-        // You can plug local PSPs here (e.g., Zarinpal)
         logger.warn({ provider }, "Unknown payment provider; skipping init.");
       }
 
@@ -380,13 +364,13 @@ class CheckoutService {
       }
     }
 
-    // 8) Emit event for downstream handlers (reserve stock, email, etc.)
+    // 8) Emit event
     eventBus.emit("order.created", {
       orderId: result.order.id,
       orderNumber,
       userId: userId || null,
-      paymentMethod,
-      shippingMethod,
+      paymentMethod, // public
+      shippingMethod: shippingMethodLower, // public
       totals: {
         subtotal: quote.subtotal,
         discount: quote.discount,
@@ -401,7 +385,7 @@ class CheckoutService {
     return {
       orderId: result.order.id,
       orderNumber,
-      status,
+      status: publicStatus,
       amounts: {
         subtotal: quote.subtotal,
         discount: quote.discount,
@@ -412,12 +396,12 @@ class CheckoutService {
       },
       payment: {
         id: result.payment.id,
-        method: paymentMethod,
-        status: "pending",
+        method: paymentMethod, // public
+        status: "pending", // public
         amount: quote.total,
         currencyCode: currency,
-        clientSecret,
-        approvalUrl,
+        ...(clientSecret ? { clientSecret } : {}),
+        ...(approvalUrl ? { approvalUrl } : {}),
         authority: paymentAuthority,
       },
       quote,

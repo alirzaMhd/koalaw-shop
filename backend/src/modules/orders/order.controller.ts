@@ -79,7 +79,10 @@ class OrderController {
       const userId = req.user?.id || req.user?.sub;
       if (!userId) throw new AppError("احراز هویت انجام نشد.", 401, "UNAUTHORIZED");
       const q = await listQuerySchema.parseAsync(req.query);
-      const result = await orderService.listForUser(String(userId), q);
+      // Remove undefined properties so the resulting object does not contain `undefined` values
+      // which would be incompatible with exactOptionalPropertyTypes in the service signature.
+      const cleanQ = Object.fromEntries(Object.entries(q).filter(([, v]) => v !== undefined)) as any;
+      const result = await orderService.listForUser(String(userId), cleanQ);
       return ok(res, result, 200);
     } catch (err: any) {
       if (err?.issues?.length) return next(new AppError(err?.issues[0].message, 422, "VALIDATION_ERROR"));
@@ -91,7 +94,10 @@ class OrderController {
   listAll: RequestHandler = async (req, res, next) => {
     try {
       const q = await listQuerySchema.parseAsync(req.query);
-      const result = await orderService.listAll(q);
+      // Remove undefined properties so the resulting object does not contain `undefined` values
+      // which would be incompatible with exactOptionalPropertyTypes in the service signature.
+      const cleanQ = Object.fromEntries(Object.entries(q).filter(([, v]) => v !== undefined)) as any;
+      const result = await orderService.listAll(cleanQ);
       return ok(res, result, 200);
     } catch (err: any) {
       if (err?.issues?.length) return next(new AppError(err?.issues[0].message, 422, "VALIDATION_ERROR"));

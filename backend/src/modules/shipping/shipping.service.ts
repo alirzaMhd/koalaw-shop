@@ -57,16 +57,16 @@ export interface ShipmentLabel {
   id: string;
   carrier: string; // e.g., "local-post" | "courier"
   trackingNumber: string;
-  labelUrl?: string;
+  labelUrl?: string | undefined;
   createdAt: string; // ISO
   // Echo basic destination info for convenience
   to?: {
-    name?: string;
-    phone?: string;
-    province?: string;
-    city?: string;
-    postalCode?: string | null;
-  };
+  name?: string | undefined;
+  phone?: string | undefined;
+  province?: string | undefined;
+  city?: string | undefined;
+  postalCode?: string | null | undefined;
+} | undefined;
 }
 
 // ---------- Config ----------
@@ -92,12 +92,14 @@ function parseOverrides(): RegionOverride[] {
     const arr = JSON.parse(String(raw));
     if (!Array.isArray(arr)) return [];
     return arr
-      .map((o) => ({
-        province: o.province ? String(o.province).toLowerCase().trim() : undefined,
-        multiplier: Number.isFinite(Number(o.multiplier)) ? Number(o.multiplier) : undefined,
-        extra: Number.isFinite(Number(o.extra)) ? Number(o.extra) : undefined,
-      }))
-      .filter((o) => o.province);
+      .map((o: any) => {
+        const r: RegionOverride = {};
+        if (o?.province) r.province = String(o.province).toLowerCase().trim();
+        if (Number.isFinite(Number(o?.multiplier))) r.multiplier = Number(o.multiplier);
+        if (Number.isFinite(Number(o?.extra))) r.extra = Number(o.extra);
+        return r;
+      })
+      .filter((o) => o.province !== undefined);
   } catch (e) {
     logger.warn({ err: e }, "Failed to parse SHIPPING_REGION_OVERRIDES; ignoring.");
     return [];
@@ -141,9 +143,9 @@ function computeBaseShipping(subtotal: number, province?: string, couponFreeShip
 function buildRateQuote(args: {
   method: ShippingMethod;
   subtotal: number;
-  province?: string;
-  couponFreeShip?: boolean;
-  currencyCode?: string;
+  province?: string | undefined;
+  couponFreeShip?: boolean | undefined;
+  currencyCode?: string | undefined;
 }): RateQuote {
   const base = computeBaseShipping(args.subtotal, args.province, !!args.couponFreeShip);
   const surcharge = args.method === "express" ? clampInt(EXPRESS_SURCHARGE) : 0;
@@ -209,17 +211,17 @@ class ShippingService {
    * Quote for ad-hoc lines via pricing.service or supplied subtotal.
    * If subtotal is provided, uses subtotal; otherwise compute via pricing for zero shipping/gift.
    */
-  async quoteLinesOrSubtotal(args: { subtotal?: number; linesQuote?: QuoteResult | null; address?: Address; couponFreeShip?: boolean; currencyCode?: string }) {
+  async quoteLinesOrSubtotal(args: { subtotal?: number | undefined; linesQuote?: QuoteResult | null | undefined; address?: Address | undefined; couponFreeShip?: boolean | undefined; currencyCode?: string | undefined }) {
     let subtotal = clampInt(args.subtotal || 0);
     if (!subtotal && args.linesQuote) subtotal = clampInt(args.linesQuote.subtotal);
     if (!subtotal && !args.linesQuote) {
       // As a fallback, return base rates
       subtotal = 0;
     }
-    return quoteForSubtotal(subtotal, args.address, {
-      couponFreeShip: args.couponFreeShip,
-      currencyCode: args.currencyCode,
-    });
+    const opts: QuoteOptions = {};
+    if (args.couponFreeShip !== undefined) opts.couponFreeShip = args.couponFreeShip;
+    if (args.currencyCode !== undefined) opts.currencyCode = args.currencyCode;
+    return quoteForSubtotal(subtotal, args.address, opts);
   }
 
   /**

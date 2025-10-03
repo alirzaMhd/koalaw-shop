@@ -17,8 +17,8 @@ import { prisma } from "../../infrastructure/db/prismaClient.js";
 import { env } from "../../config/env.js";
 import { logger } from "../../config/logger.js";
 import { AppError } from "../../common/errors/AppError.js";
-import { eventBus } from "../../events/eventBus";
-import { onOrderCreated, onPaymentSucceeded, type OrderCreatedEvent, type PaymentSucceededEvent } from "../orders/order.events";
+import { eventBus } from "../../events/eventBus.js";
+import { onOrderCreated, onPaymentSucceeded, type OrderCreatedEvent, type PaymentSucceededEvent } from "../orders/order.events.js";
 
 // Optional dynamic modules
 let mailer: any = null;
@@ -240,15 +240,18 @@ class NotificationService {
    * If templateName is provided, we render it using Handlebars templates.
    */
   async sendEmail(payload: EmailPayload & { templateName?: string; templateData?: Record<string, any> }, opts?: { enqueue?: boolean }) {
-    let rendered = { html: payload.html || "", text: payload.text || "" };
+    let rendered: { html: string; text?: string } = { html: payload.html || "", text: payload.text || "" };
     if (payload.templateName) {
+      // renderTemplate returns { html: string; text?: string } so keep text optional here
       rendered = await renderTemplate(payload.templateName, { ...(payload.templateData || {}), subject: payload.subject });
     }
+    // Remove template-specific props and ensure html/text are definite strings to satisfy strict optional property typing
+    const { templateName, templateData, ...rest } = payload;
     const final: EmailPayload = {
-      ...payload,
-      from: payload.from || MAIL_FROM,
-      html: rendered.html || payload.html,
-      text: rendered.text || payload.text,
+      ...rest,
+      from: rest.from || MAIL_FROM,
+      html: rendered.html ?? rest.html ?? "",
+      text: rendered.text ?? rest.text ?? "",
     };
 
     if (opts?.enqueue) {
@@ -311,7 +314,7 @@ class NotificationService {
         qty: it.quantity,
         unitPrice: it.unitPrice,
         lineTotal: it.lineTotal,
-        imageUrl: it.imageUrl ?? undefined,
+        imageUrl: it.imageUrl,
       })),
       shipping: {
         method: order.shippingMethod,

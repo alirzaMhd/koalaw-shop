@@ -1,10 +1,11 @@
 // src/modules/users/user.controller.ts
 // Thin HTTP handlers for user profile, notification prefs, and addresses.
 
-import type { Request, Response, RequestHandler } from "express";
+import type { Request, Response, NextFunction, RequestHandler } from "express";
 import { z } from "zod";
 
 import { userService } from "./user.service.js";
+import type { AddressCreateInput } from "./user.service.js";
 import { AppError } from "../../common/errors/AppError.js";
 
 // If your authGuard attaches the decoded JWT here:
@@ -96,7 +97,7 @@ const addressUpdateSchema = z
 // --------------------------
 
 class UserController {
-  getMe: RequestHandler = async (req: AuthenticatedRequest, res, next) => {
+  getMe = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     try {
       const userId = req.user?.id || req.user?.sub;
       if (!userId) throw new AppError("احراز هویت انجام نشد.", 401, "UNAUTHORIZED");
@@ -107,7 +108,7 @@ class UserController {
     }
   };
 
-  updateMe: RequestHandler = async (req: AuthenticatedRequest, res, next) => {
+  updateMe = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     try {
       const userId = req.user?.id || req.user?.sub;
       if (!userId) throw new AppError("احراز هویت انجام نشد.", 401, "UNAUTHORIZED");
@@ -124,10 +125,18 @@ class UserController {
       const birthDate =
         typeof body.birthDate === "string" ? new Date(body.birthDate) : body.birthDate ?? undefined;
 
-      const updated = await userService.updateProfile(String(userId), {
-        ...body,
-        birthDate,
+      // Remove properties with undefined to satisfy exactOptionalPropertyTypes
+      const payload: Record<string, any> = {};
+      Object.entries(body).forEach(([key, value]) => {
+        if (value !== undefined) {
+          payload[key] = value;
+        }
       });
+      if (birthDate !== undefined) {
+        payload.birthDate = birthDate;
+      }
+
+      const updated = await userService.updateProfile(String(userId), payload);
       return ok(res, { user: updated }, 200);
     } catch (err: any) {
       if (err?.issues?.length) {
@@ -137,7 +146,7 @@ class UserController {
     }
   };
 
-  getNotificationPrefs: RequestHandler = async (req: AuthenticatedRequest, res, next) => {
+  getNotificationPrefs = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     try {
       const userId = req.user?.id || req.user?.sub;
       if (!userId) throw new AppError("احراز هویت انجام نشد.", 401, "UNAUTHORIZED");
@@ -148,12 +157,28 @@ class UserController {
     }
   };
 
-  updateNotificationPrefs: RequestHandler = async (req: AuthenticatedRequest, res, next) => {
+  updateNotificationPrefs = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     try {
       const userId = req.user?.id || req.user?.sub;
       if (!userId) throw new AppError("احراز هویت انجام نشد.", 401, "UNAUTHORIZED");
       const input = await prefsSchema.parseAsync(req.body ?? {});
-      const prefs = await userService.updateNotificationPrefs(String(userId), input);
+
+      // Build a payload that only contains properties that are actually provided
+      type PrefsPayload = Partial<{
+        orderUpdates: boolean;
+        promotions: boolean;
+        newProducts: boolean;
+        marketing: boolean;
+      }>;
+
+      const payload: PrefsPayload = {};
+      Object.entries(input).forEach(([key, value]) => {
+        if (value !== undefined) {
+          (payload as any)[key] = value;
+        }
+      });
+
+      const prefs = await userService.updateNotificationPrefs(String(userId), payload);
       return ok(res, { prefs }, 200);
     } catch (err: any) {
       if (err?.issues?.length) {
@@ -164,7 +189,7 @@ class UserController {
   };
 
   // Addresses
-  listAddresses: RequestHandler = async (req: AuthenticatedRequest, res, next) => {
+  listAddresses = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     try {
       const userId = req.user?.id || req.user?.sub;
       if (!userId) throw new AppError("احراز هویت انجام نشد.", 401, "UNAUTHORIZED");
@@ -174,18 +199,23 @@ class UserController {
       next(err);
     }
   };
-
-  createAddress: RequestHandler = async (req: AuthenticatedRequest, res, next) => {
+  createAddress = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     try {
       const userId = req.user?.id || req.user?.sub;
       if (!userId) throw new AppError("احراز هویت انجام نشد.", 401, "UNAUTHORIZED");
       const input = await addressCreateSchema.parseAsync(req.body ?? {});
       // Normalize phone to a consistent format (prefer Iran format when possible)
       const normalizedPhone = (input.phone);
-      const created = await userService.createAddress(String(userId), {
-        ...input,
-        phone: normalizedPhone,
+
+      // Build payload without undefined properties to satisfy exactOptionalPropertyTypes
+      const payload: Partial<AddressCreateInput> = {};
+      Object.entries({ ...input, phone: normalizedPhone }).forEach(([key, value]) => {
+        if (value !== undefined) {
+          (payload as any)[key] = value;
+        }
       });
+
+      const created = await userService.createAddress(String(userId), payload as AddressCreateInput);
       return ok(res, { address: created }, 201);
     } catch (err: any) {
       if (err?.issues?.length) {
@@ -195,7 +225,7 @@ class UserController {
     }
   };
 
-  updateAddress: RequestHandler = async (req: AuthenticatedRequest, res, next) => {
+  updateAddress = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     try {
       const userId = req.user?.id || req.user?.sub;
       if (!userId) throw new AppError("احراز هویت انجام نشد.", 401, "UNAUTHORIZED");
@@ -227,7 +257,7 @@ class UserController {
     }
   };
 
-  deleteAddress: RequestHandler = async (req: AuthenticatedRequest, res, next) => {
+  deleteAddress = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     try {
       const userId = req.user?.id || req.user?.sub;
       if (!userId) throw new AppError("احراز هویت انجام نشد.", 401, "UNAUTHORIZED");
@@ -241,7 +271,7 @@ class UserController {
     }
   };
 
-  setDefaultAddress: RequestHandler = async (req: AuthenticatedRequest, res, next) => {
+  setDefaultAddress = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     try {
       const userId = req.user?.id || req.user?.sub;
       if (!userId) throw new AppError("احراز هویت انجام نشد.", 401, "UNAUTHORIZED");
@@ -256,7 +286,7 @@ class UserController {
   };
 
   // Dashboard-style summary
-  getSummary: RequestHandler = async (req: AuthenticatedRequest, res, next) => {
+  getSummary = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     try {
       const userId = req.user?.id || req.user?.sub;
       if (!userId) throw new AppError("احراز هویت انجام نشد.", 401, "UNAUTHORIZED");

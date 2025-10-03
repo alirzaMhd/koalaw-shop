@@ -6,8 +6,9 @@
 import { prisma } from "../../infrastructure/db/prismaClient.js";
 import { AppError } from "../../common/errors/AppError.js";
 import { logger } from "../../config/logger.js";
-import { eventBus } from "../../events/eventBus";
+import { eventBus } from "../../events/eventBus.js";
 import { env } from "../../config/env.js";
+import type { Prisma } from "@prisma/client";
 
 const ALLOW_BACKORDER = String(env.INVENTORY_ALLOW_BACKORDER || "false") === "true";
 
@@ -58,7 +59,7 @@ export class InventoryService {
 
   // ---------- Atomic reservation helpers (single line) ----------
 
-  private async reserveOne(tx: typeof prisma, variantId: string, qty: number): Promise<void> {
+  private async reserveOne(tx: Prisma.TransactionClient, variantId: string, qty: number): Promise<void> {
     if (qty <= 0) throw new AppError("تعداد نامعتبر است.", 400, "BAD_QTY");
 
     if (ALLOW_BACKORDER) {
@@ -85,7 +86,7 @@ export class InventoryService {
     }
   }
 
-  private async releaseOne(tx: typeof prisma, variantId: string, qty: number): Promise<void> {
+  private async releaseOne(tx: Prisma.TransactionClient, variantId: string, qty: number): Promise<void> {
     if (qty <= 0) throw new AppError("تعداد نامعتبر است.", 400, "BAD_QTY");
     await tx.productVariant.update({
       where: { id: variantId },
@@ -112,7 +113,7 @@ export class InventoryService {
 
     try {
       await prisma.$transaction(async (tx) => {
-        for (const { variantId, quantity } of compact) {
+        for (const { variantId } of compact) {
           // Ensure variant exists
           const exists = await tx.productVariant.findUnique({
             where: { id: variantId },
@@ -220,7 +221,9 @@ export class InventoryService {
       where: { orderId },
       select: { variantId: true, quantity: true },
     });
-    const lines = items.filter((i) => i.variantId).map((i) => ({ variantId: i.variantId as string, quantity: i.quantity }));
+    const lines = items
+      .filter((i) => i.variantId)
+      .map((i) => ({ variantId: i.variantId as string, quantity: i.quantity }));
     if (!lines.length) return;
     await this.release(lines);
   }

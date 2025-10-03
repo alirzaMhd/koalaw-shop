@@ -8,17 +8,17 @@ import { eventBus } from "../../events/eventBus.js";
 import { AppError } from "../../common/errors/AppError.js";
 
 import {
-  User,
-  UserAddress,
-  UserNotificationPrefs,
-  Gender,
-  CustomerTier,
+  type User,
+  type UserAddress,
+  type UserNotificationPrefs,
+  type Gender,
+  type CustomerTier,
   mapDbUserToEntity,
   mapDbAddressToEntity,
   mapDbPrefsToEntity,
   DEFAULT_NOTIFICATION_PREFS,
   makeUserSummary,
-  UserSummary,
+  type UserSummary,
 } from "./user.entity.js";
 
 // Inputs
@@ -115,25 +115,38 @@ class UserService {
     prefs: UpsertNotificationPrefsInput
   ): Promise<UserNotificationPrefs> {
     const existing = await prisma.userNotificationPrefs.findUnique({ where: { userId } });
-    const data = {
-      orderUpdates: prefs.orderUpdates,
-      promotions: prefs.promotions,
-      newProducts: prefs.newProducts,
-      marketing: prefs.marketing,
+
+    // Build an update payload that only contains fields explicitly provided
+    const updateData: any = {};
+    if (typeof prefs.orderUpdates !== "undefined") updateData.orderUpdates = prefs.orderUpdates;
+    if (typeof prefs.promotions !== "undefined") updateData.promotions = prefs.promotions;
+    if (typeof prefs.newProducts !== "undefined") updateData.newProducts = prefs.newProducts;
+    if (typeof prefs.marketing !== "undefined") updateData.marketing = prefs.marketing;
+
+    // Build a create payload with concrete boolean values (falling back to defaults)
+    const createData = {
+      userId,
+      orderUpdates: prefs.orderUpdates ?? DEFAULT_NOTIFICATION_PREFS.orderUpdates,
+      promotions: prefs.promotions ?? DEFAULT_NOTIFICATION_PREFS.promotions,
+      newProducts: prefs.newProducts ?? DEFAULT_NOTIFICATION_PREFS.newProducts,
+      marketing: prefs.marketing ?? DEFAULT_NOTIFICATION_PREFS.marketing,
     };
+
     let row;
     if (!existing) {
       row = await prisma.userNotificationPrefs.create({
-        data: { userId, ...DEFAULT_NOTIFICATION_PREFS, ...data },
+        data: createData,
       });
     } else {
       row = await prisma.userNotificationPrefs.update({
         where: { userId },
-        data,
+        data: updateData,
       });
     }
-    eventBus.emit("user.prefs.updated", { userId, prefs: data });
-    return mapDbPrefsToEntity(row);
+
+    const entity = mapDbPrefsToEntity(row);
+    eventBus.emit("user.prefs.updated", { userId, prefs: entity });
+    return entity;
   }
 
   // Addresses
@@ -195,21 +208,22 @@ class UserService {
           data: { isDefault: false },
         });
       }
+      const data: AddressUpdateInput = {};
+      if (typeof input.label !== "undefined") data.label = input.label;
+      if (typeof input.firstName !== "undefined") data.firstName = input.firstName;
+      if (typeof input.lastName !== "undefined") data.lastName = input.lastName;
+      if (typeof input.phone !== "undefined") data.phone = input.phone;
+      if (typeof input.postalCode !== "undefined") data.postalCode = input.postalCode;
+      if (typeof input.province !== "undefined") data.province = input.province;
+      if (typeof input.city !== "undefined") data.city = input.city;
+      if (typeof input.addressLine1 !== "undefined") data.addressLine1 = input.addressLine1;
+      if (typeof input.addressLine2 !== "undefined") data.addressLine2 = input.addressLine2;
+      if (typeof input.country !== "undefined") data.country = input.country;
+      if (typeof input.isDefault !== "undefined") data.isDefault = willBeDefault;
+
       const updated = await tx.userAddress.update({
         where: { id: addressId },
-        data: {
-          label: input.label ?? undefined,
-          firstName: input.firstName ?? undefined,
-          lastName: input.lastName ?? undefined,
-          phone: input.phone ?? undefined,
-          postalCode: typeof input.postalCode !== "undefined" ? input.postalCode : undefined,
-          province: input.province ?? undefined,
-          city: input.city ?? undefined,
-          addressLine1: input.addressLine1 ?? undefined,
-          addressLine2: typeof input.addressLine2 !== "undefined" ? input.addressLine2 : undefined,
-          country: input.country ?? undefined,
-          isDefault: typeof input.isDefault !== "undefined" ? willBeDefault : undefined,
-        },
+        data,
       });
       return updated;
     });

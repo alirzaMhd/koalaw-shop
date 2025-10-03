@@ -10,13 +10,16 @@ export type ProductOrderBy = Prisma.ProductOrderByWithRelationInput;
 export const productRepo = {
   // Queries
   findById(id: string, include?: Prisma.ProductInclude) {
-    return prisma.product.findUnique({ where: { id }, include });
+    return prisma.product.findUnique({ where: { id }, include: include ?? null });
   },
   findBySlug(slug: string, include?: Prisma.ProductInclude) {
-    return prisma.product.findUnique({ where: { slug }, include });
+    return prisma.product.findUnique({ where: { slug }, include: include ?? null });
   },
   count(where?: ProductWhere) {
-    return prisma.product.count({ where });
+    if (where) {
+      return prisma.product.count({ where });
+    }
+    return prisma.product.count();
   },
   findMany(args: {
     where?: ProductWhere;
@@ -26,7 +29,13 @@ export const productRepo = {
     include?: Prisma.ProductInclude;
   }) {
     const { where, orderBy, skip, take, include } = args;
-    return prisma.product.findMany({ where, orderBy, skip, take, include });
+    const params: any = {};
+    if (where) params.where = where;
+    if (orderBy) params.orderBy = orderBy;
+    if (typeof skip === "number") params.skip = skip;
+    if (typeof take === "number") params.take = take;
+    if (include !== undefined) params.include = include;
+    return prisma.product.findMany(params);
   },
 
   // Mutations

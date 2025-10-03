@@ -4,7 +4,7 @@
 
 import { prisma } from "../../infrastructure/db/prismaClient.js";
 import { logger } from "../../config/logger.js";
-import { eventBus } from "../../events/eventBus";
+import { eventBus } from "../../events/eventBus.js";
 import { AppError } from "../../common/errors/AppError.js";
 
 import {
@@ -30,7 +30,7 @@ import {
   type UpdateImageInput,
   type AddReviewInput,
   type ListReviewsQuery,
-} from "./product.validators";
+} from "./product.validators.js";
 import { listCategories, normalizeCategories } from "./category.entity.js"; // NEW
 
 // ---------------- Utils ----------------
@@ -65,7 +65,7 @@ async function ensureUniqueSlug(base: string, excludeId?: string): Promise<strin
   }
 }
 
-async function resolveBrandId(input: { brandId?: string; brandSlug?: string }): Promise<string> {
+async function resolveBrandId(input: { brandId?: string | undefined; brandSlug?: string | undefined }): Promise<string> {
   if (input.brandId) return input.brandId;
   if (input.brandSlug) {
     const b = await prisma.brand.findUnique({ where: { slug: input.brandSlug }, select: { id: true } });
@@ -418,9 +418,9 @@ class ProductService {
     const row = await prisma.productImage.update({
       where: { id: imageId },
       data: {
-        url: input.url ?? undefined,
-        alt: typeof input.alt !== "undefined" ? input.alt : undefined,
-        position: typeof input.position === "number" ? input.position : undefined,
+        ...(input.url !== undefined && { url: input.url }),
+        ...(input.alt !== undefined && { alt: input.alt }),
+        ...(input.position !== undefined && { position: input.position }),
       },
     });
     eventBus.emit("product.image.updated", { productId, imageId });
@@ -468,15 +468,15 @@ class ProductService {
     const row = await prisma.productVariant.update({
       where: { id: variantId },
       data: {
-        variantName: input.variantName ?? undefined,
-        sku: typeof input.sku !== "undefined" ? input.sku : undefined,
-        price: typeof input.price === "number" ? input.price : input.price === null ? null : undefined,
-        currencyCode: input.currencyCode ?? undefined,
-        stock: typeof input.stock === "number" ? input.stock : undefined,
-        colorName: typeof input.colorName !== "undefined" ? input.colorName : undefined,
-        colorHexCode: typeof input.colorHexCode !== "undefined" ? input.colorHexCode : undefined,
-        isActive: typeof input.isActive === "boolean" ? input.isActive : undefined,
-        position: typeof input.position === "number" ? input.position : undefined,
+        ...(input.variantName !== undefined && { variantName: input.variantName }),
+        ...(input.sku !== undefined && { sku: input.sku }),
+        ...(input.price !== undefined && { price: input.price }),
+        ...(input.currencyCode !== undefined && { currencyCode: input.currencyCode }),
+        ...(input.stock !== undefined && { stock: input.stock }),
+        ...(input.colorName !== undefined && { colorName: input.colorName }),
+        ...(input.colorHexCode !== undefined && { colorHexCode: input.colorHexCode }),
+        ...(input.isActive !== undefined && { isActive: input.isActive }),
+        ...(input.position !== undefined && { position: input.position }),
       },
     });
     eventBus.emit("product.variant.updated", { productId, variantId });

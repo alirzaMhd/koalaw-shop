@@ -29,7 +29,7 @@ import { prisma } from "../../infrastructure/db/prismaClient.js";
 import { env } from "../../config/env.js";
 import { logger } from "../../config/logger.js";
 import {
-  Coupon,
+  type Coupon,
   normalizeCouponCode,
   mapDbCouponToEntity,
   evaluateCoupon,
@@ -52,11 +52,11 @@ export interface QuoteLine {
 }
 
 export interface QuoteOptions {
-  couponCode?: string | null;
-  shippingMethod?: ShippingMethod;
-  giftWrap?: boolean;
-  userId?: string | null; // for per-user coupon usage caps
-  currencyCode?: string;  // fallback currency code if lines are mixed/missing
+  couponCode?: string | null | undefined;
+  shippingMethod?: ShippingMethod | undefined;
+  giftWrap?: boolean | undefined;
+  userId?: string | null | undefined; // for per-user coupon usage caps
+  currencyCode?: string | undefined;  // fallback currency code if lines are mixed/missing
 }
 
 export interface QuoteResult {
@@ -270,11 +270,11 @@ class PricingService {
       productId: it.productId,
       variantId: it.variantId,
       title: it.title,
-      variantName: it.variantName ?? undefined,
+      variantName: it.variantName ?? null,
       unitPrice: it.unitPrice,
       quantity: it.quantity,
       lineTotal: it.unitPrice * it.quantity,
-      imageUrl: it.imageUrl ?? undefined,
+      imageUrl: it.imageUrl ?? null,
       currencyCode: it.currencyCode ?? undefined,
     }));
 
@@ -323,7 +323,11 @@ class PricingService {
           effect = { ...evalRes.effect };
           appliedCoupon = { code: upper, ok: true, effect: { ...evalRes.effect }, id: coupon.id };
         } else {
-          appliedCoupon = { code: upper, ok: false, reason: evalRes.reason, id: coupon.id };
+          if (evalRes.reason) {
+            appliedCoupon = { code: upper, ok: false, reason: evalRes.reason, id: coupon.id };
+          } else {
+            appliedCoupon = { code: upper, ok: false, id: coupon.id };
+          }
         }
       } else if (coupon) {
         appliedCoupon = { code: upper, ok: false, reason: "INACTIVE", id: coupon.id };

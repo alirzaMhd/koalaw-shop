@@ -75,17 +75,27 @@ class ShippingController {
   quote: RequestHandler = async (req, res, next) => {
     try {
       const body = await quoteSchema.parseAsync(req.body ?? {});
+      // Normalize nullable/optional address fields so their types match the Address expected by services
+      const address = body.address
+        ? ({
+            ...body.address,
+            // convert explicit nulls to undefined to satisfy exactOptionalPropertyTypes
+            postalCode: body.address.postalCode ?? undefined,
+            addressLine2: body.address.addressLine2 ?? undefined,
+          } as any)
+        : undefined;
+
       if (body.cartId) {
-        const result = await shippingService.quoteCart(body.cartId, body.address, {
-          couponFreeShip: body.couponFreeShip,
-          currencyCode: body.currencyCode,
+        const result = await shippingService.quoteCart(body.cartId, address, {
+          couponFreeShip: !!body.couponFreeShip,
+          ...(body.currencyCode ? { currencyCode: body.currencyCode } : {}),
         });
         return ok(res, result, 200);
       }
       // subtotal path
       const result = await shippingService.quoteLinesOrSubtotal({
         subtotal: body.subtotal!,
-        address: body.address,
+        address,
         couponFreeShip: body.couponFreeShip,
         currencyCode: body.currencyCode,
         linesQuote: null,

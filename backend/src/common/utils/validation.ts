@@ -1,7 +1,9 @@
 // src/common/utils/validation.ts
 // Shared validation helpers: safe Zod parsing, phone normalization, Persian/Arabic digits.
 
-import { Request, Response, NextFunction } from "express";
+// src/common/utils/validation.ts
+// Shared validation helpers: safe Zod parsing, phone normalization, Persian/Arabic digits.
+import type { Request, Response, NextFunction } from "express";
 import { z, ZodSchema } from "zod";
 
 export function toLatinDigits(input: string = ""): string {

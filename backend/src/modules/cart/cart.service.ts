@@ -5,11 +5,11 @@
 
 import { prisma } from "../../infrastructure/db/prismaClient.js";
 import { AppError } from "../../common/errors/AppError.js";
-import { eventBus } from "../../events/eventBus";
+import { eventBus } from "../../events/eventBus.js";
 import { logger } from "../../config/logger.js";
 import { pricingService, type QuoteOptions, type QuoteResult } from "../pricing/pricing.service.js";
 
-export type CartStatus = "active" | "converted" | "abandoned";
+export type CartStatus = "ACTIVE" | "CONVERTED" | "ABANDONED";
 
 export interface Cart {
   id: string;
@@ -154,18 +154,18 @@ class CartService {
   async getOrCreateForUser(userId: string): Promise<CartWithItems> {
     // Try to find an active cart
     let cart = await prisma.cart.findFirst({
-      where: { userId, status: "active" },
+      where: { userId, status: "ACTIVE" },
     });
     if (!cart) {
       try {
         cart = await prisma.cart.create({
-          data: { userId, status: "active" },
+          data: { userId, status: "ACTIVE" },
         });
         eventBus.emit("cart.created", { userId, cartId: cart.id, type: "user" });
       } catch (e: any) {
         // Handle race: unique partial index might cause conflict
         cart = await prisma.cart.findFirst({
-          where: { userId, status: "active" },
+          where: { userId, status: "ACTIVE" },
         });
         if (!cart) throw e;
       }
@@ -179,7 +179,7 @@ class CartService {
     if (!cart) {
       try {
         cart = await prisma.cart.create({
-          data: { anonymousId, status: "active" },
+          data: { anonymousId, status: "ACTIVE" },
         });
         eventBus.emit("cart.created", { anonymousId, cartId: cart.id, type: "guest" });
       } catch (e: any) {
@@ -188,9 +188,9 @@ class CartService {
         if (!cart) throw e;
       }
     }
-    if (cart.status !== "active") {
+    if (cart.status !== "ACTIVE") {
       // Reactivate if needed
-      cart = await prisma.cart.update({ where: { id: cart.id }, data: { status: "active" } });
+      cart = await prisma.cart.update({ where: { id: cart.id }, data: { status: "ACTIVE" } });
     }
     const items = await prisma.cartItem.findMany({ where: { cartId: cart.id }, orderBy: { createdAt: "asc" } });
     return { ...mapCart(cart), items: items.map(mapItem) };
@@ -204,7 +204,7 @@ class CartService {
     // Ensure cart exists and active
     const cart = await prisma.cart.findUnique({ where: { id: cartId } });
     if (!cart) throw new AppError("سبد خرید یافت نشد.", 404, "CART_NOT_FOUND");
-    if (cart.status !== "active") throw new AppError("سبد خرید فعال نیست.", 400, "CART_INACTIVE");
+    if (cart.status !== "ACTIVE") throw new AppError("سبد خرید فعال نیست.", 400, "CART_INACTIVE");
 
     const snap = await resolveSnapshot({ productId: input.productId, variantId: input.variantId || null });
 
@@ -315,7 +315,7 @@ class CartService {
    * - Deletes the guest cart after merging.
    */
   async mergeAnonymousIntoUser(userId: string, anonymousId: string): Promise<CartWithItems> {
-    const guest = await prisma.cart.findFirst({ where: { anonymousId, status: "active" } });
+    const guest = await prisma.cart.findFirst({ where: { anonymousId, status: "ACTIVE" } });
     // Ensure user cart exists
     const userCart = await this.getOrCreateForUser(userId);
 

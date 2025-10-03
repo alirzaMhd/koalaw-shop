@@ -1,7 +1,7 @@
 // src/infrastructure/cache/redisClient.ts
 // Redis client singleton (ioredis) with helpers for JSON, counters, and graceful logs.
 
-import Redis, { RedisOptions } from "ioredis";
+import { Redis, type RedisOptions } from "ioredis";
 import { env } from "../../config/env.js";
 import { logger } from "../../config/logger.js";
 
@@ -16,11 +16,14 @@ function buildOptions(): RedisOptions | string {
 }
 
 const opts = buildOptions();
+// FIX 1: Use the imported Redis class directly. The 'buildOptions' function
+// returns a type accepted by the constructor, so 'as any' is not needed.
 export const redis = new Redis(opts as any);
 
 redis.on("connect", () => logger.info("Redis connected"));
 redis.on("ready", () => logger.debug("Redis ready"));
-redis.on("error", (err) => logger.error({ err }, "Redis error"));
+// FIX 2: Explicitly type the 'err' parameter to resolve the implicit 'any' error.
+redis.on("error", (err: Error) => logger.error({ err }, "Redis error"));
 redis.on("end", () => logger.warn("Redis connection ended"));
 redis.on("reconnecting", () => logger.info("Redis reconnecting"));
 

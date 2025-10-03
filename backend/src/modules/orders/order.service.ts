@@ -5,14 +5,14 @@
 import { prisma } from "../../infrastructure/db/prismaClient.js";
 import { AppError } from "../../common/errors/AppError.js";
 import { logger } from "../../config/logger.js";
-import { eventBus } from "../../events/eventBus";
+import { eventBus } from "../../events/eventBus.js";
 import {
   emitOrderStatusChanged,
   emitOrderCancelled,
   emitPaymentSucceeded,
   emitPaymentFailed,
   type OrderCreatedEvent,
-} from "./order.events";
+} from "./order.events.js";
 import { inventoryService } from "../inventory/inventory.service.js";
 import { normalizeCouponCode } from "../pricing/coupon.entity.js";
 
@@ -236,7 +236,7 @@ class OrderService {
 
     const updated = await prisma.order.update({
       where: { id: orderId },
-      data: { status: to },
+      data: { status: (to as string).toUpperCase() as any },
       include: includeOrderDetail,
     });
 
@@ -259,7 +259,7 @@ class OrderService {
     const updated = await prisma.$transaction(async (tx) => {
       const o = await tx.order.update({
         where: { id: orderId },
-        data: { status: "cancelled" },
+        data: { status: ("cancelled".toUpperCase() as any) },
         include: includeOrderDetail,
       });
 
@@ -270,10 +270,10 @@ class OrderService {
         logger.warn({ err: e, orderId }, "Failed to release inventory on cancel");
       }
 
-      return o;
+    return o;
     });
 
-    emitOrderCancelled({ orderId, orderNumber: updated.orderNumber, reason, userId: updated.userId ?? undefined });
+    emitOrderCancelled({ orderId, orderNumber: updated.orderNumber, reason: reason ?? null, userId: updated.userId ?? null });
     emitOrderStatusChanged({ orderId, from: order.status as OrderStatus, to: "cancelled", at: new Date().toISOString() });
 
     return updated;
@@ -291,7 +291,7 @@ class OrderService {
     const updated = await prisma.$transaction(async (tx) => {
       const payment = await tx.payment.update({
         where: { id: paymentId },
-        data: { status: "paid", transactionRef: transactionRef ?? null, authority: authority ?? null, paidAt: new Date() },
+        data: { status: "PAID", transactionRef: transactionRef ?? null, authority: authority ?? null, paidAt: new Date() },
         select: { id: true, orderId: true, amount: true, currencyCode: true, status: true },
       });
 
@@ -304,8 +304,8 @@ class OrderService {
 
       let order = orderPrev as any;
       let statusChanged = false;
-      if (orderPrev.status === "awaiting_payment") {
-        order = await tx.order.update({ where: { id: orderId }, data: { status: "paid" } });
+      if (String(orderPrev.status).toUpperCase() === "AWAITING_PAYMENT") {
+        order = await tx.order.update({ where: { id: orderId }, data: { status: ("paid".toUpperCase() as any) } });
         statusChanged = true;
       }
 
@@ -362,9 +362,9 @@ class OrderService {
     const payment = await prisma.payment.update({
       where: { id: paymentId },
       data: {
-        status: "failed",
-        transactionRef: transactionRef ?? undefined,
-        authority: authority ?? undefined,
+        status: "FAILED",
+        transactionRef: transactionRef ?? null,
+        authority: authority ?? null,
       },
       select: { id: true, amount: true, currencyCode: true },
     });
@@ -393,24 +393,30 @@ class OrderService {
     const cart = await prisma.cart.create({
       data: {
         userId: userId || null,
-        status: "active",
+        status: "ACTIVE",
       },
     });
 
     if (order.items.length) {
-      await prisma.cartItem.createMany({
-        data: order.items.map((it) => ({
+      // Build data while omitting undefined fields so the resulting objects match Prisma's expected types
+      const itemsData = order.items.map((it) => {
+        const base: any = {
           cartId: cart.id,
-          productId: it.productId || undefined,
-          variantId: it.variantId || undefined,
           title: it.title,
-          variantName: it.variantName || null,
+          variantName: it.variantName ?? null,
           unitPrice: it.unitPrice,
           quantity: it.quantity,
           lineTotal: it.lineTotal,
-          currencyCode: it.currencyCode || order.currencyCode,
-          imageUrl: it.imageUrl || null,
-        })),
+          currencyCode: it.currencyCode ?? order.currencyCode,
+          imageUrl: it.imageUrl ?? null,
+        };
+        if (it.productId) base.productId = it.productId;
+        if (it.variantId) base.variantId = it.variantId;
+        return base;
+      });
+
+      await prisma.cartItem.createMany({
+        data: itemsData,
       });
     }
 

@@ -1,7 +1,7 @@
 // src/modules/inventory/inventory.routes.ts
 // Registers inventory endpoints
 
-import { Router, Request, Response, NextFunction } from "express";
+import { Router, type Request, type Response, type NextFunction } from "express";
 import { inventoryController } from "./inventory.controller.js";
 import { authGuard } from "../../common/middlewares/authGuard.js";
 import { AppError } from "../../common/errors/AppError.js";

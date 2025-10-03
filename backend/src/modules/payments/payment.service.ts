@@ -46,7 +46,7 @@ async function findPaymentByAuthorityOrOrder(opts: { authority?: string | null; 
   if (opts.orderId) {
     // Fallback: pick the latest pending gateway payment for this order
     const byOrder = await prisma.payment.findFirst({
-      where: { orderId: String(opts.orderId), method: "gateway", status: "pending" },
+      where: { orderId: String(opts.orderId), method: "GATEWAY", status: "PENDING" },
       orderBy: { createdAt: "desc" },
       select: { id: true, orderId: true, status: true, amount: true, currencyCode: true },
     });
@@ -90,13 +90,13 @@ class PaymentService {
       select: { id: true, status: true, orderId: true, method: true, amount: true, currencyCode: true },
     });
     if (!p) throw new AppError("پرداخت یافت نشد.", 404, "PAYMENT_NOT_FOUND");
-    if (p.status !== "paid") throw new AppError("بازپرداخت تنها برای پرداخت‌های موفق مجاز است.", 409, "BAD_STATE");
+    if (p.status !== "PAID") throw new AppError("بازپرداخت تنها برای پرداخت‌های موفق مجاز است.", 409, "BAD_STATE");
 
     // NOTE: This does not call the PSP API; wire your adapter here for real refunds.
     const updated = await prisma.payment.update({
       where: { id: args.paymentId },
       data: {
-        status: "refunded",
+        status: "REFUNDED",
         // You could store refund reason in a separate table; keeping minimal here.
       },
     });
@@ -162,7 +162,7 @@ class PaymentService {
       return { ok: true };
     }
 
-    const payment = await findPaymentByAuthorityOrOrder({ authority, orderId: orderId || null });
+    const payment = await findPaymentByAuthorityOrOrder({ authority: authority ?? null, orderId: orderId || null });
     if (!payment) {
       logger.warn({ orderId, authority }, "Stripe webhook: matching payment not found");
       return { ok: true };
@@ -223,7 +223,7 @@ class PaymentService {
       return { ok: true };
     }
 
-    const payment = await findPaymentByAuthorityOrOrder({ authority, orderId: orderId || null });
+    const payment = await findPaymentByAuthorityOrOrder({ authority: authority ?? null, orderId: orderId ?? null });
     if (!payment) {
       logger.warn({ orderId, authority }, "PayPal webhook: matching payment not found");
       return { ok: true };
@@ -266,7 +266,7 @@ class PaymentService {
     success: boolean;
     reason?: string | null;
   }): Promise<{ ok: boolean }> {
-    const payment = await findPaymentByAuthorityOrOrder({ authority: args.authority || undefined, orderId: args.orderId || null });
+    const payment = await findPaymentByAuthorityOrOrder({ authority: args.authority ?? null, orderId: args.orderId || null });
     if (!payment) throw new AppError("پرداخت مرتبط یافت نشد.", 404, "PAYMENT_NOT_FOUND");
 
     if (args.success) {
@@ -295,7 +295,7 @@ class PaymentService {
    */
   async confirmCodPaid(orderId: string): Promise<any> {
     const p = await prisma.payment.findFirst({
-      where: { orderId, method: "cod", status: "pending" },
+      where: { orderId, method: "COD", status: "PENDING" },
       orderBy: { createdAt: "desc" },
       select: { id: true },
     });

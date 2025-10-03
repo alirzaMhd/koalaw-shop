@@ -45,13 +45,14 @@ function parseOverrides(): RegionOverride[] {
     const arr = JSON.parse(raw as any) as any[];
     if (!Array.isArray(arr)) return [];
     return arr
-      .map((o) => ({
-        country: o.country ? String(o.country).toUpperCase() : undefined,
-        province: o.province ? String(o.province).toLowerCase() : undefined,
-        city: o.city ? String(o.city).toLowerCase() : undefined,
-        postalPrefix: o.postalPrefix ? String(o.postalPrefix) : undefined,
-        rate: Number(o.rate),
-      }))
+      .map((o) => {
+        const ro: RegionOverride = { rate: Number(o.rate) };
+        if (o.country) ro.country = String(o.country).toUpperCase();
+        if (o.province) ro.province = String(o.province).toLowerCase();
+        if (o.city) ro.city = String(o.city).toLowerCase();
+        if (o.postalPrefix) ro.postalPrefix = String(o.postalPrefix);
+        return ro;
+      })
       .filter((o) => Number.isFinite(o.rate) && o.rate >= 0);
   } catch (e) {
     logger.warn({ err: e }, "Failed to parse TAX_REGION_OVERRIDES; ignoring.");
@@ -205,19 +206,23 @@ class TaxService {
     const currencyCode = ctx?.currencyCode || DEFAULT_CURRENCY;
     if (!TAX_ENABLED || ctx?.taxExempt) {
       // Zero tax path
-      const zeroLines: LineTax[] = (input.lines || []).map((l) => ({
-        id: l.id,
-        base: lineAmount(l),
-        ratePct: 0,
-        tax: 0,
-      }));
+      const zeroLines: LineTax[] = (input.lines || []).map((l) => {
+        const base = lineAmount(l);
+        const lt: LineTax = {
+          base,
+          ratePct: 0,
+          tax: 0,
+        };
+        if (typeof l.id === "string") lt.id = l.id;
+        return lt;
+      });
       return {
         lineTaxes: zeroLines,
         shippingTax: 0,
         taxTotal: 0,
         rateApplied: 0,
-        pricesIncludeTax: !!ctx?.pricesIncludeTax ?? PRICES_INCLUDE_TAX,
-        shippingTaxable: !!ctx?.shippingTaxable ?? SHIPPING_TAXABLE,
+        pricesIncludeTax: typeof ctx?.pricesIncludeTax === "boolean" ? ctx!.pricesIncludeTax : PRICES_INCLUDE_TAX,
+        shippingTaxable: typeof ctx?.shippingTaxable === "boolean" ? ctx!.shippingTaxable : SHIPPING_TAXABLE,
         currencyCode,
       };
     }
@@ -230,10 +235,14 @@ class TaxService {
       const amount = lineAmount(l);
       if (include) {
         const { net, tax } = splitInclusive(amount, ratePct);
-        lineTaxes.push({ id: l.id, base: net, ratePct, tax });
+        const lt: LineTax = { base: net, ratePct, tax };
+        if (typeof l.id === "string") lt.id = l.id;
+        lineTaxes.push(lt);
       } else {
         const tax = taxOnExclusive(amount, ratePct);
-        lineTaxes.push({ id: l.id, base: amount, ratePct, tax });
+        const lt: LineTax = { base: amount, ratePct, tax };
+        if (typeof l.id === "string") lt.id = l.id;
+        lineTaxes.push(lt);
       }
     }
 

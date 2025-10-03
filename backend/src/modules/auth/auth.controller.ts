@@ -87,7 +87,8 @@ class AuthController {
       const { email, password } = await registerSchema.parseAsync(req.body);
       const ip = getClientIp(req);
 
-      const result = await authService.register({ email, password, ip });
+      const payload = ip === undefined ? { email, password } : { email, password, ip };
+      const result = await authService.register(payload);
 
       return ok(
         res,
@@ -111,7 +112,11 @@ class AuthController {
       const ip = getClientIp(req);
       const userAgent = req.get("user-agent") || undefined;
 
-      const { user, tokens } = await authService.login({ email, password, ip, userAgent });
+      const payload: { email: string; password: string; ip?: string; userAgent?: string } = { email, password };
+      if (ip !== undefined) payload.ip = ip;
+      if (userAgent !== undefined) payload.userAgent = userAgent;
+
+      const { user, tokens } = await authService.login(payload);
 
       setAuthCookies(res, {
         accessToken: tokens.accessToken,

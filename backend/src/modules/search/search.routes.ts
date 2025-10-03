@@ -1,6 +1,6 @@
 // src/modules/search/search.routes.ts
 import { Router } from "express";
-import { ping } from "../../infrastructure/search/elastic.client";
+import { ping } from "../../infrastructure/search/elastic.client.js";
 import {
   ensureSearchIndices,
   reindexAllProducts,
@@ -65,7 +65,21 @@ router.get("/products", async (req, res, next) => {
     const size = req.query.size ? Math.min(50, Math.max(1, Number(req.query.size))) : 12;
     const sort = (req.query.sort as any) || "relevance";
 
-    const result = await searchProducts({ q, category, priceMin, priceMax, page, size, sort });
+    const params: {
+      q?: string;
+      category?: string;
+      priceMin?: number;
+      priceMax?: number;
+      page?: number;
+      size?: number;
+      sort?: "relevance" | "newest" | "price_asc" | "price_desc" | "rating_desc";
+    } = { q, page, size, sort };
+
+    if (category !== undefined) params.category = category;
+    if (priceMin !== undefined) params.priceMin = priceMin;
+    if (priceMax !== undefined) params.priceMax = priceMax;
+
+    const result = await searchProducts(params);
     res.json({ ok: true, ...result });
   } catch (e) {
     next(e);
@@ -85,7 +99,19 @@ router.get("/magazine", async (req, res, next) => {
     const size = req.query.size ? Math.min(50, Math.max(1, Number(req.query.size))) : 9;
     const sort = (req.query.sort as any) || "relevance";
 
-    const result = await searchMagazinePosts({ q, category, tags, page, size, sort });
+    const params: {
+      q?: string;
+      category?: string;
+      tags?: string[];
+      page?: number;
+      size?: number;
+      sort?: "relevance" | "newest" | "oldest";
+    } = { q, page, size, sort: sort as "relevance" | "newest" | "oldest" };
+
+    if (category !== undefined) params.category = category;
+    if (tags !== undefined) params.tags = tags;
+
+    const result = await searchMagazinePosts(params);
     res.json({ ok: true, ...result });
   } catch (e) {
     next(e);

@@ -6,7 +6,7 @@ import { env } from "../../config/env.js";
 import { logger } from "../../config/logger.js";
 
 const STRIPE_KEY = env.STRIPE_SECRET_KEY;
-export const stripeClient = STRIPE_KEY ? new Stripe(STRIPE_KEY, { apiVersion: "2022-11-15" }) : null;
+export const stripeClient = STRIPE_KEY ? new Stripe(STRIPE_KEY, { apiVersion: "2023-10-16" }) : null;
 
 export const stripeGateway = {
   async createPaymentIntent(args: { amount: number; currency: string; metadata?: Record<string, any> }) {

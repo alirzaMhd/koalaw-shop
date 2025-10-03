@@ -1,7 +1,7 @@
 // src/events/handlers/order.created.handler.ts
 // Binds a handler to "order.created": reserve stock and send order confirmation.
 
-import { eventBus, logBinding } from "../eventBus";
+import { eventBus, logBinding } from "../eventBus.js";
 import { logger } from "../../config/logger.js";
 import { inventoryService } from "../../modules/inventory/inventory.service.js";
 import { notificationService } from "../../modules/notifications/notification.service.js";

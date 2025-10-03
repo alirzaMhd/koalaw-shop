@@ -1,7 +1,7 @@
 // src/modules/payments/payment.routes.ts
 // Registers payment endpoints
 
-import express, { Router, Request, Response, NextFunction } from "express";
+import express, { Router, type Request, type Response, type NextFunction } from "express";
 import { paymentController } from "./payment.controller.js";
 import { authGuard } from "../../common/middlewares/authGuard.js";
 import { AppError } from "../../common/errors/AppError.js";

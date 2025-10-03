@@ -168,13 +168,16 @@ class PaymentController {
     try {
       const payload = Object.keys(req.query || {}).length ? req.query : req.body ?? {};
       const data = await returnQuerySchema.parseAsync(payload);
-      const result = await paymentService.handleGenericGatewayReturn({
-        orderId: data.orderId,
+      const args: any = {
         authority: data.authority ?? null,
         transactionRef: data.transactionRef ?? null,
         success: data.success,
         reason: data.reason ?? null,
-      });
+      };
+      if (data.orderId !== undefined) {
+        args.orderId = data.orderId;
+      }
+      const result = await paymentService.handleGenericGatewayReturn(args);
       return ok(res, result, 200);
     } catch (err: any) {
       if (err?.issues?.length) return next(new AppError(err.issues[0]?.message, 422, "VALIDATION_ERROR"));

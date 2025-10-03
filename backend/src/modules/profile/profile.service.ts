@@ -172,11 +172,11 @@ export const profileService = {
   async updateProfile(
     userId: string,
     data: {
-      firstName?: string;
-      lastName?: string;
-      phone?: string;
-      birthDate?: string;
-      gender?: "UNDISCLOSED" | "MALE" | "FEMALE";
+      firstName?: string | undefined;
+      lastName?: string | undefined;
+      phone?: string | undefined;
+      birthDate?: string | undefined;
+      gender?: "UNDISCLOSED" | "MALE" | "FEMALE" | undefined;
     }
   ) {
     const updateData: any = {};
@@ -225,12 +225,18 @@ export const profileService = {
   async updateNotificationPrefs(
     userId: string,
     prefs: {
-      orderUpdates?: boolean;
-      promotions?: boolean;
-      newProducts?: boolean;
-      marketing?: boolean;
+      orderUpdates?: boolean | undefined;
+      promotions?: boolean | undefined;
+      newProducts?: boolean | undefined;
+      marketing?: boolean | undefined;
     }
   ) {
+    const updateData: any = {};
+    if (prefs.orderUpdates !== undefined) updateData.orderUpdates = prefs.orderUpdates;
+    if (prefs.promotions !== undefined) updateData.promotions = prefs.promotions;
+    if (prefs.newProducts !== undefined) updateData.newProducts = prefs.newProducts;
+    if (prefs.marketing !== undefined) updateData.marketing = prefs.marketing;
+
     const notificationPrefs = await prisma.userNotificationPrefs.upsert({
       where: { userId },
       create: {
@@ -240,7 +246,7 @@ export const profileService = {
         newProducts: prefs.newProducts ?? true,
         marketing: prefs.marketing ?? false,
       },
-      update: prefs,
+      update: updateData,
     });
 
     return notificationPrefs;
@@ -272,17 +278,17 @@ export const profileService = {
   async createAddress(
     userId: string,
     data: {
-      label?: string;
+      label?: string | undefined;
       firstName: string;
       lastName: string;
       phone: string;
-      postalCode?: string;
+      postalCode?: string | undefined;
       province: string;
       city: string;
       addressLine1: string;
-      addressLine2?: string;
-      country?: string;
-      isDefault?: boolean;
+      addressLine2?: string | undefined;
+      country?: string | undefined;
+      isDefault?: boolean | undefined;
     }
   ) {
     // If this is set as default, unset all others
@@ -317,16 +323,16 @@ export const profileService = {
     userId: string,
     addressId: string,
     data: {
-      label?: string;
-      firstName?: string;
-      lastName?: string;
-      phone?: string;
-      postalCode?: string;
-      province?: string;
-      city?: string;
-      addressLine1?: string;
-      addressLine2?: string;
-      isDefault?: boolean;
+      label?: string | undefined;
+      firstName?: string | undefined;
+      lastName?: string | undefined;
+      phone?: string | undefined;
+      postalCode?: string | undefined;
+      province?: string | undefined;
+      city?: string | undefined;
+      addressLine1?: string | undefined;
+      addressLine2?: string | undefined;
+      isDefault?: boolean | undefined;
     }
   ) {
     // Check if address belongs to user

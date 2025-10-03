@@ -2,7 +2,7 @@
 // Centralized order domain events (names, payload types, and emit/on helpers).
 // Use these helpers instead of string literals to avoid typos across the codebase.
 
-import { eventBus } from "../../events/eventBus";
+import { eventBus } from "../../events/eventBus.js";
 import { logger } from "../../config/logger.js";
 
 // ---- Event names (frozen) ----

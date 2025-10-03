@@ -21,7 +21,8 @@ export const orderRepo = {
     return prisma.order.findFirst({ where: { id, userId }, include: includeDetail });
   },
   count(where?: Prisma.OrderWhereInput) {
-    return prisma.order.count({ where });
+    // With exactOptionalPropertyTypes, avoid passing { where: undefined }
+    return where ? prisma.order.count({ where }) : prisma.order.count();
   },
   list(where: Prisma.OrderWhereInput, page = 1, perPage = 12) {
     const skip = (page - 1) * perPage;
@@ -43,12 +44,20 @@ export const orderRepo = {
   },
 
   // Mutations
-  create(data: Prisma.OrderCreateInput, items?: Array<Prisma.OrderItemUncheckedCreateInput>, payment?: Prisma.PaymentUncheckedCreateInput) {
+  create(
+    data: Prisma.OrderCreateInput,
+    items?: Array<Prisma.OrderItemUncheckedCreateInput>,
+    payment?: Prisma.PaymentUncheckedCreateInput
+  ) {
     return prisma.$transaction(async (tx) => {
       const order = await tx.order.create({ data });
       if (items?.length) {
         await tx.orderItem.createMany({
-          data: items.map((it, idx) => ({ ...it, orderId: order.id, position: typeof it.position === "number" ? it.position : idx })),
+          data: items.map((it, idx) => ({
+            ...it,
+            orderId: order.id,
+            position: typeof it.position === "number" ? it.position : idx,
+          })),
         });
       }
       if (payment) {
@@ -57,7 +66,8 @@ export const orderRepo = {
       return order;
     });
   },
-  updateStatus(id: string, status: Prisma.OrderUpdateInput["status"]) {
+  updateStatus(id: string, status: NonNullable<Prisma.OrderUpdateInput["status"]>) {
+    // Ensure we don't pass an explicit `undefined` for status
     return prisma.order.update({ where: { id }, data: { status } });
   },
   createPayment(orderId: string, data: Prisma.PaymentUncheckedCreateInput) {
