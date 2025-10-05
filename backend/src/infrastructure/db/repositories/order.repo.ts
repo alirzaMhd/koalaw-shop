@@ -1,7 +1,7 @@
 // src/infrastructure/db/repositories/order.repo.ts
 // Orders data access (reads/writes, includes items and payments when needed).
 
-import { Prisma } from "@prisma/client";
+import { Prisma } from "../../../../../node_modules/.prisma/client/index.js";
 import { prisma } from "../prismaClient.js";
 
 const includeDetail = {

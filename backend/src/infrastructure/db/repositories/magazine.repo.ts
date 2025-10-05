@@ -1,4 +1,4 @@
-import { Prisma, MagazineCategory } from '@prisma/client';
+import { Prisma, MagazineCategory } from "../../../../../node_modules/.prisma/client/index.js";
 import { prisma } from '../prismaClient.js';
 
 export type PostInclude = Prisma.MagazinePostInclude;

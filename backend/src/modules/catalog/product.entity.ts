@@ -3,7 +3,7 @@
 // Aligned with your SQL migration while keeping camelCase in the domain layer.
 
 import type { ProductCategory as DomainProductCategory } from "./category.entity.js";
-import type { Prisma, ProductCategory } from "@prisma/client"; // type-only for enum typing
+import type { Prisma, ProductCategory } from "../../../../node_modules/.prisma/client/index.js"; // type-only for enum typing
 
 // ---------- Primitive/refs ----------
 

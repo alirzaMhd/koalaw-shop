@@ -1,7 +1,7 @@
 // src/infrastructure/db/repositories/product.repo.ts
 // Product data access layer. Keep logic in services; repos only encapsulate Prisma calls.
 
-import { Prisma } from "@prisma/client";
+import { Prisma } from "../../../../../node_modules/.prisma/client/index.js";
 import { prisma } from "../prismaClient.js";
 
 export type ProductWhere = Prisma.ProductWhereInput;

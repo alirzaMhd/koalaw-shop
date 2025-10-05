@@ -1,5 +1,5 @@
 // src/infrastructure/db/repositories/user.repo.ts
-import { Prisma } from "@prisma/client";
+import { Prisma } from "../../../../../node_modules/.prisma/client/index.js";
 import { prisma } from "../prismaClient.js";
 
 export const userRepo = {
