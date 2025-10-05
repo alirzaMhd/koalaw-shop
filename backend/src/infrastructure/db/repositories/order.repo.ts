@@ -49,7 +49,7 @@ export const orderRepo = {
     items?: Array<Prisma.OrderItemUncheckedCreateInput>,
     payment?: Prisma.PaymentUncheckedCreateInput
   ) {
-    return prisma.$transaction(async (tx) => {
+    return prisma.$transaction(async (tx: { order: { create: (arg0: { data: Prisma.OrderCreateInput; }) => any; }; orderItem: { createMany: (arg0: { data: any[]; }) => any; }; payment: { create: (arg0: { data: any; }) => any; }; }) => {
       const order = await tx.order.create({ data });
       if (items?.length) {
         await tx.orderItem.createMany({

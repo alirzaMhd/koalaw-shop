@@ -123,7 +123,7 @@ export const magazineRepo = {
     tagIds: string[] = [],
     relatedPostIds: string[] = [],
   ) {
-    return prisma.$transaction(async (tx) => {
+    return prisma.$transaction(async (tx: { magazinePost: { create: (arg0: { data: Prisma.MagazinePostUncheckedCreateInput; }) => any; findUnique: (arg0: { where: { id: any; }; include: Prisma.MagazinePostInclude; }) => any; }; magazinePostTag: { createMany: (arg0: { data: { postId: any; tagId: string; }[]; skipDuplicates: boolean; }) => any; }; magazineRelatedPost: { createMany: (arg0: { data: { postId: any; relatedPostId: string; }[]; skipDuplicates: boolean; }) => any; }; }) => {
       const post = await tx.magazinePost.create({
         data,
       });
@@ -155,7 +155,7 @@ export const magazineRepo = {
     tagIds?: string[],
     relatedPostIds?: string[],
   ) {
-    return prisma.$transaction(async (tx) => {
+    return prisma.$transaction(async (tx: { magazinePost: { update: (arg0: { where: { id: string; }; data: Prisma.MagazinePostUncheckedUpdateInput; }) => any; findUnique: (arg0: { where: { id: string; }; include: Prisma.MagazinePostInclude; }) => any; }; magazinePostTag: { deleteMany: (arg0: { where: { postId: string; }; }) => any; createMany: (arg0: { data: { postId: string; tagId: string; }[]; skipDuplicates: boolean; }) => any; }; magazineRelatedPost: { deleteMany: (arg0: { where: { postId: string; }; }) => any; createMany: (arg0: { data: { postId: string; relatedPostId: string; }[]; skipDuplicates: boolean; }) => any; }; }) => {
       await tx.magazinePost.update({
         where: { id: postId },
         data,

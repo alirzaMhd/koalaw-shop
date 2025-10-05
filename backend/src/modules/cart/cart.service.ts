@@ -209,7 +209,16 @@ class CartService {
     const snap = await resolveSnapshot({ productId: input.productId, variantId: input.variantId || null });
 
     // Merge with existing same (productId, variantId)
-    const item = await prisma.$transaction(async (tx) => {
+    const item = await prisma.$transaction(async (tx: {
+        cartItem: {
+          findFirst: (arg0: { where: { cartId: string; productId: string; variantId: string | null; }; }) => any; update: (arg0: {
+            where: { id: any; }; data: {
+              quantity: any; unitPrice: number; // keep unitPrice in sync with latest snapshot
+              lineTotal: number; title: string; variantName: string | null; imageUrl: string | null; currencyCode: string;
+            };
+          }) => any; create: (arg0: { data: { cartId: string; productId: string; variantId: string | null; title: string; variantName: string | null; unitPrice: number; quantity: number; lineTotal: number; currencyCode: string; imageUrl: string | null; }; }) => any;
+        };
+      }) => {
       const existing = await tx.cartItem.findFirst({
         where: {
           cartId,
@@ -323,13 +332,23 @@ class CartService {
       return userCart;
     }
 
-    await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx: {
+        cartItem: {
+          findMany: (arg0: { where: { cartId: any; } | { cartId: string; }; }) => any; update: (arg0: {
+            where: { id: any; } | { id: any; }; data: {
+              quantity: any;
+              // keep cur.unitPrice (snapshot at time of cur add), recompute lineTotal
+              lineTotal: number;
+            } | { cartId: string; };
+          }) => any;
+        }; cart: { delete: (arg0: { where: { id: any; }; }) => any; };
+      }) => {
       const guestItems = await tx.cartItem.findMany({ where: { cartId: guest.id } });
       if (guestItems.length) {
         // Prepare map for user cart items to merge quantities
         const existing = await tx.cartItem.findMany({ where: { cartId: userCart.id } });
         const key = (p: string, v: string | null) => `${p}::${v ?? "null"}`;
-        const idx = new Map(existing.map((it) => [key(it.productId, it.variantId), it]));
+        const idx = new Map(existing.map((it: { productId: string; variantId: string | null; }) => [key(it.productId, it.variantId), it]));
 
         for (const gi of guestItems) {
           const k = key(gi.productId, gi.variantId);

@@ -314,7 +314,7 @@ class NotificationService {
         total: order.total,
         currencyCode: order.currencyCode,
       },
-      items: order.items.map((it) => ({
+      items: order.items.map((it: { title: any; variantName: any; quantity: any; unitPrice: any; lineTotal: any; imageUrl: any; }) => ({
         title: it.title,
         variantName: it.variantName,
         qty: it.quantity,
@@ -378,7 +378,7 @@ class NotificationService {
         total: order.total,
         currencyCode: order.currencyCode,
       },
-      items: order.items.map((it) => ({
+      items: order.items.map((it: { title: any; variantName: any; quantity: any; unitPrice: any; lineTotal: any; }) => ({
         title: it.title,
         variantName: it.variantName,
         qty: it.quantity,

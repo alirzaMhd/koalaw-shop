@@ -265,7 +265,7 @@ class PricingService {
       orderBy: { createdAt: "asc" },
     });
 
-    const lines: QuoteLine[] = items.map((it) => ({
+    const lines: QuoteLine[] = items.map((it: { id: any; productId: any; variantId: any; title: any; variantName: any; unitPrice: number; quantity: number; imageUrl: any; currencyCode: any; }) => ({
       id: it.id,
       productId: it.productId,
       variantId: it.variantId,

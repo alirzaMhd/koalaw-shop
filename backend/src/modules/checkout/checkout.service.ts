@@ -244,7 +244,7 @@ class CheckoutService {
     const appliedCouponCode = couponCode ? couponCode.toUpperCase() : null;
 
     // 6) Persist (transaction)
-    const result = await prisma.$transaction(async (tx) => {
+    const result = await prisma.$transaction(async (tx: { order: { create: (arg0: { data: { orderNumber: string; userId: string | null; status: $Enums.OrderStatus; shippingMethod: $Enums.ShippingMethod; paymentMethod: $Enums.PaymentMethod; couponCode: string | null; giftWrap: boolean; note: string | null; subtotal: number; discountTotal: number; shippingTotal: number; giftWrapTotal: number; total: number; currencyCode: string; shippingFirstName: string; shippingLastName: string; shippingPhone: string; shippingPostalCode: string | null; shippingProvince: string; shippingCity: string; shippingAddressLine1: string; shippingAddressLine2: string | null; shippingCountry: string; placedAt: Date; }; }) => any; }; orderItem: { createMany: (arg0: { data: any; }) => any; }; payment: { create: (arg0: { data: { orderId: any; method: $Enums.PaymentMethod; status: string; amount: number; currencyCode: string; authority: null; transactionRef: null; paidAt: null; }; }) => any; }; cart: { update: (arg0: { where: { id: string; }; data: { status: string; }; }) => any; }; }) => {
       // Create order
       const order = await tx.order.create({
         data: {
@@ -281,7 +281,7 @@ class CheckoutService {
       // Copy order items from cart snapshot
       if (items.length) {
         await tx.orderItem.createMany({
-          data: items.map((it, idx) => ({
+          data: items.map((it: { productId: any; variantId: any; title: any; variantName: any; unitPrice: number; quantity: number; currencyCode: any; imageUrl: any; }, idx: any) => ({
             orderId: order.id,
             productId: it.productId || null,
             variantId: it.variantId || null,

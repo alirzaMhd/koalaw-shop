@@ -284,7 +284,7 @@ class TaxService {
       select: { id: true, unitPrice: true, quantity: true },
       orderBy: { createdAt: "asc" },
     });
-    const lines: TaxLineInput[] = items.map((it) => ({
+    const lines: TaxLineInput[] = items.map((it: { id: any; unitPrice: any; quantity: any; }) => ({
       id: it.id,
       unitPrice: it.unitPrice,
       quantity: it.quantity,

@@ -256,7 +256,7 @@ class OrderService {
       throw new AppError("لغو سفارش در وضعیت فعلی مجاز نیست.", 409, "BAD_STATUS");
     }
 
-    const updated = await prisma.$transaction(async (tx) => {
+    const updated = await prisma.$transaction(async (tx: { order: { update: (arg0: { where: { id: string; }; data: { status: any; }; include: { readonly items: { readonly orderBy: { readonly position: "asc"; }; }; readonly payments: { readonly orderBy: { readonly createdAt: "desc"; }; }; }; }) => any; }; }) => {
       const o = await tx.order.update({
         where: { id: orderId },
         data: { status: ("cancelled".toUpperCase() as any) },
@@ -288,7 +288,7 @@ class OrderService {
   }): Promise<any> {
     const { orderId, paymentId, transactionRef, authority } = args;
 
-    const updated = await prisma.$transaction(async (tx) => {
+    const updated = await prisma.$transaction(async (tx: { payment: { update: (arg0: { where: { id: string; }; data: { status: string; transactionRef: string | null; authority: string | null; paidAt: Date; }; select: { id: boolean; orderId: boolean; amount: boolean; currencyCode: boolean; status: boolean; }; }) => any; }; order: { findUnique: (arg0: { where: { id: string; }; select: { id: boolean; status: boolean; couponCode: boolean; userId: boolean; orderNumber: boolean; total: boolean; currencyCode: boolean; }; }) => any; update: (arg0: { where: { id: string; }; data: { status: any; }; }) => any; }; coupon: { findFirst: (arg0: { where: { code: { equals: string; mode: string; }; }; select: { id: boolean; }; }) => any; }; couponRedemption: { create: (arg0: { data: { couponId: any; userId: any; orderId: string; }; }) => any; }; }) => {
       const payment = await tx.payment.update({
         where: { id: paymentId },
         data: { status: "PAID", transactionRef: transactionRef ?? null, authority: authority ?? null, paidAt: new Date() },
@@ -399,7 +399,7 @@ class OrderService {
 
     if (order.items.length) {
       // Build data while omitting undefined fields so the resulting objects match Prisma's expected types
-      const itemsData = order.items.map((it) => {
+      const itemsData = order.items.map((it: { title: any; variantName: any; unitPrice: any; quantity: any; lineTotal: any; currencyCode: any; imageUrl: any; productId: any; variantId: any; }) => {
         const base: any = {
           cartId: cart.id,
           title: it.title,

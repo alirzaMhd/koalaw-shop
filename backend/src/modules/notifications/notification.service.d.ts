@@ -78,7 +78,7 @@ declare class NotificationService {
     sendShippingUpdate(orderId: string, args: {
         carrier: string;
         trackingNumber: string;
-        labelUrl?: string;
+        labelUrl?: string | undefined;
     }): Promise<void>;
     bindDefaultHandlers(): void;
 }

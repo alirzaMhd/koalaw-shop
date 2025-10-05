@@ -133,7 +133,7 @@ export const profileService = {
       },
     });
 
-    return orders.map((order) => ({
+    return orders.map((order: { id: any; orderNumber: any; status: string; total: any; currencyCode: any; createdAt: any; placedAt: any; items: any[]; }) => ({
       id: order.id,
       orderNumber: order.orderNumber,
       status: order.status,
@@ -142,7 +142,7 @@ export const profileService = {
       currencyCode: order.currencyCode,
       createdAt: order.createdAt,
       placedAt: order.placedAt,
-      items: order.items.map((item) => ({
+      items: order.items.map((item: { id: any; title: any; variantName: any; quantity: any; unitPrice: any; lineTotal: any; imageUrl: any; product: { heroImageUrl: any; }; }) => ({
         id: item.id,
         title: item.title,
         variantName: item.variantName,
@@ -258,7 +258,7 @@ export const profileService = {
       orderBy: [{ isDefault: "desc" }, { createdAt: "desc" }],
     });
 
-    return addresses.map((addr) => ({
+    return addresses.map((addr: { id: any; label: any; firstName: any; lastName: any; phone: any; postalCode: any; province: any; city: any; addressLine1: any; addressLine2: any; country: any; isDefault: any; createdAt: any; }) => ({
       id: addr.id,
       label: addr.label,
       firstName: addr.firstName,

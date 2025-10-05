@@ -183,7 +183,7 @@ class ProductService {
       }),
     ]);
 
-    const items = rows.map((r) => toProductCardDto(mapDbProductToEntity(r)));
+    const items = rows.map((r: any) => toProductCardDto(mapDbProductToEntity(r)));
     const totalPages = Math.max(1, Math.ceil(total / perPage));
 
     return {
@@ -262,7 +262,7 @@ class ProductService {
 
     const coreData = { ...pickCoreProductData({ ...input, slug }, brandId) };
 
-    const result = await prisma.$transaction(async (tx) => {
+    const result = await prisma.$transaction(async (tx: { product: { create: (arg0: { data: any; }) => any; }; productImage: { createMany: (arg0: { data: { productId: any; url: string; alt: string | null; position: number; }[]; }) => any; }; productVariant: { createMany: (arg0: { data: { productId: any; variantName: string; sku: string | null; price: number | null; currencyCode: "IRR" | "USD" | "EUR"; stock: number; colorName: string | null; colorHexCode: string | null; isActive: boolean; position: number; }[]; }) => any; }; }) => {
       const product = await tx.product.create({
         data: coreData,
       });
@@ -334,7 +334,7 @@ class ProductService {
 
     const coreData = { ...pickCoreProductData({ ...input, slug: slugUpdate }, brandId) };
 
-    await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx: { product: { update: (arg0: { where: { id: string; }; data: any; }) => any; }; productImage: { deleteMany: (arg0: { where: { productId: string; }; }) => any; createMany: (arg0: { data: { productId: string; url: string; alt: string | null; position: number; }[]; }) => any; }; productVariant: { deleteMany: (arg0: { where: { productId: string; }; }) => any; createMany: (arg0: { data: { productId: string; variantName: string; sku: string | null; price: number | null; currencyCode: "IRR" | "USD" | "EUR"; stock: number; colorName: string | null; colorHexCode: string | null; isActive: boolean; position: number; }[]; }) => any; }; }) => {
       await tx.product.update({ where: { id }, data: coreData });
 
       if (Array.isArray(input.images)) {
@@ -510,7 +510,7 @@ class ProductService {
       }),
     ]);
 
-    const items = rows.map((r) => {
+    const items = rows.map((r: { id: any; rating: any; title: any; body: any; createdAt: { toISOString: () => any; }; }) => {
       const firstName = (r as any).user?.firstName ?? "";
       const lastName = (r as any).user?.lastName ?? "";
       const full = `${firstName} ${lastName}`.trim();
@@ -580,20 +580,20 @@ class ProductService {
       _count: { _all: true },
     });
 
-    const brandIdList = brandCounts.map((b) => b.brandId);
+    const brandIdList = brandCounts.map((b: { brandId: any; }) => b.brandId);
     const brands = await prisma.brand.findMany({
       where: { id: { in: brandIdList.length ? brandIdList : ["00000000-0000-0000-0000-000000000000"] } },
       select: { id: true, name: true, slug: true },
     });
-    const brandCountMap = new Map(brandCounts.map((b) => [b.brandId, b._count._all]));
+    const brandCountMap = new Map(brandCounts.map((b: { brandId: any; _count: { _all: any; }; }) => [b.brandId, b._count._all]));
     const brandOptions = brands
-      .map((b) => ({
+      .map((b: { id: unknown; name: any; slug: any; }) => ({
         id: b.id,
         name: b.name,
         slug: b.slug,
         count: brandCountMap.get(b.id) ?? 0,
       }))
-      .sort((a, b) => a.name.localeCompare(b.name, "fa"));
+      .sort((a: { name: string; }, b: { name: any; }) => a.name.localeCompare(b.name, "fa"));
 
     const allCollections = await prisma.collection.findMany({
       select: { id: true, name: true },
@@ -608,12 +608,12 @@ class ProductService {
       if (c.collectionId) collCountMap.set(c.collectionId, c._count._all);
     }
     const collectionOptions = allCollections
-      .map((c) => ({
+      .map((c: { id: string; name: any; }) => ({
         id: c.id,
         name: c.name,
         count: collCountMap.get(c.id) ?? 0,
       }))
-      .sort((a, b) => a.name.localeCompare(b.name, "fa"));
+      .sort((a: { name: string; }, b: { name: any; }) => a.name.localeCompare(b.name, "fa"));
 
     const agg = await prisma.product.aggregate({
       where: { isActive: true },
