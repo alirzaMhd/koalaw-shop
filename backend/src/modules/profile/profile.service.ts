@@ -9,11 +9,19 @@ const KOALA_DEFAULTS = {
   bio: "یک کوالای خوشحال که عاشق محصولات زیباست! 🐨💕",
 };
 
+// Customer tier type definition
+type CustomerTier = "STANDARD" | "VIP";
+
 // Customer tier star mapping
-const TIER_STARS = {
+const TIER_STARS: Record<CustomerTier, { stars: number; label: string }> = {
   STANDARD: { stars: 3, label: "مشتری عادی" },
   VIP: { stars: 5, label: "مشتری ویژه" },
 };
+
+// Helper function to get tier info with fallback
+function getTierInfo(tier: string) {
+  return TIER_STARS[tier as CustomerTier] || TIER_STARS.STANDARD;
+}
 
 export const profileService = {
   async getProfile(userId: string) {
@@ -44,7 +52,7 @@ export const profileService = {
     const stats = await this.getStats(userId);
 
     // Get tier info
-    const tierInfo = TIER_STARS[user.customerTier] || TIER_STARS.STANDARD;
+    const tierInfo = getTierInfo(user.customerTier);
 
     // Apply cute koala defaults
     return {
@@ -205,7 +213,7 @@ export const profileService = {
       },
     });
 
-    const tierInfo = TIER_STARS[user.customerTier] || TIER_STARS.STANDARD;
+    const tierInfo = getTierInfo(user.customerTier) || TIER_STARS.STANDARD;
 
     return {
       id: user.id,
