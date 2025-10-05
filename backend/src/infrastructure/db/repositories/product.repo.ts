@@ -4,29 +4,27 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "../prismaClient.js";
 
-export type ProductWhere = Prisma.ProductWhereInput;
-export type ProductOrderBy = Prisma.ProductOrderByWithRelationInput;
 
 export const productRepo = {
   // Queries
-  findById(id: string, include?: Prisma.ProductInclude) {
+  findById(id: string, include?: any) {
     return prisma.product.findUnique({ where: { id }, include: include ?? null });
   },
-  findBySlug(slug: string, include?: Prisma.ProductInclude) {
+  findBySlug(slug: string, include?: any) {
     return prisma.product.findUnique({ where: { slug }, include: include ?? null });
   },
-  count(where?: ProductWhere) {
+  count(where?: any) {
     if (where) {
       return prisma.product.count({ where });
     }
     return prisma.product.count();
   },
   findMany(args: {
-    where?: ProductWhere;
-    orderBy?: ProductOrderBy | ProductOrderBy[];
+    where?: any;
+    orderBy?: any | any[];
     skip?: number;
     take?: number;
-    include?: Prisma.ProductInclude;
+    include?: any;
   }) {
     const { where, orderBy, skip, take, include } = args;
     const params: any = {};
@@ -39,10 +37,10 @@ export const productRepo = {
   },
 
   // Mutations
-  create(data: Prisma.ProductCreateInput) {
+  create(data: any) {
     return prisma.product.create({ data });
   },
-  update(id: string, data: Prisma.ProductUpdateInput) {
+  update(id: string, data: any) {
     return prisma.product.update({ where: { id }, data });
   },
   delete(id: string) {
@@ -56,17 +54,17 @@ export const productRepo = {
       orderBy: { position: "asc" },
     });
   },
-  addImage(productId: string, data: Omit<Prisma.ProductImageUncheckedCreateInput, "productId">) {
+  addImage(productId: string, data: Omit<any, "productId">) {
     return prisma.productImage.create({ data: { ...data, productId } });
   },
-  updateImage(id: string, data: Prisma.ProductImageUncheckedUpdateInput) {
+  updateImage(id: string, data: any) {
     return prisma.productImage.update({ where: { id }, data });
   },
   removeImage(id: string) {
     return prisma.productImage.delete({ where: { id } });
   },
-  replaceImages(productId: string, images: Array<Omit<Prisma.ProductImageUncheckedCreateInput, "productId">>) {
-    return prisma.$transaction(async (tx) => {
+  replaceImages(productId: string, images: Array<Omit<any, "productId">>) {
+    return prisma.$transaction(async (tx: { productImage: { deleteMany: (arg0: { where: { productId: string; }; }) => any; createMany: (arg0: { data: { productId: string; position: number; }[]; }) => any; findMany: (arg0: { where: { productId: string; }; orderBy: { position: string; }; }) => any; }; }) => {
       await tx.productImage.deleteMany({ where: { productId } });
       if (!images.length) return [];
       await tx.productImage.createMany({
@@ -87,17 +85,17 @@ export const productRepo = {
       orderBy: { position: "asc" },
     });
   },
-  addVariant(productId: string, data: Omit<Prisma.ProductVariantUncheckedCreateInput, "productId">) {
+  addVariant(productId: string, data: Omit<any, "productId">) {
     return prisma.productVariant.create({ data: { ...data, productId } });
   },
-  updateVariant(id: string, data: Prisma.ProductVariantUncheckedUpdateInput) {
+  updateVariant(id: string, data: any) {
     return prisma.productVariant.update({ where: { id }, data });
   },
   removeVariant(id: string) {
     return prisma.productVariant.delete({ where: { id } });
   },
-  replaceVariants(productId: string, variants: Array<Omit<Prisma.ProductVariantUncheckedCreateInput, "productId">>) {
-    return prisma.$transaction(async (tx) => {
+  replaceVariants(productId: string, variants: Array<Omit<any, "productId">>) {
+    return prisma.$transaction(async (tx: { productVariant: { deleteMany: (arg0: { where: { productId: string; }; }) => any; createMany: (arg0: { data: { productId: string; position: number; }[]; }) => any; findMany: (arg0: { where: { productId: string; }; orderBy: { position: string; }; }) => any; }; }) => {
       await tx.productVariant.deleteMany({ where: { productId } });
       if (!variants.length) return [];
       await tx.productVariant.createMany({

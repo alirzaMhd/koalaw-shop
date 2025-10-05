@@ -13,13 +13,13 @@ export const userRepo = {
   findByEmail(email: string) {
     return prisma.user.findUnique({ where: { email } });
   },
-  create(data: Prisma.UserCreateInput) {
+  create(data: any) {
     return prisma.user.create({ data });
   },
-  update(id: string, data: Prisma.UserUpdateInput) {
+  update(id: string, data: any) {
     return prisma.user.update({ where: { id }, data });
   },
-  upsertByEmail(email: string, createData: Prisma.UserCreateInput, updateData: Prisma.UserUpdateInput) {
+  upsertByEmail(email: string, createData: any, updateData: any) {
     return prisma.user.upsert({
       where: { email },
       create: createData,
@@ -31,7 +31,7 @@ export const userRepo = {
   getNotificationPrefs(userId: string) {
     return prisma.userNotificationPrefs.findUnique({ where: { userId } });
   },
-  upsertNotificationPrefs(userId: string, data: Prisma.UserNotificationPrefsUncheckedCreateInput) {
+  upsertNotificationPrefs(userId: string, data: any) {
     return prisma.userNotificationPrefs.upsert({
       where: { userId },
       update: data,
@@ -46,10 +46,10 @@ export const userRepo = {
       orderBy: [{ isDefault: "desc" }, { createdAt: "desc" }],
     });
   },
-  createAddress(userId: string, data: Omit<Prisma.UserAddressUncheckedCreateInput, "userId">) {
+  createAddress(userId: string, data: Omit<any, "userId">) {
     return prisma.userAddress.create({ data: { ...data, userId } });
   },
-  updateAddress(id: string, data: Prisma.UserAddressUncheckedUpdateInput) {
+  updateAddress(id: string, data: any) {
     return prisma.userAddress.update({ where: { id }, data });
   },
   deleteAddress(id: string) {

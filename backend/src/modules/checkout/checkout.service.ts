@@ -7,7 +7,6 @@ import { env } from "../../config/env.js";
 import { logger } from "../../config/logger.js";
 import { eventBus } from "../../events/eventBus.js";
 import { AppError } from "../../common/errors/AppError.js";
-import { $Enums } from "@prisma/client";
 
 import {
   pricingService,
@@ -224,18 +223,18 @@ class CheckoutService {
 
     // Public API method (lowercase) and DB enum (uppercase)
     const paymentMethod: PaymentMethod = options.paymentMethod; // "gateway" | "cod"
-    const dbPaymentMethod: $Enums.PaymentMethod = paymentMethod === "cod" ? "COD" : "GATEWAY";
+    const dbPaymentMethod: any = paymentMethod === "cod" ? "COD" : "GATEWAY";
 
     // Public shipping method (lowercase) vs DB enum (uppercase)
     const shippingMethodLower: QuoteShippingMethod =
       options.shippingMethod === "express" ? "express" : "standard";
-    const dbShippingMethod: $Enums.ShippingMethod =
+    const dbShippingMethod: any =
       shippingMethodLower === "express" ? "EXPRESS" : "STANDARD";
 
     // Public vs DB status
     const publicStatus: CheckoutResult["status"] =
       paymentMethod === "cod" ? "processing" : "awaiting_payment";
-    const dbStatus: $Enums.OrderStatus =
+    const dbStatus: any =
       paymentMethod === "cod" ? "PROCESSING" : "AWAITING_PAYMENT";
 
     const currency = quote.currencyCode;
@@ -244,7 +243,7 @@ class CheckoutService {
     const appliedCouponCode = couponCode ? couponCode.toUpperCase() : null;
 
     // 6) Persist (transaction)
-    const result = await prisma.$transaction(async (tx) => {
+    const result = await prisma.$transaction(async (tx: { order: { create: (arg0: { data: { orderNumber: string; userId: string | null; status: any; shippingMethod: any; paymentMethod: any; couponCode: string | null; giftWrap: boolean; note: string | null; subtotal: number; discountTotal: number; shippingTotal: number; giftWrapTotal: number; total: number; currencyCode: string; shippingFirstName: string; shippingLastName: string; shippingPhone: string; shippingPostalCode: string | null; shippingProvince: string; shippingCity: string; shippingAddressLine1: string; shippingAddressLine2: string | null; shippingCountry: string; placedAt: Date; }; }) => any; }; orderItem: { createMany: (arg0: { data: any; }) => any; }; payment: { create: (arg0: { data: { orderId: any; method: any; status: string; amount: number; currencyCode: string; authority: null; transactionRef: null; paidAt: null; }; }) => any; }; cart: { update: (arg0: { where: { id: string; }; data: { status: string; }; }) => any; }; }) => {
       // Create order
       const order = await tx.order.create({
         data: {

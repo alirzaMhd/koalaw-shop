@@ -20,11 +20,11 @@ export const orderRepo = {
   findForUser(id: string, userId: string) {
     return prisma.order.findFirst({ where: { id, userId }, include: includeDetail });
   },
-  count(where?: Prisma.OrderWhereInput) {
+  count(where?: any) {
     // With exactOptionalPropertyTypes, avoid passing { where: undefined }
     return where ? prisma.order.count({ where }) : prisma.order.count();
   },
-  list(where: Prisma.OrderWhereInput, page = 1, perPage = 12) {
+  list(where: any, page = 1, perPage = 12) {
     const skip = (page - 1) * perPage;
     return prisma.order.findMany({
       where,
@@ -45,11 +45,11 @@ export const orderRepo = {
 
   // Mutations
   create(
-    data: Prisma.OrderCreateInput,
-    items?: Array<Prisma.OrderItemUncheckedCreateInput>,
-    payment?: Prisma.PaymentUncheckedCreateInput
+    data: any,
+    items?: Array<any>,
+    payment?: any
   ) {
-    return prisma.$transaction(async (tx: { order: { create: (arg0: { data: Prisma.OrderCreateInput; }) => any; }; orderItem: { createMany: (arg0: { data: any[]; }) => any; }; payment: { create: (arg0: { data: any; }) => any; }; }) => {
+    return prisma.$transaction(async (tx: { order: { create: (arg0: { data: any; }) => any; }; orderItem: { createMany: (arg0: { data: any[]; }) => any; }; payment: { create: (arg0: { data: any; }) => any; }; }) => {
       const order = await tx.order.create({ data });
       if (items?.length) {
         await tx.orderItem.createMany({
@@ -66,11 +66,11 @@ export const orderRepo = {
       return order;
     });
   },
-  updateStatus(id: string, status: NonNullable<Prisma.OrderUpdateInput["status"]>) {
+  updateStatus(id: string, status: NonNullable<any>) {
     // Ensure we don't pass an explicit `undefined` for status
     return prisma.order.update({ where: { id }, data: { status } });
   },
-  createPayment(orderId: string, data: Prisma.PaymentUncheckedCreateInput) {
+  createPayment(orderId: string, data: any) {
     return prisma.payment.create({ data: { ...data, orderId } });
   },
   listItems(orderId: string) {

@@ -112,7 +112,7 @@ export class InventoryService {
     const compact = Array.from(merged.entries()).map(([variantId, quantity]) => ({ variantId, quantity }));
 
     try {
-      await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+      await prisma.$transaction(async (tx: { productVariant: { findUnique: (arg0: { where: { id: string; }; select: { id: boolean; }; }) => any; }; }) => {
         for (const { variantId } of compact) {
           // Ensure variant exists
           const exists = await tx.productVariant.findUnique({
@@ -223,7 +223,7 @@ export class InventoryService {
     });
     const lines = items
       .filter((i: { variantId: any; }) => i.variantId)
-      .map((i) => ({ variantId: i.variantId as string, quantity: i.quantity }));
+      .map((i: { variantId: string; quantity: any; }) => ({ variantId: i.variantId as string, quantity: i.quantity }));
     if (!lines.length) return;
     await this.release(lines);
   }
@@ -265,7 +265,7 @@ export class InventoryService {
 
     let unavailableCount = 0;
     let missingVariantCount = 0;
-    const lines = items.map((it) => {
+    const lines = items.map((it: { variantId: string; id: any; quantity: any; }) => {
       if (!it.variantId) {
         missingVariantCount += 1;
         return { cartItemId: it.id, variantId: null, requested: it.quantity, available: 0, ok: true };

@@ -3,7 +3,6 @@
 // Aligned with your SQL migration while keeping camelCase in the domain layer.
 
 import type { ProductCategory as DomainProductCategory } from "./category.entity.js";
-import type { Prisma, ProductCategory } from "@prisma/client"; // type-only for enum typing
 
 // ---------- Primitive/refs ----------
 
@@ -428,8 +427,7 @@ export interface ProductFilters {
 }
 
 // Prisma v5: use string enum literals for values; type via Prisma.$Enums
-type DbProductCategory = ProductCategory;
-const CategoryEnumBySlug: Record<string, DbProductCategory> = {
+const CategoryEnumBySlug: Record<string, any> = {
   skincare: "SKINCARE",
   makeup: "MAKEUP",
   fragrance: "FRAGRANCE",
@@ -438,7 +436,7 @@ const CategoryEnumBySlug: Record<string, DbProductCategory> = {
 };
 
 // Map domain category slugs -> Prisma enum (string) values
-function toPrismaCategoryEnumValue(x: unknown): DbProductCategory | null {
+function toPrismaCategoryEnumValue(x: unknown): any | null {
   const slug = String(x ?? "")
     .trim()
     .toLowerCase()
@@ -472,7 +470,7 @@ export function toPrismaWhere(filters: ProductFilters = {}) {
   if (filters.categories?.length) {
     const enumVals = filters.categories
       .map(toPrismaCategoryEnumValue)
-      .filter((v): v is DbProductCategory => v !== null);
+      .filter((v): v is any => v !== null);
     if (enumVals.length) {
       AND.push({ category: { in: enumVals } });
     }

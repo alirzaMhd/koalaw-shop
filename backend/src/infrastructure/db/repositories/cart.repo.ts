@@ -35,10 +35,10 @@ export const cartRepo = {
   findItemByProductVariant(cartId: string, productId: string, variantId?: string | null) {
     return prisma.cartItem.findFirst({ where: { cartId, productId, variantId: variantId || null } });
   },
-  addItem(data: Prisma.CartItemUncheckedCreateInput) {
+  addItem(data: any) {
     return prisma.cartItem.create({ data });
   },
-  updateItem(id: string, data: Prisma.CartItemUncheckedUpdateInput) {
+  updateItem(id: string, data: any) {
     return prisma.cartItem.update({ where: { id }, data });
   },
   removeItem(id: string) {

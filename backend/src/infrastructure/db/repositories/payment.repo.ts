@@ -11,10 +11,10 @@ export const paymentRepo = {
   listForOrder(orderId: string) {
     return prisma.payment.findMany({ where: { orderId }, orderBy: { createdAt: "desc" } });
   },
-  create(data: Prisma.PaymentUncheckedCreateInput) {
+  create(data: any) {
     return prisma.payment.create({ data });
   },
-  update(id: string, data: Prisma.PaymentUncheckedUpdateInput) {
+  update(id: string, data: any) {
     return prisma.payment.update({ where: { id }, data });
   },
   findPendingGatewayByOrder(orderId: string) {
