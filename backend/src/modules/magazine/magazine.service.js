@@ -108,11 +108,13 @@ export class MagazineService {
         const filter = {
             page: params.page,
             pageSize: safePageSize,
-            category: params.category,
-            tagSlugs: params.tagSlugs,
-            authorSlug: params.authorSlug,
-            q: params.q,
             onlyPublished: params.onlyPublished ?? true,
+            // Conditionally add optional properties only if they have a non-falsy value.
+            // This avoids assigning `undefined` and satisfies `exactOptionalPropertyTypes`.
+            ...(params.category && { category: params.category }),
+            ...(params.tagSlugs && { tagSlugs: params.tagSlugs }),
+            ...(params.authorSlug && { authorSlug: params.authorSlug }),
+            ...(params.q && { q: params.q }),
         };
         const { items, total } = await magazineRepo.listPosts(filter);
         return {

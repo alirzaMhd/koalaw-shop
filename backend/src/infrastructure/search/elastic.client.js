@@ -11,14 +11,16 @@ if (process.env.ELASTICSEARCH_USERNAME && process.env.ELASTICSEARCH_PASSWORD) {
         password: String(process.env.ELASTICSEARCH_PASSWORD),
     };
 }
-const rejectUnauthorizedEnv = String(process.env.ELASTICSEARCH_TLS_REJECT_UNAUTHORIZED || "true");
-export const elastic = new Client({
+const rejectUnauthorizedEnv = String(process.env.ELASTICSEARCH_TLS_REJECT_UNAUTHORIZED ?? "true");
+// Build ClientOptions without putting undefined into optional properties
+const clientOptions = {
     node,
-    auth,
-    tls: rejectUnauthorizedEnv === "false" || rejectUnauthorizedEnv === "0"
-        ? { rejectUnauthorized: false }
-        : undefined,
-});
+    ...(auth ? { auth } : {}),
+    ...(rejectUnauthorizedEnv === "false" || rejectUnauthorizedEnv === "0"
+        ? { tls: { rejectUnauthorized: false } }
+        : {}),
+};
+export const elastic = new Client(clientOptions);
 export async function ping() {
     try {
         await elastic.ping();
@@ -41,13 +43,21 @@ export async function ensureIndex(index, mapping) {
     }
 }
 export async function indexDocument(index, doc, id) {
-    return elastic.index({ index, id, document: doc, refresh: "wait_for" });
+    const params = {
+        index,
+        document: doc,
+        refresh: "wait_for",
+    };
+    if (typeof id === "string") {
+        params.id = id; // only include id when defined (exactOptionalPropertyTypes)
+    }
+    return elastic.index(params);
 }
 export async function searchDocuments(index, query, opts) {
     const res = await elastic.search({
         index,
-        from: opts?.from || 0,
-        size: opts?.size || 10,
+        from: opts?.from ?? 0,
+        size: opts?.size ?? 10,
         query,
     });
     const hits = res.hits.hits.map((h) => ({ id: h._id, ...h._source }));

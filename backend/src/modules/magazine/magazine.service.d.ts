@@ -1,4 +1,4 @@
-import { ListPostsFilter } from '../../infrastructure/db/repositories/magazine.repo';
+import { type ListPostsFilter } from '../../infrastructure/db/repositories/magazine.repo.js';
 export type AuthorDTO = {
     id: string;
     name: string;
@@ -35,11 +35,11 @@ export declare class MagazineService {
         q?: string;
         onlyPublished?: boolean;
     }): Promise<{
-        items: any;
+        items: PostDTO[];
         meta: {
             page: number;
             pageSize: number;
-            total: any;
+            total: number;
             totalPages: number;
         };
     }>;
@@ -73,30 +73,74 @@ export declare class MagazineService {
         relatedPostIds: string[];
     }>): Promise<PostDTO>;
     deletePost(id: string): Promise<void>;
-    listAuthors(): Promise<any>;
-    getAuthorBySlug(slug: string): Promise<any>;
+    listAuthors(): Promise<{
+        name: string;
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        slug: string | null;
+        bio: string | null;
+        avatarUrl: string | null;
+    }[]>;
+    getAuthorBySlug(slug: string): Promise<{
+        name: string;
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        slug: string | null;
+        bio: string | null;
+        avatarUrl: string | null;
+    }>;
     createAuthor(input: {
         name: string;
         slug?: string;
         bio?: string;
         avatarUrl?: string;
-    }): Promise<any>;
+    }): Promise<{
+        name: string;
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        slug: string | null;
+        bio: string | null;
+        avatarUrl: string | null;
+    }>;
     updateAuthor(id: string, input: Partial<{
         name: string;
         slug: string;
         bio: string | null;
         avatarUrl: string | null;
-    }>): Promise<any>;
+    }>): Promise<{
+        name: string;
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        slug: string | null;
+        bio: string | null;
+        avatarUrl: string | null;
+    }>;
     deleteAuthor(id: string): Promise<void>;
-    listTags(): Promise<any>;
+    listTags(): Promise<{
+        name: string;
+        id: string;
+        slug: string;
+    }[]>;
     createTag(input: {
         name: string;
         slug?: string;
-    }): Promise<any>;
+    }): Promise<{
+        name: string;
+        id: string;
+        slug: string;
+    }>;
     updateTag(id: string, input: Partial<{
         name: string;
         slug: string;
-    }>): Promise<any>;
+    }>): Promise<{
+        name: string;
+        id: string;
+        slug: string;
+    }>;
     deleteTag(id: string): Promise<void>;
 }
 export declare const magazineService: MagazineService;

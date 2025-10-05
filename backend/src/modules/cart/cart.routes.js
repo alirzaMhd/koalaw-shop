@@ -6,9 +6,10 @@ import { authGuard } from "../../common/middlewares/authGuard.js";
 import { AppError } from "../../common/errors/AppError.js";
 export const cartRouter = Router();
 const requireAdmin = (req, _res, next) => {
-  const role = (req.user?.role || "").toLowerCase();
-  if (role === "admin" || role === "manager") return next();
-  return next(new AppError("دسترسی غیرمجاز.", 403, "FORBIDDEN"));
+    const role = (req.user?.role || "").toLowerCase();
+    if (role === "admin" || role === "manager")
+        return next();
+    return next(new AppError("دسترسی غیرمجاز.", 403, "FORBIDDEN"));
 };
 // Fetch cart by id (public; cart id acts as capability)
 cartRouter.get("/:id", cartController.getById);
@@ -27,12 +28,7 @@ cartRouter.post("/:id/quote", cartController.quote);
 // Merge guest cart into authenticated user cart
 cartRouter.post("/merge", authGuard, cartController.mergeAnonymousIntoUser);
 // Admin/internal: change cart status
-cartRouter.patch(
-  "/:id/status",
-  authGuard,
-  requireAdmin,
-  cartController.setStatus
-);
+cartRouter.patch("/:id/status", authGuard, requireAdmin, cartController.setStatus);
 // Default export for router registration convenience
 export default cartRouter;
 //# sourceMappingURL=cart.routes.js.map

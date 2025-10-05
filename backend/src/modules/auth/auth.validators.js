@@ -1,4 +1,4 @@
-// src/modules/auth/auth.validators.js
+// src/modules/auth/auth.validators.ts
 import { z } from "zod";
 export const emailSchema = z
     .string({

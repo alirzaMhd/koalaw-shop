@@ -1,19 +1,19 @@
 import { type ProductImage, type ProductVariant } from "./product.entity.js";
-import { type ListProductsQuery, type CreateProductInput, type UpdateProductInput, type AddImageInput, type UpdateImageInput, type AddReviewInput, type ListReviewsQuery } from "./product.validators";
+import { type ListProductsQuery, type CreateProductInput, type UpdateProductInput, type AddImageInput, type UpdateImageInput, type AddReviewInput, type ListReviewsQuery } from "./product.validators.js";
 declare class ProductService {
     list(query: ListProductsQuery): Promise<{
-        items: any;
+        items: import("./product.entity.js").ProductCardDto[];
         meta: {
-            page: ListProductsQuery;
-            perPage: ListProductsQuery;
-            total: any;
+            page: number;
+            perPage: number;
+            total: number;
             totalPages: number;
         };
     }>;
-    getById(id: string): Promise<any>;
-    getBySlug(slug: string): Promise<any>;
-    create(input: CreateProductInput): Promise<any>;
-    update(id: string, input: UpdateProductInput): Promise<any>;
+    getById(id: string): Promise<import("./product.entity.js").ProductDetailDto>;
+    getBySlug(slug: string): Promise<import("./product.entity.js").ProductDetailDto>;
+    create(input: CreateProductInput): Promise<import("./product.entity.js").ProductDetailDto>;
+    update(id: string, input: UpdateProductInput): Promise<import("./product.entity.js").ProductDetailDto>;
     addImage(productId: string, input: AddImageInput): Promise<ProductImage>;
     updateImage(productId: string, imageId: string, input: UpdateImageInput): Promise<ProductImage>;
     deleteImage(productId: string, imageId: string): Promise<{
@@ -25,46 +25,69 @@ declare class ProductService {
         deleted: boolean;
     }>;
     listReviewsByProductId(productId: string, query: ListReviewsQuery): Promise<{
-        items: any;
+        items: {
+            id: string;
+            authorName: any;
+            rating: number;
+            title: string | null;
+            body: string;
+            createdAt: string;
+        }[];
         meta: {
-            page: ListReviewsQuery;
-            perPage: ListReviewsQuery;
-            total: any;
+            page: number;
+            perPage: number;
+            total: number;
             totalPages: number;
         };
     }>;
     listReviewsBySlug(slug: string, query: ListReviewsQuery): Promise<{
-        items: any;
+        items: {
+            id: string;
+            authorName: any;
+            rating: number;
+            title: string | null;
+            body: string;
+            createdAt: string;
+        }[];
         meta: {
-            page: ListReviewsQuery;
-            perPage: ListReviewsQuery;
-            total: any;
+            page: number;
+            perPage: number;
+            total: number;
             totalPages: number;
         };
     }>;
     addReviewByProductId(productId: string, input: AddReviewInput, userId?: string | null): Promise<{
-        id: any;
-        authorName: any;
-        rating: any;
-        title: any;
-        body: any;
-        createdAt: any;
+        id: string;
+        authorName: string;
+        rating: number;
+        title: string | null;
+        body: string;
+        createdAt: string;
     }>;
     addReviewBySlug(slug: string, input: AddReviewInput, userId?: string | null): Promise<{
-        id: any;
-        authorName: any;
-        rating: any;
-        title: any;
-        body: any;
-        createdAt: any;
+        id: string;
+        authorName: string;
+        rating: number;
+        title: string | null;
+        body: string;
+        createdAt: string;
     }>;
     getFilterOptions(): Promise<{
-        categories: any;
-        brands: any;
-        collections: any;
+        categories: import("./category.entity.js").Category[];
+        brands: {
+            id: string;
+            name: string;
+            slug: string;
+            count: number;
+        }[];
+        collections: {
+            id: string;
+            name: string;
+            count: number;
+        }[];
         priceRange: {
-            min: any;
-            max: any;
+            min: number;
+            max: number;
         };
     }>;
 }

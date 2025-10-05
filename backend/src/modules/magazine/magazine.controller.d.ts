@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import type { Request, Response, NextFunction } from 'express';
 export declare class MagazineController {
     listPosts: (req: Request, res: Response, next: NextFunction) => Promise<void>;
     getPostBySlug: (req: Request, res: Response, next: NextFunction) => Promise<void>;

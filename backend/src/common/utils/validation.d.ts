@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import type { Request, Response, NextFunction } from "express";
 import { ZodSchema } from "zod";
 export declare function toLatinDigits(input?: string): string;
 export declare function normalizeIranPhone(raw: string): string;

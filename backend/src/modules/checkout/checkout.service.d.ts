@@ -1,19 +1,19 @@
-import { type QuoteOptions, type QuoteResult, type ShippingMethod } from "../pricing/pricing.service.js";
+import { type QuoteOptions, type QuoteResult, type ShippingMethod as QuoteShippingMethod } from "../pricing/pricing.service.js";
 export type PaymentMethod = "gateway" | "cod";
 export interface CheckoutAddress {
     firstName: string;
     lastName: string;
     phone: string;
-    postalCode?: string | null;
+    postalCode?: string | null | undefined;
     province: string;
     city: string;
     addressLine1: string;
-    addressLine2?: string | null;
-    country?: string;
+    addressLine2?: string | null | undefined;
+    country?: string | undefined;
 }
 export interface CheckoutOptions extends QuoteOptions {
     paymentMethod: PaymentMethod;
-    shippingMethod?: ShippingMethod;
+    shippingMethod?: QuoteShippingMethod;
     note?: string | null;
 }
 export interface CheckoutResult {
@@ -41,26 +41,14 @@ export interface CheckoutResult {
     quote: QuoteResult;
 }
 declare class CheckoutService {
-    /**
-     * Compute quote (and optional taxes) for a cart.
-     * This mirrors the frontend constants and coupon behavior.
-     */
     prepareQuote(cartId: string, opts?: QuoteOptions): Promise<QuoteResult>;
-    /**
-     * Create an order from a cart and initialize payment.
-     * - Validates cart has items
-     * - Computes quote via pricing.service (no tax line in DB schema; tax kept 0)
-     * - Persists order, items, and a pending payment record
-     * - For "gateway": initializes payment intent and returns clientSecret/approvalUrl
-     * - Emits "order.created" event
-     */
     createOrderFromCart(args: {
         cartId: string;
-        userId?: string | null;
+        userId?: string | null | undefined;
         address: CheckoutAddress;
         options: CheckoutOptions;
-        returnUrl?: string;
-        cancelUrl?: string;
+        returnUrl?: string | undefined;
+        cancelUrl?: string | undefined;
     }): Promise<CheckoutResult>;
 }
 export declare const checkoutService: CheckoutService;

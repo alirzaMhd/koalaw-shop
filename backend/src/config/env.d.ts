@@ -14,6 +14,7 @@ declare const env: {
         windowMs: number;
         max: number;
     };
+    REVIEWS_AUTO_APPROVE: boolean;
     NODE_ENV: "development" | "test" | "production";
     PORT: number;
     APP_NAME: string;
@@ -83,6 +84,13 @@ declare const env: {
     ELASTICSEARCH_TLS_REJECT_UNAUTHORIZED?: string | undefined;
     RATE_LIMIT_WINDOW_MS?: number | undefined;
     RATE_LIMIT_MAX?: number | undefined;
+    SHIPPING_REGION_OVERRIDES?: string | undefined;
+    SHIPPING_ESTIMATED_DAYS_EXPRESS?: string | undefined;
+    SHIPPING_ESTIMATED_DAYS_STANDARD?: string | undefined;
+    JWT_ACCESS_TTL_SEC?: number | undefined;
+    JWT_REFRESH_TTL_SEC?: number | undefined;
+    BCRYPT_ROUNDS?: number | undefined;
+    ORDER_PREFIX?: string | undefined;
 };
 export type Env = typeof env;
 export { env };

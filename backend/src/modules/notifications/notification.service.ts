@@ -414,7 +414,7 @@ class NotificationService {
   /**
    * Shipping update via email (tracking number, carrier, etc.)
    */
-  async sendShippingUpdate(orderId: string, args: { carrier: string; trackingNumber: string; labelUrl?: string }) {
+  async sendShippingUpdate(orderId: string, args: { carrier: string; trackingNumber: string; labelUrl?: string | undefined }) {
     const order = await prisma.order.findUnique({
       where: { id: orderId },
       include: { user: { select: { email: true, firstName: true, lastName: true } } as any },

@@ -129,10 +129,10 @@ export function mapDbProductToEntity(row) {
         heroImageUrl: row.heroImageUrl ?? row.hero_image_url ?? null,
         createdAt: toDate(row.createdAt ?? row.created_at),
         updatedAt: toDate(row.updatedAt ?? row.updated_at),
-        images,
-        variants,
-        badges,
-        reviews,
+        ...(images && { images }),
+        ...(variants && { variants }),
+        ...(badges && { badges }),
+        ...(reviews && { reviews }),
         internalNotes: row.internalNotes ?? row.internal_notes ?? null,
     };
 }

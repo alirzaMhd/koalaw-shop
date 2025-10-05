@@ -1,4 +1,5 @@
-export declare const transporter: Transporter;
+import nodemailer from "nodemailer";
+export declare const transporter: nodemailer.Transporter;
 export declare const mailer: {
     sendMail(opts: {
         from?: string;

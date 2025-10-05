@@ -1,4 +1,4 @@
-import { User, UserAddress, UserNotificationPrefs, Gender, CustomerTier, UserSummary } from "./user.entity.js";
+import { type User, type UserAddress, type UserNotificationPrefs, type Gender, type CustomerTier, type UserSummary } from "./user.entity.js";
 export type UpdateProfileInput = Partial<{
     firstName: string;
     lastName: string;

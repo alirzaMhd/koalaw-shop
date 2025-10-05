@@ -2,7 +2,7 @@ export declare const PRODUCTS_INDEX: string;
 export declare const MAGAZINE_INDEX: string;
 export declare function ensureSearchIndices(): Promise<void>;
 export declare function reindexAllProducts(): Promise<{
-    count: any;
+    count: number;
 }>;
 export declare function indexProductById(productId: string): Promise<void>;
 export declare function deleteProductById(productId: string): Promise<void>;
@@ -22,7 +22,7 @@ export declare function searchProducts(opts: {
     took: any;
 }>;
 export declare function reindexAllMagazinePosts(): Promise<{
-    count: any;
+    count: number;
 }>;
 export declare function indexMagazinePostById(postId: string): Promise<void>;
 export declare function deleteMagazinePostById(postId: string): Promise<void>;

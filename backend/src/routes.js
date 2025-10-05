@@ -2,7 +2,6 @@
 // Central router registration. Mounts module routers under /api/* and adds healthz.
 import { Router } from "express";
 // Module routers
-import notificationRouter from "./modules/notifications/notification.routes.js";
 import authRouter from "./modules/auth/auth.routes.js";
 import userRouter from "./modules/users/user.routes.js";
 import productRouter from "./modules/catalog/product.routes.js";
@@ -13,6 +12,7 @@ import orderRouter from "./modules/orders/order.routes.js";
 import paymentRouter from "./modules/payments/payment.routes.js";
 import shippingRouter from "./modules/shipping/shipping.routes.js";
 import reviewRouter from "./modules/reviews/review.routes.js";
+import notificationRouter from "./modules/notifications/notification.routes.js";
 import searchRouter from "./modules/search/search.routes.js";
 import magazineRoutes from "./modules/magazine/magazine.routes.js";
 import profileRoutes from "./modules/profile/profile.routes.js";

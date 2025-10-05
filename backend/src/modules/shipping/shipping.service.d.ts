@@ -29,15 +29,15 @@ export interface ShipmentLabel {
     id: string;
     carrier: string;
     trackingNumber: string;
-    labelUrl?: string;
+    labelUrl?: string | undefined;
     createdAt: string;
     to?: {
-        name?: string;
-        phone?: string;
-        province?: string;
-        city?: string;
-        postalCode?: string | null;
-    };
+        name?: string | undefined;
+        phone?: string | undefined;
+        province?: string | undefined;
+        city?: string | undefined;
+        postalCode?: string | null | undefined;
+    } | undefined;
 }
 export interface QuoteOptions {
     couponFreeShip?: boolean;
@@ -56,11 +56,11 @@ declare class ShippingService {
      * If subtotal is provided, uses subtotal; otherwise compute via pricing for zero shipping/gift.
      */
     quoteLinesOrSubtotal(args: {
-        subtotal?: number;
-        linesQuote?: QuoteResult | null;
-        address?: Address;
-        couponFreeShip?: boolean;
-        currencyCode?: string;
+        subtotal?: number | undefined;
+        linesQuote?: QuoteResult | null | undefined;
+        address?: Address | undefined;
+        couponFreeShip?: boolean | undefined;
+        currencyCode?: string | undefined;
     }): Promise<ShippingQuotes>;
     /**
      * Simple helper to return the shipping part of a pricing quote as RateQuote.

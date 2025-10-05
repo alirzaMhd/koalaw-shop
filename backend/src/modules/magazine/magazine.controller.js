@@ -1,4 +1,5 @@
 import { magazineService } from './magazine.service.js';
+import AppError from '../../common/errors/AppError.js';
 export class MagazineController {
     // POSTS
     listPosts = async (req, res, next) => {
@@ -6,15 +7,27 @@ export class MagazineController {
             const { page = 1, pageSize = 20, category, tag, tags, authorSlug, q, onlyPublished = true, } = req.query;
             // merge single tag and tags[]
             const tagSlugs = tags ?? (tag ? [String(tag)] : undefined);
-            const result = await magazineService.listPosts({
+            // Start with the required properties.
+            const options = {
                 page: Number(page),
                 pageSize: Number(pageSize),
-                category,
-                tagSlugs,
-                authorSlug: authorSlug,
-                q: q,
                 onlyPublished: onlyPublished === true || String(onlyPublished) === 'true',
-            });
+            };
+            // Only add optional properties if they have a value.
+            if (category) {
+                options.category = category;
+            }
+            if (tagSlugs) {
+                options.tagSlugs = tagSlugs;
+            }
+            if (authorSlug) {
+                options.authorSlug = authorSlug;
+            }
+            if (q) {
+                options.q = q;
+            }
+            // --- End of Fix ---
+            const result = await magazineService.listPosts(options);
             res.json({ success: true, ...result });
         }
         catch (err) {

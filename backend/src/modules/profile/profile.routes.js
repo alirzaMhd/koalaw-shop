@@ -7,11 +7,7 @@ profileRouter.use(authGuard); // All routes require authentication
 // Profile
 profileRouter.get("/", profileController.getProfile);
 profileRouter.put("/", profileController.updateProfile);
-profileRouter.post(
-  "/image",
-  uploadMiddleware,
-  profileController.uploadProfileImage
-);
+profileRouter.post("/image", uploadMiddleware, profileController.uploadProfileImage);
 // Orders
 profileRouter.get("/orders", profileController.getOrders);
 // Notifications
@@ -21,9 +17,6 @@ profileRouter.get("/addresses", profileController.getAddresses);
 profileRouter.post("/addresses", profileController.createAddress);
 profileRouter.put("/addresses/:addressId", profileController.updateAddress);
 profileRouter.delete("/addresses/:addressId", profileController.deleteAddress);
-profileRouter.post(
-  "/addresses/:addressId/set-default",
-  profileController.setDefaultAddress
-);
+profileRouter.post("/addresses/:addressId/set-default", profileController.setDefaultAddress);
 export default profileRouter;
 //# sourceMappingURL=profile.routes.js.map

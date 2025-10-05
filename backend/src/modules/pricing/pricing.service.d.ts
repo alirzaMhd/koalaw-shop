@@ -12,11 +12,11 @@ export interface QuoteLine {
     currencyCode?: string;
 }
 export interface QuoteOptions {
-    couponCode?: string | null;
-    shippingMethod?: ShippingMethod;
-    giftWrap?: boolean;
-    userId?: string | null;
-    currencyCode?: string;
+    couponCode?: string | null | undefined;
+    shippingMethod?: ShippingMethod | undefined;
+    giftWrap?: boolean | undefined;
+    userId?: string | null | undefined;
+    currencyCode?: string | undefined;
 }
 export interface QuoteResult {
     lines: QuoteLine[];

@@ -1,5 +1,5 @@
 import { type QuoteOptions, type QuoteResult } from "../pricing/pricing.service.js";
-export type CartStatus = "active" | "converted" | "abandoned";
+export type CartStatus = "ACTIVE" | "CONVERTED" | "ABANDONED";
 export interface Cart {
     id: string;
     userId?: string | null;
@@ -44,7 +44,7 @@ declare class CartService {
         deleted: boolean;
     }>;
     clear(cartId: string): Promise<{
-        cleared: any;
+        cleared: number;
     }>;
     quote(cartId: string, opts?: QuoteOptions): Promise<QuoteResult>;
     /**

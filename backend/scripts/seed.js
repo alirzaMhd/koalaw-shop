@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import path from "path";
 import dotenv from "dotenv";
-import { logger } from "../src/config/logger";
+import { logger } from "../src/config/logger.js";
 // Load .env from project root
 dotenv.config({ path: path.resolve(process.cwd(), ".env") });
 const prisma = new PrismaClient();
@@ -31,7 +31,6 @@ async function main() {
     await prisma.coupon.deleteMany();
     await prisma.userAddress.deleteMany();
     await prisma.userNotificationPrefs.deleteMany();
-    await prisma.otpCode.deleteMany();
     await prisma.user.deleteMany();
     await prisma.newsletterSubscription.deleteMany();
     await prisma.siteSetting.deleteMany();
@@ -56,11 +55,15 @@ async function main() {
     ]);
     // 3) Users (5)
     logger.info("Seeding users...");
+    // For seed data, using bcrypt hash of "password123" (for testing only)
+    // Hash generated with: bcrypt.hash("password123", 10)
+    const testPasswordHash = "$2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW";
     const users = await Promise.all([
         prisma.user.create({
             data: {
                 phone: "+989100000001",
                 email: "admin@beauty.com",
+                passwordHash: testPasswordHash,
                 firstName: "ادمین",
                 lastName: "کاربر",
                 gender: "FEMALE",
@@ -75,6 +78,7 @@ async function main() {
             data: {
                 phone: "+989100000002",
                 email: "customer1@example.com",
+                passwordHash: testPasswordHash,
                 firstName: "سارا",
                 lastName: "رضایی",
                 gender: "FEMALE",
@@ -86,6 +90,7 @@ async function main() {
             data: {
                 phone: "+989100000003",
                 email: "customer2@example.com",
+                passwordHash: testPasswordHash,
                 firstName: "علی",
                 lastName: "مرادی",
                 gender: "MALE",
@@ -95,6 +100,7 @@ async function main() {
             data: {
                 phone: "+989100000004",
                 email: "customer3@example.com",
+                passwordHash: testPasswordHash,
                 firstName: "فاطمه",
                 lastName: "کاظمی",
                 gender: "FEMALE",
@@ -104,6 +110,7 @@ async function main() {
             data: {
                 phone: "+989100000005",
                 email: "customer4@example.com",
+                passwordHash: testPasswordHash,
                 firstName: "حسین",
                 lastName: "اکبری",
                 gender: "MALE",
@@ -529,12 +536,14 @@ async function main() {
         }),
     ]);
     // 12) Related posts
+    logger.info("Seeding related magazine posts...");
     await Promise.all([
         prisma.magazineRelatedPost.create({ data: { postId: posts[0].id, relatedPostId: posts[2].id } }),
         prisma.magazineRelatedPost.create({ data: { postId: posts[1].id, relatedPostId: posts[3].id } }),
         prisma.magazineRelatedPost.create({ data: { postId: posts[2].id, relatedPostId: posts[4].id } }),
     ]);
     // 13) Site settings (static samples)
+    logger.info("Seeding site settings...");
     await Promise.all([
         prisma.siteSetting.create({
             data: {

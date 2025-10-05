@@ -2,12 +2,6 @@
 import express from "express";
 import helmet from "helmet";
 import compression from "compression";
-import { fileURLToPath } from "url";
-import { dirname } from "path";
-
-// Create __filename and __dirname equivalents
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import path from "node:path";
@@ -19,6 +13,8 @@ import { rateLimiter } from "./common/middlewares/rateLimiter.js";
 import buildApiRouter from "./routes.js";
 // NEW: import the auth router to expose /auth alias
 import { authRouter } from "./modules/auth/auth.routes.js";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
 export function createApp() {
     const app = express();
     app.set("trust proxy", 1);
@@ -76,6 +72,8 @@ export function createApp() {
     }));
     // Resolve important paths relative to this file
     // __dirname -> .../backend/dist (in build) or .../backend/src (in dev)
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = dirname(__filename);
     const backendRoot = path.resolve(__dirname, ".."); // .../backend
     const repoRoot = path.resolve(backendRoot, ".."); // repo root
     const frontendRoot = path.join(repoRoot, "frontend", "src");
