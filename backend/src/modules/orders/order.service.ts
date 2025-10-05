@@ -288,7 +288,7 @@ class OrderService {
   }): Promise<any> {
     const { orderId, paymentId, transactionRef, authority } = args;
 
-    const updated = await prisma.$transaction(async (tx: { payment: { update: (arg0: { where: { id: string; }; data: { status: string; transactionRef: string | null; authority: string | null; paidAt: Date; }; select: { id: boolean; orderId: boolean; amount: boolean; currencyCode: boolean; status: boolean; }; }) => any; }; order: { findUnique: (arg0: { where: { id: string; }; select: { id: boolean; status: boolean; couponCode: boolean; userId: boolean; orderNumber: boolean; total: boolean; currencyCode: boolean; }; }) => any; update: (arg0: { where: { id: string; }; data: { status: any; }; }) => any; }; coupon: { findFirst: (arg0: { where: { code: { equals: string; mode: string; }; }; select: { id: boolean; }; }) => any; }; couponRedemption: { create: (arg0: { data: { couponId: any; userId: any; orderId: string; }; }) => any; }; }) => {
+    const updated = await prisma.$transaction(async (tx) => {
       const payment = await tx.payment.update({
         where: { id: paymentId },
         data: { status: "PAID", transactionRef: transactionRef ?? null, authority: authority ?? null, paidAt: new Date() },

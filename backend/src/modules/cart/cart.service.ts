@@ -335,7 +335,7 @@ async mergeAnonymousIntoUser(userId: string, anonymousId: string): Promise<CartW
       // Explicitly type the Map
       type CartItemType = typeof existing[0];
       const idx = new Map<string, CartItemType>(
-        existing.map((it: { productId: string; variantId: string | null; }) => [key(it.productId, it.variantId), it])
+        existing.map((it) => [key(it.productId, it.variantId), it])
       );
 
       for (const gi of guestItems) {

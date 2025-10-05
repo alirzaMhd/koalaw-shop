@@ -162,7 +162,7 @@ class UserService {
     const country = input.country || "IR";
     const isDefault = Boolean(input.isDefault);
 
-    const result = await prisma.$transaction(async (tx: { userAddress: { updateMany: (arg0: { where: { userId: string; isDefault: boolean; }; data: { isDefault: boolean; }; }) => any; create: (arg0: { data: { userId: string; label: string | null; firstName: string; lastName: string; phone: string; postalCode: string | null; province: string; city: string; addressLine1: string; addressLine2: string | null; country: string; isDefault: boolean; }; }) => any; }; }) => {
+    const result = await prisma.$transaction(async (tx) => {
       if (isDefault) {
         // unset existing default
         await tx.userAddress.updateMany({
@@ -201,7 +201,7 @@ class UserService {
 
     const willBeDefault = typeof input.isDefault !== "undefined" ? Boolean(input.isDefault) : existing.isDefault;
 
-    const row = await prisma.$transaction(async (tx: { userAddress: { updateMany: (arg0: { where: { userId: string; isDefault: boolean; NOT: { id: string; }; }; data: { isDefault: boolean; }; }) => any; update: (arg0: { where: { id: string; }; data: Partial<AddressCreateInput>; }) => any; }; }) => {
+    const row = await prisma.$transaction(async (tx) => {
       if (willBeDefault) {
         await tx.userAddress.updateMany({
           where: { userId, isDefault: true, NOT: { id: addressId } },
@@ -239,7 +239,7 @@ class UserService {
 
     let reassigned: string | null = null;
 
-    await prisma.$transaction(async (tx: { userAddress: { delete: (arg0: { where: { id: string; }; }) => any; findFirst: (arg0: { where: { userId: string; }; orderBy: { createdAt: string; }[]; }) => any; update: (arg0: { where: { id: any; }; data: { isDefault: boolean; }; }) => any; }; }) => {
+    await prisma.$transaction(async (tx) => {
       await tx.userAddress.delete({ where: { id: addressId } });
 
       if (existing.isDefault) {
@@ -266,7 +266,7 @@ class UserService {
     const target = await prisma.userAddress.findFirst({ where: { id: addressId, userId } });
     if (!target) throw new AppError("آدرس یافت نشد.", 404, "ADDRESS_NOT_FOUND");
 
-    const row = await prisma.$transaction(async (tx: { userAddress: { updateMany: (arg0: { where: { userId: string; isDefault: boolean; }; data: { isDefault: boolean; }; }) => any; update: (arg0: { where: { id: string; }; data: { isDefault: boolean; }; }) => any; }; }) => {
+    const row = await prisma.$transaction(async (tx) => {
       await tx.userAddress.updateMany({ where: { userId, isDefault: true }, data: { isDefault: false } });
       return tx.userAddress.update({ where: { id: addressId }, data: { isDefault: true } });
     });

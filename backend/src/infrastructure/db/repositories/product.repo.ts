@@ -1,7 +1,7 @@
 // src/infrastructure/db/repositories/product.repo.ts
 // Product data access layer. Keep logic in services; repos only encapsulate Prisma calls.
 
-import { Prisma } from "../../../../../node_modules/.prisma/client/index.js";
+import { Prisma } from "@prisma/client";
 import { prisma } from "../prismaClient.js";
 
 export type ProductWhere = Prisma.ProductWhereInput;
@@ -66,7 +66,7 @@ export const productRepo = {
     return prisma.productImage.delete({ where: { id } });
   },
   replaceImages(productId: string, images: Array<Omit<Prisma.ProductImageUncheckedCreateInput, "productId">>) {
-    return prisma.$transaction(async (tx: { productImage: { deleteMany: (arg0: { where: { productId: string; }; }) => any; createMany: (arg0: { data: { productId: string; position: number; }[]; }) => any; findMany: (arg0: { where: { productId: string; }; orderBy: { position: string; }; }) => any; }; }) => {
+    return prisma.$transaction(async (tx) => {
       await tx.productImage.deleteMany({ where: { productId } });
       if (!images.length) return [];
       await tx.productImage.createMany({
@@ -97,7 +97,7 @@ export const productRepo = {
     return prisma.productVariant.delete({ where: { id } });
   },
   replaceVariants(productId: string, variants: Array<Omit<Prisma.ProductVariantUncheckedCreateInput, "productId">>) {
-    return prisma.$transaction(async (tx: { productVariant: { deleteMany: (arg0: { where: { productId: string; }; }) => any; createMany: (arg0: { data: { productId: string; position: number; }[]; }) => any; findMany: (arg0: { where: { productId: string; }; orderBy: { position: string; }; }) => any; }; }) => {
+    return prisma.$transaction(async (tx) => {
       await tx.productVariant.deleteMany({ where: { productId } });
       if (!variants.length) return [];
       await tx.productVariant.createMany({

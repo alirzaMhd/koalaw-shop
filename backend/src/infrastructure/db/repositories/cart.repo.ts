@@ -1,7 +1,7 @@
 // src/infrastructure/db/repositories/cart.repo.ts
 // Cart data access operations (snapshots live on cart_items).
 
-import { Prisma } from "../../../../../node_modules/.prisma/client/index.js";
+import { Prisma } from "@prisma/client";
 import { prisma } from "../prismaClient.js";
 
 export const cartRepo = {

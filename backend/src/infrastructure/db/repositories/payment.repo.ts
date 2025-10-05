@@ -1,7 +1,7 @@
 // src/infrastructure/db/repositories/payment.repo.ts
 // Payments data access (lookup by authority, by order, update states).
 
-import { Prisma } from "../../../../../node_modules/.prisma/client/index.js";
+import { Prisma } from "@prisma/client";
 import { prisma } from "../prismaClient.js";
 
 export const paymentRepo = {
