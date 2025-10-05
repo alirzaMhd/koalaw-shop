@@ -4,6 +4,7 @@
 // Uses snapshot fields on cart_items (title, variant_name, unit_price, image_url, currency_code).
 
 import { prisma } from "../../infrastructure/db/prismaClient.js";
+import type { Prisma } from "@prisma/client";
 import { AppError } from "../../common/errors/AppError.js";
 import { eventBus } from "../../events/eventBus.js";
 import { logger } from "../../config/logger.js";
@@ -50,6 +51,7 @@ function mapCart(row: any): Cart {
     updatedAt: row.updatedAt ?? row.updated_at,
   };
 }
+
 function mapItem(row: any): CartItem {
   return {
     id: row.id,
@@ -209,16 +211,7 @@ class CartService {
     const snap = await resolveSnapshot({ productId: input.productId, variantId: input.variantId || null });
 
     // Merge with existing same (productId, variantId)
-    const item = await prisma.$transaction(async (tx: {
-        cartItem: {
-          findFirst: (arg0: { where: { cartId: string; productId: string; variantId: string | null; }; }) => any; update: (arg0: {
-            where: { id: any; }; data: {
-              quantity: any; unitPrice: number; // keep unitPrice in sync with latest snapshot
-              lineTotal: number; title: string; variantName: string | null; imageUrl: string | null; currencyCode: string;
-            };
-          }) => any; create: (arg0: { data: { cartId: string; productId: string; variantId: string | null; title: string; variantName: string | null; unitPrice: number; quantity: number; lineTotal: number; currencyCode: string; imageUrl: string | null; }; }) => any;
-        };
-      }) => {
+    const item = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       const existing = await tx.cartItem.findFirst({
         where: {
           cartId,
@@ -323,73 +316,68 @@ class CartService {
    * - Sums quantities for identical (productId, variantId).
    * - Deletes the guest cart after merging.
    */
-  async mergeAnonymousIntoUser(userId: string, anonymousId: string): Promise<CartWithItems> {
-    const guest = await prisma.cart.findFirst({ where: { anonymousId, status: "ACTIVE" } });
-    // Ensure user cart exists
-    const userCart = await this.getOrCreateForUser(userId);
+async mergeAnonymousIntoUser(userId: string, anonymousId: string): Promise<CartWithItems> {
+  const guest = await prisma.cart.findFirst({ where: { anonymousId, status: "ACTIVE" } });
+  // Ensure user cart exists
+  const userCart = await this.getOrCreateForUser(userId);
 
-    if (!guest || guest.id === userCart.id) {
-      return userCart;
-    }
+  if (!guest || guest.id === userCart.id) {
+    return userCart;
+  }
 
-    await prisma.$transaction(async (tx: {
-        cartItem: {
-          findMany: (arg0: { where: { cartId: any; } | { cartId: string; }; }) => any; update: (arg0: {
-            where: { id: any; } | { id: any; }; data: {
-              quantity: any;
+  await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+    const guestItems = await tx.cartItem.findMany({ where: { cartId: guest.id } });
+    if (guestItems.length) {
+      // Prepare map for user cart items to merge quantities
+      const existing = await tx.cartItem.findMany({ where: { cartId: userCart.id } });
+      const key = (p: string, v: string | null) => `${p}::${v ?? "null"}`;
+      
+      // Explicitly type the Map
+      type CartItemType = typeof existing[0];
+      const idx = new Map<string, CartItemType>(
+        existing.map((it: { productId: string; variantId: string | null; }) => [key(it.productId, it.variantId), it])
+      );
+
+      for (const gi of guestItems) {
+        const k = key(gi.productId, gi.variantId);
+        if (idx.has(k)) {
+          const cur = idx.get(k)!;
+          const newQty = cur.quantity + gi.quantity;
+          await tx.cartItem.update({
+            where: { id: cur.id },
+            data: {
+              quantity: newQty,
               // keep cur.unitPrice (snapshot at time of cur add), recompute lineTotal
-              lineTotal: number;
-            } | { cartId: string; };
-          }) => any;
-        }; cart: { delete: (arg0: { where: { id: any; }; }) => any; };
-      }) => {
-      const guestItems = await tx.cartItem.findMany({ where: { cartId: guest.id } });
-      if (guestItems.length) {
-        // Prepare map for user cart items to merge quantities
-        const existing = await tx.cartItem.findMany({ where: { cartId: userCart.id } });
-        const key = (p: string, v: string | null) => `${p}::${v ?? "null"}`;
-        const idx = new Map(existing.map((it: { productId: string; variantId: string | null; }) => [key(it.productId, it.variantId), it]));
-
-        for (const gi of guestItems) {
-          const k = key(gi.productId, gi.variantId);
-          if (idx.has(k)) {
-            const cur = idx.get(k)!;
-            const newQty = cur.quantity + gi.quantity;
-            await tx.cartItem.update({
-              where: { id: cur.id },
-              data: {
-                quantity: newQty,
-                // keep cur.unitPrice (snapshot at time of cur add), recompute lineTotal
-                lineTotal: lineTotal(cur.unitPrice, newQty),
-              },
-            });
-          } else {
-            // Move the item to user cart (re-parent)
-            await tx.cartItem.update({
-              where: { id: gi.id },
-              data: {
-                cartId: userCart.id,
-                // keep snapshot fields as-is
-              },
-            });
-          }
+              lineTotal: lineTotal(cur.unitPrice, newQty),
+            },
+          });
+        } else {
+          // Move the item to user cart (re-parent)
+          await tx.cartItem.update({
+            where: { id: gi.id },
+            data: {
+              cartId: userCart.id,
+              // keep snapshot fields as-is
+            },
+          });
         }
       }
+    }
 
-      // Mark/delete guest cart
-      await tx.cart.delete({ where: { id: guest.id } });
-    });
+    // Mark/delete guest cart
+    await tx.cart.delete({ where: { id: guest.id } });
+  });
 
-    eventBus.emit("cart.merged", {
-      userId,
-      anonymousId,
-      targetCartId: userCart.id,
-      sourceCartId: guest.id,
-    });
+  eventBus.emit("cart.merged", {
+    userId,
+    anonymousId,
+    targetCartId: userCart.id,
+    sourceCartId: guest.id,
+  });
 
-    // Return fresh user cart
-    return this.getOrCreateForUser(userId);
-  }
+  // Return fresh user cart
+  return this.getOrCreateForUser(userId);
+}
 
   // ---------------- Status helpers ----------------
 
