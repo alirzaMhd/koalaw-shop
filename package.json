@@ -23,11 +23,14 @@
     "dev:css": "tailwindcss -i frontend/src/assets/css/main.css -o frontend/src/assets/css/tailwind.css --watch",
     "build:css": "tailwindcss -i frontend/src/assets/css/main.css -o frontend/src/assets/css/tailwind.css --minify"
   },
+  "prisma": {
+    "schema": "backend/prisma/schema.prisma"
+  },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.601.0",
     "@aws-sdk/s3-request-presigner": "^3.601.0",
     "@elastic/elasticsearch": "^9.1.1",
-    "@prisma/client": "^6.16.2",
+    "@prisma/client": "^6.16.3",
     "@types/compression": "^1.8.1",
     "@types/cors": "^2.8.19",
     "@types/helmet": "^0.0.48",
@@ -66,7 +69,7 @@
     "eslint": "^9.9.0",
     "postcss": "^8.5.6",
     "prettier": "^3.3.3",
-    "prisma": "^6.16.2",
+    "prisma": "^6.16.3",
     "tailwindcss": "^4.1.13",
     "tsx": "^4.20.5",
     "typescript": "^5.5.4"
