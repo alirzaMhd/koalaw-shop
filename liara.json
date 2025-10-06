@@ -4,5 +4,10 @@
   "build": {
     "location": "iran"
   },
-  "disks": []
+  "disks":[
+        {
+            "name": "prisma",
+            "mountTo": "prisma/migrations"
+        }
+  ]
 }
