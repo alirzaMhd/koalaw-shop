@@ -1,108 +1,147 @@
 <!doctype html>
 <html lang="fa" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="color-scheme" content="light only" />
+    <meta name="supported-color-schemes" content="light only" />
+    <meta name="theme-color" content="#faf8f3" />
+    <title>ورود | KOALAW</title>
+    <link rel="icon" type="image/x-icon" href="/assets/static/favicon.ico" />
+    <link rel="stylesheet" href="/assets/css/tailwind.css" />
+    <link href="/assets/vendor/aos/aos.css" rel="stylesheet" />
+    <script src="/assets/vendor/aos/aos.js"></script>
+    <script src="/assets/vendor/feather/feather.min.js"></script>
+    <script src="/assets/vendor/gsap/gsap.min.js"></script>
+    <script src="/assets/vendor/gsap/ScrollTrigger.min.js"></script>
+    <link rel="stylesheet" href="/assets/css/main.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="color-scheme" content="light">
-  <meta name="supported-color-schemes" content="light">
-  <meta name="theme-color" content="#faf8f3">
-  <title>ورود | KOALAW</title>
-  <link rel="icon" type="image/x-icon" href="/assets/static/favicon.ico" />
-  <link rel="stylesheet" href="/assets/css/tailwind.css" />
-  <link href="/assets/vendor/aos/aos.css" rel="stylesheet" />
-  <script src="/assets/vendor/aos/aos.js"></script>
-  <script src="/assets/vendor/feather/feather.min.js"></script>
-  <script src="/assets/vendor/gsap/gsap.min.js"></script>
-  <script src="/assets/vendor/gsap/ScrollTrigger.min.js"></script>
-  <link rel="stylesheet" href="/assets/css/main.css" />
-</head>
-
-<body>
-  <!-- Custom Cursor -->
-  <div class="cursor">
-    <div class="cursor-eyes"></div>
-  </div>
-  <div class="cursor-face"></div>
-  <div class="cursor-follower"></div>
-
-  <!-- Main -->
-  <main class="min-h-screen w-full flex items-center justify-center p-4 relative overflow-hidden"
-    style="background: linear-gradient(to bottom, #faf8f3, #fff7fb)">
-    <div class="cloud-animation"></div>
-    <div class="particle-overlay"></div>
-    <div class="absolute inset-0 bg-gradient-to-t from-black/10 via-black/5 to-transparent z-0"></div>
-
-    <div
-      class="relative z-10 w-full max-w-md bg-white/70 backdrop-blur-xl rounded-3xl shadow-2xl shadow-rose-200/50 p-8 md:p-12 text-center space-y-6"
-      data-aos="fade-up" data-aos-duration="700">
-      <!-- Logo -->
-      <a href="/"
-        class="text-3xl font-serif font-bold text-gray-800 tracking-wider z-50 flex items-center justify-center gap-x-1"
-        dir="ltr">K<img src="/assets/images/koala.png" alt="Koala logo" class="w-8 h-7 inline-block -mt-1" />ALAW</a>
-
-      <!-- Title -->
-      <h1 class="text-2xl font-bold text-deep-brown">ورود | ثبت نام</h1>
-
-      <!-- Subtitle -->
-      <p class="text-gray-600">
-        برای ادامه، ایمیل و رمز عبور خود را وارد کنید.
-      </p>
-
-      <!-- Form -->
-      <form id="loginForm" class="space-y-6">
-        <!-- Email Input -->
-        <div class="relative">
-          <input type="email" id="email" name="email" placeholder="example@email.com"
-            class="w-full bg-cream/50 border-2 border-rose-200/50 rounded-full px-6 py-4 text-lg text-left tracking-wider text-deep-brown placeholder:text-gray-400 focus:outline-none focus:ring-4 focus:ring-primary/30 focus:border-primary transition-all duration-300"
-            dir="ltr" autocomplete="email" required />
-          <p id="emailMsg" class="text-red-500 text-sm mt-2 text-right"></p>
-        </div>
-
-        <!-- Password Input -->
-        <div class="relative">
-          <input type="password" id="password" name="password" dir="ltr" placeholder="رمز عبور (حداقل ۸ کاراکتر)"
-            class="w-full bg-cream/50 border-2 border-rose-200/50 rounded-full px-6 py-4 text-lg text-deep-brown placeholder:text-gray-400 focus:outline-none focus:ring-4 focus:ring-primary/30 focus:border-primary transition-all duration-300"
-            autocomplete="current-password" required />
-          <p id="passwordMsg" class="text-red-500 text-sm mt-2 text-right"></p>
-        </div>
-
-        <!-- Submit Button -->
-        <button id="btnSubmit" type="submit"
-          class="w-full px-8 py-4 bg-pink-500 text-white rounded-full font-semibold text-lg hover:shadow-2xl hover:shadow-pink-500/40 hover:bg-pink-600 transition-all duration-300 transform hover:-translate-y-1 disabled:opacity-60 disabled:cursor-not-allowed">
-          ورود / ثبت نام
-        </button>
-      </form>
-
-      <div class="text-center">
-        <a href="/forgot-password.html" class="text-sm text-primary hover:underline transition-colors duration-300">
-          رمز عبور خود را فراموش کرده‌اید؟
-        </a>
-      </div>
-
-      <!-- Additional Info -->
-      <p class="text-sm text-gray-600">
-        با ورود یا ثبت نام، شما
-        <a href="/tos" class="text-primary hover:underline">شرایط و قوانین</a>
-        را می‌پذیرید.
-      </p>
-
-      <!-- Back -->
-      <div>
-        <a href="/"
-          class="inline-flex items-center gap-2 text-deep-brown font-semibold hover:text-primary transition-colors duration-300 group">
-          <i data-feather="arrow-right" class="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1"></i>
-          <span>بازگشت به صفحه اصلی</span>
-        </a>
-      </div>
+  <body>
+    <!-- Custom Cursor -->
+    <div class="cursor">
+      <div class="cursor-eyes"></div>
     </div>
-  </main>
-  <script src="/assets/js/utils.js"></script>
-  <script src="/assets/js/main.js"></script>
-  <script src="/assets/js/components/search.js"></script>
-  <script src="/assets/js/components/animations.js"></script>
-  <script src="/assets/js/components/cursor.js"></script>
-  <script src="/assets/js/pages/login.js"></script>
-</body>
+    <div class="cursor-face"></div>
+    <div class="cursor-follower"></div>
 
+    <!-- Main -->
+    <main
+      class="min-h-screen w-full flex items-center justify-center p-4 relative overflow-hidden"
+      style="background: linear-gradient(to bottom, #faf8f3, #fff7fb)"
+    >
+      <div class="cloud-animation"></div>
+      <div class="particle-overlay"></div>
+      <div
+        class="absolute inset-0 bg-gradient-to-t from-black/10 via-black/5 to-transparent z-0"
+      ></div>
+
+      <div
+        class="relative z-10 w-full max-w-md bg-white/70 backdrop-blur-xl rounded-3xl shadow-2xl shadow-rose-200/50 p-8 md:p-12 text-center space-y-6"
+        data-aos="fade-up"
+        data-aos-duration="700"
+      >
+        <!-- Logo -->
+        <a
+          href="/"
+          class="text-3xl font-serif font-bold text-gray-800 tracking-wider z-50 flex items-center justify-center gap-x-1"
+          dir="ltr"
+          >K<img
+            src="/assets/images/koala.png"
+            alt="Koala logo"
+            class="w-8 h-7 inline-block -mt-1"
+          />ALAW</a
+        >
+
+        <!-- Title -->
+        <h1 class="text-2xl font-bold text-deep-brown">ورود | ثبت نام</h1>
+
+        <!-- Subtitle -->
+        <p class="text-gray-600">
+          برای ادامه، ایمیل و رمز عبور خود را وارد کنید.
+        </p>
+
+        <!-- Form -->
+        <form id="loginForm" class="space-y-6">
+          <!-- Email Input -->
+          <div class="relative">
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="example@email.com"
+              class="w-full bg-cream/50 border-2 border-rose-200/50 rounded-full px-6 py-4 text-lg text-left tracking-wider text-deep-brown placeholder:text-gray-400 focus:outline-none focus:ring-4 focus:ring-primary/30 focus:border-primary transition-all duration-300"
+              dir="ltr"
+              autocomplete="email"
+              required
+            />
+            <p id="emailMsg" class="text-red-500 text-sm mt-2 text-right"></p>
+          </div>
+
+          <!-- Password Input -->
+          <div class="relative">
+            <input
+              type="password"
+              id="password"
+              name="password"
+              dir="ltr"
+              placeholder="رمز عبور (حداقل ۸ کاراکتر)"
+              class="w-full bg-cream/50 border-2 border-rose-200/50 rounded-full px-6 py-4 text-lg text-deep-brown placeholder:text-gray-400 focus:outline-none focus:ring-4 focus:ring-primary/30 focus:border-primary transition-all duration-300"
+              autocomplete="current-password"
+              required
+            />
+            <p
+              id="passwordMsg"
+              class="text-red-500 text-sm mt-2 text-right"
+            ></p>
+          </div>
+
+          <!-- Submit Button -->
+          <button
+            id="btnSubmit"
+            type="submit"
+            class="w-full px-8 py-4 bg-pink-500 text-white rounded-full font-semibold text-lg hover:shadow-2xl hover:shadow-pink-500/40 hover:bg-pink-600 transition-all duration-300 transform hover:-translate-y-1 disabled:opacity-60 disabled:cursor-not-allowed"
+          >
+            ورود / ثبت نام
+          </button>
+        </form>
+
+        <div class="text-center">
+          <a
+            href="/forgot-password.html"
+            class="text-sm text-primary hover:underline transition-colors duration-300"
+          >
+            رمز عبور خود را فراموش کرده‌اید؟
+          </a>
+        </div>
+
+        <!-- Additional Info -->
+        <p class="text-sm text-gray-600">
+          با ورود یا ثبت نام، شما
+          <a href="/tos" class="text-primary hover:underline">شرایط و قوانین</a>
+          را می‌پذیرید.
+        </p>
+
+        <!-- Back -->
+        <div>
+          <a
+            href="/"
+            class="inline-flex items-center gap-2 text-deep-brown font-semibold hover:text-primary transition-colors duration-300 group"
+          >
+            <i
+              data-feather="arrow-right"
+              class="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1"
+            ></i>
+            <span>بازگشت به صفحه اصلی</span>
+          </a>
+        </div>
+      </div>
+    </main>
+    <script src="/assets/js/utils.js"></script>
+    <script src="/assets/js/main.js"></script>
+    <script src="/assets/js/components/search.js"></script>
+    <script src="/assets/js/components/animations.js"></script>
+    <script src="/assets/js/components/cursor.js"></script>
+    <script src="/assets/js/pages/login.js"></script>
+  </body>
 </html>

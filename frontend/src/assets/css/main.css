@@ -2,8 +2,6 @@
    main.css — Consolidated styles
    Fonts, tokens, base, layout, components, utilities, page-specific bits
    ========================================================================== */
-html { color-scheme: light; }
-
 
 @font-face {
   font-family: 'IRANSans';
@@ -14,6 +12,65 @@ html { color-scheme: light; }
   font-weight: 400;
   font-style: normal;
   font-display: swap;
+}
+
+/* ==========================================================================
+   Samsung Internet Dark Mode Fix - MUST BE AT TOP
+   ========================================================================== */
+:root {
+  color-scheme: light only !important;
+  -webkit-color-scheme: light !important;
+  supported-color-schemes: light !important;
+}
+
+html {
+  color-scheme: light only !important;
+  -webkit-color-scheme: light !important;
+  background-color: #faf8f3 !important;
+  background: #faf8f3 !important;
+}
+
+body {
+  color-scheme: light only !important;
+  -webkit-color-scheme: light !important;
+  background-color: #faf8f3 !important;
+  background: #faf8f3 !important;
+  color: #333 !important;
+}
+
+/* Force light mode even when device is in dark mode */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: light only !important;
+    -webkit-color-scheme: light !important;
+  }
+  
+  html {
+    color-scheme: light only !important;
+    -webkit-color-scheme: light !important;
+    background-color: #faf8f3 !important;
+    background: #faf8f3 !important;
+  }
+  
+  body {
+    color-scheme: light only !important;
+    -webkit-color-scheme: light !important;
+    background-color: #faf8f3 !important;
+    background: #faf8f3 !important;
+    color: #333 !important;
+  }
+  
+  /* Prevent Samsung from inverting colors */
+  *, *::before, *::after {
+    color-scheme: light only !important;
+    -webkit-color-scheme: light !important;
+  }
+  
+  /* Ensure all major containers stay light */
+  nav, section, footer, div, header, main, article, aside {
+    color-scheme: light only !important;
+    -webkit-color-scheme: light !important;
+  }
 }
 
 /* --------------------------------------------------------------------------
@@ -576,12 +633,6 @@ nav {
 }
 .testimonial-card:hover { transform: translateY(-10px); box-shadow: 0 30px 50px -20px rgba(0,0,0,.15); border-color: rgba(212,165,116,.3); }
 
-/* ... (rest of the file remains largely the same) ... */
-
-/* The following sections have been checked and are generally responsive.
-   The key changes above cover the most critical visual components.
-   The utility classes at the end of the file also help with responsiveness. */
-
 /* Scroll indicator */
 .scroll-indicator {
   position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
@@ -592,38 +643,6 @@ nav {
   width: 8px; height: 8px; background-color: #fff; border-radius: 50%;
   animation: scroll-down 2s ease-in-out infinite;
 }
-
-/* Loader (Home, Market) */
-.loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--cream); display: flex; align-items: center; justify-content: center; z-index: 10000; transition: opacity .4s ease; }
-/* ... (loader styles) ... */
-
-/* Article Page */
-.article-content p, .article-content li {
-  line-height: 1.8; /* Slightly adjusted for better readability */
-}
-/* ... (article styles) ... */
-
-/* Product Page (Gallery, tabs, etc.) */
-/* ... (This section is fairly responsive due to flex-wrap) ... */
-
-/* Cart / Checkout / Profile Shared Bits */
-.profile-card {
-  background: rgba(255,255,255,.95); backdrop-filter: blur(20px); border-radius: 30px;
-  box-shadow: 0 20px 40px rgba(0,0,0,.1); transition: all .4s cubic-bezier(.175,.885,.32,1.275);
-  border: 1px solid rgba(227,154,180,.2);
-  /* RESPONSIVE MODIFICATION: Fluid padding */
-  padding: clamp(1.5rem, 5vw, 2rem);
-}
-/* ... (The rest of the styles are largely okay) ... */
-.form-input {
-  width: 100%; padding: clamp(0.8rem, 3vw, 1rem); border: 2px solid rgba(227,154,180,.2); border-radius: 15px;
-  font-size: clamp(0.9rem, 2vw, 1rem); transition: all .3s ease; background: rgba(255,255,255,.8);
-}
-/* ... (Rest of file) ... */
-
-/* ==========================================================================
-   Unchanged Sections from original file
-   ========================================================================== */
 
 /* Loader (Home, Market) */
 .loader {
@@ -815,6 +834,10 @@ nav {
 
 .form-group { margin-bottom: 1.5rem; }
 .form-label { display:block; margin-bottom:.5rem; font-weight:600; color: var(--deep-brown); }
+.form-input {
+  width: 100%; padding: clamp(0.8rem, 3vw, 1rem); border: 2px solid rgba(227,154,180,.2); border-radius: 15px;
+  font-size: clamp(0.9rem, 2vw, 1rem); transition: all .3s ease; background: rgba(255,255,255,.8);
+}
 .form-input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 4px rgba(227,154,180,.2); }
 
 .stats-card {

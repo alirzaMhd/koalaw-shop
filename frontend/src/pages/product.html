@@ -1,354 +1,485 @@
 <!doctype html>
 <html lang="fa" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="color-scheme" content="light only" />
+    <meta name="supported-color-schemes" content="light only" />
+    <meta name="theme-color" content="#faf8f3" />
+    <title>KOALAW | سرم درخشش طلایی - محصولات لوکس آرایش</title>
+    <link rel="icon" type="image/x-icon" href="/assets/static/favicon.ico" />
+    <link rel="stylesheet" href="/assets/css/tailwind.css" />
+    <link href="/assets/vendor/aos/aos.css" rel="stylesheet" />
+    <script src="/assets/vendor/aos/aos.js"></script>
+    <script src="/assets/vendor/feather/feather.min.js"></script>
+    <script src="/assets/vendor/gsap/gsap.min.js"></script>
+    <script src="/assets/vendor/gsap/ScrollTrigger.min.js"></script>
+    <link rel="stylesheet" href="/assets/css/main.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="color-scheme" content="light">
-  <meta name="supported-color-schemes" content="light">
-  <meta name="theme-color" content="#faf8f3">
-  <title>KOALAW | سرم درخشش طلایی - محصولات لوکس آرایش</title>
-  <link rel="icon" type="image/x-icon" href="/assets/static/favicon.ico" />
-  <link rel="stylesheet" href="/assets/css/tailwind.css" />
-  <link href="/assets/vendor/aos/aos.css" rel="stylesheet" />
-  <script src="/assets/vendor/aos/aos.js"></script>
-  <script src="/assets/vendor/feather/feather.min.js"></script>
-  <script src="/assets/vendor/gsap/gsap.min.js"></script>
-  <script src="/assets/vendor/gsap/ScrollTrigger.min.js"></script>
-  <link rel="stylesheet" href="/assets/css/main.css" />
-</head>
-
-<body>
-  <!-- Cursor (reference) -->
-  <div class="cursor">
-    <div class="cursor-eyes"></div>
-  </div>
-  <div class="cursor-face"></div>
-  <div class="cursor-follower"></div>
-
-  <!-- Navigation (exactly like reference) -->
-  <nav class="fixed w-full z-50 transition-all duration-300" id="navbar">
-    <div class="container mx-auto px-6 py-5">
-      <div class="flex items-center justify-between" dir="ltr">
-        <a href="/"
-          class="text-3xl font-serif font-bold text-gray-800 tracking-wider z-50 flex items-center gap-x-1">K<img
-            src="/assets/images/koala.png" alt="Koala logo" class="w-8 h-7 inline-block -mt-1" />ALAW</a>
-        <div class="hidden lg:flex items-center gap-x-10 flex-row-reverse">
-          <a href="/shop" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">فروشگاه</a><a
-            href="/shop?category=collections"
-            class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">کالکشن ها</a><a
-            href="/shop?category=brands"
-            class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">برندها</a><a href="/magazine"
-            class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">مجله</a><a href="/about"
-            class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">درباره ما</a>
-        </div>
-        <div class="flex items-center gap-x-6">
-          <button id="search-button"
-            class="text-gray-700 hover:text-gray-900 transition-all duration-300 hover:scale-110">
-            <i data-feather="search" class="w-5 h-5"></i></button><button id="profile-button" type="button"
-            class="text-gray-700 hover:text-gray-900 transition-all duration-300 hover:scale-110">
-            <i data-feather="user" class="w-5 h-5"></i></button><a href="/cart" id="nav-cart"
-            class="text-gray-700 hover:text-gray-900 relative transition-all duration-300 hover:scale-110"
-            aria-label="سبد خرید">
-            <i data-feather="shopping-bag" class="w-5 h-5"></i>
-            <span id="nav-cart-count"
-              class="absolute -top-2 -right-2 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center pulse-animation">۰</span>
-          </a><button id="mobile-menu-button" class="hamburger-button lg:hidden">
-            <span></span><span></span><span></span>
-          </button>
-        </div>
-      </div>
+  <body>
+    <!-- Cursor (reference) -->
+    <div class="cursor">
+      <div class="cursor-eyes"></div>
     </div>
-  </nav>
+    <div class="cursor-face"></div>
+    <div class="cursor-follower"></div>
 
-  <!-- Mobile Menu -->
-  <div id="mobile-menu">
-    <a href="/shop" class="nav-link">فروشگاه</a><a href="/shop?category=collections" class="nav-link">کالکشن ها</a><a
-      href="/shop?category=brands" class="nav-link">برندها</a><a href="/magazine" class="nav-link">مجله</a><a
-      href="/about" class="nav-link">درباره ما</a>
-  </div>
-  <div id="mobile-menu-overlay" class="mobile-menu-overlay"></div>
-
-  <!-- Main Content -->
-  <main class="pt-24 pb-16">
-    <div class="container mx-auto px-6">
-      <!-- Breadcrumb -->
-      <div class="breadcrumb" data-aos="fade-up">
-        <a href="/">خانه</a>
-        <i data-feather="chevron-left" class="w-4 h-4"></i>
-        <a href="/shop">فروشگاه</a>
-        <i data-feather="chevron-left" class="w-4 h-4"></i>
-        <a href="/shop/skincare">مراقبت از پوست</a>
-        <i data-feather="chevron-left" class="w-4 h-4"></i>
-        <span>سرم درخشش طلایی</span>
-      </div>
-
-      <!-- Product Section -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
-        <!-- Product Images -->
-        <div class="product-gallery" data-aos="fade-right">
-          <div class="main-image relative">
-            <div id="product-badge" class="product-badge">پرفروش</div>
-            <img id="main-product-image" src="/assets/images/product.png" alt="سرم درخشش طلایی"
-              class="w-full h-96 lg:h-[500px] object-contain p-8" />
+    <!-- Navigation (exactly like reference) -->
+    <nav class="fixed w-full z-50 transition-all duration-300" id="navbar">
+      <div class="container mx-auto px-6 py-5">
+        <div class="flex items-center justify-between" dir="ltr">
+          <a
+            href="/"
+            class="text-3xl font-serif font-bold text-gray-800 tracking-wider z-50 flex items-center gap-x-1"
+            >K<img
+              src="/assets/images/koala.png"
+              alt="Koala logo"
+              class="w-8 h-7 inline-block -mt-1"
+            />ALAW</a
+          >
+          <div class="hidden lg:flex items-center gap-x-10 flex-row-reverse">
+            <a
+              href="/shop"
+              class="nav-link text-gray-700 hover:text-gray-900 transition duration-300"
+              >فروشگاه</a
+            ><a
+              href="/shop?category=collections"
+              class="nav-link text-gray-700 hover:text-gray-900 transition duration-300"
+              >کالکشن ها</a
+            ><a
+              href="/shop?category=brands"
+              class="nav-link text-gray-700 hover:text-gray-900 transition duration-300"
+              >برندها</a
+            ><a
+              href="/magazine"
+              class="nav-link text-gray-700 hover:text-gray-900 transition duration-300"
+              >مجله</a
+            ><a
+              href="/about"
+              class="nav-link text-gray-700 hover:text-gray-900 transition duration-300"
+              >درباره ما</a
+            >
           </div>
-          <div class="thumbnail-gallery">
-            <div class="thumbnail active">
-              <img src="/assets/images/product.png" alt="نمای اصلی" class="w-full h-full object-cover" />
-            </div>
-            <div class="thumbnail">
-              <img src="/assets/images/skin.png" alt="نمای جانبی" class="w-full h-full object-cover" />
-            </div>
-            <div class="thumbnail">
-              <img src="/assets/images/cosmetic.png" alt="نمای بسته‌بندی" class="w-full h-full object-cover" />
-            </div>
-            <div class="thumbnail">
-              <img src="/assets/images/body.png" alt="نمای استفاده" class="w-full h-full object-cover" />
-            </div>
+          <div class="flex items-center gap-x-6">
+            <button
+              id="search-button"
+              class="text-gray-700 hover:text-gray-900 transition-all duration-300 hover:scale-110"
+            >
+              <i data-feather="search" class="w-5 h-5"></i></button
+            ><button
+              id="profile-button"
+              type="button"
+              class="text-gray-700 hover:text-gray-900 transition-all duration-300 hover:scale-110"
+            >
+              <i data-feather="user" class="w-5 h-5"></i></button
+            ><a
+              href="/cart"
+              id="nav-cart"
+              class="text-gray-700 hover:text-gray-900 relative transition-all duration-300 hover:scale-110"
+              aria-label="سبد خرید"
+            >
+              <i data-feather="shopping-bag" class="w-5 h-5"></i>
+              <span
+                id="nav-cart-count"
+                class="absolute -top-2 -right-2 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center pulse-animation"
+                >۰</span
+              > </a
+            ><button id="mobile-menu-button" class="hamburger-button lg:hidden">
+              <span></span><span></span><span></span>
+            </button>
           </div>
-        </div>
-
-        <!-- Product Info -->
-        <div class="product-info" data-aos="fade-left">
-          <div class="mb-6">
-            <div class="flex items-center gap-2 text-sm text-rose-800 mb-3">
-              <i data-feather="shield" class="w-4 h-4"></i>
-              <span id="product-category">مراقبت از پوست</span>
-            </div>
-            <h1 id="product-title" class="text-3xl lg:text-4xl font-serif font-bold text-gray-800 mb-4">
-              سرم درخشش طلایی
-            </h1>
-            <div class="flex items-center gap-4 mb-4">
-              <div id="rating-stars" class="stars">
-                <i data-feather="star" class="w-5 h-5"></i>
-                <i data-feather="star" class="w-5 h-5"></i>
-                <i data-feather="star" class="w-5 h-5"></i>
-                <i data-feather="star" class="w-5 h-5"></i>
-                <i data-feather="star" class="w-5 h-5"></i>
-              </div>
-              <span id="review-count-inline" class="text-gray-600">(۱۲۴ نظر)</span>
-            </div>
-            <p class="text-gray-600 text-lg leading-relaxed mb-6">
-              سرمی انقلابی با عصاره‌های طبیعی و نانو ذرات طلا که پوست شما را
-              از عمق تغذیه کرده و درخشندگی طبیعی می‌بخشد. فرمول منحصر به فرد
-              این محصول با ترکیب هیالورونیک اسید و ویتامین C، پوستی صاف، شفاف
-              و جوان به شما هدیه می‌دهد.
-            </p>
-          </div>
-
-          <!-- Price & Add to Cart -->
-          <div class="mb-8">
-            <div class="flex items-center gap-4 mb-6">
-              <span id="product-price" class="text-3xl font-bold text-gray-800"></span>
-              <span id="product-compare" class="text-xl text-gray-400 line-through hidden"></span>
-              <span id="product-discount-badge"
-                class="bg-red-100 text-red-800 px-2 py-1 rounded-full text-sm font-semibold hidden"></span>
-            </div>
-
-            <!-- Variants mount (auto-hidden if none) -->
-            <div id="variants-container" class="mb-6 hidden"></div>
-
-            <div class="flex items-center gap-4 mb-6">
-              <span class="text-gray-700 font-medium">تعداد:</span>
-              <div class="quantity-selector">
-                <button class="quantity-btn" data-action="dec">
-                  <i data-feather="minus" class="w-4 h-4"></i>
-                </button>
-                <span id="quantity" class="mx-4 font-semibold">۱</span>
-                <button class="quantity-btn" data-action="inc">
-                  <i data-feather="plus" class="w-4 h-4"></i>
-                </button>
-              </div>
-            </div>
-
-            <div class="flex flex-col sm:flex-row gap-4">
-              <button class="add-to-cart-btn flex-1 flex items-center justify-center gap-2">
-                <i data-feather="shopping-bag" class="w-5 h-5"></i>
-                افزودن به سبد خرید
-              </button>
-            </div>
-          </div>
-
-          <!-- Product Features (badges from DB) -->
-          <div id="product-badges-grid" class="grid grid-cols-2 gap-4 mb-8"></div>
         </div>
       </div>
+    </nav>
 
-      <!-- Product Info Tabs -->
-      <div class="mb-16" data-aos="fade-up">
-        <div class="product-info-tabs flex border-b">
-          <button class="tab-button active" data-tab="description">
-            توضیحات
-          </button>
-          <button class="tab-button" data-tab="ingredients">ترکیبات</button>
-          <button class="tab-button" data-tab="usage">نحوه استفاده</button>
-          <button class="tab-button" id="reviews-tab-btn" data-tab="reviews">
-            نظرات (<span id="review-tab-count">۱۲۴</span>)
-          </button>
+    <!-- Mobile Menu -->
+    <div id="mobile-menu">
+      <a href="/shop" class="nav-link">فروشگاه</a
+      ><a href="/shop?category=collections" class="nav-link">کالکشن ها</a
+      ><a href="/shop?category=brands" class="nav-link">برندها</a
+      ><a href="/magazine" class="nav-link">مجله</a
+      ><a href="/about" class="nav-link">درباره ما</a>
+    </div>
+    <div id="mobile-menu-overlay" class="mobile-menu-overlay"></div>
+
+    <!-- Main Content -->
+    <main class="pt-24 pb-16">
+      <div class="container mx-auto px-6">
+        <!-- Breadcrumb -->
+        <div class="breadcrumb" data-aos="fade-up">
+          <a href="/">خانه</a>
+          <i data-feather="chevron-left" class="w-4 h-4"></i>
+          <a href="/shop">فروشگاه</a>
+          <i data-feather="chevron-left" class="w-4 h-4"></i>
+          <a href="/shop/skincare">مراقبت از پوست</a>
+          <i data-feather="chevron-left" class="w-4 h-4"></i>
+          <span>سرم درخشش طلایی</span>
         </div>
 
-        <div class="mt-8">
-          <div id="description" class="tab-content">
-            <div id="description-body" class="prose max-w-none"></div>
+        <!-- Product Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
+          <!-- Product Images -->
+          <div class="product-gallery" data-aos="fade-right">
+            <div class="main-image relative">
+              <div id="product-badge" class="product-badge">پرفروش</div>
+              <img
+                id="main-product-image"
+                src="/assets/images/product.png"
+                alt="سرم درخشش طلایی"
+                class="w-full h-96 lg:h-[500px] object-contain p-8"
+              />
+            </div>
+            <div class="thumbnail-gallery">
+              <div class="thumbnail active">
+                <img
+                  src="/assets/images/product.png"
+                  alt="نمای اصلی"
+                  class="w-full h-full object-cover"
+                />
+              </div>
+              <div class="thumbnail">
+                <img
+                  src="/assets/images/skin.png"
+                  alt="نمای جانبی"
+                  class="w-full h-full object-cover"
+                />
+              </div>
+              <div class="thumbnail">
+                <img
+                  src="/assets/images/cosmetic.png"
+                  alt="نمای بسته‌بندی"
+                  class="w-full h-full object-cover"
+                />
+              </div>
+              <div class="thumbnail">
+                <img
+                  src="/assets/images/body.png"
+                  alt="نمای استفاده"
+                  class="w-full h-full object-cover"
+                />
+              </div>
+            </div>
           </div>
 
-          <div id="ingredients" class="tab-content hidden">
-            <div id="ingredients-body"></div>
+          <!-- Product Info -->
+          <div class="product-info" data-aos="fade-left">
+            <div class="mb-6">
+              <div class="flex items-center gap-2 text-sm text-rose-800 mb-3">
+                <i data-feather="shield" class="w-4 h-4"></i>
+                <span id="product-category">مراقبت از پوست</span>
+              </div>
+              <h1
+                id="product-title"
+                class="text-3xl lg:text-4xl font-serif font-bold text-gray-800 mb-4"
+              >
+                سرم درخشش طلایی
+              </h1>
+              <div class="flex items-center gap-4 mb-4">
+                <div id="rating-stars" class="stars">
+                  <i data-feather="star" class="w-5 h-5"></i>
+                  <i data-feather="star" class="w-5 h-5"></i>
+                  <i data-feather="star" class="w-5 h-5"></i>
+                  <i data-feather="star" class="w-5 h-5"></i>
+                  <i data-feather="star" class="w-5 h-5"></i>
+                </div>
+                <span id="review-count-inline" class="text-gray-600"
+                  >(۱۲۴ نظر)</span
+                >
+              </div>
+              <p class="text-gray-600 text-lg leading-relaxed mb-6">
+                سرمی انقلابی با عصاره‌های طبیعی و نانو ذرات طلا که پوست شما را
+                از عمق تغذیه کرده و درخشندگی طبیعی می‌بخشد. فرمول منحصر به فرد
+                این محصول با ترکیب هیالورونیک اسید و ویتامین C، پوستی صاف، شفاف
+                و جوان به شما هدیه می‌دهد.
+              </p>
+            </div>
+
+            <!-- Price & Add to Cart -->
+            <div class="mb-8">
+              <div class="flex items-center gap-4 mb-6">
+                <span
+                  id="product-price"
+                  class="text-3xl font-bold text-gray-800"
+                ></span>
+                <span
+                  id="product-compare"
+                  class="text-xl text-gray-400 line-through hidden"
+                ></span>
+                <span
+                  id="product-discount-badge"
+                  class="bg-red-100 text-red-800 px-2 py-1 rounded-full text-sm font-semibold hidden"
+                ></span>
+              </div>
+
+              <!-- Variants mount (auto-hidden if none) -->
+              <div id="variants-container" class="mb-6 hidden"></div>
+
+              <div class="flex items-center gap-4 mb-6">
+                <span class="text-gray-700 font-medium">تعداد:</span>
+                <div class="quantity-selector">
+                  <button class="quantity-btn" data-action="dec">
+                    <i data-feather="minus" class="w-4 h-4"></i>
+                  </button>
+                  <span id="quantity" class="mx-4 font-semibold">۱</span>
+                  <button class="quantity-btn" data-action="inc">
+                    <i data-feather="plus" class="w-4 h-4"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="flex flex-col sm:flex-row gap-4">
+                <button
+                  class="add-to-cart-btn flex-1 flex items-center justify-center gap-2"
+                >
+                  <i data-feather="shopping-bag" class="w-5 h-5"></i>
+                  افزودن به سبد خرید
+                </button>
+              </div>
+            </div>
+
+            <!-- Product Features (badges from DB) -->
+            <div
+              id="product-badges-grid"
+              class="grid grid-cols-2 gap-4 mb-8"
+            ></div>
+          </div>
+        </div>
+
+        <!-- Product Info Tabs -->
+        <div class="mb-16" data-aos="fade-up">
+          <div class="product-info-tabs flex border-b">
+            <button class="tab-button active" data-tab="description">
+              توضیحات
+            </button>
+            <button class="tab-button" data-tab="ingredients">ترکیبات</button>
+            <button class="tab-button" data-tab="usage">نحوه استفاده</button>
+            <button class="tab-button" id="reviews-tab-btn" data-tab="reviews">
+              نظرات (<span id="review-tab-count">۱۲۴</span>)
+            </button>
           </div>
 
-          <div id="usage" class="tab-content hidden">
-            <div id="usage-body" class="space-y-4"></div>
-          </div>
+          <div class="mt-8">
+            <div id="description" class="tab-content">
+              <div id="description-body" class="prose max-w-none"></div>
+            </div>
 
-          <!-- Reviews: narrower + add form -->
-          <div id="reviews" class="tab-content hidden">
-            <h3 class="text-xl font-bold mb-6">نظرات مشتریان</h3>
+            <div id="ingredients" class="tab-content hidden">
+              <div id="ingredients-body"></div>
+            </div>
 
-            <!-- Narrow container -->
-            <div class="max-w-2xl mx-auto">
-              <!-- Existing reviews -->
-              <div id="reviews-list" class="space-y-4"></div>
+            <div id="usage" class="tab-content hidden">
+              <div id="usage-body" class="space-y-4"></div>
+            </div>
 
-              <!-- Add review form -->
-              <div class="mt-8 p-4 bg-white rounded-xl shadow-sm border border-rose-100">
-                <h4 class="font-semibold mb-4">نظر خود را ثبت کنید</h4>
-                <form id="review-form" class="space-y-4">
-                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label class="block text-sm text-gray-600 mb-1">نام شما</label>
-                      <input id="review-name" type="text"
-                        class="w-full px-4 py-2 rounded-lg border border-gray-200 outline-none focus:ring-4 focus:ring-rose-200/60"
-                        placeholder="نام و نام خانوادگی" required />
-                    </div>
-                    <div>
-                      <label class="block text-sm text-gray-600 mb-1">امتیاز</label>
-                      <div id="rating-control" class="rating-input stars text-amber-500" aria-label="امتیاز">
-                        <i data-feather="star" class="w-5 h-5 star"></i>
-                        <i data-feather="star" class="w-5 h-5 star"></i>
-                        <i data-feather="star" class="w-5 h-5 star"></i>
-                        <i data-feather="star" class="w-5 h-5 star"></i>
-                        <i data-feather="star" class="w-5 h-5 star"></i>
+            <!-- Reviews: narrower + add form -->
+            <div id="reviews" class="tab-content hidden">
+              <h3 class="text-xl font-bold mb-6">نظرات مشتریان</h3>
+
+              <!-- Narrow container -->
+              <div class="max-w-2xl mx-auto">
+                <!-- Existing reviews -->
+                <div id="reviews-list" class="space-y-4"></div>
+
+                <!-- Add review form -->
+                <div
+                  class="mt-8 p-4 bg-white rounded-xl shadow-sm border border-rose-100"
+                >
+                  <h4 class="font-semibold mb-4">نظر خود را ثبت کنید</h4>
+                  <form id="review-form" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label class="block text-sm text-gray-600 mb-1"
+                          >نام شما</label
+                        >
+                        <input
+                          id="review-name"
+                          type="text"
+                          class="w-full px-4 py-2 rounded-lg border border-gray-200 outline-none focus:ring-4 focus:ring-rose-200/60"
+                          placeholder="نام و نام خانوادگی"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label class="block text-sm text-gray-600 mb-1"
+                          >امتیاز</label
+                        >
+                        <div
+                          id="rating-control"
+                          class="rating-input stars text-amber-500"
+                          aria-label="امتیاز"
+                        >
+                          <i data-feather="star" class="w-5 h-5 star"></i>
+                          <i data-feather="star" class="w-5 h-5 star"></i>
+                          <i data-feather="star" class="w-5 h-5 star"></i>
+                          <i data-feather="star" class="w-5 h-5 star"></i>
+                          <i data-feather="star" class="w-5 h-5 star"></i>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div>
-                    <label class="block text-sm text-gray-600 mb-1">نظر شما</label>
-                    <textarea id="review-text" rows="4"
-                      class="w-full px-4 py-2 rounded-lg border border-gray-200 outline-none focus:ring-4 focus:ring-rose-200/60"
-                      placeholder="تجربه خود را با ما به اشتراک بگذارید..." required></textarea>
-                  </div>
-                  <div class="flex items-center gap-3">
-                    <button type="submit"
-                      class="px-5 py-2 bg-gradient-to-r from-rose-500 to-pink-500 text-white rounded-lg font-semibold hover:opacity-95 transition">
-                      ثبت نظر
-                    </button>
-                    <p id="review-msg" class="text-sm text-green-600 hidden">
-                      نظر شما با موفقیت اضافه شد ✨
-                    </p>
-                  </div>
-                </form>
+                    <div>
+                      <label class="block text-sm text-gray-600 mb-1"
+                        >نظر شما</label
+                      >
+                      <textarea
+                        id="review-text"
+                        rows="4"
+                        class="w-full px-4 py-2 rounded-lg border border-gray-200 outline-none focus:ring-4 focus:ring-rose-200/60"
+                        placeholder="تجربه خود را با ما به اشتراک بگذارید..."
+                        required
+                      ></textarea>
+                    </div>
+                    <div class="flex items-center gap-3">
+                      <button
+                        type="submit"
+                        class="px-5 py-2 bg-gradient-to-r from-rose-500 to-pink-500 text-white rounded-lg font-semibold hover:opacity-95 transition"
+                      >
+                        ثبت نظر
+                      </button>
+                      <p id="review-msg" class="text-sm text-green-600 hidden">
+                        نظر شما با موفقیت اضافه شد ✨
+                      </p>
+                    </div>
+                  </form>
+                </div>
               </div>
             </div>
+            <!-- /reviews -->
           </div>
-          <!-- /reviews -->
         </div>
-      </div>
 
-      <!-- Related Products -->
-      <section id="related-section" class="mb-16" data-aos="fade-up">
-        <h2 class="text-3xl font-serif font-bold text-center mb-12">
-          محصولات مرتبط
-        </h2>
-        <div class="lg:grid lg:grid-cols-4 lg:gap-6">
-          <div id="related-list"
-            class="flex flex-nowrap gap-6 overflow-x-auto snap-x snap-mandatory hide-scrollbar -mx-6 px-6 pb-4 scroll-pr-6 lg:contents">
+        <!-- Related Products -->
+        <section id="related-section" class="mb-16" data-aos="fade-up">
+          <h2 class="text-3xl font-serif font-bold text-center mb-12">
+            محصولات مرتبط
+          </h2>
+          <div class="lg:grid lg:grid-cols-4 lg:gap-6">
+            <div
+              id="related-list"
+              class="flex flex-nowrap gap-6 overflow-x-auto snap-x snap-mandatory hide-scrollbar -mx-6 px-6 pb-4 scroll-pr-6 lg:contents"
+            ></div>
           </div>
-        </div>
-      </section>
-    </div>
-  </main>
-
-  <!-- Footer -->
-  <footer id="about" class="bg-gradient-to-b from-gray-900 to-black text-white py-20">
-    <div class="container mx-auto px-6">
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-12">
-        <div class="lg:col-span-2">
-          <h3 class="text-3xl font-serif font-bold mb-6">KOALAW</h3>
-          <p class="text-gray-400 mb-6 leading-relaxed">
-            ارتقای زیبایی از طریق تجمل آگاهانه. هر محصول جشنی از بهترین مواد
-            طبیعی و علم نوآورانه است.
-          </p>
-          <div class="space-y-3 mb-8">
-            <div class="flex items-start gap-2 text-gray-300">
-              <i data-feather="map-pin" class="w-5 h-5 flex-shrink-0 mt-0.5"></i>
-              <address class="not-italic leading-relaxed">
-                همدان، شهرک آیت‌الله مدنی
-              </address>
-            </div>
-            <div class="rounded-xl overflow-hidden ring-1 ring-white/10 max-w-sm">
-              <iframe title="نقشه ایران، همدان، شهرک آیت‌الله مدنی"
-                src="https://www.google.com/maps?q=ایران+همدان+شهرک+آیت+الله+مدنی&output=embed" width="100%"
-                height="160" style="border: 0; filter: grayscale(20%)" allowfullscreen loading="lazy"
-                referrerpolicy="no-referrer-when-downgrade"></iframe>
-            </div>
-          </div>
-          <div class="flex gap-3">
-            <a href="https://instagram.com/koalaw.shop" target="_blank" rel="noopener"
-              class="bg-gray-800 p-3 rounded-full hover:bg-gray-700 transition-all duration-300 transform hover:scale-110"><i
-                data-feather="instagram" class="w-5 h-5"></i></a>
-          </div>
-        </div>
-        <div id="footer-links" class="lg:col-span-3 grid grid-cols-2 md:grid-cols-3 gap-8"></div>
+        </section>
       </div>
-      <div class="border-t border-gray-800 pt-8">
-        <div class="flex flex-col md:flex-row justify_between items-center">
-          <div class="flex flex-col md:flex-row items-center mb-4 md:mb-0">
-            <p class="text-gray-400 text-sm mb-2 md:mb-0 md:ml-6">
-              © ۲۰۲۵ D.AI — تمام حقوق محفوظ است.
+    </main>
+
+    <!-- Footer -->
+    <footer
+      id="about"
+      class="bg-gradient-to-b from-gray-900 to-black text-white py-20"
+    >
+      <div class="container mx-auto px-6">
+        <div
+          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-12"
+        >
+          <div class="lg:col-span-2">
+            <h3 class="text-3xl font-serif font-bold mb-6">KOALAW</h3>
+            <p class="text-gray-400 mb-6 leading-relaxed">
+              ارتقای زیبایی از طریق تجمل آگاهانه. هر محصول جشنی از بهترین مواد
+              طبیعی و علم نوآورانه است.
             </p>
-            <div class="flex items-center gap-x-6 md:gap-x-8 text-sm flex-wrap">
-              <a href="/tos" class="text-gray-400 hover:text-white transition duration-300">سیاست حفظ حریم خصوصی</a>
+            <div class="space-y-3 mb-8">
+              <div class="flex items-start gap-2 text-gray-300">
+                <i
+                  data-feather="map-pin"
+                  class="w-5 h-5 flex-shrink-0 mt-0.5"
+                ></i>
+                <address class="not-italic leading-relaxed">
+                  همدان، شهرک آیت‌الله مدنی
+                </address>
+              </div>
+              <div
+                class="rounded-xl overflow-hidden ring-1 ring-white/10 max-w-sm"
+              >
+                <iframe
+                  title="نقشه ایران، همدان، شهرک آیت‌الله مدنی"
+                  src="https://www.google.com/maps?q=ایران+همدان+شهرک+آیت+الله+مدنی&output=embed"
+                  width="100%"
+                  height="160"
+                  style="border: 0; filter: grayscale(20%)"
+                  allowfullscreen
+                  loading="lazy"
+                  referrerpolicy="no-referrer-when-downgrade"
+                ></iframe>
+              </div>
+            </div>
+            <div class="flex gap-3">
+              <a
+                href="https://instagram.com/koalaw.shop"
+                target="_blank"
+                rel="noopener"
+                class="bg-gray-800 p-3 rounded-full hover:bg-gray-700 transition-all duration-300 transform hover:scale-110"
+                ><i data-feather="instagram" class="w-5 h-5"></i
+              ></a>
             </div>
           </div>
-          <div class="flex items-center gap-x-4">
-            <span class="text-gray-400 text-sm ml-2">پرداخت امن:</span>
-            <img src="/assets/images/visa.svg" alt="Visa"
-              class="h-8 opacity-70 hover:opacity-100 transition-opacity duration-300" />
+          <div
+            id="footer-links"
+            class="lg:col-span-3 grid grid-cols-2 md:grid-cols-3 gap-8"
+          ></div>
+        </div>
+        <div class="border-t border-gray-800 pt-8">
+          <div class="flex flex-col md:flex-row justify_between items-center">
+            <div class="flex flex-col md:flex-row items-center mb-4 md:mb-0">
+              <p class="text-gray-400 text-sm mb-2 md:mb-0 md:ml-6">
+                © ۲۰۲۵ D.AI — تمام حقوق محفوظ است.
+              </p>
+              <div
+                class="flex items-center gap-x-6 md:gap-x-8 text-sm flex-wrap"
+              >
+                <a
+                  href="/tos"
+                  class="text-gray-400 hover:text-white transition duration-300"
+                  >سیاست حفظ حریم خصوصی</a
+                >
+              </div>
+            </div>
+            <div class="flex items-center gap-x-4">
+              <span class="text-gray-400 text-sm ml-2">پرداخت امن:</span>
+              <img
+                src="/assets/images/visa.svg"
+                alt="Visa"
+                class="h-8 opacity-70 hover:opacity-100 transition-opacity duration-300"
+              />
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </footer>
+    </footer>
 
-  <!-- Search Overlay -->
-  <div id="search-overlay" class="search-overlay">
-    <div class="search-container">
-      <button id="close-search-button" class="close-search-button">
-        <i data-feather="x" class="w-8 h-8"></i>
-      </button>
-      <form class="search-form" onsubmit="event.preventDefault();">
-        <input type="search" id="search-input" placeholder="جستجو برای محصولات، برندها و..." class="search-input" />
-        <button type="submit" class="search-submit-button">
-          <i data-feather="search"></i>
+    <!-- Search Overlay -->
+    <div id="search-overlay" class="search-overlay">
+      <div class="search-container">
+        <button id="close-search-button" class="close-search-button">
+          <i data-feather="x" class="w-8 h-8"></i>
         </button>
-      </form>
-      <div class="search-suggestions">
-        <p>پیشنهادات:</p>
-        <a href="#">سرم پوست</a>
-        <a href="#">رژ لب مات</a>
-        <a href="#">عطر Bloom</a>
-        <a href="#">کرم پودر</a>
+        <form class="search-form" onsubmit="event.preventDefault();">
+          <input
+            type="search"
+            id="search-input"
+            placeholder="جستجو برای محصولات، برندها و..."
+            class="search-input"
+          />
+          <button type="submit" class="search-submit-button">
+            <i data-feather="search"></i>
+          </button>
+        </form>
+        <div class="search-suggestions">
+          <p>پیشنهادات:</p>
+          <a href="#">سرم پوست</a>
+          <a href="#">رژ لب مات</a>
+          <a href="#">عطر Bloom</a>
+          <a href="#">کرم پودر</a>
+        </div>
       </div>
     </div>
-  </div>
 
-  <script src="/assets/js/utils.js"></script>
-  <script src="/assets/js/main.js"></script>
-  <script src="/assets/js/components/navbar.js"></script>
-  <script src="/assets/js/components/search.js"></script>
-  <script src="/assets/js/components/animations.js"></script>
-  <script src="/assets/js/components/cursor.js"></script>
-  <script src="/assets/js/pages/products.js"></script>
-</body>
-
+    <script src="/assets/js/utils.js"></script>
+    <script src="/assets/js/main.js"></script>
+    <script src="/assets/js/components/navbar.js"></script>
+    <script src="/assets/js/components/search.js"></script>
+    <script src="/assets/js/components/animations.js"></script>
+    <script src="/assets/js/components/cursor.js"></script>
+    <script src="/assets/js/pages/products.js"></script>
+  </body>
 </html>
