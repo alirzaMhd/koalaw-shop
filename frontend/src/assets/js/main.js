@@ -76,30 +76,32 @@ document.addEventListener("DOMContentLoaded", () => {
       const primary = p.c.split(" ")[0];
       const icon =
         { skincare: "shield", makeup: "pen-tool", fragrance: "wind" }[
-        primary
+          primary
         ] || "gift";
       const stars =
         '<i data-feather="star" class="w-4 h-4 fill-current"></i>'.repeat(
           Math.floor(p.r)
         );
       productGrid.innerHTML += `
-        <a href="#" class="product-card-v3 break-inside-avoid category-${primary}" data-aos="fade-up" data-aos-delay="${p.d
+        <a href="#" class="product-card-v3 break-inside-avoid category-${primary}" data-aos="fade-up" data-aos-delay="${
+          p.d
         }" data-category="${p.c}">
           <div class="card-bg"></div>
           <div class="card-blob">
             <svg viewBox="0 0 200 200"><path d="M48.1,-58.9C62.2,-51.9,73.4,-37.2,77,-21.2C80.6,-5.2,76.5,12.2,68.4,26.1C60.3,40,48.2,50.4,34.5,58.3C20.8,66.2,5.5,71.6,-9.3,71.1C-24.1,70.7,-38.4,64.4,-50.9,54.7C-63.4,44.9,-74,31.7,-77.8,16.5C-81.6,1.2,-78.6,-16,-69.8,-29.3C-61,-42.6,-46.4,-52,-32.1,-59.5C-17.8,-67,-3.9,-72.6,9.6,-71.7C23.1,-70.8,48.1,-58.9,48.1,-58.9Z" transform="translate(100 100)"></path></svg>
           </div>
           <div class="card-image-wrapper">
-            <img src="/assets/images/products/product.png" alt="${p.t
-        }" class="card-image">
+            <img src="/assets/images/products/product.png" alt="${
+              p.t
+            }" class="card-image">
           </div>
           <div class="card-content">
             <div class="card-category"><i data-feather="${icon}" class="w-3 h-3"></i><span>${primary}</span></div>
             <h3 class="card-title">${p.t}</h3>
             <div class="card-rating">${stars}<span>${p.r.toLocaleString(
-          "fa-IR",
-          { minimumFractionDigits: 1, maximumFractionDigits: 1 }
-        )}</span></div>
+              "fa-IR",
+              { minimumFractionDigits: 1, maximumFractionDigits: 1 }
+            )}</span></div>
             <p class="card-price">${KUtils.toIRR(p.p)}</p>
           </div>
         </a>
@@ -108,6 +110,194 @@ document.addEventListener("DOMContentLoaded", () => {
     KUtils.refreshIcons();
   }
 
+  // ========== FETCH COLLECTIONS FOR HOMEPAGE ==========
+  const collectionsContainer = document.querySelector(
+    "#collections .collections-grid"
+  );
+  if (collectionsContainer) {
+    async function fetchCollectionProducts() {
+      try {
+        // Build API request
+        const params = new URLSearchParams();
+        params.set("page", "1");
+        params.set("perPage", "3"); // Get 3 products
+        params.set("sort", "newest"); // Most recent
+        params.set("includeImages", "true");
+        params.set("activeOnly", "true");
+        // Optional: Filter by specific collection
+        // params.append('collectionIds[]', 'YOUR_COLLECTION_ID_HERE');
+
+        const response = await fetch(`/api/products?${params.toString()}`);
+        if (!response.ok) {
+          console.error("Failed to fetch collections:", response.status);
+          return;
+        }
+
+        const json = await response.json();
+        const products = json?.data?.items || [];
+
+        if (products.length > 0) {
+          renderCollectionCards(products);
+        } else {
+          console.warn("No collection products found");
+        }
+      } catch (error) {
+        console.error("Error fetching collections:", error);
+      }
+    }
+
+    function renderCollectionCards(products) {
+      // Color schemes for each card
+      const colorSchemes = [
+        {
+          gradient: "linear-gradient(135deg, #fb7185, #fda4af)",
+          accent: "#f43f5e",
+          light: "#ffe4e6",
+          duration1: "20s",
+          duration2: "15s",
+          duration3: "18s",
+        },
+        {
+          gradient: "linear-gradient(135deg, #a78bfa, #c4b5fd)",
+          accent: "#8b5cf6",
+          light: "#ddd6fe",
+          duration1: "21s",
+          duration2: "17s",
+          duration3: "25s",
+        },
+        {
+          gradient: "linear-gradient(135deg, #f59e0b, #fbbf24)",
+          accent: "#d97706",
+          light: "#fef3c7",
+          duration1: "19s",
+          duration2: "23s",
+          duration3: "16s",
+        },
+      ];
+
+      // Category icons mapping
+      const categoryIcons = {
+        SKINCARE: "shield",
+        MAKEUP: "pen-tool",
+        FRAGRANCE: "wind",
+        HAIRCARE: "git-branch",
+        BODY_BATH: "droplet",
+      };
+
+      // Category labels in Persian
+      const categoryLabels = {
+        SKINCARE: "مراقبت از پوست",
+        MAKEUP: "آرایش",
+        FRAGRANCE: "عطر",
+        HAIRCARE: "مراقبت از مو",
+        BODY_BATH: "بدن و حمام",
+      };
+
+      // Clear existing loading message
+      collectionsContainer.innerHTML = "";
+
+      // Create first large card
+      if (products[0]) {
+        const product = products[0];
+        const scheme = colorSchemes[0];
+        const category = product.category || "SKINCARE";
+        const icon = categoryIcons[category] || "gift";
+        const label = categoryLabels[category] || "محصول";
+        const image =
+          product.heroImageUrl || "/assets/images/products/product.png";
+
+        const largeCard = document.createElement("a");
+        largeCard.href = `/product/${product.slug}`;
+        largeCard.className = "collection-card-link group block";
+        largeCard.innerHTML = `
+          <div class="collection-card-new large h-full" data-aos="fade-right" data-aos-duration="700">
+            <div class="collection-visuals-container">
+              <div class="card-bg-shapes">
+                <div class="card-bg-shape shape-1" style="background: ${scheme.gradient}; animation-duration: ${scheme.duration1};"></div>
+                <div class="card-bg-shape shape-2" style="background: ${scheme.accent}; animation-duration: ${scheme.duration2};"></div>
+                <div class="card-bg-shape shape-3" style="background: ${scheme.light}; animation-duration: ${scheme.duration3};"></div>
+              </div>
+              <div class="collection-glob float-animation">
+                <img src="${image}" alt="${product.title}" class="collection-product-image" />
+                <div class="collection-glob-inner"></div>
+              </div>
+            </div>
+            <div class="collection-content-new">
+              <span class="collection-category" style="color: ${scheme.accent}">
+                ${label}
+              </span>
+              <h3 class="collection-title">${product.title}</h3>
+              <div class="collection-link">
+                <span>کشف کنید</span>
+                <i data-feather="arrow-left" class="w-5 h-5 transition-transform duration-300 group-hover:-translate-x-2"></i>
+              </div>
+            </div>
+          </div>
+        `;
+        collectionsContainer.appendChild(largeCard);
+      }
+
+      // Create container for two smaller cards
+      const smallCardsContainer = document.createElement("div");
+      smallCardsContainer.className = "flex flex-col gap-8";
+
+      // Create two smaller cards
+      for (let i = 1; i < Math.min(products.length, 3); i++) {
+        const product = products[i];
+        const scheme = colorSchemes[i];
+        const category = product.category || "SKINCARE";
+        const icon = categoryIcons[category] || "gift";
+        const label = categoryLabels[category] || "محصول";
+        const image =
+          product.heroImageUrl || "/assets/images/products/collection.png";
+
+        const smallCard = document.createElement("a");
+        smallCard.href = `/product/${product.slug}`;
+        smallCard.className = "collection-card-link group block";
+        smallCard.innerHTML = `
+          <div class="collection-card-new" data-aos="fade-left" data-aos-duration="700" data-aos-delay="${i * 100}">
+            <div class="collection-visuals-container">
+              <div class="card-bg-shapes">
+                <div class="card-bg-shape shape-1" style="background: ${scheme.gradient}; animation-duration: ${scheme.duration1};"></div>
+                <div class="card-bg-shape shape-2" style="background: ${scheme.accent}; animation-duration: ${scheme.duration2};"></div>
+                <div class="card-bg-shape shape-3" style="background: ${scheme.light}; animation-duration: ${scheme.duration3};"></div>
+              </div>
+              <div class="collection-glob float-animation">
+                <img src="${image}" alt="${product.title}" class="collection-product-image" />
+                <div class="collection-glob-inner"></div>
+              </div>
+            </div>
+            <div class="collection-content-new">
+              <span class="collection-category" style="color: ${scheme.accent}">
+                ${label}
+              </span>
+              <h3 class="collection-title">${product.title}</h3>
+              <div class="collection-link">
+                <span>کشف کنید</span>
+                <i data-feather="arrow-left" class="w-5 h-5 transition-transform duration-300 group-hover:-translate-x-2"></i>
+              </div>
+            </div>
+          </div>
+        `;
+        smallCardsContainer.appendChild(smallCard);
+      }
+
+      collectionsContainer.appendChild(smallCardsContainer);
+
+      // Refresh icons and animations after rendering
+      if (window.KUtils?.refreshIcons) {
+        KUtils.refreshIcons();
+      }
+      if (window.AOS) {
+        AOS.refresh();
+      }
+    }
+
+    // Execute the fetch
+    fetchCollectionProducts();
+  }
+
+  // Testimonials
   const tGrid = document.getElementById("testimonial-grid");
   if (tGrid) {
     [
@@ -134,22 +324,25 @@ document.addEventListener("DOMContentLoaded", () => {
       },
     ].forEach((t) => {
       tGrid.innerHTML += `
-        <div class="testimonial-card w-80 sm:w-96 lg:w-auto flex-shrink-0 snap-start" data-aos="fade-up" data-aos-delay="${t.d
+        <div class="testimonial-card w-80 sm:w-96 lg:w-auto flex-shrink-0 snap-start" data-aos="fade-up" data-aos-delay="${
+          t.d
         }">
           <div class="flex mb-6"><div class="flex text-yellow-400">${'<i data-feather="star" class="w-5 h-5 fill-current"></i>'.repeat(
-          5
-        )}</div></div>
+            5
+          )}</div></div>
           <p class="text-gray-600 mb-8 italic leading-relaxed">${t.t}</p>
           <div class="flex items-center">
             <img src="/assets/images/profile.png" alt="مشتری" class="w-14 h-14 rounded-full object-cover ml-4">
-            <div><h4 class="font-semibold text-gray-800">${t.n
-        }</h4><p class="text-sm text-gray-500">${t.s}</p></div>
+            <div><h4 class="font-semibold text-gray-800">${
+              t.n
+            }</h4><p class="text-sm text-gray-500">${t.s}</p></div>
           </div>
         </div>`;
     });
     KUtils.refreshIcons();
   }
 
+  // Instagram grid
   const ig = document.getElementById("instagram-grid");
   if (ig) {
     [
@@ -161,7 +354,7 @@ document.addEventListener("DOMContentLoaded", () => {
       ig.innerHTML += `
         <div class="relative group overflow-hidden rounded-2xl">
           <img src="/assets/images/instagram/${p.i}.png" alt="اینستاگرام" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-          <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items=end p-4">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
             <div class="text-white"><i data-feather="heart" class="w-5 h-5 mb-1"></i><p class="text-sm">${p.l} هزار لایک</p></div>
           </div>
         </div>`;
