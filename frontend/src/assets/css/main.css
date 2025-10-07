@@ -2,6 +2,8 @@
    main.css — Consolidated styles
    Fonts, tokens, base, layout, components, utilities, page-specific bits
    ========================================================================== */
+html { color-scheme: light; }
+
 
 @font-face {
   font-family: 'IRANSans';
