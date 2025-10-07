@@ -67,8 +67,6 @@
     const pathParts = window.location.pathname.split("/");
     const slug = pathParts[pathParts.length - 1];
     
-    console.log("Path parts:", pathParts);
-    console.log("Extracted slug:", slug);
 
     if (!slug || slug === "magazine") {
       console.error("No valid slug found");
@@ -79,10 +77,8 @@
     try {
       // Fetch article data
       const apiUrl = `/api/magazine/posts/${slug}`;
-      console.log("Fetching from:", apiUrl);
       
       const response = await fetch(apiUrl);
-      console.log("Response status:", response.status);
       
       // Check if the response is 404 and redirect
       if (response.status === 404) {
@@ -91,7 +87,6 @@
       }
       
       const result = await response.json();
-      console.log("API Response:", result);
 
       if (!response.ok || !result.success || !result.data) {
         // Redirect to 404 page instead of showing error

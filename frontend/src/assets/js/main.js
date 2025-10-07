@@ -223,7 +223,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         const json = await response.json();
-        console.log("Products API Response:", json); // Debug
         const products = json?.data?.items || [];
 
         renderProducts(products);
@@ -302,7 +301,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         const json = await response.json();
-        console.log("Collection Products API Response:", json); // Debug log
         const products = json?.data?.items || [];
 
         if (products.length > 0) {
@@ -488,7 +486,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         const json = await response.json();
-        console.log("Categories API Response:", json); // Debug log
         const categories = json?.data?.categories || [];
 
         if (categories.length > 0) {
@@ -624,7 +621,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         const json = await response.json();
-        console.log("Brands API Response:", json); // Debug log
         const brands = json?.data?.brands || [];
 
         if (brands.length > 0) {
@@ -774,7 +770,6 @@ document.addEventListener("DOMContentLoaded", () => {
         params.set("includeImages", "true");
         params.set("activeOnly", "true");
 
-        console.log("Fetching campaign products:", params.toString());
 
         const response = await fetch(`${API_PRODUCTS}?${params.toString()}`);
         if (!response.ok) {
@@ -783,7 +778,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         const json = await response.json();
-        console.log("Campaign Products API Response:", json);
         const products = json?.data?.items || [];
 
         if (products.length > 0) {
@@ -1006,7 +1000,6 @@ document.addEventListener("DOMContentLoaded", () => {
         params.set("sortBy", "publishedAt"); // Sort by publish date
         params.set("sortOrder", "desc"); // Descending (newest first)
 
-        console.log("Fetching 3 newest magazine articles:", params.toString());
 
         const response = await fetch(`${API_MAGAZINE}?${params.toString()}`);
         if (!response.ok) {
@@ -1015,7 +1008,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         const data = await response.json();
-        console.log("Magazine Articles API Response:", data);
 
         const articles = data.items || data.data?.items || [];
 
