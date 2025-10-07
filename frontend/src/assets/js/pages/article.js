@@ -203,7 +203,7 @@
       heroImage.alt = article.title;
     } else if (heroImage) {
       // Use a default image if none provided
-      heroImage.src = "https://images.unsplash.com/photo-1600180758890-6b94519a8ba6?q=80&w=1200&auto=format&fit=crop";
+      heroImage.src = "/assets/images/magazine/article1.jpg";
     }
 
     // Update article content - PARSE MARKDOWN TO HTML
@@ -313,8 +313,7 @@
          data-aos="fade-up" data-aos-delay="${100 + index * 50}">
         <div class="relative h-64 overflow-hidden">
           <img src="${
-            article.heroImageUrl ||
-            "https://images.unsplash.com/photo-1590135824146-a79a3a16a443?q=80&w=800&auto=format&fit=crop"
+            article.heroImageUrl || "/assets/images/magazine/article1.jpg"
           }" 
                alt="${article.title}" 
                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">

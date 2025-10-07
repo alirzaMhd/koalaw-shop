@@ -389,14 +389,14 @@
 
           const avatarSeed =
             Math.random() > 0.5
-              ? "1494790108377-be9c29b29330"
-              : "1507003211169-0a1dd7228f2d";
+              ? "/assets/images/authors/maryam-rezaei.jpg"
+              : "/assets/images/authors/sara-ahmadi.jpg";
           const card = document.createElement("div");
           card.className = "review-card";
           card.innerHTML = `
             <div class="flex items-center justify-between mb-3">
               <div class="flex items-center gap-3">
-                <img src="https://images.unsplash.com/photo-${avatarSeed}?w=50&h=50&fit=crop" class="w-10 h-10 rounded-full" alt="avatar">
+                <img src="${avatarSeed}" class="w-10 h-10 rounded-full" alt="avatar">
                 <div><div class="font-semibold">${escapeHtml(
                   r?.authorName || name
                 )}</div><div class="text-sm text-gray-500">لحظاتی پیش</div></div>
@@ -810,15 +810,15 @@
         reviews.forEach((r) => {
           const avatarSeed =
             Math.random() > 0.5
-              ? "1494790108377-be9c29b29330"
-              : "1507003211169-0a1dd7228f2d";
+              ? "/assets/images/authors/maryam-rezaei.jpg"
+              : "/assets/images/authors/sara-ahmadi.jpg";
           const card = document.createElement("div");
           card.className = "review-card";
           card.innerHTML = `
             <div class="flex items-center justify-between mb-3">
               <div class="flex items-center gap-3">
                 <img
-                  src="https://images.unsplash.com/photo-${avatarSeed}?w=50&h=50&fit=crop"
+                  src="${avatarSeed}"
                   class="w-10 h-10 rounded-full"
                   alt="avatar"
                 />

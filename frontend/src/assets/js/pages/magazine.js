@@ -71,8 +71,7 @@
            data-aos="fade-up" data-aos-delay="${delay}">
           <div class="relative h-64 overflow-hidden">
             <img src="${
-              article.heroImageUrl ||
-              "https://images.unsplash.com/photo-1556041136379-c3da31393693?q=80&w=800&auto=format&fit=crop"
+              article.heroImageUrl || "/assets/images/magazine/article1.jpg"
             }" 
                  alt="${article.title}" 
                  class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
