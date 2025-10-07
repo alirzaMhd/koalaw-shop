@@ -12,11 +12,11 @@
           once: true,
           offset: 40,
         });
-    } catch {}
+    } catch { }
     try {
       window.KUtils?.refreshIcons?.();
       window.KUtils?.buildFooterLinks?.();
-    } catch {}
+    } catch { }
 
     // ---------- Config ----------
     const API = "/api/products";
@@ -59,13 +59,13 @@
     const toIRR = (n) => {
       try {
         if (window.KUtils?.toIRR) return window.KUtils.toIRR(n);
-      } catch {}
+      } catch { }
       return new Intl.NumberFormat("fa-IR").format(Number(n || 0)) + " تومان";
     };
     const toFa = (n) => {
       try {
         if (window.KUtils?.toFa) return window.KUtils.toFa(n);
-      } catch {}
+      } catch { }
       return String(n);
     };
 
@@ -123,8 +123,8 @@
           const hex = normalizeHex(c.hex);
           return hex
             ? `<span class="swatch" title="${escapeHtml(
-                c.name || ""
-              )}" style="background-color:${hex}"></span>`
+              c.name || ""
+            )}" style="background-color:${hex}"></span>`
             : "";
         })
         .join("")}</div>`;
@@ -239,14 +239,66 @@
     function initFromUrl() {
       const sp = new URL(window.location.href).searchParams;
 
-      // categories (slug form)
+      // ========== CATEGORIES ==========
       const catSlugs = parseCategoriesFromUrl(sp);
       if (catSlugs.length) {
         setCategoryCheckboxes(catSlugs);
-        filters.categories = catSlugs; // backend normalizes to enum-slugs
+        filters.categories = catSlugs;
       }
 
-      // search term
+      // ========== BRANDS ==========
+      const brandIdsFromUrl = [];
+
+      // Single brand: /shop?brandId=xxx
+      const singleBrandId = sp.get("brandId");
+      if (singleBrandId && singleBrandId.trim()) {
+        brandIdsFromUrl.push(singleBrandId.trim());
+      }
+
+      // Multiple brands: /shop?brandIds[]=xxx&brandIds[]=yyy
+      const multipleBrandIds = sp.getAll("brandIds[]");
+      multipleBrandIds.forEach((id) => {
+        if (id && id.trim() && !brandIdsFromUrl.includes(id.trim())) {
+          brandIdsFromUrl.push(id.trim());
+        }
+      });
+
+      // Apply brand filters
+      if (brandIdsFromUrl.length) {
+        filters.brandIds = brandIdsFromUrl;
+        // Check the corresponding checkboxes
+        document.querySelectorAll('input[name="brandId"]').forEach((el) => {
+          el.checked = brandIdsFromUrl.includes(el.value);
+        });
+      }
+
+      // ========== COLLECTIONS ==========
+      const collectionIdsFromUrl = [];
+
+      // Single collection: /shop?collectionId=xxx
+      const singleCollectionId = sp.get("collectionId");
+      if (singleCollectionId && singleCollectionId.trim()) {
+        collectionIdsFromUrl.push(singleCollectionId.trim());
+      }
+
+      // Multiple collections: /shop?collectionIds[]=xxx&collectionIds[]=yyy
+      const multipleCollectionIds = sp.getAll("collectionIds[]");
+      multipleCollectionIds.forEach((id) => {
+        if (id && id.trim() && !collectionIdsFromUrl.includes(id.trim())) {
+          collectionIdsFromUrl.push(id.trim());
+        }
+      });
+
+      // Apply collection filters
+      if (collectionIdsFromUrl.length) {
+        filters.collectionIds = collectionIdsFromUrl;
+        // Check the corresponding checkboxes
+        document.querySelectorAll('input[name="collectionId"]').forEach((el) => {
+          el.checked = collectionIdsFromUrl.includes(el.value);
+        });
+      }
+
+      // ========== SEARCH ==========
       const q = (sp.get("search") || "").trim();
       if (q) {
         filters.search = q;
@@ -254,7 +306,7 @@
         if (inp) inp.value = q;
       }
 
-      // sort (supports newest, popular, price-asc, price-desc)
+      // ========== SORT ==========
       const allowedSorts = new Set([
         "newest",
         "popular",
@@ -277,32 +329,39 @@
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const { data } = await res.json();
 
-        // Brands
+        // ========== BRANDS ==========
         const brandRoot = document.getElementById("brand-filter-list");
         if (brandRoot && Array.isArray(data?.brands)) {
           brandRoot.innerHTML = data.brands
             .map(
               (b) => `
-              <label class="cute-checkbox">
-                <input type="checkbox" name="brandId" value="${escapeHtml(
-                  b.id
-                )}" />
-                <span class="checkmark">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                      viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                      stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                  </svg>
-                </span>
-                <label>${escapeHtml(b.name)}${
-                b.count ? " (" + toFa(b.count) + ")" : ""
-              }</label>
-              </label>`
+          <label class="cute-checkbox">
+            <input type="checkbox" name="brandId" value="${escapeHtml(b.id)}" />
+            <span class="checkmark">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                  viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </span>
+            <label>${escapeHtml(b.name)}${
+              b.count ? " (" + toFa(b.count) + ")" : ""
+            }</label>
+          </label>`
             )
             .join("");
+
+          // ✅ NEW: Check boxes that were in URL after rendering
+          if (filters.brandIds && filters.brandIds.length > 0) {
+            document.querySelectorAll('input[name="brandId"]').forEach((el) => {
+              if (filters.brandIds.includes(el.value)) {
+                el.checked = true;
+              }
+            });
+          }
         }
 
-        // Collections
+        // ========== COLLECTIONS ==========
         const collectionRoot = document.getElementById(
           "collection-filter-list"
         );
@@ -310,26 +369,37 @@
           collectionRoot.innerHTML = data.collections
             .map(
               (c) => `
-              <label class="cute-checkbox">
-                <input type="checkbox" name="collectionId" value="${escapeHtml(
-                  c.id
-                )}" />
-                <span class="checkmark">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                      viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                      stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                  </svg>
-                </span>
-                <label>${escapeHtml(c.name)}${
-                c.count ? " (" + toFa(c.count) + ")" : ""
-              }</label>
-              </label>`
+          <label class="cute-checkbox">
+            <input type="checkbox" name="collectionId" value="${escapeHtml(
+              c.id
+            )}" />
+            <span class="checkmark">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                  viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </span>
+            <label>${escapeHtml(c.name)}${
+              c.count ? " (" + toFa(c.count) + ")" : ""
+            }</label>
+          </label>`
             )
             .join("");
+
+          // ✅ NEW: Check boxes that were in URL after rendering
+          if (filters.collectionIds && filters.collectionIds.length > 0) {
+            document
+              .querySelectorAll('input[name="collectionId"]')
+              .forEach((el) => {
+                if (filters.collectionIds.includes(el.value)) {
+                  el.checked = true;
+                }
+              });
+          }
         }
 
-        // Price range init
+        // Price range init (existing code - keep as is)
         const pr = data?.priceRange || {};
         const minIn = document.querySelector(".range-min");
         const maxIn = document.querySelector(".range-max");
@@ -436,7 +506,7 @@
       try {
         window.KUtils?.refreshIcons?.();
         window.AOS && AOS.refreshHard();
-      } catch {}
+      } catch { }
       page += 1;
     }
 
@@ -472,7 +542,7 @@
       if (sortCurrent) sortCurrent.textContent = "مرتب‌سازی: " + activeText;
       try {
         window.KUtils?.refreshIcons?.();
-      } catch {}
+      } catch { }
     }
 
     // Keep URL in sync with state (sort, categories, search)

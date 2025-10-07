@@ -51,63 +51,231 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Homepage sections population (index.html)
+  // ========== DYNAMIC PRODUCT GRID FOR HOMEPAGE ==========
   const productGrid = document.getElementById("product-grid");
   if (productGrid) {
-    productGrid.innerHTML = "";
-    const items = [
-      {
-        d: "100",
-        c: "skincare bestseller",
-        t: "اکسیر درخشش طلایی",
-        p: 480000,
-        r: 4.8,
-      },
-      { d: "200", c: "makeup", t: "بوسه مخملی مات", p: 320000, r: 4.5 },
-      { d: "300", c: "makeup", t: "پایه ابریشمی بی‌نقص", p: 420000, r: 4.9 },
-      {
-        d: "400",
-        c: "fragrance bestseller",
-        t: "راز نیمه‌شب",
-        p: 780000,
-        r: 4.7,
-      },
-    ];
-    items.forEach((p) => {
-      const primary = p.c.split(" ")[0];
-      const icon =
-        { skincare: "shield", makeup: "pen-tool", fragrance: "wind" }[
-          primary
-        ] || "gift";
-      const stars =
-        '<i data-feather="star" class="w-4 h-4 fill-current"></i>'.repeat(
-          Math.floor(p.r)
-        );
-      productGrid.innerHTML += `
-        <a href="#" class="product-card-v3 break-inside-avoid category-${primary}" data-aos="fade-up" data-aos-delay="${
-          p.d
-        }" data-category="${p.c}">
-          <div class="card-bg"></div>
-          <div class="card-blob">
-            <svg viewBox="0 0 200 200"><path d="M48.1,-58.9C62.2,-51.9,73.4,-37.2,77,-21.2C80.6,-5.2,76.5,12.2,68.4,26.1C60.3,40,48.2,50.4,34.5,58.3C20.8,66.2,5.5,71.6,-9.3,71.1C-24.1,70.7,-38.4,64.4,-50.9,54.7C-63.4,44.9,-74,31.7,-77.8,16.5C-81.6,1.2,-78.6,-16,-69.8,-29.3C-61,-42.6,-46.4,-52,-32.1,-59.5C-17.8,-67,-3.9,-72.6,9.6,-71.7C23.1,-70.8,48.1,-58.9,48.1,-58.9Z" transform="translate(100 100)"></path></svg>
-          </div>
-          <div class="card-image-wrapper">
-            <img src="/assets/images/products/product.png" alt="${
-              p.t
-            }" class="card-image">
-          </div>
-          <div class="card-content">
-            <div class="card-category"><i data-feather="${icon}" class="w-3 h-3"></i><span>${primary}</span></div>
-            <h3 class="card-title">${p.t}</h3>
-            <div class="card-rating">${stars}<span>${p.r.toLocaleString(
-              "fa-IR",
-              { minimumFractionDigits: 1, maximumFractionDigits: 1 }
-            )}</span></div>
-            <p class="card-price">${KUtils.toIRR(p.p)}</p>
-          </div>
-        </a>
-      `;
+    const API_PRODUCTS = "/api/products";
+    let currentFilter = "all"; // Default filter
+
+    // Category mapping
+    const categoryMap = {
+      skincare: "SKINCARE",
+      makeup: "MAKEUP",
+      fragrance: "FRAGRANCE",
+      haircare: "HAIRCARE",
+      "body-bath": "BODY_BATH",
+    };
+
+    const categoryIcons = {
+      SKINCARE: "shield",
+      MAKEUP: "pen-tool",
+      FRAGRANCE: "wind",
+      HAIRCARE: "git-branch",
+      BODY_BATH: "droplet",
+    };
+
+    const categoryLabels = {
+      SKINCARE: "مراقبت از پوست",
+      MAKEUP: "آرایش",
+      FRAGRANCE: "عطر",
+      HAIRCARE: "مراقبت از مو",
+      BODY_BATH: "بدن و حمام",
+    };
+
+    // Helper functions from shop.js
+    const escapeHtml = (v) =>
+      String(v ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+    const toIRR = (n) => {
+      try {
+        if (window.KUtils?.toIRR) return window.KUtils.toIRR(n);
+      } catch {}
+      return new Intl.NumberFormat("fa-IR").format(Number(n || 0)) + " تومان";
+    };
+
+    const toFa = (n) => {
+      try {
+        if (window.KUtils?.toFa) return window.KUtils.toFa(n);
+      } catch {}
+      return String(n);
+    };
+
+    const normalizeHex = (hex) => {
+      if (!hex || typeof hex !== "string") return null;
+      const s = hex.trim().toLowerCase();
+      return /^#[0-9a-f]{6}$/.test(s) ? s : null;
+    };
+
+    function shadeHex(hex, percent = -6) {
+      const h = normalizeHex(hex);
+      if (!h) return hex || "#ffeef5";
+      const num = parseInt(h.slice(1), 16);
+      let r = (num >> 16) & 0xff,
+        g = (num >> 8) & 0xff,
+        b = num & 0xff;
+      const f = (100 + percent) / 100;
+      r = Math.min(255, Math.max(0, Math.round(r * f)));
+      g = Math.min(255, Math.max(0, Math.round(g * f)));
+      b = Math.min(255, Math.max(0, Math.round(b * f)));
+      return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+    }
+
+    function deriveCardColors(item) {
+      const themeHex = normalizeHex(item?.colorTheme?.hexCode);
+      const chipHex = normalizeHex(item?.colorChips?.[0]?.hex);
+      const base2 = themeHex || chipHex || "#ffeef5";
+      const c1 = shadeHex(base2, -8);
+      const c2 = base2;
+      return { c1, c2 };
+    }
+
+    function ratingStars(r) {
+      const full = Math.floor(r || 0);
+      const stars = Array(full)
+        .fill(0)
+        .map(
+          () =>
+            `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+               viewBox="0 0 24 24" fill="currentColor" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+               class="feather feather-star"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>`
+        )
+        .join("");
+      return `${stars}<span>${(r || 0).toLocaleString("fa-IR", {
+        minimumFractionDigits: 1,
+        maximumFractionDigits: 1,
+      })}</span>`;
+    }
+
+    function createProductCard(item) {
+      const category = item.category || "SKINCARE";
+      const cIcon = categoryIcons[category] || "gift";
+      const cLabel = categoryLabels[category] || "محصول";
+      const img = item.heroImageUrl || "/assets/images/products/product.png";
+      const { c1, c2 } = deriveCardColors(item);
+      const catCls = `category-${String(category).toLowerCase().replace("_", "-")}`;
+
+      const a = document.createElement("a");
+      a.href = `/product/${encodeURIComponent(item.slug)}`;
+      a.className = `product-card-v3 break-inside-avoid ${catCls}`;
+      a.setAttribute("data-aos", "fade-up");
+      a.setAttribute("style", `--card-color-1:${c1}; --card-color-2:${c2};`);
+      a.innerHTML = `
+      <div class="card-bg" style="background: linear-gradient(160deg, var(--card-color-2), #fff 70%);"></div>
+
+      <div class="card-blob">
+        <svg viewBox="0 0 200 200" preserveAspectRatio="none">
+          <path d="M48.1,-58.9C62.2,-51.9,73.4,-37.2,77,-21.2C80.6,-5.2,76.5,12.2,68.4,26.1C60.3,40,48.2,50.4,34.5,58.3C20.8,66.2,5.5,71.6,-9.3,71.1C-24.1,70.7,-38.4,64.4,-50.9,54.7C-63.4,44.9,-74,31.7,-77.8,16.5C-81.6,1.2,-78.6,-16,-69.8,-29.3C-61,-42.6,-46.4,-52,-32.1,-59.5C-17.8,-67,-3.9,-72.6,9.6,-71.7C23.1,-70.8,48.1,-58.9,48.1,-58.9Z"
+            transform="translate(100 100)" style="fill: var(--card-color-2); opacity:.35;"></path>
+        </svg>
+      </div>
+
+      <div class="card-image-wrapper">
+        <img src="${img}" alt="${escapeHtml(item.title)}" class="card-image"/>
+      </div>
+
+      <div class="card-content">
+        <div class="card-category"><i data-feather="${cIcon}" class="w-3 h-3"></i><span>${cLabel}</span></div>
+        <h3 class="card-title">${escapeHtml(item.title)}</h3>
+        <div class="card-brand">${escapeHtml(item.brand?.name || "")}</div>
+        <div class="card-rating">${ratingStars(item.ratingAvg)}</div>
+        <p class="card-price">${toIRR(item.price)}</p>
+      </div>
+    `;
+      return a;
+    }
+
+    async function fetchProducts(filter = "all") {
+      try {
+        const params = new URLSearchParams();
+        params.set("page", "1");
+        params.set("perPage", "4"); // 4 products
+        params.set("includeImages", "true");
+        params.set("activeOnly", "true");
+
+        // Apply filter logic
+        if (filter === "all") {
+          // All products - newest
+          params.set("sort", "newest");
+        } else if (filter === "bestseller") {
+          // Best sellers - sort by popularity/sales
+          params.set("sort", "popular");
+        } else if (filter === "skincare") {
+          params.set("sort", "newest");
+          params.append("categories[]", categoryMap["skincare"]);
+        } else if (filter === "makeup") {
+          params.set("sort", "newest");
+          params.append("categories[]", categoryMap["makeup"]);
+        } else if (filter === "fragrance") {
+          params.set("sort", "newest");
+          params.append("categories[]", categoryMap["fragrance"]);
+        }
+
+        const response = await fetch(`${API_PRODUCTS}?${params.toString()}`);
+        if (!response.ok) {
+          console.error("Failed to fetch products:", response.status);
+          return;
+        }
+
+        const json = await response.json();
+        console.log("Products API Response:", json); // Debug
+        const products = json?.data?.items || [];
+
+        renderProducts(products);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    }
+
+    function renderProducts(products) {
+      // Clear grid
+      productGrid.innerHTML = "";
+
+      if (products.length === 0) {
+        productGrid.innerHTML =
+          '<p class="col-span-full text-center text-gray-500 py-8">محصولی یافت نشد</p>';
+        return;
+      }
+
+      // Render each product
+      products.forEach((product, index) => {
+        const card = createProductCard(product);
+        card.setAttribute("data-aos-delay", index * 100);
+        productGrid.appendChild(card);
+      });
+
+      // Refresh icons and animations
+      if (window.KUtils?.refreshIcons) {
+        KUtils.refreshIcons();
+      }
+      if (window.AOS) {
+        AOS.refresh();
+      }
+    }
+
+    // Filter button click handlers
+    const filterButtons = document.querySelectorAll(".filter-btn");
+    filterButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const filter = btn.getAttribute("data-filter");
+
+        // Update active state
+        filterButtons.forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+
+        // Fetch products with new filter
+        currentFilter = filter;
+        fetchProducts(filter);
+      });
     });
-    KUtils.refreshIcons();
+
+    // Initial load - show all products
+    fetchProducts("all");
   }
 
   // ========== FETCH COLLECTIONS FOR HOMEPAGE ==========
@@ -134,6 +302,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         const json = await response.json();
+        console.log("Collection Products API Response:", json); // Debug log
         const products = json?.data?.items || [];
 
         if (products.length > 0) {
@@ -204,7 +373,11 @@ document.addEventListener("DOMContentLoaded", () => {
         const icon = categoryIcons[category] || "gift";
         const label = categoryLabels[category] || "محصول";
         const image =
-          product.heroImageUrl || "/assets/images/products/product.png";
+          product.heroImageUrl || "/assets/images/products/collection.png";
+        const description =
+          product.description ||
+          product.subtitle ||
+          "محصول ویژه از کالکشن جدید ما که برای تغذیه و جوانسازی طراحی شده است.";
 
         const largeCard = document.createElement("a");
         largeCard.href = `/product/${product.slug}`;
@@ -227,6 +400,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 ${label}
               </span>
               <h3 class="collection-title">${product.title}</h3>
+              <p class="collection-desc">${description}</p>
               <div class="collection-link">
                 <span>کشف کنید</span>
                 <i data-feather="arrow-left" class="w-5 h-5 transition-transform duration-300 group-hover:-translate-x-2"></i>
@@ -297,6 +471,271 @@ document.addEventListener("DOMContentLoaded", () => {
     fetchCollectionProducts();
   }
 
+  // ========== FETCH CATEGORIES FOR HOMEPAGE ==========
+  const categoryContainer = document.querySelector(
+    ".category-scroll-container .flex"
+  );
+  if (categoryContainer) {
+    async function fetchCategories() {
+      try {
+        const response = await fetch("/api/products/filters", {
+          cache: "no-store",
+        });
+
+        if (!response.ok) {
+          console.error("Failed to fetch categories:", response.status);
+          return;
+        }
+
+        const json = await response.json();
+        console.log("Categories API Response:", json); // Debug log
+        const categories = json?.data?.categories || [];
+
+        if (categories.length > 0) {
+          renderCategoryCards(categories);
+        } else {
+          console.warn("No categories found, using fallback");
+          // Use fallback categories
+          const fallbackCategories = [
+            { category: "SKINCARE", count: 0 },
+            { category: "MAKEUP", count: 0 },
+            { category: "FRAGRANCE", count: 0 },
+            { category: "HAIRCARE", count: 0 },
+            { category: "BODY_BATH", count: 0 },
+          ];
+          renderCategoryCards(fallbackCategories);
+        }
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+        // Render fallback on error
+        const fallbackCategories = [
+          { category: "SKINCARE", count: 0 },
+          { category: "MAKEUP", count: 0 },
+          { category: "FRAGRANCE", count: 0 },
+          { category: "HAIRCARE", count: 0 },
+          { category: "BODY_BATH", count: 0 },
+        ];
+        renderCategoryCards(fallbackCategories);
+      }
+    }
+
+    function renderCategoryCards(categories) {
+      // Static image mapping for each category
+      const categoryImages = {
+        SKINCARE: "/assets/images/products/skin.png",
+        MAKEUP: "/assets/images/products/cosmetic.png",
+        FRAGRANCE: "/assets/images/products/perfume.png",
+        HAIRCARE: "/assets/images/products/hair.png",
+        BODY_BATH: "/assets/images/products/body.png",
+      };
+
+      // Icon mapping
+      const categoryIcons = {
+        SKINCARE: "shield",
+        MAKEUP: "pen-tool",
+        FRAGRANCE: "wind",
+        HAIRCARE: "git-branch",
+        BODY_BATH: "droplet",
+      };
+
+      // Persian labels
+      const categoryLabels = {
+        SKINCARE: "مراقبت از پوست",
+        MAKEUP: "آرایش",
+        FRAGRANCE: "عطر",
+        HAIRCARE: "مراقبت از مو",
+        BODY_BATH: "بدن و حمام",
+      };
+
+      // Slug mapping (for URLs)
+      const categorySlugs = {
+        SKINCARE: "skincare",
+        MAKEUP: "makeup",
+        FRAGRANCE: "fragrance",
+        HAIRCARE: "haircare",
+        BODY_BATH: "body-bath",
+      };
+
+      // Clear existing content
+      categoryContainer.innerHTML = "";
+
+      // Render each category card
+      categories.forEach((category, index) => {
+        const categoryKey = category.category || category.name || category.id;
+        const image =
+          categoryImages[categoryKey] || "/assets/images/products/product.png";
+        const icon = categoryIcons[categoryKey] || "gift";
+        const label =
+          categoryLabels[categoryKey] || category.name || categoryKey;
+        const slug =
+          categorySlugs[categoryKey] || categoryKey.replace("_", "-");
+        const count = category.count || category._count?.products || 0;
+
+        const card = document.createElement("a");
+        card.href = `/shop?category=${slug}`;
+        card.className = "category-card w-52 md:w-64 flex-shrink-0";
+        card.setAttribute("data-aos", "fade-up");
+        card.setAttribute("data-aos-delay", index * 100);
+
+        card.innerHTML = `
+          <img
+            src="${image}"
+            alt="${label}"
+            class="category-card-bg"
+          />
+          <div class="category-card-overlay"></div>
+          <div class="category-card-content">
+            <div class="category-card-icon">
+              <i data-feather="${icon}" class="w-6 h-6"></i>
+            </div>
+            <h3 class="category-card-title">${label}</h3>
+            ${count > 0 ? `<p class="text-xs text-white/80 mt-1">${KUtils.toFa ? KUtils.toFa(count) : count} محصول</p>` : ""}
+          </div>
+        `;
+
+        categoryContainer.appendChild(card);
+      });
+
+      // Refresh icons and animations
+      if (window.KUtils?.refreshIcons) {
+        KUtils.refreshIcons();
+      }
+      if (window.AOS) {
+        AOS.refresh();
+      }
+    }
+
+    // Execute the fetch
+    fetchCategories();
+  }
+
+  // ========== FETCH BRANDS FOR HOMEPAGE ==========
+  const brandsMarquee = document.querySelector(".brands-marquee");
+  if (brandsMarquee) {
+    async function fetchBrands() {
+      try {
+        const response = await fetch("/api/products/filters", {
+          cache: "no-store",
+        });
+
+        if (!response.ok) {
+          console.error("Failed to fetch brands:", response.status);
+          return;
+        }
+
+        const json = await response.json();
+        console.log("Brands API Response:", json); // Debug log
+        const brands = json?.data?.brands || [];
+
+        if (brands.length > 0) {
+          renderBrandItems(brands);
+        } else {
+          console.warn("No brands found in API response");
+        }
+      } catch (error) {
+        console.error("Error fetching brands:", error);
+      }
+    }
+
+    function renderBrandItems(brands) {
+      // Pool of available Feather icons for brands
+      const iconPool = [
+        "droplet", // skincare / serum
+        "feather", // elegance / light touch
+        "sun", // glow / sunscreen
+        "moon", // night cream
+        "star", // beauty / top-rated
+        "heart", // customer love
+        "smile", // happiness / confidence
+        "flower", // natural ingredients
+        "gift", // product boxes / promos
+        "diamond", // luxury / premium line
+        "watch", // timeless beauty
+        "umbrella", // protection / SPF
+        "droplet", // hydration
+        "wind", // freshness / scent
+        "layers", // skincare steps
+        "camera", // beauty influencer / photos
+        "aperture", // clarity / focus on detail
+        "eye", // eye makeup / eye cream
+        "sunrise", // morning routine
+        "sunset", // evening routine
+        "cloud", // smooth texture / softness
+        "box", // product packaging
+        "award", // award-winning formula
+        "star", // repetition for variation
+        "edit-3", // makeup / brush / pencil
+        "zap", // energizing / vitamin C
+        "shield", // protection / barrier cream
+        "lock", // skin barrier / secure formula
+        "key", // secret formula / exclusive
+        "target", // precise care / targeting concerns
+        "trending-up", // brand growth / popularity
+        "shopping-bag", // beauty retail
+        "shopping-cart", // online beauty store
+        "anchor", // trust / heritage
+      ];
+
+      // Consistent icon assignment based on brand name (hash function)
+      function getIconForBrand(brandName) {
+        let hash = 0;
+        for (let i = 0; i < brandName.length; i++) {
+          hash = (hash << 5) - hash + brandName.charCodeAt(i);
+          hash = hash & hash; // Convert to 32-bit integer
+        }
+        const index = Math.abs(hash) % iconPool.length;
+        return iconPool[index];
+      }
+
+      // Clear existing content
+      brandsMarquee.innerHTML = "";
+
+      // Render each brand
+      brands.forEach((brand, index) => {
+        const icon = getIconForBrand(brand.name);
+        const brandName = brand.name || "Brand";
+        const brandId = brand.id;
+        const count = brand.count || brand._count?.products || 0;
+
+        const brandItem = document.createElement("a");
+        brandItem.href = `/shop?brandId=${brandId}`;
+        brandItem.className = "brand-item";
+        brandItem.setAttribute("data-aos", "fade-up");
+        brandItem.setAttribute("data-aos-delay", (index % 8) * 50);
+        brandItem.setAttribute(
+          "title",
+          count > 0
+            ? `${brandName} - ${KUtils.toFa ? KUtils.toFa(count) : count} محصول`
+            : brandName
+        );
+
+        brandItem.innerHTML = `
+          <div class="brand-logo">
+            <i data-feather="${icon}"></i>
+          </div>
+          <span class="brand-name">${brandName}</span>
+        `;
+
+        brandsMarquee.appendChild(brandItem);
+      });
+
+      // Duplicate for seamless marquee effect
+      const originalBrands = brandsMarquee.innerHTML;
+      brandsMarquee.innerHTML = originalBrands + originalBrands;
+
+      // Refresh icons
+      if (window.KUtils?.refreshIcons) {
+        KUtils.refreshIcons();
+      }
+      if (window.AOS) {
+        AOS.refresh();
+      }
+    }
+
+    // Execute the fetch
+    fetchBrands();
+  }
+
   // Testimonials
   const tGrid = document.getElementById("testimonial-grid");
   if (tGrid) {
@@ -324,18 +763,12 @@ document.addEventListener("DOMContentLoaded", () => {
       },
     ].forEach((t) => {
       tGrid.innerHTML += `
-        <div class="testimonial-card w-80 sm:w-96 lg:w-auto flex-shrink-0 snap-start" data-aos="fade-up" data-aos-delay="${
-          t.d
-        }">
-          <div class="flex mb-6"><div class="flex text-yellow-400">${'<i data-feather="star" class="w-5 h-5 fill-current"></i>'.repeat(
-            5
-          )}</div></div>
+        <div class="testimonial-card w-80 sm:w-96 lg:w-auto flex-shrink-0 snap-start" data-aos="fade-up" data-aos-delay="${t.d}">
+          <div class="flex mb-6"><div class="flex text-yellow-400">${'<i data-feather="star" class="w-5 h-5 fill-current"></i>'.repeat(5)}</div></div>
           <p class="text-gray-600 mb-8 italic leading-relaxed">${t.t}</p>
           <div class="flex items-center">
             <img src="/assets/images/profile.png" alt="مشتری" class="w-14 h-14 rounded-full object-cover ml-4">
-            <div><h4 class="font-semibold text-gray-800">${
-              t.n
-            }</h4><p class="text-sm text-gray-500">${t.s}</p></div>
+            <div><h4 class="font-semibold text-gray-800">${t.n}</h4><p class="text-sm text-gray-500">${t.s}</p></div>
           </div>
         </div>`;
     });
