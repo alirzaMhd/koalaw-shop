@@ -840,7 +840,7 @@ document.addEventListener("DOMContentLoaded", () => {
           </div>
           <div class="campaign-featured-content">
             <span class="badge-cute bg-rose-100 text-rose-800 px-3 py-1 rounded-full text-sm font-semibold self-start">
-              <i data-feather="sparkles" class="w-4 h-4"></i>
+              <i data-feather="sun" class="w-4 h-4"></i>
               <span>${discountPercent > 0 ? `${toFa(discountPercent)}% تخفیف` : "جدید و انحصاری"}</span>
             </span>
             <h3 class="text-3xl font-serif font-bold text-white mt-4 mb-3">
