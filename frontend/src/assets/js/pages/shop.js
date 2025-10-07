@@ -387,9 +387,6 @@ async function loadFilters() {
       if (filters._autoSelectFirstCollection && data.collections.length > 0) {
         const firstCollectionId = data.collections[0].id;
         filters.collectionIds = [firstCollectionId];
-          "Auto-selecting first collection:",
-          data.collections[0].name
-        );
 
         document
           .querySelectorAll('input[name="collectionId"]')
