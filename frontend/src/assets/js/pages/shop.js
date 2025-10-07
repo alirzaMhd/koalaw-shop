@@ -239,63 +239,54 @@
     function initFromUrl() {
       const sp = new URL(window.location.href).searchParams;
 
-      // ========== CATEGORIES ==========
-      const catSlugs = parseCategoriesFromUrl(sp);
-      if (catSlugs.length) {
-        setCategoryCheckboxes(catSlugs);
-        filters.categories = catSlugs;
+      // ========== SPECIAL HANDLING: collections & brands ==========
+      const categoryParam = sp.get("category");
+
+      if (categoryParam === "collections") {
+        // Mark that we need to select first collection after loading
+        filters._autoSelectFirstCollection = true;
+      } else if (categoryParam === "brands") {
+        // Mark that we need to select first brand after loading
+        filters._autoSelectFirstBrand = true;
+      } else {
+        // ========== REGULAR CATEGORIES ==========
+        const catSlugs = parseCategoriesFromUrl(sp);
+        if (catSlugs.length) {
+          setCategoryCheckboxes(catSlugs);
+          filters.categories = catSlugs;
+        }
       }
 
       // ========== BRANDS ==========
       const brandIdsFromUrl = [];
-
-      // Single brand: /shop?brandId=xxx
       const singleBrandId = sp.get("brandId");
       if (singleBrandId && singleBrandId.trim()) {
         brandIdsFromUrl.push(singleBrandId.trim());
       }
-
-      // Multiple brands: /shop?brandIds[]=xxx&brandIds[]=yyy
       const multipleBrandIds = sp.getAll("brandIds[]");
       multipleBrandIds.forEach((id) => {
         if (id && id.trim() && !brandIdsFromUrl.includes(id.trim())) {
           brandIdsFromUrl.push(id.trim());
         }
       });
-
-      // Apply brand filters
       if (brandIdsFromUrl.length) {
         filters.brandIds = brandIdsFromUrl;
-        // Check the corresponding checkboxes
-        document.querySelectorAll('input[name="brandId"]').forEach((el) => {
-          el.checked = brandIdsFromUrl.includes(el.value);
-        });
       }
 
       // ========== COLLECTIONS ==========
       const collectionIdsFromUrl = [];
-
-      // Single collection: /shop?collectionId=xxx
       const singleCollectionId = sp.get("collectionId");
       if (singleCollectionId && singleCollectionId.trim()) {
         collectionIdsFromUrl.push(singleCollectionId.trim());
       }
-
-      // Multiple collections: /shop?collectionIds[]=xxx&collectionIds[]=yyy
       const multipleCollectionIds = sp.getAll("collectionIds[]");
       multipleCollectionIds.forEach((id) => {
         if (id && id.trim() && !collectionIdsFromUrl.includes(id.trim())) {
           collectionIdsFromUrl.push(id.trim());
         }
       });
-
-      // Apply collection filters
       if (collectionIdsFromUrl.length) {
         filters.collectionIds = collectionIdsFromUrl;
-        // Check the corresponding checkboxes
-        document.querySelectorAll('input[name="collectionId"]').forEach((el) => {
-          el.checked = collectionIdsFromUrl.includes(el.value);
-        });
       }
 
       // ========== SEARCH ==========
@@ -323,18 +314,18 @@
     }
 
     // ---------- Fetch DB filters and render ----------
-    async function loadFilters() {
-      try {
-        const res = await fetch(API_FILTERS, { cache: "no-store" });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const { data } = await res.json();
+async function loadFilters() {
+  try {
+    const res = await fetch(API_FILTERS, { cache: "no-store" });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const { data } = await res.json();
 
-        // ========== BRANDS ==========
-        const brandRoot = document.getElementById("brand-filter-list");
-        if (brandRoot && Array.isArray(data?.brands)) {
-          brandRoot.innerHTML = data.brands
-            .map(
-              (b) => `
+    // ========== BRANDS ==========
+    const brandRoot = document.getElementById("brand-filter-list");
+    if (brandRoot && Array.isArray(data?.brands)) {
+      brandRoot.innerHTML = data.brands
+        .map(
+          (b) => `
           <label class="cute-checkbox">
             <input type="checkbox" name="brandId" value="${escapeHtml(b.id)}" />
             <span class="checkmark">
@@ -344,35 +335,43 @@
                 <polyline points="20 6 9 17 4 12"></polyline>
               </svg>
             </span>
-            <label>${escapeHtml(b.name)}${
-              b.count ? " (" + toFa(b.count) + ")" : ""
-            }</label>
+            <label>${escapeHtml(b.name)}${b.count ? " (" + toFa(b.count) + ")" : ""}</label>
           </label>`
-            )
-            .join("");
+        )
+        .join("");
 
-          // ✅ NEW: Check boxes that were in URL after rendering
-          if (filters.brandIds && filters.brandIds.length > 0) {
-            document.querySelectorAll('input[name="brandId"]').forEach((el) => {
-              if (filters.brandIds.includes(el.value)) {
-                el.checked = true;
-              }
-            });
+      // ✅ AUTO-SELECT FIRST BRAND (from URL ?category=brands)
+      if (filters._autoSelectFirstBrand && data.brands.length > 0) {
+        const firstBrandId = data.brands[0].id;
+        filters.brandIds = [firstBrandId];
+        console.log("Auto-selecting first brand:", data.brands[0].name);
+
+        document.querySelectorAll('input[name="brandId"]').forEach((el) => {
+          if (el.value === firstBrandId) {
+            el.checked = true;
           }
-        }
+        });
 
-        // ========== COLLECTIONS ==========
-        const collectionRoot = document.getElementById(
-          "collection-filter-list"
-        );
-        if (collectionRoot && Array.isArray(data?.collections)) {
-          collectionRoot.innerHTML = data.collections
-            .map(
-              (c) => `
+        // Clear the flag
+        delete filters._autoSelectFirstBrand;
+      } else if (filters.brandIds && filters.brandIds.length > 0) {
+        // Regular brand selection from URL
+        document.querySelectorAll('input[name="brandId"]').forEach((el) => {
+          if (filters.brandIds.includes(el.value)) {
+            el.checked = true;
+          }
+        });
+      }
+    }
+
+    // ========== COLLECTIONS ==========
+    const collectionRoot = document.getElementById("collection-filter-list");
+    if (collectionRoot && Array.isArray(data?.collections)) {
+      collectionRoot.innerHTML = data.collections
+        .map(
+          (c) => `
           <label class="cute-checkbox">
-            <input type="checkbox" name="collectionId" value="${escapeHtml(
-              c.id
-            )}" />
+            <input type="checkbox" name="collectionId" value="${escapeHtml(c.id)}" />
             <span class="checkmark">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                   viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -380,60 +379,75 @@
                 <polyline points="20 6 9 17 4 12"></polyline>
               </svg>
             </span>
-            <label>${escapeHtml(c.name)}${
-              c.count ? " (" + toFa(c.count) + ")" : ""
-            }</label>
+            <label>${escapeHtml(c.name)}${c.count ? " (" + toFa(c.count) + ")" : ""}</label>
           </label>`
-            )
-            .join("");
+        )
+        .join("");
 
-          // ✅ NEW: Check boxes that were in URL after rendering
-          if (filters.collectionIds && filters.collectionIds.length > 0) {
-            document
-              .querySelectorAll('input[name="collectionId"]')
-              .forEach((el) => {
-                if (filters.collectionIds.includes(el.value)) {
-                  el.checked = true;
-                }
-              });
-          }
-        }
-
-        // Price range init (existing code - keep as is)
-        const pr = data?.priceRange || {};
-        const minIn = document.querySelector(".range-min");
-        const maxIn = document.querySelector(".range-max");
-        const progress = document.querySelector(
-          ".price-range-slider .progress"
+      // ✅ AUTO-SELECT FIRST COLLECTION (from URL ?category=collections)
+      if (filters._autoSelectFirstCollection && data.collections.length > 0) {
+        const firstCollectionId = data.collections[0].id;
+        filters.collectionIds = [firstCollectionId];
+        console.log(
+          "Auto-selecting first collection:",
+          data.collections[0].name
         );
-        const minDisp = document.getElementById("price-min-display");
-        const maxDisp = document.getElementById("price-max-display");
-        if (minIn && maxIn && progress && minDisp && maxDisp) {
-          const min = Number.isFinite(pr.min) ? pr.min : 0;
-          const max = Number.isFinite(pr.max) ? pr.max : 1000000;
-          const finalMin = Math.min(min, max);
-          const finalMax = Math.max(max, finalMin + 10000);
-          minIn.min = String(finalMin);
-          minIn.max = String(finalMax);
-          maxIn.min = String(finalMin);
-          maxIn.max = String(finalMax);
-          minIn.value = String(finalMin);
-          maxIn.value = String(finalMax);
-          progress.style.right =
-            (parseInt(minIn.value) / parseInt(minIn.max)) * 100 + "%";
-          progress.style.left =
-            100 - (parseInt(maxIn.value) / parseInt(maxIn.max)) * 100 + "%";
-          minDisp.textContent = toFa(parseInt(minIn.value)) + " تومان";
-          maxDisp.textContent = toFa(parseInt(maxIn.value)) + " تومان";
-        }
-      } catch (e) {
-        console.warn("Failed to load filter options", e);
-      } finally {
-        try {
-          window.KUtils?.refreshIcons?.();
-        } catch {}
+
+        document
+          .querySelectorAll('input[name="collectionId"]')
+          .forEach((el) => {
+            if (el.value === firstCollectionId) {
+              el.checked = true;
+            }
+          });
+
+        // Clear the flag
+        delete filters._autoSelectFirstCollection;
+      } else if (filters.collectionIds && filters.collectionIds.length > 0) {
+        // Regular collection selection from URL
+        document
+          .querySelectorAll('input[name="collectionId"]')
+          .forEach((el) => {
+            if (filters.collectionIds.includes(el.value)) {
+              el.checked = true;
+            }
+          });
       }
     }
+
+    // ========== PRICE RANGE (existing code) ==========
+    const pr = data?.priceRange || {};
+    const minIn = document.querySelector(".range-min");
+    const maxIn = document.querySelector(".range-max");
+    const progress = document.querySelector(".price-range-slider .progress");
+    const minDisp = document.getElementById("price-min-display");
+    const maxDisp = document.getElementById("price-max-display");
+    if (minIn && maxIn && progress && minDisp && maxDisp) {
+      const min = Number.isFinite(pr.min) ? pr.min : 0;
+      const max = Number.isFinite(pr.max) ? pr.max : 1000000;
+      const finalMin = Math.min(min, max);
+      const finalMax = Math.max(max, finalMin + 10000);
+      minIn.min = String(finalMin);
+      minIn.max = String(finalMax);
+      maxIn.min = String(finalMin);
+      maxIn.max = String(finalMax);
+      minIn.value = String(finalMin);
+      maxIn.value = String(finalMax);
+      progress.style.right =
+        (parseInt(minIn.value) / parseInt(minIn.max)) * 100 + "%";
+      progress.style.left =
+        100 - (parseInt(maxIn.value) / parseInt(maxIn.max)) * 100 + "%";
+      minDisp.textContent = toFa(parseInt(minIn.value)) + " تومان";
+      maxDisp.textContent = toFa(parseInt(maxIn.value)) + " تومان";
+    }
+  } catch (e) {
+    console.warn("Failed to load filter options", e);
+  } finally {
+    try {
+      window.KUtils?.refreshIcons?.();
+    } catch {}
+  }
+}
 
     // ---------- Fetching ----------
     async function fetchPage() {

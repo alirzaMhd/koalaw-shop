@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fa" dir="rtl">
   <head>
     <meta charset="UTF-8" />
@@ -44,13 +44,13 @@
               فروشگاه
             </a>
             <a
-              href="/collections"
+              href="/shop?category=collections"
               class="nav-link text-gray-700 hover:text-gray-900 transition duration-300"
             >
               کالکشن ها
             </a>
             <a
-              href="/brands"
+              href="/shop?category=brands"
               class="nav-link text-gray-700 hover:text-gray-900 transition duration-300"
             >
               برندها
@@ -91,7 +91,8 @@
               <span
                 id="nav-cart-count"
                 class="absolute -top-2 -right-2 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center pulse-animation"
-              >۰</span>
+                >۰</span
+              >
             </a>
             <button id="mobile-menu-button" class="hamburger-button lg:hidden">
               <span></span>
@@ -106,8 +107,8 @@
     <!-- Mobile Menu -->
     <div id="mobile-menu">
       <a href="/shop" class="nav-link">فروشگاه</a>
-      <a href="/collections" class="nav-link">کالکشن ها</a>
-      <a href="/brands" class="nav-link">برندها</a>
+      <a href="/shop?category=collections" class="nav-link">کالکشن ها</a>
+      <a href="/shop?category=brands" class="nav-link">برندها</a>
       <a href="/magazine" class="nav-link">مجله</a>
       <a href="/about" class="nav-link">درباره ما</a>
     </div>
@@ -254,7 +255,10 @@
                 </div>
                 <div class="space-y-4">
                   <div class="text-center py-8 text-gray-500">
-                    <i data-feather="package" class="w-12 h-12 mx-auto mb-4 opacity-50"></i>
+                    <i
+                      data-feather="package"
+                      class="w-12 h-12 mx-auto mb-4 opacity-50"
+                    ></i>
                     <p>در حال بارگذاری...</p>
                   </div>
                 </div>
@@ -269,27 +273,42 @@
                 </h2>
 
                 <!-- MODIFIED: Added order-filter-buttons class for responsive styling -->
-                <div class="order-filter-buttons flex gap-4 mb-6 overflow-x-auto pb-2">
-                  <button class="btn-primary btn-filter-order whitespace-nowrap">
+                <div
+                  class="order-filter-buttons flex gap-4 mb-6 overflow-x-auto pb-2"
+                >
+                  <button
+                    class="btn-primary btn-filter-order whitespace-nowrap"
+                  >
                     همه (۰)
                   </button>
-                  <button class="btn-secondary btn-filter-order whitespace-nowrap">
+                  <button
+                    class="btn-secondary btn-filter-order whitespace-nowrap"
+                  >
                     در انتظار پرداخت (۰)
                   </button>
-                  <button class="btn-secondary btn-filter-order whitespace-nowrap">
+                  <button
+                    class="btn-secondary btn-filter-order whitespace-nowrap"
+                  >
                     در حال پردازش (۰)
                   </button>
-                  <button class="btn-secondary btn-filter-order whitespace-nowrap">
+                  <button
+                    class="btn-secondary btn-filter-order whitespace-nowrap"
+                  >
                     ارسال شده (۰)
                   </button>
-                  <button class="btn-secondary btn-filter-order whitespace-nowrap">
+                  <button
+                    class="btn-secondary btn-filter-order whitespace-nowrap"
+                  >
                     تحویل شده (۰)
                   </button>
                 </div>
 
                 <div class="space-y-4">
                   <div class="text-center py-8 text-gray-500">
-                    <i data-feather="package" class="w-12 h-12 mx-auto mb-4 opacity-50"></i>
+                    <i
+                      data-feather="package"
+                      class="w-12 h-12 mx-auto mb-4 opacity-50"
+                    ></i>
                     <p>در حال بارگذاری...</p>
                   </div>
                 </div>
@@ -300,10 +319,15 @@
             <div id="addresses" class="tab-content hidden" data-aos="fade-left">
               <div class="profile-card">
                 <!-- MODIFIED: Better responsive layout for header -->
-                <div class="addresses-header flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                <div
+                  class="addresses-header flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6"
+                >
                   <h2 class="text-2xl font-bold text-gray-800">آدرس‌های من</h2>
                   <!-- MODIFIED: Added btn-add-address class for responsive styling -->
-                  <button id="add-address-btn" class="btn-primary btn-add-address w-full sm:w-auto">
+                  <button
+                    id="add-address-btn"
+                    class="btn-primary btn-add-address w-full sm:w-auto"
+                  >
                     <i data-feather="plus" class="w-4 h-4"></i>
                     <span>افزودن آدرس جدید</span>
                   </button>
@@ -311,7 +335,10 @@
 
                 <div id="addresses-list" class="space-y-4">
                   <div class="text-center py-8 text-gray-500">
-                    <i data-feather="map-pin" class="w-12 h-12 mx-auto mb-4 opacity-50"></i>
+                    <i
+                      data-feather="map-pin"
+                      class="w-12 h-12 mx-auto mb-4 opacity-50"
+                    ></i>
                     <p>در حال بارگذاری...</p>
                   </div>
                 </div>
@@ -623,15 +650,25 @@
     <div
       id="address-modal"
       class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center p-0 sm:p-4"
-      style="backdrop-filter: blur(4px);"
+      style="backdrop-filter: blur(4px)"
     >
-      <div class="bg-white w-full h-full sm:h-auto sm:max-w-2xl sm:rounded-2xl overflow-y-auto max-h-[100vh]">
+      <div
+        class="bg-white w-full h-full sm:h-auto sm:max-w-2xl sm:rounded-2xl overflow-y-auto max-h-[100vh]"
+      >
         <!-- Sticky header -->
-        <div class="sticky top-0 z-10 flex justify-between items-center px-4 sm:px-6 py-4 border-b bg-white">
-          <h3 id="address-modal-title" class="text-lg sm:text-2xl font-bold text-gray-800">
+        <div
+          class="sticky top-0 z-10 flex justify-between items-center px-4 sm:px-6 py-4 border-b bg-white"
+        >
+          <h3
+            id="address-modal-title"
+            class="text-lg sm:text-2xl font-bold text-gray-800"
+          >
             افزودن آدرس جدید
           </h3>
-          <button id="close-address-modal" class="text-gray-500 hover:text-gray-700">
+          <button
+            id="close-address-modal"
+            class="text-gray-500 hover:text-gray-700"
+          >
             <i data-feather="x" class="w-5 h-5 sm:w-6 sm:h-6"></i>
           </button>
         </div>
@@ -642,7 +679,9 @@
             <input type="hidden" id="address-id" value="" />
 
             <div class="form-group">
-              <label class="form-label text-sm sm:text-base">برچسب (اختیاری)</label>
+              <label class="form-label text-sm sm:text-base"
+                >برچسب (اختیاری)</label
+              >
               <input
                 type="text"
                 id="address-label"
@@ -653,7 +692,9 @@
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <div class="form-group">
-                <label class="form-label text-sm sm:text-base">نام <span class="text-red-500">*</span></label>
+                <label class="form-label text-sm sm:text-base"
+                  >نام <span class="text-red-500">*</span></label
+                >
                 <input
                   type="text"
                   id="address-first-name"
@@ -662,7 +703,9 @@
                 />
               </div>
               <div class="form-group">
-                <label class="form-label text-sm sm:text-base">نام خانوادگی <span class="text-red-500">*</span></label>
+                <label class="form-label text-sm sm:text-base"
+                  >نام خانوادگی <span class="text-red-500">*</span></label
+                >
                 <input
                   type="text"
                   id="address-last-name"
@@ -674,7 +717,9 @@
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <div class="form-group">
-                <label class="form-label text-sm sm:text-base">شماره تلفن <span class="text-red-500">*</span></label>
+                <label class="form-label text-sm sm:text-base"
+                  >شماره تلفن <span class="text-red-500">*</span></label
+                >
                 <input
                   type="tel"
                   id="address-phone"
@@ -684,7 +729,9 @@
                 />
               </div>
               <div class="form-group">
-                <label class="form-label text-sm sm:text-base">کد پستی (اختیاری)</label>
+                <label class="form-label text-sm sm:text-base"
+                  >کد پستی (اختیاری)</label
+                >
                 <input
                   type="text"
                   id="address-postal-code"
@@ -696,7 +743,9 @@
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <div class="form-group">
-                <label class="form-label text-sm sm:text-base">استان <span class="text-red-500">*</span></label>
+                <label class="form-label text-sm sm:text-base"
+                  >استان <span class="text-red-500">*</span></label
+                >
                 <input
                   type="text"
                   id="address-province"
@@ -706,7 +755,9 @@
                 />
               </div>
               <div class="form-group">
-                <label class="form-label text-sm sm:text-base">شهر <span class="text-red-500">*</span></label>
+                <label class="form-label text-sm sm:text-base"
+                  >شهر <span class="text-red-500">*</span></label
+                >
                 <input
                   type="text"
                   id="address-city"
@@ -718,7 +769,9 @@
             </div>
 
             <div class="form-group">
-              <label class="form-label text-sm sm:text-base">آدرس <span class="text-red-500">*</span></label>
+              <label class="form-label text-sm sm:text-base"
+                >آدرس <span class="text-red-500">*</span></label
+              >
               <textarea
                 id="address-line1"
                 required
@@ -729,7 +782,9 @@
             </div>
 
             <div class="form-group">
-              <label class="form-label text-sm sm:text-base">جزئیات آدرس (اختیاری)</label>
+              <label class="form-label text-sm sm:text-base"
+                >جزئیات آدرس (اختیاری)</label
+              >
               <textarea
                 id="address-line2"
                 rows="2"
@@ -744,16 +799,26 @@
                 id="address-is-default"
                 class="w-4 h-4 text-primary focus:ring-primary rounded"
               />
-              <label for="address-is-default" class="text-xs sm:text-sm text-gray-700 cursor-pointer">
+              <label
+                for="address-is-default"
+                class="text-xs sm:text-sm text-gray-700 cursor-pointer"
+              >
                 تنظیم به عنوان آدرس پیش‌فرض
               </label>
             </div>
 
             <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-2 sm:pt-4">
-              <button type="submit" class="btn-primary flex-1 text-sm sm:text-base py-2 sm:py-3">
+              <button
+                type="submit"
+                class="btn-primary flex-1 text-sm sm:text-base py-2 sm:py-3"
+              >
                 ذخیره آدرس
               </button>
-              <button type="button" id="cancel-address-modal" class="btn-secondary text-sm sm:text-base py-2 sm:py-3">
+              <button
+                type="button"
+                id="cancel-address-modal"
+                class="btn-secondary text-sm sm:text-base py-2 sm:py-3"
+              >
                 انصراف
               </button>
             </div>
@@ -763,7 +828,12 @@
     </div>
 
     <!-- Profile Image Upload Input (Hidden) -->
-    <input type="file" id="profile-image-input" accept="image/*" class="hidden" />
+    <input
+      type="file"
+      id="profile-image-input"
+      accept="image/*"
+      class="hidden"
+    />
 
     <!-- Search Overlay -->
     <div id="search-overlay" class="search-overlay">
