@@ -1,180 +1,128 @@
 <!doctype html>
 <html lang="fa" dir="rtl">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>تایید ایمیل | KOALAW</title>
-    <link rel="icon" type="image/x-icon" href="/assets/static/favicon.ico" />
-    <link rel="stylesheet" href="/assets/css/tailwind.css" />
-    <link href="/assets/vendor/aos/aos.css" rel="stylesheet" />
-    <script src="/assets/vendor/aos/aos.js"></script>
-    <script src="/assets/vendor/feather/feather.min.js"></script>
-    <script src="/assets/vendor/gsap/gsap.min.js"></script>
-    <script src="/assets/vendor/gsap/ScrollTrigger.min.js"></script>
-    <link rel="stylesheet" href="/assets/css/main.css" />
-  </head>
 
-  <body>
-    <!-- Custom Cursor -->
-    <div class="cursor">
-      <div class="cursor-eyes"></div>
-    </div>
-    <div class="cursor-face"></div>
-    <div class="cursor-follower"></div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="color-scheme" content="light">
+  <meta name="supported-color-schemes" content="light">
+  <meta name="theme-color" content="#faf8f3">
+  <title>تایید ایمیل | KOALAW</title>
+  <link rel="icon" type="image/x-icon" href="/assets/static/favicon.ico" />
+  <link rel="stylesheet" href="/assets/css/tailwind.css" />
+  <link href="/assets/vendor/aos/aos.css" rel="stylesheet" />
+  <script src="/assets/vendor/aos/aos.js"></script>
+  <script src="/assets/vendor/feather/feather.min.js"></script>
+  <script src="/assets/vendor/gsap/gsap.min.js"></script>
+  <script src="/assets/vendor/gsap/ScrollTrigger.min.js"></script>
+  <link rel="stylesheet" href="/assets/css/main.css" />
+</head>
 
-    <!-- Main -->
-    <main
-      class="min-h-screen w-full flex items-center justify-center p-4 relative overflow-hidden"
-      style="background: linear-gradient(to bottom, #faf8f3, #fff7fb)"
-    >
-      <div class="cloud-animation"></div>
-      <div class="particle-overlay"></div>
-      <div
-        class="absolute inset-0 bg-gradient-to-t from-black/10 via-black/5 to-transparent z-0"
-      ></div>
+<body>
+  <!-- Custom Cursor -->
+  <div class="cursor">
+    <div class="cursor-eyes"></div>
+  </div>
+  <div class="cursor-face"></div>
+  <div class="cursor-follower"></div>
 
-      <div
-        class="relative z-10 w-full max-w-md bg-white/70 backdrop-blur-xl rounded-3xl shadow-2xl shadow-rose-200/50 p-8 md:p-12 text-center space-y-6"
-        data-aos="fade-up"
-        data-aos-duration="700"
-      >
-        <!-- Logo -->
-        <a
-          href="/"
-          class="text-3xl font-serif font-bold text-gray-800 tracking-wider z-50 flex items-center justify-center gap-x-1"
-          dir="ltr"
-          >K<img
-            src="/assets/images/koala.png"
-            alt="Koala logo"
-            class="w-8 h-7 inline-block -mt-1"
-          />ALAW</a
-        >
+  <!-- Main -->
+  <main class="min-h-screen w-full flex items-center justify-center p-4 relative overflow-hidden"
+    style="background: linear-gradient(to bottom, #faf8f3, #fff7fb)">
+    <div class="cloud-animation"></div>
+    <div class="particle-overlay"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-black/10 via-black/5 to-transparent z-0"></div>
 
-        <!-- Title -->
-        <h1 class="text-2xl font-bold text-deep-brown">
-          کد تایید را وارد کنید
-        </h1>
+    <div
+      class="relative z-10 w-full max-w-md bg-white/70 backdrop-blur-xl rounded-3xl shadow-2xl shadow-rose-200/50 p-8 md:p-12 text-center space-y-6"
+      data-aos="fade-up" data-aos-duration="700">
+      <!-- Logo -->
+      <a href="/"
+        class="text-3xl font-serif font-bold text-gray-800 tracking-wider z-50 flex items-center justify-center gap-x-1"
+        dir="ltr">K<img src="/assets/images/koala.png" alt="Koala logo" class="w-8 h-7 inline-block -mt-1" />ALAW</a>
 
-        <!-- Subtitle -->
-        <p class="text-gray-600" id="emailInfo">
-          کد ۶ رقمی به ایمیل شما ارسال شد.
-        </p>
+      <!-- Title -->
+      <h1 class="text-2xl font-bold text-deep-brown">
+        کد تایید را وارد کنید
+      </h1>
 
-        <!-- OTP Inputs -->
-        <form id="otpForm" class="space-y-6">
-          <div
-            class="flex items-center justify-center gap-2 sm:gap-3"
-            dir="ltr"
-          >
-            <input
-              class="otp-input w-11 h-12 sm:w-12 sm:h-14 text-center text-xl sm:text-2xl rounded-xl border-2 border-rose-200/60 bg-cream/60 text-deep-brown focus:outline-none focus:ring-4 focus:ring-primary/30 focus:border-primary transition-all"
-              type="text"
-              inputmode="numeric"
-              pattern="[0-9]*"
-              maxlength="1"
-              autocomplete="one-time-code"
-            />
-            <input
-              class="otp-input w-11 h-12 sm:w-12 sm:h-14 text-center text-xl sm:text-2xl rounded-xl border-2 border-rose-200/60 bg-cream/60 text-deep-brown focus:outline-none focus:ring-4 focus:ring-primary/30 focus:border-primary transition-all"
-              type="text"
-              inputmode="numeric"
-              pattern="[0-9]*"
-              maxlength="1"
-            />
-            <input
-              class="otp-input w-11 h-12 sm:w-12 sm:h-14 text-center text-xl sm:text-2xl rounded-xl border-2 border-rose-200/60 bg-cream/60 text-deep-brown focus:outline-none focus:ring-4 focus:ring-primary/30 focus:border-primary transition-all"
-              type="text"
-              inputmode="numeric"
-              pattern="[0-9]*"
-              maxlength="1"
-            />
-            <input
-              class="otp-input w-11 h-12 sm:w-12 sm:h-14 text-center text-xl sm:text-2xl rounded-xl border-2 border-rose-200/60 bg-cream/60 text-deep-brown focus:outline-none focus:ring-4 focus:ring-primary/30 focus:border-primary transition-all"
-              type="text"
-              inputmode="numeric"
-              pattern="[0-9]*"
-              maxlength="1"
-            />
-            <input
-              class="otp-input w-11 h-12 sm:w-12 sm:h-14 text-center text-xl sm:text-2xl rounded-xl border-2 border-rose-200/60 bg-cream/60 text-deep-brown focus:outline-none focus:ring-4 focus:ring-primary/30 focus:border-primary transition-all"
-              type="text"
-              inputmode="numeric"
-              pattern="[0-9]*"
-              maxlength="1"
-            />
-            <input
-              class="otp-input w-11 h-12 sm:w-12 sm:h-14 text-center text-xl sm:text-2xl rounded-xl border-2 border-rose-200/60 bg-cream/60 text-deep-brown focus:outline-none focus:ring-4 focus:ring-primary/30 focus:border-primary transition-all"
-              type="text"
-              inputmode="numeric"
-              pattern="[0-9]*"
-              maxlength="1"
-            />
-          </div>
+      <!-- Subtitle -->
+      <p class="text-gray-600" id="emailInfo">
+        کد ۶ رقمی به ایمیل شما ارسال شد.
+      </p>
 
-          <!-- Error/Info -->
-          <p id="otpMsg" class="min-h-[20px] text-sm text-red-500"></p>
-
-          <!-- Verify button -->
-          <button
-            id="btnVerify"
-            type="submit"
-            class="w-full px-8 py-4 bg-pink-500 text-white rounded-full font-semibold text-lg hover:shadow-2xl hover:shadow-pink-500/40 hover:bg-pink-600 transition-all duration-300 transform hover:-translate-y-1 disabled:opacity-60 disabled:cursor-not-allowed"
-            disabled
-          >
-            تایید و ادامه
-          </button>
-
-          <!-- Resend -->
-          <div
-            class="text-sm text-gray-700 flex items-center justify-center gap-2"
-          >
-            <span>کدی دریافت نکردید؟</span>
-            <button
-              type="button"
-              id="btnResend"
-              class="inline-flex items-center gap-1 font-semibold text-gray-400 no-underline cursor-not-allowed transition-colors"
-              disabled
-            >
-              <i data-feather="refresh-ccw" class="w-4 h-4"></i>
-              <span>ارسال مجدد کد</span>
-            </button>
-            <span id="resendTimer" class="text-gray-500">(۶۰۰ ثانیه)</span>
-          </div>
-
-          <!-- Change email -->
-          <div class="text-sm">
-            <button
-              type="button"
-              id="editEmail"
-              class="inline-flex items-center gap-1 font-semibold text-deep-brown hover:text-primary transition-colors"
-            >
-              <i data-feather="edit-2" class="w-4 h-4"></i>
-              ویرایش ایمیل
-            </button>
-          </div>
-        </form>
-
-        <!-- Back -->
-        <div>
-          <a
-            href="/"
-            class="inline-flex items-center gap-2 text-deep-brown font-semibold hover:text-primary transition-colors duration-300 group"
-          >
-            <i
-              data-feather="arrow-right"
-              class="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1"
-            ></i>
-            <span>بازگشت به صفحه اصلی</span>
-          </a>
+      <!-- OTP Inputs -->
+      <form id="otpForm" class="space-y-6">
+        <div class="flex items-center justify-center gap-2 sm:gap-3" dir="ltr">
+          <input
+            class="otp-input w-11 h-12 sm:w-12 sm:h-14 text-center text-xl sm:text-2xl rounded-xl border-2 border-rose-200/60 bg-cream/60 text-deep-brown focus:outline-none focus:ring-4 focus:ring-primary/30 focus:border-primary transition-all"
+            type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete="one-time-code" />
+          <input
+            class="otp-input w-11 h-12 sm:w-12 sm:h-14 text-center text-xl sm:text-2xl rounded-xl border-2 border-rose-200/60 bg-cream/60 text-deep-brown focus:outline-none focus:ring-4 focus:ring-primary/30 focus:border-primary transition-all"
+            type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" />
+          <input
+            class="otp-input w-11 h-12 sm:w-12 sm:h-14 text-center text-xl sm:text-2xl rounded-xl border-2 border-rose-200/60 bg-cream/60 text-deep-brown focus:outline-none focus:ring-4 focus:ring-primary/30 focus:border-primary transition-all"
+            type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" />
+          <input
+            class="otp-input w-11 h-12 sm:w-12 sm:h-14 text-center text-xl sm:text-2xl rounded-xl border-2 border-rose-200/60 bg-cream/60 text-deep-brown focus:outline-none focus:ring-4 focus:ring-primary/30 focus:border-primary transition-all"
+            type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" />
+          <input
+            class="otp-input w-11 h-12 sm:w-12 sm:h-14 text-center text-xl sm:text-2xl rounded-xl border-2 border-rose-200/60 bg-cream/60 text-deep-brown focus:outline-none focus:ring-4 focus:ring-primary/30 focus:border-primary transition-all"
+            type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" />
+          <input
+            class="otp-input w-11 h-12 sm:w-12 sm:h-14 text-center text-xl sm:text-2xl rounded-xl border-2 border-rose-200/60 bg-cream/60 text-deep-brown focus:outline-none focus:ring-4 focus:ring-primary/30 focus:border-primary transition-all"
+            type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" />
         </div>
-      </div>
-    </main>
 
-    <script src="/assets/js/utils.js"></script>
-    <script src="/assets/js/main.js"></script>
-    <script src="/assets/js/components/search.js"></script>
-    <script src="/assets/js/components/animations.js"></script>
-    <script src="/assets/js/components/cursor.js"></script>
-    <script src="/assets/js/pages/verify.js"></script>
-  </body>
+        <!-- Error/Info -->
+        <p id="otpMsg" class="min-h-[20px] text-sm text-red-500"></p>
+
+        <!-- Verify button -->
+        <button id="btnVerify" type="submit"
+          class="w-full px-8 py-4 bg-pink-500 text-white rounded-full font-semibold text-lg hover:shadow-2xl hover:shadow-pink-500/40 hover:bg-pink-600 transition-all duration-300 transform hover:-translate-y-1 disabled:opacity-60 disabled:cursor-not-allowed"
+          disabled>
+          تایید و ادامه
+        </button>
+
+        <!-- Resend -->
+        <div class="text-sm text-gray-700 flex items-center justify-center gap-2">
+          <span>کدی دریافت نکردید؟</span>
+          <button type="button" id="btnResend"
+            class="inline-flex items-center gap-1 font-semibold text-gray-400 no-underline cursor-not-allowed transition-colors"
+            disabled>
+            <i data-feather="refresh-ccw" class="w-4 h-4"></i>
+            <span>ارسال مجدد کد</span>
+          </button>
+          <span id="resendTimer" class="text-gray-500">(۶۰۰ ثانیه)</span>
+        </div>
+
+        <!-- Change email -->
+        <div class="text-sm">
+          <button type="button" id="editEmail"
+            class="inline-flex items-center gap-1 font-semibold text-deep-brown hover:text-primary transition-colors">
+            <i data-feather="edit-2" class="w-4 h-4"></i>
+            ویرایش ایمیل
+          </button>
+        </div>
+      </form>
+
+      <!-- Back -->
+      <div>
+        <a href="/"
+          class="inline-flex items-center gap-2 text-deep-brown font-semibold hover:text-primary transition-colors duration-300 group">
+          <i data-feather="arrow-right" class="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1"></i>
+          <span>بازگشت به صفحه اصلی</span>
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <script src="/assets/js/utils.js"></script>
+  <script src="/assets/js/main.js"></script>
+  <script src="/assets/js/components/search.js"></script>
+  <script src="/assets/js/components/animations.js"></script>
+  <script src="/assets/js/components/cursor.js"></script>
+  <script src="/assets/js/pages/verify.js"></script>
+</body>
+
 </html>

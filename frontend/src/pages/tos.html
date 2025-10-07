@@ -1,550 +1,112 @@
 <!doctype html>
 <html lang="fa" dir="rtl">
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width,initial-scale=1,viewport-fit=cover"
-    />
-    <title>شرایط و ضوابط | KOALAW</title>
-    <link rel="icon" type="image/x-icon" href="/assets/static/favicon.ico" />
-    <link rel="stylesheet" href="/assets/css/tailwind.css" />
-    <link href="/assets/vendor/aos/aos.css" rel="stylesheet" />
-    <script src="/assets/vendor/aos/aos.js"></script>
-    <script src="/assets/vendor/feather/feather.min.js"></script>
-    <script src="/assets/vendor/gsap/gsap.min.js"></script>
-    <script src="/assets/vendor/gsap/ScrollTrigger.min.js"></script>
-    <link rel="stylesheet" href="/assets/css/main.css" />
-  </head>
-  <body>
-    <!-- Custom Cursor -->
-    <div class="cursor"><div class="cursor-eyes"></div></div>
-    <div class="cursor-face"></div>
-    <div class="cursor-follower"></div>
 
-    <!-- Background layers -->
-    <div class="bg-layer" aria-hidden="true">
-      <div class="cloud cloud-1"></div>
-      <div class="cloud cloud-2"></div>
-      <div class="cloud cloud-3"></div>
-      <div class="cloud cloud-4"></div>
-      <div class="cloud cloud-5"></div>
-      <div class="cloud cloud-6"></div>
-      <!-- Particles -->
-      <div id="particles"></div>
-    </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="color-scheme" content="light">
+  <meta name="supported-color-schemes" content="light">
+  <meta name="theme-color" content="#faf8f3">
+  <title>شرایط و ضوابط | KOALAW</title>
+  <link rel="icon" type="image/x-icon" href="/assets/static/favicon.ico" />
+  <link rel="stylesheet" href="/assets/css/tailwind.css" />
+  <link href="/assets/vendor/aos/aos.css" rel="stylesheet" />
+  <script src="/assets/vendor/aos/aos.js"></script>
+  <script src="/assets/vendor/feather/feather.min.js"></script>
+  <script src="/assets/vendor/gsap/gsap.min.js"></script>
+  <script src="/assets/vendor/gsap/ScrollTrigger.min.js"></script>
+  <link rel="stylesheet" href="/assets/css/main.css" />
+</head>
 
-    <!-- Header -->
-    <header
-      class="no-print sticky top-0 z-20 backdrop-blur-md bg-white/50 border-b border-rose-200/50"
-    >
-      <div
-        class="max-w-6xl mx-auto safe-x safe-y px-4 py-3 flex items-center justify-between gap-3"
-      >
-        <!-- Actions (right on RTL) -->
-        <div class="flex items-center gap-2 sm:gap-3 flex-shrink-0">
-          <button
-            id="btnTOCOpen"
-            class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/70 border border-rose-200/70 text-deep-brown hover:bg-white transition lg:hidden"
-          >
-            <i data-feather="list" class="w-4 h-4"></i>
-            <span class="text-sm">فهرست</span>
-          </button>
-          <a
-            href="/"
-            class="hidden sm:inline-flex items-center gap-2 text-deep-brown font-semibold hover:text-[var(--primary)] transition"
-          >
-            <i data-feather="arrow-right" class="w-4 h-4"></i>
-            <span>بازگشت به صفحه اصلی</span>
-          </a>
-          <button
-            id="btnPrint"
-            class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-pink-500 text-white hover:bg-pink-600 transition"
-          >
-            <i data-feather="printer" class="w-4 h-4"></i>
-            <span class="hidden sm:inline">چاپ</span>
-          </button>
-        </div>
+<body>
+  <!-- Custom Cursor -->
+  <div class="cursor">
+    <div class="cursor-eyes"></div>
+  </div>
+  <div class="cursor-face"></div>
+  <div class="cursor-follower"></div>
 
-        <!-- Logo on the left end (exactly like your login page) -->
-        <a
-          href="/"
-          class="text-3xl font-serif font-bold text-gray-800 tracking-wider z-50 flex items-center justify-center gap-x-1"
-          dir="ltr"
-        >
-          K<img
-            src="/assets/images/koala.png"
-            alt="Koala logo"
-            class="w-8 h-7 inline-block -mt-1"
-          />ALAW
+  <!-- Background layers -->
+  <div class="bg-layer" aria-hidden="true">
+    <div class="cloud cloud-1"></div>
+    <div class="cloud cloud-2"></div>
+    <div class="cloud cloud-3"></div>
+    <div class="cloud cloud-4"></div>
+    <div class="cloud cloud-5"></div>
+    <div class="cloud cloud-6"></div>
+    <!-- Particles -->
+    <div id="particles"></div>
+  </div>
+
+  <!-- Header -->
+  <header class="no-print sticky top-0 z-20 backdrop-blur-md bg-white/50 border-b border-rose-200/50">
+    <div class="max-w-6xl mx-auto safe-x safe-y px-4 py-3 flex items-center justify-between gap-3">
+      <!-- Actions (right on RTL) -->
+      <div class="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+        <button id="btnTOCOpen"
+          class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/70 border border-rose-200/70 text-deep-brown hover:bg-white transition lg:hidden">
+          <i data-feather="list" class="w-4 h-4"></i>
+          <span class="text-sm">فهرست</span>
+        </button>
+        <a href="/"
+          class="hidden sm:inline-flex items-center gap-2 text-deep-brown font-semibold hover:text-[var(--primary)] transition">
+          <i data-feather="arrow-right" class="w-4 h-4"></i>
+          <span>بازگشت به صفحه اصلی</span>
         </a>
+        <button id="btnPrint"
+          class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-pink-500 text-white hover:bg-pink-600 transition">
+          <i data-feather="printer" class="w-4 h-4"></i>
+          <span class="hidden sm:inline">چاپ</span>
+        </button>
       </div>
-    </header>
 
-    <!-- Main -->
-    <main
-      class="relative z-10 max-w-6xl mx-auto px-4 md:px-6 lg:px-8 py-8 md:py-10"
-    >
-      <!-- Hero -->
-      <section class="card p-5 md:p-8 lg:p-10 mb-6 md:mb-8" data-aos="fade-up">
-        <div
-          class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 sm:gap-6"
-        >
-          <div>
-            <h1
-              class="text-[1.4rem] sm:text-2xl md:text-3xl font-extrabold text-deep-brown mb-2"
-            >
-              شرایط و ضوابط استفاده از خدمات
-              <span data-var="brand">KOALAW</span>
-            </h1>
-            <p class="text-gray-600 text-xs sm:text-sm">
-              آخرین به‌روزرسانی: <time data-var="lastUpdated">2025-09-16</time>
-            </p>
-          </div>
-          <div
-            class="no-print hidden md:flex items-center gap-2 text-[13px] text-gray-600"
-          >
-            <i data-feather="shield" class="w-4 h-4"></i>
-            <span>قابل چاپ و ذخیره</span>
-          </div>
+      <!-- Logo on the left end (exactly like your login page) -->
+      <a href="/"
+        class="text-3xl font-serif font-bold text-gray-800 tracking-wider z-50 flex items-center justify-center gap-x-1"
+        dir="ltr">
+        K<img src="/assets/images/koala.png" alt="Koala logo" class="w-8 h-7 inline-block -mt-1" />ALAW
+      </a>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="relative z-10 max-w-6xl mx-auto px-4 md:px-6 lg:px-8 py-8 md:py-10">
+    <!-- Hero -->
+    <section class="card p-5 md:p-8 lg:p-10 mb-6 md:mb-8" data-aos="fade-up">
+      <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 sm:gap-6">
+        <div>
+          <h1 class="text-[1.4rem] sm:text-2xl md:text-3xl font-extrabold text-deep-brown mb-2">
+            شرایط و ضوابط استفاده از خدمات
+            <span data-var="brand">KOALAW</span>
+          </h1>
+          <p class="text-gray-600 text-xs sm:text-sm">
+            آخرین به‌روزرسانی: <time data-var="lastUpdated">2025-09-16</time>
+          </p>
         </div>
-        <p
-          class="mt-4 sm:mt-6 text-gray-700 leading-7 sm:leading-8 text-[15px] sm:text-[15.5px]"
-        >
-          این صفحه شرایط استفاده از وب‌سایت و خدمات
-          <span data-var="brand">KOALAW</span> را توضیح می‌دهد. با دسترسی،
-          ثبت‌نام یا خرید، شما این شرایط را می‌پذیرید. لطفاً پیش از استفاده، متن
-          را با دقت مطالعه کنید.
-        </p>
-      </section>
-
-      <div class="grid lg:grid-cols-12 gap-4 md:gap-6">
-        <!-- TOC (desktop) -->
-        <aside
-          class="no-print hidden lg:block lg:col-span-4 order-2 lg:order-1"
-        >
-          <nav
-            class="card p-4 md:p-5 sticky top-24 toc"
-            data-aos="fade-up"
-            data-aos-delay="50"
-            aria-label="فهرست"
-          >
-            <div class="flex items-center gap-2 mb-4">
-              <i data-feather="list" class="w-4 h-4 text-rose-400"></i>
-              <h2 class="text-base md:text-lg font-bold text-deep-brown">
-                فهرست
-              </h2>
-            </div>
-            <div class="grid grid-cols-1 gap-1.5 text-sm">
-              <a href="#s1">1) پذیرش شرایط</a>
-              <a href="#s2">2) تعاریف</a>
-              <a href="#s3">3) ایجاد حساب و ورود</a>
-              <a href="#s4">4) ماهیت خدمات (عدم تولیدکنندگی)</a>
-              <a href="#s5">5) توصیه‌های سلامتی</a>
-              <a href="#s6">6) سفارش، قیمت‌گذاری و پرداخت</a>
-              <a href="#s7">7) ارسال و تحویل</a>
-              <a href="#s8">8) مرجوعی و استرداد</a>
-              <a href="#s9">9) نظرات و محتوای کاربر</a>
-              <a href="#s10">10) استفاده‌های ممنوع</a>
-              <a href="#s11">11) مالکیت فکری</a>
-              <a href="#s12">12) حریم خصوصی و داده‌ها</a>
-              <a href="#s13">13) سلب مسئولیت و محدودیت مسئولیت</a>
-              <a href="#s14">14) فورس‌ماژور</a>
-              <a href="#s15">15) خاتمه</a>
-              <a href="#s16">16) تغییرات شرایط</a>
-              <a href="#s17">17) قانون حاکم و حل اختلاف</a>
-              <a href="#s18">18) تماس با ما</a>
-            </div>
-          </nav>
-        </aside>
-
-        <!-- Content -->
-        <article
-          class="lg:col-span-8 order-1 lg:order-2 card p-4 sm:p-6 md:p-8 space-y-6 sm:space-y-8 leading-7 sm:leading-8 text-[15px] sm:text-[15.5px]"
-          data-aos="fade-up"
-        >
-          <section id="s1">
-            <h3 class="text-lg sm:text-xl font-bold text-deep-brown mb-2">
-              1) پذیرش شرایط
-            </h3>
-            <ul class="list-disc pr-5 text-gray-700 space-y-2">
-              <li>
-                با دسترسی، ثبت‌نام یا خرید از
-                <span data-var="brand">KOALAW</span>، شما این شرایط و ضوابط و
-                سیاست‌های تکمیلی (از جمله حریم خصوصی و مرجوعی) را می‌پذیرید.
-              </li>
-              <li>
-                در صورت عدم موافقت با هر بخش، از استفاده از خدمات خودداری
-                نمایید.
-              </li>
-            </ul>
-          </section>
-
-          <section id="s2">
-            <h3 class="text-lg sm:text-xl font-bold text-deep-brown mb-2">
-              2) تعاریف
-            </h3>
-            <ul class="list-disc pr-5 text-gray-700 space-y-2">
-              <li>
-                «<span data-var="brand">KOALAW</span>» یا «ما»: فروشگاه آنلاین
-                عرضه‌کننده محصولات آرایشی.
-              </li>
-              <li>
-                «کاربر» یا «شما»: هر شخصی که از وب‌سایت بازدید، ثبت‌نام یا خرید
-                می‌کند.
-              </li>
-              <li>
-                «محصول»: هر کالای آرایشی/بهداشتی که برای فروش عرضه می‌شود.
-              </li>
-            </ul>
-          </section>
-
-          <section id="s3">
-            <h3 class="text-lg sm:text-xl font-bold text-deep-brown mb-2">
-              3) ایجاد حساب و ورود
-            </h3>
-            <ul class="list-disc pr-5 text-gray-700 space-y-2">
-              <li>
-                ورود/ثبت‌نام از طریق شماره موبایل و کد یکبار مصرف (OTP) انجام
-                می‌شود. حفظ محرمانگی کدها بر عهده شماست.
-              </li>
-              <li>
-                ارائه اطلاعات صحیح، کامل و به‌روز الزامی است. در صورت نقض، ممکن
-                است حساب شما تعلیق/مسدود شود.
-              </li>
-            </ul>
-          </section>
-
-          <section id="s4">
-            <h3 class="text-lg sm:text-xl font-bold text-deep-brown mb-2">
-              4) ماهیت خدمات <span data-var="brand">KOALAW</span> (ما تولیدکننده
-              نیستیم)
-            </h3>
-            <ul class="list-disc pr-5 text-gray-700 space-y-2">
-              <li>
-                <span data-var="brand">KOALAW</span> صرفاً فروشنده و توزیع‌کننده
-                محصولات است و تولیدکننده محسوب نمی‌شود.
-              </li>
-              <li>
-                اطلاعات محصولات عمدتاً توسط تولیدکنندگان/تأمین‌کنندگان ارائه
-                می‌شود. برای دقت تلاش می‌کنیم اما صحت و کامل‌بودن همه اطلاعات
-                تضمین نمی‌شود.
-              </li>
-              <li>
-                مسئولیت کیفیت ذاتی و ادعاهای درج‌شده بر عهده تولیدکننده/نماینده
-                رسمی است. ما در چارچوب قانون پیگیر حقوق مشتری نزد تولیدکننده
-                خواهیم بود.
-              </li>
-            </ul>
-          </section>
-
-          <section id="s5">
-            <h3 class="text-lg sm:text-xl font-bold text-deep-brown mb-2">
-              5) توصیه‌های سلامتی و عدم ارائه مشاوره پزشکی
-            </h3>
-            <ul class="list-disc pr-5 text-gray-700 space-y-2">
-              <li>
-                محصولات آرایشی برای تشخیص، درمان یا پیشگیری از بیماری نیستند و
-                نتایج فرد به فرد متفاوت است.
-              </li>
-              <li>
-                پیش از مصرف، برچسب و بروشور سازنده را مطالعه کرده و تست پچ انجام
-                دهید. در صورت حساسیت، مصرف را متوقف و با پزشک مشورت کنید.
-              </li>
-              <li>
-                محتوای سایت صرفاً اطلاع‌رسانی است و جایگزین توصیه پزشکی نیست.
-              </li>
-            </ul>
-          </section>
-
-          <section id="s6">
-            <h3 class="text-lg sm:text-xl font-bold text-deep-brown mb-2">
-              6) سفارش، قیمت‌گذاری و پرداخت
-            </h3>
-            <ul class="list-disc pr-5 text-gray-700 space-y-2">
-              <li>
-                نمایش محصول به‌منزله پیشنهاد قطعی فروش نیست. تأیید نهایی پس از
-                بررسی موجودی، پرداخت موفق و تأیید
-                <span data-var="brand">KOALAW</span> انجام می‌شود.
-              </li>
-              <li>
-                قیمت‌ها و موجودی ممکن است بدون اطلاع قبلی تغییر کنند. در صورت
-                خطا، حق لغو/اصلاح سفارش و استرداد وجه محفوظ است.
-              </li>
-              <li>
-                پرداخت فقط از درگاه‌های اعلام‌شده معتبر است. هر پرداخت خارج از
-                آنها مورد تأیید نیست.
-              </li>
-            </ul>
-          </section>
-
-          <section id="s7">
-            <h3 class="text-lg sm:text-xl font-bold text-deep-brown mb-2">
-              7) ارسال و تحویل
-            </h3>
-            <ul class="list-disc pr-5 text-gray-700 space-y-2">
-              <li>
-                ارسال از طریق شرکت‌های حمل‌ونقل طرف قرارداد انجام می‌شود. زمان
-                تحویل تخمینی است و ممکن است تغییر کند.
-              </li>
-              <li>
-                با تحویل به شرکت حمل‌ونقل، ریسک طبق مقررات آن شرکت منتقل می‌شود؛
-                با این حال در چارچوب قانون در پیگیری کنار شما هستیم.
-              </li>
-              <li>
-                سلامت ظاهری بسته را هنگام تحویل بررسی کرده و در صورت آسیب، موضوع
-                را همان‌زمان به مأمور اعلام و صورت‌جلسه کنید.
-              </li>
-            </ul>
-          </section>
-
-          <section id="s8">
-            <h3 class="text-lg sm:text-xl font-bold text-deep-brown mb-2">
-              8) مرجوعی و استرداد وجه
-            </h3>
-            <ul class="list-disc pr-5 text-gray-700 space-y-2">
-              <li>
-                به‌دلیل الزامات بهداشتی، فقط کالاهای بازنشده و پلمب‌سالم که قابل
-                فروش مجدد باشند طبق سیاست مرجوعی پذیرفته می‌شوند؛ اقلام
-                مصرف‌شده/بازشده قابل مرجوع نیستند مگر در صورت عیب ذاتی.
-              </li>
-              <li>
-                مهلت درخواست مرجوعی:
-                <strong><span data-var="returnDays">7</span> روز تقویمی</strong>
-                از تاریخ تحویل.
-              </li>
-              <li>
-                فرآیند: ثبت درخواست در حساب/پشتیبانی + ارائه مدارک (عکس/ویدیو) +
-                ارسال طبق دستورالعمل. پس از تأیید، استرداد وجه طبق روش پرداخت یا
-                کیف‌پول انجام می‌شود.
-              </li>
-              <li>
-                هزینه ارسال مرجوعی:
-                <strong
-                  ><span data-var="returnShipping"
-                    >بر عهده مشتری، مگر در صورت ارسال اشتباه یا عیب ذاتی</span
-                  ></strong
-                >.
-              </li>
-              <li>
-                برای عیوب تولیدی، <span data-var="brand">KOALAW</span> جهت
-                بهره‌مندی از گارانتی تولیدکننده شما را همراهی می‌کند.
-              </li>
-            </ul>
-          </section>
-
-          <section id="s9">
-            <h3 class="text-lg sm:text-xl font-bold text-deep-brown mb-2">
-              9) نظرات و محتوای کاربر
-            </h3>
-            <ul class="list-disc pr-5 text-gray-700 space-y-2">
-              <li>
-                با ثبت نظر/امتیاز، تأیید می‌کنید محتوایتان دقیق، غیرتوهین‌آمیز و
-                مطابق قانون است و حقوق اشخاص ثالث را نقض نمی‌کند.
-              </li>
-              <li>
-                شما به <span data-var="brand">KOALAW</span> حق غیرانحصاری، دائمی
-                و رایگان برای استفاده، انتشار و ویرایش محتوای ارسالی در چارچوب
-                خدمات را اعطا می‌کنید.
-              </li>
-            </ul>
-          </section>
-
-          <section id="s10">
-            <h3 class="text-lg sm:text-xl font-bold text-deep-brown mb-2">
-              10) استفاده‌های ممنوع
-            </h3>
-            <ul class="list-disc pr-5 text-gray-700 space-y-2">
-              <li>
-                هرگونه استفاده غیرقانونی، کلاهبرداری، دور زدن تدابیر امنیتی،
-                استخراج خودکار داده‌ها، مزاحمت، نشر محتوای مضر/نفرت‌انگیز، یا
-                نقض مالکیت فکری ممنوع است.
-              </li>
-              <li>
-                خرید با قصد قاچاق، توزیع غیرمجاز یا فروش مجدد عمده بدون هماهنگی
-                قبلی ممنوع است.
-              </li>
-            </ul>
-          </section>
-
-          <section id="s11">
-            <h3 class="text-lg sm:text-xl font-bold text-deep-brown mb-2">
-              11) مالکیت فکری
-            </h3>
-            <ul class="list-disc pr-5 text-gray-700 space-y-2">
-              <li>
-                کلیه حقوق مربوط به نام، لوگو، طراحی، محتوا و عناصر گرافیکی سایت
-                متعلق به <span data-var="brand">KOALAW</span> یا مجوزدهندگان آن
-                است.
-              </li>
-              <li>
-                علائم تجاری محصولات متعلق به صاحبان آنهاست. هیچ مجوزی برای
-                استفاده بدون اجازه کتبی صادر نمی‌شود.
-              </li>
-            </ul>
-          </section>
-
-          <section id="s12">
-            <h3 class="text-lg sm:text-xl font-bold text-deep-brown mb-2">
-              12) حریم خصوصی و داده‌ها
-            </h3>
-            <ul class="list-disc pr-5 text-gray-700 space-y-2">
-              <li>
-                برای ورود/خرید ممکن است شماره موبایل، نام، آدرس و سایر اطلاعات
-                ضروری جمع‌آوری شود. استفاده از داده‌ها مطابق سیاست حریم خصوصی
-                ماست.
-              </li>
-              <li>
-                با ثبت‌نام، اجازه دریافت اعلان‌های مربوط به سفارش/پشتیبانی و
-                پیامک‌های تأیید هویت را می‌دهید. می‌توانید پیام‌های بازاریابی را
-                مدیریت کنید.
-              </li>
-            </ul>
-          </section>
-
-          <section id="s13">
-            <h3 class="text-lg sm:text-xl font-bold text-deep-brown mb-2">
-              13) سلب مسئولیت‌ها و محدودیت مسئولیت
-            </h3>
-            <ul class="list-disc pr-5 text-gray-700 space-y-2">
-              <li>
-                خدمات و محتوا «همان‌گونه که هست/در دسترس است» ارائه می‌شوند. تا
-                حد مجاز قانون، هرگونه ضمانت صریح یا ضمنی سلب می‌شود.
-              </li>
-              <li>
-                <span data-var="brand">KOALAW</span> بابت نتایج فردی استفاده از
-                محصولات، واکنش‌های آلرژیک، توقف خدمات، تأخیر ارسال یا خسارات
-                غیرمستقیم/تبعی مسئول نیست.
-              </li>
-              <li>
-                حداکثر مسئولیت <span data-var="brand">KOALAW</span> در هر ادعا،
-                از مبلغ پرداخت‌شده برای سفارش مربوط فراتر نخواهد رفت مگر در حدود
-                قوانین آمره.
-              </li>
-            </ul>
-          </section>
-
-          <section id="s14">
-            <h3 class="text-lg sm:text-xl font-bold text-deep-brown mb-2">
-              14) فورس‌ماژور
-            </h3>
-            <p class="text-gray-700">
-              در صورت وقایع خارج از کنترل معقول (حوادث طبیعی، اختلالات شبکه،
-              مقررات اضطراری، اعتصاب و …) مسئولیتی بابت تأخیر/عدم انجام تعهدات
-              نخواهیم داشت.
-            </p>
-          </section>
-
-          <section id="s15">
-            <h3 class="text-lg sm:text-xl font-bold text-deep-brown mb-2">
-              15) خاتمه
-            </h3>
-            <p class="text-gray-700">
-              در صورت نقض شرایط یا الزامات قانونی، دسترسی شما ممکن است
-              تعلیق/خاتمه یابد. شما نیز می‌توانید هر زمان حساب خود را غیرفعال
-              کنید؛ تعهدات مالی/حقوقی پیشین به قوت خود باقی است.
-            </p>
-          </section>
-
-          <section id="s16">
-            <h3 class="text-lg sm:text-xl font-bold text-deep-brown mb-2">
-              16) تغییرات شرایط
-            </h3>
-            <p class="text-gray-700">
-              ممکن است این شرایط را به‌روزرسانی کنیم. نسخه به‌روز در سایت منتشر
-              می‌شود و استفاده مستمر شما به‌منزله پذیرش تغییرات است.
-            </p>
-          </section>
-
-          <section id="s17">
-            <h3 class="text-lg sm:text-xl font-bold text-deep-brown mb-2">
-              17) قانون حاکم و مرجع حل اختلاف
-            </h3>
-            <p class="text-gray-700">
-              این شرایط تحت حاکمیت قوانین جمهوری اسلامی ایران است. در صورت بروز
-              اختلاف، ابتدا از طریق پشتیبانی تلاش برای حل‌وفصل دوستانه می‌شود و
-              در غیر این صورت، مراجع صالح قضایی شهر
-              <strong><span data-var="disputeCity">تهران</span></strong> مرجع
-              رسیدگی خواهند بود.
-            </p>
-          </section>
-
-          <section id="s18">
-            <h3 class="text-lg sm:text-xl font-bold text-deep-brown mb-2">
-              18) تماس با ما
-            </h3>
-            <ul class="list-none space-y-2 text-gray-700">
-              <li>
-                پشتیبانی <span data-var="brand">KOALAW</span>:
-                <a
-                  href="#"
-                  class="text-pink-600 hover:underline"
-                  id="supportEmailLink"
-                  ><span data-var="supportEmail"
-                    >support@koalaw.example</span
-                  ></a
-                >
-                |
-                <a
-                  href="#"
-                  class="text-pink-600 hover:underline"
-                  id="supportPhoneLink"
-                  ><span data-var="supportPhone">021-00000000</span></a
-                >
-              </li>
-              <li>
-                نشانی مکاتبات:
-                <span data-var="address">تهران، خیابان مثال، پلاک ۱۲۳</span>
-              </li>
-              <li>
-                شبکه‌های اجتماعی رسمی:
-                <a
-                  target="_blank"
-                  rel="noopener"
-                  class="text-pink-600 hover:underline"
-                  data-var="social.instagram"
-                  >Instagram</a
-                >،
-                <a
-                  target="_blank"
-                  rel="noopener"
-                  class="text-pink-600 hover:underline"
-                  data-var="social.telegram"
-                  >Telegram</a
-                >
-              </li>
-            </ul>
-          </section>
-
-          <hr class="border-rose-200/60" />
-        </article>
+        <div class="no-print hidden md:flex items-center gap-2 text-[13px] text-gray-600">
+          <i data-feather="shield" class="w-4 h-4"></i>
+          <span>قابل چاپ و ذخیره</span>
+        </div>
       </div>
+      <p class="mt-4 sm:mt-6 text-gray-700 leading-7 sm:leading-8 text-[15px] sm:text-[15.5px]">
+        این صفحه شرایط استفاده از وب‌سایت و خدمات
+        <span data-var="brand">KOALAW</span> را توضیح می‌دهد. با دسترسی،
+        ثبت‌نام یا خرید، شما این شرایط را می‌پذیرید. لطفاً پیش از استفاده، متن
+        را با دقت مطالعه کنید.
+      </p>
+    </section>
 
-      <!-- Back to top -->
-      <button
-        id="toTop"
-        class="no-print fixed bottom-5 left-5 w-11 h-11 rounded-full bg-pink-500 text-white shadow-lg hover:bg-pink-600 transition flex items-center justify-center opacity-0 pointer-events-none"
-      >
-        <i data-feather="chevron-up" class="w-5 h-5"></i>
-      </button>
-
-      <!-- Mobile TOC Drawer -->
-      <div id="tocDrawer" class="drawer lg:hidden no-print" aria-hidden="true">
-        <div class="panel">
-          <div class="px-4 pt-3 pb-2 flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <i data-feather="list" class="w-4 h-4 text-rose-400"></i>
-              <h2 class="text-base font-bold text-deep-brown">فهرست</h2>
-            </div>
-            <button
-              id="btnTOCClose"
-              class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-rose-100 text-rose-700 hover:bg-rose-200 transition"
-            >
-              <i data-feather="x" class="w-4 h-4"></i>
-              بستن
-            </button>
+    <div class="grid lg:grid-cols-12 gap-4 md:gap-6">
+      <!-- TOC (desktop) -->
+      <aside class="no-print hidden lg:block lg:col-span-4 order-2 lg:order-1">
+        <nav class="card p-4 md:p-5 sticky top-24 toc" data-aos="fade-up" data-aos-delay="50" aria-label="فهرست">
+          <div class="flex items-center gap-2 mb-4">
+            <i data-feather="list" class="w-4 h-4 text-rose-400"></i>
+            <h2 class="text-base md:text-lg font-bold text-deep-brown">
+              فهرست
+            </h2>
           </div>
-          <nav class="px-4 pb-4 grid grid-cols-1 gap-1.5 text-sm toc">
+          <div class="grid grid-cols-1 gap-1.5 text-sm">
             <a href="#s1">1) پذیرش شرایط</a>
             <a href="#s2">2) تعاریف</a>
             <a href="#s3">3) ایجاد حساب و ورود</a>
@@ -563,16 +125,398 @@
             <a href="#s16">16) تغییرات شرایط</a>
             <a href="#s17">17) قانون حاکم و حل اختلاف</a>
             <a href="#s18">18) تماس با ما</a>
-          </nav>
+          </div>
+        </nav>
+      </aside>
+
+      <!-- Content -->
+      <article
+        class="lg:col-span-8 order-1 lg:order-2 card p-4 sm:p-6 md:p-8 space-y-6 sm:space-y-8 leading-7 sm:leading-8 text-[15px] sm:text-[15.5px]"
+        data-aos="fade-up">
+        <section id="s1">
+          <h3 class="text-lg sm:text-xl font-bold text-deep-brown mb-2">
+            1) پذیرش شرایط
+          </h3>
+          <ul class="list-disc pr-5 text-gray-700 space-y-2">
+            <li>
+              با دسترسی، ثبت‌نام یا خرید از
+              <span data-var="brand">KOALAW</span>، شما این شرایط و ضوابط و
+              سیاست‌های تکمیلی (از جمله حریم خصوصی و مرجوعی) را می‌پذیرید.
+            </li>
+            <li>
+              در صورت عدم موافقت با هر بخش، از استفاده از خدمات خودداری
+              نمایید.
+            </li>
+          </ul>
+        </section>
+
+        <section id="s2">
+          <h3 class="text-lg sm:text-xl font-bold text-deep-brown mb-2">
+            2) تعاریف
+          </h3>
+          <ul class="list-disc pr-5 text-gray-700 space-y-2">
+            <li>
+              «<span data-var="brand">KOALAW</span>» یا «ما»: فروشگاه آنلاین
+              عرضه‌کننده محصولات آرایشی.
+            </li>
+            <li>
+              «کاربر» یا «شما»: هر شخصی که از وب‌سایت بازدید، ثبت‌نام یا خرید
+              می‌کند.
+            </li>
+            <li>
+              «محصول»: هر کالای آرایشی/بهداشتی که برای فروش عرضه می‌شود.
+            </li>
+          </ul>
+        </section>
+
+        <section id="s3">
+          <h3 class="text-lg sm:text-xl font-bold text-deep-brown mb-2">
+            3) ایجاد حساب و ورود
+          </h3>
+          <ul class="list-disc pr-5 text-gray-700 space-y-2">
+            <li>
+              ورود/ثبت‌نام از طریق شماره موبایل و کد یکبار مصرف (OTP) انجام
+              می‌شود. حفظ محرمانگی کدها بر عهده شماست.
+            </li>
+            <li>
+              ارائه اطلاعات صحیح، کامل و به‌روز الزامی است. در صورت نقض، ممکن
+              است حساب شما تعلیق/مسدود شود.
+            </li>
+          </ul>
+        </section>
+
+        <section id="s4">
+          <h3 class="text-lg sm:text-xl font-bold text-deep-brown mb-2">
+            4) ماهیت خدمات <span data-var="brand">KOALAW</span> (ما تولیدکننده
+            نیستیم)
+          </h3>
+          <ul class="list-disc pr-5 text-gray-700 space-y-2">
+            <li>
+              <span data-var="brand">KOALAW</span> صرفاً فروشنده و توزیع‌کننده
+              محصولات است و تولیدکننده محسوب نمی‌شود.
+            </li>
+            <li>
+              اطلاعات محصولات عمدتاً توسط تولیدکنندگان/تأمین‌کنندگان ارائه
+              می‌شود. برای دقت تلاش می‌کنیم اما صحت و کامل‌بودن همه اطلاعات
+              تضمین نمی‌شود.
+            </li>
+            <li>
+              مسئولیت کیفیت ذاتی و ادعاهای درج‌شده بر عهده تولیدکننده/نماینده
+              رسمی است. ما در چارچوب قانون پیگیر حقوق مشتری نزد تولیدکننده
+              خواهیم بود.
+            </li>
+          </ul>
+        </section>
+
+        <section id="s5">
+          <h3 class="text-lg sm:text-xl font-bold text-deep-brown mb-2">
+            5) توصیه‌های سلامتی و عدم ارائه مشاوره پزشکی
+          </h3>
+          <ul class="list-disc pr-5 text-gray-700 space-y-2">
+            <li>
+              محصولات آرایشی برای تشخیص، درمان یا پیشگیری از بیماری نیستند و
+              نتایج فرد به فرد متفاوت است.
+            </li>
+            <li>
+              پیش از مصرف، برچسب و بروشور سازنده را مطالعه کرده و تست پچ انجام
+              دهید. در صورت حساسیت، مصرف را متوقف و با پزشک مشورت کنید.
+            </li>
+            <li>
+              محتوای سایت صرفاً اطلاع‌رسانی است و جایگزین توصیه پزشکی نیست.
+            </li>
+          </ul>
+        </section>
+
+        <section id="s6">
+          <h3 class="text-lg sm:text-xl font-bold text-deep-brown mb-2">
+            6) سفارش، قیمت‌گذاری و پرداخت
+          </h3>
+          <ul class="list-disc pr-5 text-gray-700 space-y-2">
+            <li>
+              نمایش محصول به‌منزله پیشنهاد قطعی فروش نیست. تأیید نهایی پس از
+              بررسی موجودی، پرداخت موفق و تأیید
+              <span data-var="brand">KOALAW</span> انجام می‌شود.
+            </li>
+            <li>
+              قیمت‌ها و موجودی ممکن است بدون اطلاع قبلی تغییر کنند. در صورت
+              خطا، حق لغو/اصلاح سفارش و استرداد وجه محفوظ است.
+            </li>
+            <li>
+              پرداخت فقط از درگاه‌های اعلام‌شده معتبر است. هر پرداخت خارج از
+              آنها مورد تأیید نیست.
+            </li>
+          </ul>
+        </section>
+
+        <section id="s7">
+          <h3 class="text-lg sm:text-xl font-bold text-deep-brown mb-2">
+            7) ارسال و تحویل
+          </h3>
+          <ul class="list-disc pr-5 text-gray-700 space-y-2">
+            <li>
+              ارسال از طریق شرکت‌های حمل‌ونقل طرف قرارداد انجام می‌شود. زمان
+              تحویل تخمینی است و ممکن است تغییر کند.
+            </li>
+            <li>
+              با تحویل به شرکت حمل‌ونقل، ریسک طبق مقررات آن شرکت منتقل می‌شود؛
+              با این حال در چارچوب قانون در پیگیری کنار شما هستیم.
+            </li>
+            <li>
+              سلامت ظاهری بسته را هنگام تحویل بررسی کرده و در صورت آسیب، موضوع
+              را همان‌زمان به مأمور اعلام و صورت‌جلسه کنید.
+            </li>
+          </ul>
+        </section>
+
+        <section id="s8">
+          <h3 class="text-lg sm:text-xl font-bold text-deep-brown mb-2">
+            8) مرجوعی و استرداد وجه
+          </h3>
+          <ul class="list-disc pr-5 text-gray-700 space-y-2">
+            <li>
+              به‌دلیل الزامات بهداشتی، فقط کالاهای بازنشده و پلمب‌سالم که قابل
+              فروش مجدد باشند طبق سیاست مرجوعی پذیرفته می‌شوند؛ اقلام
+              مصرف‌شده/بازشده قابل مرجوع نیستند مگر در صورت عیب ذاتی.
+            </li>
+            <li>
+              مهلت درخواست مرجوعی:
+              <strong><span data-var="returnDays">7</span> روز تقویمی</strong>
+              از تاریخ تحویل.
+            </li>
+            <li>
+              فرآیند: ثبت درخواست در حساب/پشتیبانی + ارائه مدارک (عکس/ویدیو) +
+              ارسال طبق دستورالعمل. پس از تأیید، استرداد وجه طبق روش پرداخت یا
+              کیف‌پول انجام می‌شود.
+            </li>
+            <li>
+              هزینه ارسال مرجوعی:
+              <strong><span data-var="returnShipping">بر عهده مشتری، مگر در صورت ارسال اشتباه یا عیب
+                  ذاتی</span></strong>.
+            </li>
+            <li>
+              برای عیوب تولیدی، <span data-var="brand">KOALAW</span> جهت
+              بهره‌مندی از گارانتی تولیدکننده شما را همراهی می‌کند.
+            </li>
+          </ul>
+        </section>
+
+        <section id="s9">
+          <h3 class="text-lg sm:text-xl font-bold text-deep-brown mb-2">
+            9) نظرات و محتوای کاربر
+          </h3>
+          <ul class="list-disc pr-5 text-gray-700 space-y-2">
+            <li>
+              با ثبت نظر/امتیاز، تأیید می‌کنید محتوایتان دقیق، غیرتوهین‌آمیز و
+              مطابق قانون است و حقوق اشخاص ثالث را نقض نمی‌کند.
+            </li>
+            <li>
+              شما به <span data-var="brand">KOALAW</span> حق غیرانحصاری، دائمی
+              و رایگان برای استفاده، انتشار و ویرایش محتوای ارسالی در چارچوب
+              خدمات را اعطا می‌کنید.
+            </li>
+          </ul>
+        </section>
+
+        <section id="s10">
+          <h3 class="text-lg sm:text-xl font-bold text-deep-brown mb-2">
+            10) استفاده‌های ممنوع
+          </h3>
+          <ul class="list-disc pr-5 text-gray-700 space-y-2">
+            <li>
+              هرگونه استفاده غیرقانونی، کلاهبرداری، دور زدن تدابیر امنیتی،
+              استخراج خودکار داده‌ها، مزاحمت، نشر محتوای مضر/نفرت‌انگیز، یا
+              نقض مالکیت فکری ممنوع است.
+            </li>
+            <li>
+              خرید با قصد قاچاق، توزیع غیرمجاز یا فروش مجدد عمده بدون هماهنگی
+              قبلی ممنوع است.
+            </li>
+          </ul>
+        </section>
+
+        <section id="s11">
+          <h3 class="text-lg sm:text-xl font-bold text-deep-brown mb-2">
+            11) مالکیت فکری
+          </h3>
+          <ul class="list-disc pr-5 text-gray-700 space-y-2">
+            <li>
+              کلیه حقوق مربوط به نام، لوگو، طراحی، محتوا و عناصر گرافیکی سایت
+              متعلق به <span data-var="brand">KOALAW</span> یا مجوزدهندگان آن
+              است.
+            </li>
+            <li>
+              علائم تجاری محصولات متعلق به صاحبان آنهاست. هیچ مجوزی برای
+              استفاده بدون اجازه کتبی صادر نمی‌شود.
+            </li>
+          </ul>
+        </section>
+
+        <section id="s12">
+          <h3 class="text-lg sm:text-xl font-bold text-deep-brown mb-2">
+            12) حریم خصوصی و داده‌ها
+          </h3>
+          <ul class="list-disc pr-5 text-gray-700 space-y-2">
+            <li>
+              برای ورود/خرید ممکن است شماره موبایل، نام، آدرس و سایر اطلاعات
+              ضروری جمع‌آوری شود. استفاده از داده‌ها مطابق سیاست حریم خصوصی
+              ماست.
+            </li>
+            <li>
+              با ثبت‌نام، اجازه دریافت اعلان‌های مربوط به سفارش/پشتیبانی و
+              پیامک‌های تأیید هویت را می‌دهید. می‌توانید پیام‌های بازاریابی را
+              مدیریت کنید.
+            </li>
+          </ul>
+        </section>
+
+        <section id="s13">
+          <h3 class="text-lg sm:text-xl font-bold text-deep-brown mb-2">
+            13) سلب مسئولیت‌ها و محدودیت مسئولیت
+          </h3>
+          <ul class="list-disc pr-5 text-gray-700 space-y-2">
+            <li>
+              خدمات و محتوا «همان‌گونه که هست/در دسترس است» ارائه می‌شوند. تا
+              حد مجاز قانون، هرگونه ضمانت صریح یا ضمنی سلب می‌شود.
+            </li>
+            <li>
+              <span data-var="brand">KOALAW</span> بابت نتایج فردی استفاده از
+              محصولات، واکنش‌های آلرژیک، توقف خدمات، تأخیر ارسال یا خسارات
+              غیرمستقیم/تبعی مسئول نیست.
+            </li>
+            <li>
+              حداکثر مسئولیت <span data-var="brand">KOALAW</span> در هر ادعا،
+              از مبلغ پرداخت‌شده برای سفارش مربوط فراتر نخواهد رفت مگر در حدود
+              قوانین آمره.
+            </li>
+          </ul>
+        </section>
+
+        <section id="s14">
+          <h3 class="text-lg sm:text-xl font-bold text-deep-brown mb-2">
+            14) فورس‌ماژور
+          </h3>
+          <p class="text-gray-700">
+            در صورت وقایع خارج از کنترل معقول (حوادث طبیعی، اختلالات شبکه،
+            مقررات اضطراری، اعتصاب و …) مسئولیتی بابت تأخیر/عدم انجام تعهدات
+            نخواهیم داشت.
+          </p>
+        </section>
+
+        <section id="s15">
+          <h3 class="text-lg sm:text-xl font-bold text-deep-brown mb-2">
+            15) خاتمه
+          </h3>
+          <p class="text-gray-700">
+            در صورت نقض شرایط یا الزامات قانونی، دسترسی شما ممکن است
+            تعلیق/خاتمه یابد. شما نیز می‌توانید هر زمان حساب خود را غیرفعال
+            کنید؛ تعهدات مالی/حقوقی پیشین به قوت خود باقی است.
+          </p>
+        </section>
+
+        <section id="s16">
+          <h3 class="text-lg sm:text-xl font-bold text-deep-brown mb-2">
+            16) تغییرات شرایط
+          </h3>
+          <p class="text-gray-700">
+            ممکن است این شرایط را به‌روزرسانی کنیم. نسخه به‌روز در سایت منتشر
+            می‌شود و استفاده مستمر شما به‌منزله پذیرش تغییرات است.
+          </p>
+        </section>
+
+        <section id="s17">
+          <h3 class="text-lg sm:text-xl font-bold text-deep-brown mb-2">
+            17) قانون حاکم و مرجع حل اختلاف
+          </h3>
+          <p class="text-gray-700">
+            این شرایط تحت حاکمیت قوانین جمهوری اسلامی ایران است. در صورت بروز
+            اختلاف، ابتدا از طریق پشتیبانی تلاش برای حل‌وفصل دوستانه می‌شود و
+            در غیر این صورت، مراجع صالح قضایی شهر
+            <strong><span data-var="disputeCity">تهران</span></strong> مرجع
+            رسیدگی خواهند بود.
+          </p>
+        </section>
+
+        <section id="s18">
+          <h3 class="text-lg sm:text-xl font-bold text-deep-brown mb-2">
+            18) تماس با ما
+          </h3>
+          <ul class="list-none space-y-2 text-gray-700">
+            <li>
+              پشتیبانی <span data-var="brand">KOALAW</span>:
+              <a href="#" class="text-pink-600 hover:underline" id="supportEmailLink"><span
+                  data-var="supportEmail">support@koalaw.example</span></a>
+              |
+              <a href="#" class="text-pink-600 hover:underline" id="supportPhoneLink"><span
+                  data-var="supportPhone">021-00000000</span></a>
+            </li>
+            <li>
+              نشانی مکاتبات:
+              <span data-var="address">تهران، خیابان مثال، پلاک ۱۲۳</span>
+            </li>
+            <li>
+              شبکه‌های اجتماعی رسمی:
+              <a target="_blank" rel="noopener" class="text-pink-600 hover:underline"
+                data-var="social.instagram">Instagram</a>،
+              <a target="_blank" rel="noopener" class="text-pink-600 hover:underline"
+                data-var="social.telegram">Telegram</a>
+            </li>
+          </ul>
+        </section>
+
+        <hr class="border-rose-200/60" />
+      </article>
+    </div>
+
+    <!-- Back to top -->
+    <button id="toTop"
+      class="no-print fixed bottom-5 left-5 w-11 h-11 rounded-full bg-pink-500 text-white shadow-lg hover:bg-pink-600 transition flex items-center justify-center opacity-0 pointer-events-none">
+      <i data-feather="chevron-up" class="w-5 h-5"></i>
+    </button>
+
+    <!-- Mobile TOC Drawer -->
+    <div id="tocDrawer" class="drawer lg:hidden no-print" aria-hidden="true">
+      <div class="panel">
+        <div class="px-4 pt-3 pb-2 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <i data-feather="list" class="w-4 h-4 text-rose-400"></i>
+            <h2 class="text-base font-bold text-deep-brown">فهرست</h2>
+          </div>
+          <button id="btnTOCClose"
+            class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-rose-100 text-rose-700 hover:bg-rose-200 transition">
+            <i data-feather="x" class="w-4 h-4"></i>
+            بستن
+          </button>
         </div>
+        <nav class="px-4 pb-4 grid grid-cols-1 gap-1.5 text-sm toc">
+          <a href="#s1">1) پذیرش شرایط</a>
+          <a href="#s2">2) تعاریف</a>
+          <a href="#s3">3) ایجاد حساب و ورود</a>
+          <a href="#s4">4) ماهیت خدمات (عدم تولیدکنندگی)</a>
+          <a href="#s5">5) توصیه‌های سلامتی</a>
+          <a href="#s6">6) سفارش، قیمت‌گذاری و پرداخت</a>
+          <a href="#s7">7) ارسال و تحویل</a>
+          <a href="#s8">8) مرجوعی و استرداد</a>
+          <a href="#s9">9) نظرات و محتوای کاربر</a>
+          <a href="#s10">10) استفاده‌های ممنوع</a>
+          <a href="#s11">11) مالکیت فکری</a>
+          <a href="#s12">12) حریم خصوصی و داده‌ها</a>
+          <a href="#s13">13) سلب مسئولیت و محدودیت مسئولیت</a>
+          <a href="#s14">14) فورس‌ماژور</a>
+          <a href="#s15">15) خاتمه</a>
+          <a href="#s16">16) تغییرات شرایط</a>
+          <a href="#s17">17) قانون حاکم و حل اختلاف</a>
+          <a href="#s18">18) تماس با ما</a>
+        </nav>
       </div>
-    </main>
-    <script src="/assets/js/utils.js"></script>
-    <script src="/assets/js/main.js"></script>
-    <script src="/assets/js/components/navbar.js"></script>
-    <script src="/assets/js/components/search.js"></script>
-    <script src="/assets/js/components/animations.js"></script>
-    <script src="/assets/js/components/cursor.js"></script>
-    <script src="/assets/js/pages/tos.js"></script>
-  </body>
+    </div>
+  </main>
+  <script src="/assets/js/utils.js"></script>
+  <script src="/assets/js/main.js"></script>
+  <script src="/assets/js/components/navbar.js"></script>
+  <script src="/assets/js/components/search.js"></script>
+  <script src="/assets/js/components/animations.js"></script>
+  <script src="/assets/js/components/cursor.js"></script>
+  <script src="/assets/js/pages/tos.js"></script>
+</body>
+
 </html>

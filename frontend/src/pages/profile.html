@@ -1,959 +1,638 @@
 <!doctype html>
 <html lang="fa" dir="rtl">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>KOALAW | پروفایل کاربری</title>
-    <link rel="icon" type="image/x-icon" href="/assets/static/favicon.ico" />
-    <link rel="stylesheet" href="/assets/css/tailwind.css" />
-    <link href="/assets/vendor/aos/aos.css" rel="stylesheet" />
-    <script src="/assets/vendor/aos/aos.js"></script>
-    <script src="/assets/vendor/feather/feather.min.js"></script>
-    <script src="/assets/vendor/gsap/gsap.min.js"></script>
-    <script src="/assets/vendor/gsap/ScrollTrigger.min.js"></script>
-    <link rel="stylesheet" href="/assets/css/main.css" />
-  </head>
 
-  <body>
-    <!-- Custom cursor elements -->
-    <div class="cursor">
-      <div class="cursor-eyes"></div>
-    </div>
-    <div class="cursor-face"></div>
-    <div class="cursor-follower"></div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="color-scheme" content="light">
+  <meta name="supported-color-schemes" content="light">
+  <meta name="theme-color" content="#faf8f3">
+  <title>KOALAW | پروفایل کاربری</title>
+  <link rel="icon" type="image/x-icon" href="/assets/static/favicon.ico" />
+  <link rel="stylesheet" href="/assets/css/tailwind.css" />
+  <link href="/assets/vendor/aos/aos.css" rel="stylesheet" />
+  <script src="/assets/vendor/aos/aos.js"></script>
+  <script src="/assets/vendor/feather/feather.min.js"></script>
+  <script src="/assets/vendor/gsap/gsap.min.js"></script>
+  <script src="/assets/vendor/gsap/ScrollTrigger.min.js"></script>
+  <link rel="stylesheet" href="/assets/css/main.css" />
+</head>
 
-    <!-- Navigation -->
-    <nav class="fixed w-full z-50 transition-all duration-300" id="navbar">
-      <div class="container mx-auto px-6 py-5">
-        <div class="flex items-center justify-between" dir="ltr">
-          <a
-            href="/"
-            class="text-3xl font-serif font-bold text-gray-800 tracking-wider z-50 flex items-center gap-x-1"
-          >
-            K<img
-              src="/assets/images/koala.png"
-              alt="Koala logo"
-              class="w-8 h-7 inline-block -mt-1"
-            />ALAW
+<body>
+  <!-- Custom cursor elements -->
+  <div class="cursor">
+    <div class="cursor-eyes"></div>
+  </div>
+  <div class="cursor-face"></div>
+  <div class="cursor-follower"></div>
+
+  <!-- Navigation -->
+  <nav class="fixed w-full z-50 transition-all duration-300" id="navbar">
+    <div class="container mx-auto px-6 py-5">
+      <div class="flex items-center justify-between" dir="ltr">
+        <a href="/" class="text-3xl font-serif font-bold text-gray-800 tracking-wider z-50 flex items-center gap-x-1">
+          K<img src="/assets/images/koala.png" alt="Koala logo" class="w-8 h-7 inline-block -mt-1" />ALAW
+        </a>
+        <div class="hidden lg:flex items-center gap-x-10 flex-row-reverse">
+          <a href="/shop" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">
+            فروشگاه
           </a>
-          <div class="hidden lg:flex items-center gap-x-10 flex-row-reverse">
-            <a
-              href="/shop"
-              class="nav-link text-gray-700 hover:text-gray-900 transition duration-300"
-            >
-              فروشگاه
-            </a>
-            <a
-              href="/shop?category=collections"
-              class="nav-link text-gray-700 hover:text-gray-900 transition duration-300"
-            >
-              کالکشن ها
-            </a>
-            <a
-              href="/shop?category=brands"
-              class="nav-link text-gray-700 hover:text-gray-900 transition duration-300"
-            >
-              برندها
-            </a>
-            <a
-              href="/magazine"
-              class="nav-link text-gray-700 hover:text-gray-900 transition duration-300"
-            >
-              مجله
-            </a>
-            <a
-              href="/about"
-              class="nav-link text-gray-700 hover:text-gray-900 transition duration-300"
-            >
-              درباره ما
-            </a>
-          </div>
-          <div class="flex items-center gap-x-6">
-            <button
-              id="search-button"
-              class="text-gray-700 hover:text-gray-900 transition-all duration-300 hover:scale-110"
-            >
-              <i data-feather="search" class="w-5 h-5"></i>
-            </button>
-            <a
-              href="/profile"
-              class="text-gray-700 hover:text-gray-900 transition-all duration-300 hover:scale-110"
-            >
-              <i data-feather="user" class="w-5 h-5"></i>
-            </a>
-            <a
-              href="/cart"
-              id="nav-cart"
-              class="text-gray-700 hover:text-gray-900 relative transition-all duration-300 hover:scale-110"
-              aria-label="سبد خرید"
-            >
-              <i data-feather="shopping-bag" class="w-5 h-5"></i>
-              <span
-                id="nav-cart-count"
-                class="absolute -top-2 -right-2 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center pulse-animation"
-                >۰</span
-              >
-            </a>
-            <button id="mobile-menu-button" class="hamburger-button lg:hidden">
-              <span></span>
-              <span></span>
-              <span></span>
-            </button>
-          </div>
+          <a href="/shop?category=collections"
+            class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">
+            کالکشن ها
+          </a>
+          <a href="/shop?category=brands" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">
+            برندها
+          </a>
+          <a href="/magazine" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">
+            مجله
+          </a>
+          <a href="/about" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">
+            درباره ما
+          </a>
+        </div>
+        <div class="flex items-center gap-x-6">
+          <button id="search-button"
+            class="text-gray-700 hover:text-gray-900 transition-all duration-300 hover:scale-110">
+            <i data-feather="search" class="w-5 h-5"></i>
+          </button>
+          <a href="/profile" class="text-gray-700 hover:text-gray-900 transition-all duration-300 hover:scale-110">
+            <i data-feather="user" class="w-5 h-5"></i>
+          </a>
+          <a href="/cart" id="nav-cart"
+            class="text-gray-700 hover:text-gray-900 relative transition-all duration-300 hover:scale-110"
+            aria-label="سبد خرید">
+            <i data-feather="shopping-bag" class="w-5 h-5"></i>
+            <span id="nav-cart-count"
+              class="absolute -top-2 -right-2 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center pulse-animation">۰</span>
+          </a>
+          <button id="mobile-menu-button" class="hamburger-button lg:hidden">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
         </div>
       </div>
-    </nav>
-
-    <!-- Mobile Menu -->
-    <div id="mobile-menu">
-      <a href="/shop" class="nav-link">فروشگاه</a>
-      <a href="/shop?category=collections" class="nav-link">کالکشن ها</a>
-      <a href="/shop?category=brands" class="nav-link">برندها</a>
-      <a href="/magazine" class="nav-link">مجله</a>
-      <a href="/about" class="nav-link">درباره ما</a>
     </div>
-    <div id="mobile-menu-overlay" class="mobile-menu-overlay"></div>
+  </nav>
 
-    <!-- Profile Hero Section -->
-    <section class="profile-hero pt-24 pb-16 relative">
-      <div class="container mx-auto px-6 relative z-10">
-        <div class="text-center text-white" data-aos="fade-up">
-          <div
-            class="inline-flex items-center gap-3 bg-white/20 backdrop-blur-sm rounded-full px-6 py-2 mb-6"
-          >
-            <i data-feather="star" class="w-5 h-5"></i>
-            <span class="font-medium">مشتری ویژه</span>
-          </div>
-          <h1 class="text-4xl lg:text-5xl font-serif font-bold mb-4">
-            پروفایل شما
-          </h1>
-          <p class="text-lg text-white/90 max-w-2xl mx-auto">
-            مدیریت حساب کاربری، سفارش‌ها و تنظیمات شخصی
-          </p>
+  <!-- Mobile Menu -->
+  <div id="mobile-menu">
+    <a href="/shop" class="nav-link">فروشگاه</a>
+    <a href="/shop?category=collections" class="nav-link">کالکشن ها</a>
+    <a href="/shop?category=brands" class="nav-link">برندها</a>
+    <a href="/magazine" class="nav-link">مجله</a>
+    <a href="/about" class="nav-link">درباره ما</a>
+  </div>
+  <div id="mobile-menu-overlay" class="mobile-menu-overlay"></div>
+
+  <!-- Profile Hero Section -->
+  <section class="profile-hero pt-24 pb-16 relative">
+    <div class="container mx-auto px-6 relative z-10">
+      <div class="text-center text-white" data-aos="fade-up">
+        <div class="inline-flex items-center gap-3 bg-white/20 backdrop-blur-sm rounded-full px-6 py-2 mb-6">
+          <i data-feather="star" class="w-5 h-5"></i>
+          <span class="font-medium">مشتری ویژه</span>
         </div>
+        <h1 class="text-4xl lg:text-5xl font-serif font-bold mb-4">
+          پروفایل شما
+        </h1>
+        <p class="text-lg text-white/90 max-w-2xl mx-auto">
+          مدیریت حساب کاربری، سفارش‌ها و تنظیمات شخصی
+        </p>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- Profile Content -->
-    <section class="py-12 relative">
-      <div class="container mx-auto px-6">
-        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          <!-- Sidebar Navigation -->
-          <div class="lg:col-span-1" data-aos="fade-right">
-            <div class="sidebar-nav">
-              <nav>
-                <a
-                  href="#dashboard"
-                  class="sidebar-nav-item active"
-                  data-tab="dashboard"
-                >
-                  <i data-feather="home"></i>
-                  <span>داشبورد</span>
-                </a>
-                <a href="#orders" class="sidebar-nav-item" data-tab="orders">
-                  <i data-feather="package"></i>
-                  <span>سفارش‌های من</span>
-                </a>
-                <a
-                  href="#addresses"
-                  class="sidebar-nav-item"
-                  data-tab="addresses"
-                >
-                  <i data-feather="map-pin"></i>
-                  <span>آدرس‌ها</span>
-                </a>
-                <a
-                  href="#profile-settings"
-                  class="sidebar-nav-item"
-                  data-tab="profile-settings"
-                >
-                  <i data-feather="user"></i>
-                  <span>تنظیمات پروفایل</span>
-                </a>
-                <a
-                  href="#notifications"
-                  class="sidebar-nav-item"
-                  data-tab="notifications"
-                >
-                  <i data-feather="bell"></i>
-                  <span>اعلان‌ها</span>
-                </a>
-                <a href="#logout" class="sidebar-nav-item text-red-600">
-                  <i data-feather="log-out"></i>
-                  <span>خروج</span>
-                </a>
-              </nav>
-            </div>
+  <!-- Profile Content -->
+  <section class="py-12 relative">
+    <div class="container mx-auto px-6">
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        <!-- Sidebar Navigation -->
+        <div class="lg:col-span-1" data-aos="fade-right">
+          <div class="sidebar-nav">
+            <nav>
+              <a href="#dashboard" class="sidebar-nav-item active" data-tab="dashboard">
+                <i data-feather="home"></i>
+                <span>داشبورد</span>
+              </a>
+              <a href="#orders" class="sidebar-nav-item" data-tab="orders">
+                <i data-feather="package"></i>
+                <span>سفارش‌های من</span>
+              </a>
+              <a href="#addresses" class="sidebar-nav-item" data-tab="addresses">
+                <i data-feather="map-pin"></i>
+                <span>آدرس‌ها</span>
+              </a>
+              <a href="#profile-settings" class="sidebar-nav-item" data-tab="profile-settings">
+                <i data-feather="user"></i>
+                <span>تنظیمات پروفایل</span>
+              </a>
+              <a href="#notifications" class="sidebar-nav-item" data-tab="notifications">
+                <i data-feather="bell"></i>
+                <span>اعلان‌ها</span>
+              </a>
+              <a href="#logout" class="sidebar-nav-item text-red-600">
+                <i data-feather="log-out"></i>
+                <span>خروج</span>
+              </a>
+            </nav>
           </div>
+        </div>
 
-          <!-- Main Content -->
-          <div class="lg:col-span-3">
-            <!-- Dashboard Tab -->
-            <div id="dashboard" class="tab-content" data-aos="fade-left">
-              <div class="profile-card mb-8">
-                <div class="flex items-center gap-6 mb-6">
-                  <div class="relative">
-                    <img
-                      src="/assets/images/profile.png"
-                      alt="تصویر پروفایل"
-                      class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg"
-                    />
-                    <button
-                      id="profile-image-button"
-                      class="absolute bottom-0 right-0 bg-primary text-white rounded-full p-2 shadow-lg hover:scale-110 transition-transform"
-                      aria-label="تغییر تصویر پروفایل"
-                    >
-                      <i data-feather="camera" class="w-4 h-4"></i>
-                    </button>
-                  </div>
-                  <div>
-                    <h2 class="text-2xl font-bold text-gray-800 mb-2">
-                      سلام، کوالا کوچولو
-                    </h2>
-                    <p class="text-gray-600 mb-2">عضو از: دی ۱۴۰۴</p>
-                    <div class="flex items-center gap-2">
-                      <div class="flex text-yellow-400">
-                        <i data-feather="star" class="w-4 h-4 fill-current"></i>
-                        <i data-feather="star" class="w-4 h-4 fill-current"></i>
-                        <i data-feather="star" class="w-4 h-4 fill-current"></i>
-                      </div>
-                      <span class="text-sm text-gray-600">مشتری عادی</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Stats Cards -->
-              <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                <div class="stats-card" data-aos="fade-up" data-aos-delay="100">
-                  <span class="stats-number">۰</span>
-                  <div class="stats-label">سفارش‌های کل</div>
-                </div>
-                <div class="stats-card" data-aos="fade-up" data-aos-delay="200">
-                  <span class="stats-number">۰</span>
-                  <div class="stats-label">در انتظار ارسال</div>
-                </div>
-                <div class="stats-card" data-aos="fade-up" data-aos-delay="300">
-                  <span class="stats-number">۰</span>
-                  <div class="stats-label">علاقه‌مندی‌ها</div>
-                </div>
-                <div class="stats-card" data-aos="fade-up" data-aos-delay="400">
-                  <span class="stats-number">۰%</span>
-                  <div class="stats-label">تخفیف ویژه</div>
-                </div>
-              </div>
-
-              <!-- Recent Orders -->
-              <div class="profile-card">
-                <div class="flex justify-between items-center mb-6">
-                  <h3 class="text-xl font-bold text-gray-800">
-                    آخرین سفارش‌ها
-                  </h3>
-                  <button class="btn-secondary" data-tab-link="orders">
-                    مشاهده همه
+        <!-- Main Content -->
+        <div class="lg:col-span-3">
+          <!-- Dashboard Tab -->
+          <div id="dashboard" class="tab-content" data-aos="fade-left">
+            <div class="profile-card mb-8">
+              <div class="flex items-center gap-6 mb-6">
+                <div class="relative">
+                  <img src="/assets/images/profile.png" alt="تصویر پروفایل"
+                    class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg" />
+                  <button id="profile-image-button"
+                    class="absolute bottom-0 right-0 bg-primary text-white rounded-full p-2 shadow-lg hover:scale-110 transition-transform"
+                    aria-label="تغییر تصویر پروفایل">
+                    <i data-feather="camera" class="w-4 h-4"></i>
                   </button>
                 </div>
-                <div class="space-y-4">
-                  <div class="text-center py-8 text-gray-500">
-                    <i
-                      data-feather="package"
-                      class="w-12 h-12 mx-auto mb-4 opacity-50"
-                    ></i>
-                    <p>در حال بارگذاری...</p>
+                <div>
+                  <h2 class="text-2xl font-bold text-gray-800 mb-2">
+                    سلام، کوالا کوچولو
+                  </h2>
+                  <p class="text-gray-600 mb-2">عضو از: دی ۱۴۰۴</p>
+                  <div class="flex items-center gap-2">
+                    <div class="flex text-yellow-400">
+                      <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                      <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                      <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                    </div>
+                    <span class="text-sm text-gray-600">مشتری عادی</span>
                   </div>
                 </div>
               </div>
             </div>
 
-            <!-- Orders Tab -->
-            <div id="orders" class="tab-content hidden" data-aos="fade-left">
-              <div class="profile-card">
-                <h2 class="text-2xl font-bold text-gray-800 mb-6">
-                  سفارش‌های من
-                </h2>
-
-                <!-- MODIFIED: Added order-filter-buttons class for responsive styling -->
-                <div
-                  class="order-filter-buttons flex gap-4 mb-6 overflow-x-auto pb-2"
-                >
-                  <button
-                    class="btn-primary btn-filter-order whitespace-nowrap"
-                  >
-                    همه (۰)
-                  </button>
-                  <button
-                    class="btn-secondary btn-filter-order whitespace-nowrap"
-                  >
-                    در انتظار پرداخت (۰)
-                  </button>
-                  <button
-                    class="btn-secondary btn-filter-order whitespace-nowrap"
-                  >
-                    در حال پردازش (۰)
-                  </button>
-                  <button
-                    class="btn-secondary btn-filter-order whitespace-nowrap"
-                  >
-                    ارسال شده (۰)
-                  </button>
-                  <button
-                    class="btn-secondary btn-filter-order whitespace-nowrap"
-                  >
-                    تحویل شده (۰)
-                  </button>
-                </div>
-
-                <div class="space-y-4">
-                  <div class="text-center py-8 text-gray-500">
-                    <i
-                      data-feather="package"
-                      class="w-12 h-12 mx-auto mb-4 opacity-50"
-                    ></i>
-                    <p>در حال بارگذاری...</p>
-                  </div>
-                </div>
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+              <div class="stats-card" data-aos="fade-up" data-aos-delay="100">
+                <span class="stats-number">۰</span>
+                <div class="stats-label">سفارش‌های کل</div>
+              </div>
+              <div class="stats-card" data-aos="fade-up" data-aos-delay="200">
+                <span class="stats-number">۰</span>
+                <div class="stats-label">در انتظار ارسال</div>
+              </div>
+              <div class="stats-card" data-aos="fade-up" data-aos-delay="300">
+                <span class="stats-number">۰</span>
+                <div class="stats-label">علاقه‌مندی‌ها</div>
+              </div>
+              <div class="stats-card" data-aos="fade-up" data-aos-delay="400">
+                <span class="stats-number">۰%</span>
+                <div class="stats-label">تخفیف ویژه</div>
               </div>
             </div>
 
-            <!-- Addresses Tab -->
-            <div id="addresses" class="tab-content hidden" data-aos="fade-left">
-              <div class="profile-card">
-                <!-- MODIFIED: Better responsive layout for header -->
-                <div
-                  class="addresses-header flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6"
-                >
-                  <h2 class="text-2xl font-bold text-gray-800">آدرس‌های من</h2>
-                  <!-- MODIFIED: Added btn-add-address class for responsive styling -->
-                  <button
-                    id="add-address-btn"
-                    class="btn-primary btn-add-address w-full sm:w-auto"
-                  >
-                    <i data-feather="plus" class="w-4 h-4"></i>
-                    <span>افزودن آدرس جدید</span>
-                  </button>
-                </div>
-
-                <div id="addresses-list" class="space-y-4">
-                  <div class="text-center py-8 text-gray-500">
-                    <i
-                      data-feather="map-pin"
-                      class="w-12 h-12 mx-auto mb-4 opacity-50"
-                    ></i>
-                    <p>در حال بارگذاری...</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Profile Settings Tab -->
-            <div
-              id="profile-settings"
-              class="tab-content hidden"
-              data-aos="fade-left"
-            >
-              <div class="profile-card">
-                <h2 class="text-2xl font-bold text-gray-800 mb-6">
-                  تنظیمات پروفایل
-                </h2>
-
-                <form id="profile-form" class="space-y-6">
-                  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="form-group">
-                      <label class="form-label">نام</label>
-                      <input
-                        type="text"
-                        name="firstName"
-                        id="firstName"
-                        value=""
-                        placeholder="کوالا"
-                        class="form-input"
-                      />
-                    </div>
-                    <div class="form-group">
-                      <label class="form-label">نام خانوادگی</label>
-                      <input
-                        type="text"
-                        name="lastName"
-                        id="lastName"
-                        value=""
-                        placeholder="کوچولو"
-                        class="form-input"
-                      />
-                    </div>
-                  </div>
-
-                  <div class="form-group">
-                    <label class="form-label">ایمیل</label>
-                    <input
-                      type="email"
-                      name="email"
-                      id="email"
-                      value=""
-                      class="form-input"
-                      readonly
-                      disabled
-                    />
-                  </div>
-
-                  <div class="form-group">
-                    <label class="form-label">شماره تلفن</label>
-                    <input
-                      type="tel"
-                      name="phone"
-                      id="phone"
-                      value=""
-                      placeholder="۰۹۱۲۳۴۵۶۷۸۹"
-                      class="form-input"
-                    />
-                  </div>
-
-                  <div class="form-group">
-                    <label class="form-label">تاریخ تولد</label>
-                    <input
-                      type="date"
-                      name="birthDate"
-                      id="birthDate"
-                      value=""
-                      class="form-input"
-                    />
-                  </div>
-
-                  <!-- Gender dropdown -->
-                  <div class="form-group">
-                    <label class="form-label">جنسیت</label>
-                    <div class="sort-select-wrapper" id="genderSelect">
-                      <button
-                        type="button"
-                        class="sort-select--button"
-                        aria-haspopup="listbox"
-                        aria-expanded="false"
-                      >
-                        <span class="sort-current">جنسیت: نامشخص</span>
-                        <i data-feather="chevron-down" class="w-4 h-4 icon"></i>
-                      </button>
-
-                      <div class="sort-menu" role="listbox" aria-label="جنسیت">
-                        <button
-                          type="button"
-                          class="sort-item"
-                          data-gender="undisclosed"
-                          role="option"
-                          aria-selected="true"
-                        >
-                          <span>نامشخص</span>
-                          <i data-feather="check" class="w-4 h-4"></i>
-                        </button>
-                        <button
-                          type="button"
-                          class="sort-item"
-                          data-gender="female"
-                          role="option"
-                          aria-selected="false"
-                        >
-                          <span>زن</span>
-                          <i data-feather="check" class="w-4 h-4"></i>
-                        </button>
-                        <button
-                          type="button"
-                          class="sort-item"
-                          data-gender="male"
-                          role="option"
-                          aria-selected="false"
-                        >
-                          <span>مرد</span>
-                          <i data-feather="check" class="w-4 h-4"></i>
-                        </button>
-                      </div>
-                    </div>
-                    <input
-                      type="hidden"
-                      name="gender"
-                      id="genderValue"
-                      value="undisclosed"
-                    />
-                  </div>
-
-                  <div class="flex gap-4">
-                    <button type="submit" class="btn-primary">
-                      ذخیره تغییرات
-                    </button>
-                    <button type="button" class="btn-secondary">انصراف</button>
-                  </div>
-                </form>
-              </div>
-
-              <!-- Change Password -->
-              <div class="profile-card mt-8">
-                <h3 class="text-xl font-bold text-gray-800 mb-6">
-                  تغییر رمز عبور
+            <!-- Recent Orders -->
+            <div class="profile-card">
+              <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold text-gray-800">
+                  آخرین سفارش‌ها
                 </h3>
-
-                <form id="password-form" class="space-y-6">
-                  <div class="form-group">
-                    <label class="form-label">رمز عبور فعلی</label>
-                    <input
-                      type="password"
-                      name="currentPassword"
-                      id="currentPassword"
-                      class="form-input"
-                    />
-                  </div>
-
-                  <div class="form-group">
-                    <label class="form-label">رمز عبور جدید</label>
-                    <input
-                      type="password"
-                      name="newPassword"
-                      id="newPassword"
-                      class="form-input"
-                    />
-                  </div>
-
-                  <div class="form-group">
-                    <label class="form-label">تکرار رمز عبور جدید</label>
-                    <input
-                      type="password"
-                      name="confirmPassword"
-                      id="confirmPassword"
-                      class="form-input"
-                    />
-                  </div>
-
-                  <button type="submit" class="btn-primary">
-                    تغییر رمز عبور
-                  </button>
-                </form>
+                <button class="btn-secondary" data-tab-link="orders">
+                  مشاهده همه
+                </button>
+              </div>
+              <div class="space-y-4">
+                <div class="text-center py-8 text-gray-500">
+                  <i data-feather="package" class="w-12 h-12 mx-auto mb-4 opacity-50"></i>
+                  <p>در حال بارگذاری...</p>
+                </div>
               </div>
             </div>
+          </div>
 
-            <!-- Notifications Tab -->
-            <div
-              id="notifications"
-              class="tab-content hidden"
-              data-aos="fade-left"
-            >
-              <div class="profile-card">
-                <h2 class="text-2xl font-bold text-gray-800 mb-6">
-                  تنظیمات اعلان‌ها
-                </h2>
+          <!-- Orders Tab -->
+          <div id="orders" class="tab-content hidden" data-aos="fade-left">
+            <div class="profile-card">
+              <h2 class="text-2xl font-bold text-gray-800 mb-6">
+                سفارش‌های من
+              </h2>
 
-                <div class="space-y-6">
-                  <div
-                    class="flex justify-between items-center py-4 border-b border-gray-100"
-                  >
-                    <div>
-                      <h4 class="font-semibold text-gray-800">
-                        اعلان‌های سفارش
-                      </h4>
-                      <p class="text-sm text-gray-600">
-                        دریافت اطلاعات وضعیت سفارش‌های شما
-                      </p>
-                    </div>
-                    <label
-                      class="toggle-switch relative inline-flex items-center cursor-pointer"
-                    >
-                      <input
-                        type="checkbox"
-                        id="notif-order-updates"
-                        checked
-                        class="sr-only"
-                      />
-                      <span class="switch"></span>
-                    </label>
+              <!-- MODIFIED: Added order-filter-buttons class for responsive styling -->
+              <div class="order-filter-buttons flex gap-4 mb-6 overflow-x-auto pb-2">
+                <button class="btn-primary btn-filter-order whitespace-nowrap">
+                  همه (۰)
+                </button>
+                <button class="btn-secondary btn-filter-order whitespace-nowrap">
+                  در انتظار پرداخت (۰)
+                </button>
+                <button class="btn-secondary btn-filter-order whitespace-nowrap">
+                  در حال پردازش (۰)
+                </button>
+                <button class="btn-secondary btn-filter-order whitespace-nowrap">
+                  ارسال شده (۰)
+                </button>
+                <button class="btn-secondary btn-filter-order whitespace-nowrap">
+                  تحویل شده (۰)
+                </button>
+              </div>
+
+              <div class="space-y-4">
+                <div class="text-center py-8 text-gray-500">
+                  <i data-feather="package" class="w-12 h-12 mx-auto mb-4 opacity-50"></i>
+                  <p>در حال بارگذاری...</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Addresses Tab -->
+          <div id="addresses" class="tab-content hidden" data-aos="fade-left">
+            <div class="profile-card">
+              <!-- MODIFIED: Better responsive layout for header -->
+              <div
+                class="addresses-header flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                <h2 class="text-2xl font-bold text-gray-800">آدرس‌های من</h2>
+                <!-- MODIFIED: Added btn-add-address class for responsive styling -->
+                <button id="add-address-btn" class="btn-primary btn-add-address w-full sm:w-auto">
+                  <i data-feather="plus" class="w-4 h-4"></i>
+                  <span>افزودن آدرس جدید</span>
+                </button>
+              </div>
+
+              <div id="addresses-list" class="space-y-4">
+                <div class="text-center py-8 text-gray-500">
+                  <i data-feather="map-pin" class="w-12 h-12 mx-auto mb-4 opacity-50"></i>
+                  <p>در حال بارگذاری...</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Profile Settings Tab -->
+          <div id="profile-settings" class="tab-content hidden" data-aos="fade-left">
+            <div class="profile-card">
+              <h2 class="text-2xl font-bold text-gray-800 mb-6">
+                تنظیمات پروفایل
+              </h2>
+
+              <form id="profile-form" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div class="form-group">
+                    <label class="form-label">نام</label>
+                    <input type="text" name="firstName" id="firstName" value="" placeholder="کوالا"
+                      class="form-input" />
                   </div>
-
-                  <div
-                    class="flex justify-between items-center py-4 border-b border-gray-100"
-                  >
-                    <div>
-                      <h4 class="font-semibold text-gray-800">
-                        اعلان‌های تخفیف و پیشنهادات
-                      </h4>
-                      <p class="text-sm text-gray-600">
-                        دریافت اطلاعات تخفیف‌ها و پیشنهادات ویژه
-                      </p>
-                    </div>
-                    <label
-                      class="toggle-switch relative inline-flex items-center cursor-pointer"
-                    >
-                      <input
-                        type="checkbox"
-                        id="notif-promotions"
-                        checked
-                        class="sr-only"
-                      />
-                      <span class="switch"></span>
-                    </label>
+                  <div class="form-group">
+                    <label class="form-label">نام خانوادگی</label>
+                    <input type="text" name="lastName" id="lastName" value="" placeholder="کوچولو" class="form-input" />
                   </div>
+                </div>
 
-                  <div
-                    class="flex justify-between items-center py-4 border-b border-gray-100"
-                  >
-                    <div>
-                      <h4 class="font-semibold text-gray-800">
-                        اعلان‌های محصولات جدید
-                      </h4>
-                      <p class="text-sm text-gray-600">
-                        آگاه شدن از محصولات و کالکشن‌های جدید
-                      </p>
-                    </div>
-                    <label
-                      class="toggle-switch relative inline-flex items-center cursor-pointer"
-                    >
-                      <input
-                        type="checkbox"
-                        id="notif-new-products"
-                        checked
-                        class="sr-only"
-                      />
-                      <span class="switch"></span>
-                    </label>
-                  </div>
+                <div class="form-group">
+                  <label class="form-label">ایمیل</label>
+                  <input type="email" name="email" id="email" value="" class="form-input" readonly disabled />
+                </div>
 
-                  <div
-                    class="flex justify-between items-center py-4 border-b border-gray-100"
-                  >
-                    <div>
-                      <h4 class="font-semibold text-gray-800">
-                        اعلان‌های بازاریابی
-                      </h4>
-                      <p class="text-sm text-gray-600">
-                        دریافت ایمیل‌های تبلیغاتی و محتوای مارکتینگ
-                      </p>
-                    </div>
-                    <label
-                      class="toggle-switch relative inline-flex items-center cursor-pointer"
-                    >
-                      <input
-                        type="checkbox"
-                        id="notif-marketing"
-                        class="sr-only"
-                      />
-                      <span class="switch"></span>
-                    </label>
-                  </div>
+                <div class="form-group">
+                  <label class="form-label">شماره تلفن</label>
+                  <input type="tel" name="phone" id="phone" value="" placeholder="۰۹۱۲۳۴۵۶۷۸۹" class="form-input" />
+                </div>
 
-                  <div class="pt-4">
-                    <button id="save-notifications-btn" class="btn-primary">
-                      ذخیره تنظیمات
+                <div class="form-group">
+                  <label class="form-label">تاریخ تولد</label>
+                  <input type="date" name="birthDate" id="birthDate" value="" class="form-input" />
+                </div>
+
+                <!-- Gender dropdown -->
+                <div class="form-group">
+                  <label class="form-label">جنسیت</label>
+                  <div class="sort-select-wrapper" id="genderSelect">
+                    <button type="button" class="sort-select--button" aria-haspopup="listbox" aria-expanded="false">
+                      <span class="sort-current">جنسیت: نامشخص</span>
+                      <i data-feather="chevron-down" class="w-4 h-4 icon"></i>
                     </button>
+
+                    <div class="sort-menu" role="listbox" aria-label="جنسیت">
+                      <button type="button" class="sort-item" data-gender="undisclosed" role="option"
+                        aria-selected="true">
+                        <span>نامشخص</span>
+                        <i data-feather="check" class="w-4 h-4"></i>
+                      </button>
+                      <button type="button" class="sort-item" data-gender="female" role="option" aria-selected="false">
+                        <span>زن</span>
+                        <i data-feather="check" class="w-4 h-4"></i>
+                      </button>
+                      <button type="button" class="sort-item" data-gender="male" role="option" aria-selected="false">
+                        <span>مرد</span>
+                        <i data-feather="check" class="w-4 h-4"></i>
+                      </button>
+                    </div>
                   </div>
+                  <input type="hidden" name="gender" id="genderValue" value="undisclosed" />
+                </div>
+
+                <div class="flex gap-4">
+                  <button type="submit" class="btn-primary">
+                    ذخیره تغییرات
+                  </button>
+                  <button type="button" class="btn-secondary">انصراف</button>
+                </div>
+              </form>
+            </div>
+
+            <!-- Change Password -->
+            <div class="profile-card mt-8">
+              <h3 class="text-xl font-bold text-gray-800 mb-6">
+                تغییر رمز عبور
+              </h3>
+
+              <form id="password-form" class="space-y-6">
+                <div class="form-group">
+                  <label class="form-label">رمز عبور فعلی</label>
+                  <input type="password" name="currentPassword" id="currentPassword" class="form-input" />
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">رمز عبور جدید</label>
+                  <input type="password" name="newPassword" id="newPassword" class="form-input" />
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">تکرار رمز عبور جدید</label>
+                  <input type="password" name="confirmPassword" id="confirmPassword" class="form-input" />
+                </div>
+
+                <button type="submit" class="btn-primary">
+                  تغییر رمز عبور
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <!-- Notifications Tab -->
+          <div id="notifications" class="tab-content hidden" data-aos="fade-left">
+            <div class="profile-card">
+              <h2 class="text-2xl font-bold text-gray-800 mb-6">
+                تنظیمات اعلان‌ها
+              </h2>
+
+              <div class="space-y-6">
+                <div class="flex justify-between items-center py-4 border-b border-gray-100">
+                  <div>
+                    <h4 class="font-semibold text-gray-800">
+                      اعلان‌های سفارش
+                    </h4>
+                    <p class="text-sm text-gray-600">
+                      دریافت اطلاعات وضعیت سفارش‌های شما
+                    </p>
+                  </div>
+                  <label class="toggle-switch relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="notif-order-updates" checked class="sr-only" />
+                    <span class="switch"></span>
+                  </label>
+                </div>
+
+                <div class="flex justify-between items-center py-4 border-b border-gray-100">
+                  <div>
+                    <h4 class="font-semibold text-gray-800">
+                      اعلان‌های تخفیف و پیشنهادات
+                    </h4>
+                    <p class="text-sm text-gray-600">
+                      دریافت اطلاعات تخفیف‌ها و پیشنهادات ویژه
+                    </p>
+                  </div>
+                  <label class="toggle-switch relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="notif-promotions" checked class="sr-only" />
+                    <span class="switch"></span>
+                  </label>
+                </div>
+
+                <div class="flex justify-between items-center py-4 border-b border-gray-100">
+                  <div>
+                    <h4 class="font-semibold text-gray-800">
+                      اعلان‌های محصولات جدید
+                    </h4>
+                    <p class="text-sm text-gray-600">
+                      آگاه شدن از محصولات و کالکشن‌های جدید
+                    </p>
+                  </div>
+                  <label class="toggle-switch relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="notif-new-products" checked class="sr-only" />
+                    <span class="switch"></span>
+                  </label>
+                </div>
+
+                <div class="flex justify-between items-center py-4 border-b border-gray-100">
+                  <div>
+                    <h4 class="font-semibold text-gray-800">
+                      اعلان‌های بازاریابی
+                    </h4>
+                    <p class="text-sm text-gray-600">
+                      دریافت ایمیل‌های تبلیغاتی و محتوای مارکتینگ
+                    </p>
+                  </div>
+                  <label class="toggle-switch relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="notif-marketing" class="sr-only" />
+                    <span class="switch"></span>
+                  </label>
+                </div>
+
+                <div class="pt-4">
+                  <button id="save-notifications-btn" class="btn-primary">
+                    ذخیره تنظیمات
+                  </button>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </section>
-
-    <!-- Address Modal (responsive + sticky header) -->
-    <div
-      id="address-modal"
-      class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center p-0 sm:p-4"
-      style="backdrop-filter: blur(4px)"
-    >
-      <div
-        class="bg-white w-full h-full sm:h-auto sm:max-w-2xl sm:rounded-2xl overflow-y-auto max-h-[100vh]"
-      >
-        <!-- Sticky header -->
-        <div
-          class="sticky top-0 z-10 flex justify-between items-center px-4 sm:px-6 py-4 border-b bg-white"
-        >
-          <h3
-            id="address-modal-title"
-            class="text-lg sm:text-2xl font-bold text-gray-800"
-          >
-            افزودن آدرس جدید
-          </h3>
-          <button
-            id="close-address-modal"
-            class="text-gray-500 hover:text-gray-700"
-          >
-            <i data-feather="x" class="w-5 h-5 sm:w-6 sm:h-6"></i>
-          </button>
-        </div>
-
-        <!-- Modal body -->
-        <div class="p-4 sm:p-6">
-          <form id="address-form" class="space-y-3 sm:space-y-4">
-            <input type="hidden" id="address-id" value="" />
-
-            <div class="form-group">
-              <label class="form-label text-sm sm:text-base"
-                >برچسب (اختیاری)</label
-              >
-              <input
-                type="text"
-                id="address-label"
-                placeholder="مثلاً: منزل، محل کار"
-                class="form-input text-sm sm:text-base"
-              />
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-              <div class="form-group">
-                <label class="form-label text-sm sm:text-base"
-                  >نام <span class="text-red-500">*</span></label
-                >
-                <input
-                  type="text"
-                  id="address-first-name"
-                  required
-                  class="form-input text-sm sm:text-base"
-                />
-              </div>
-              <div class="form-group">
-                <label class="form-label text-sm sm:text-base"
-                  >نام خانوادگی <span class="text-red-500">*</span></label
-                >
-                <input
-                  type="text"
-                  id="address-last-name"
-                  required
-                  class="form-input text-sm sm:text-base"
-                />
-              </div>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-              <div class="form-group">
-                <label class="form-label text-sm sm:text-base"
-                  >شماره تلفن <span class="text-red-500">*</span></label
-                >
-                <input
-                  type="tel"
-                  id="address-phone"
-                  required
-                  placeholder="۰۹۱۲۳۴۵۶۷۸۹"
-                  class="form-input text-sm sm:text-base"
-                />
-              </div>
-              <div class="form-group">
-                <label class="form-label text-sm sm:text-base"
-                  >کد پستی (اختیاری)</label
-                >
-                <input
-                  type="text"
-                  id="address-postal-code"
-                  placeholder="۱۲۳۴۵۶۷۸۹۰"
-                  class="form-input text-sm sm:text-base"
-                />
-              </div>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-              <div class="form-group">
-                <label class="form-label text-sm sm:text-base"
-                  >استان <span class="text-red-500">*</span></label
-                >
-                <input
-                  type="text"
-                  id="address-province"
-                  required
-                  placeholder="تهران"
-                  class="form-input text-sm sm:text-base"
-                />
-              </div>
-              <div class="form-group">
-                <label class="form-label text-sm sm:text-base"
-                  >شهر <span class="text-red-500">*</span></label
-                >
-                <input
-                  type="text"
-                  id="address-city"
-                  required
-                  placeholder="تهران"
-                  class="form-input text-sm sm:text-base"
-                />
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label text-sm sm:text-base"
-                >آدرس <span class="text-red-500">*</span></label
-              >
-              <textarea
-                id="address-line1"
-                required
-                rows="2"
-                placeholder="خیابان، کوچه، پلاک"
-                class="form-input text-sm sm:text-base"
-              ></textarea>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label text-sm sm:text-base"
-                >جزئیات آدرس (اختیاری)</label
-              >
-              <textarea
-                id="address-line2"
-                rows="2"
-                placeholder="واحد، طبقه و..."
-                class="form-input text-sm sm:text-base"
-              ></textarea>
-            </div>
-
-            <div class="flex items-center gap-2">
-              <input
-                type="checkbox"
-                id="address-is-default"
-                class="w-4 h-4 text-primary focus:ring-primary rounded"
-              />
-              <label
-                for="address-is-default"
-                class="text-xs sm:text-sm text-gray-700 cursor-pointer"
-              >
-                تنظیم به عنوان آدرس پیش‌فرض
-              </label>
-            </div>
-
-            <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-2 sm:pt-4">
-              <button
-                type="submit"
-                class="btn-primary flex-1 text-sm sm:text-base py-2 sm:py-3"
-              >
-                ذخیره آدرس
-              </button>
-              <button
-                type="button"
-                id="cancel-address-modal"
-                class="btn-secondary text-sm sm:text-base py-2 sm:py-3"
-              >
-                انصراف
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
     </div>
+  </section>
 
-    <!-- Profile Image Upload Input (Hidden) -->
-    <input
-      type="file"
-      id="profile-image-input"
-      accept="image/*"
-      class="hidden"
-    />
-
-    <!-- Search Overlay -->
-    <div id="search-overlay" class="search-overlay">
-      <div class="search-container">
-        <button id="close-search-button" class="close-search-button">
-          <i data-feather="x" class="w-8 h-8"></i>
+  <!-- Address Modal (responsive + sticky header) -->
+  <div id="address-modal"
+    class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center p-0 sm:p-4"
+    style="backdrop-filter: blur(4px)">
+    <div class="bg-white w-full h-full sm:h-auto sm:max-w-2xl sm:rounded-2xl overflow-y-auto max-h-[100vh]">
+      <!-- Sticky header -->
+      <div class="sticky top-0 z-10 flex justify-between items-center px-4 sm:px-6 py-4 border-b bg-white">
+        <h3 id="address-modal-title" class="text-lg sm:text-2xl font-bold text-gray-800">
+          افزودن آدرس جدید
+        </h3>
+        <button id="close-address-modal" class="text-gray-500 hover:text-gray-700">
+          <i data-feather="x" class="w-5 h-5 sm:w-6 sm:h-6"></i>
         </button>
-        <form class="search-form">
-          <input
-            type="search"
-            id="search-input"
-            placeholder="جستجو برای محصولات، برندها و..."
-            class="search-input"
-          />
-          <button type="submit" class="search-submit-button">
-            <i data-feather="search"></i>
-          </button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="p-4 sm:p-6">
+        <form id="address-form" class="space-y-3 sm:space-y-4">
+          <input type="hidden" id="address-id" value="" />
+
+          <div class="form-group">
+            <label class="form-label text-sm sm:text-base">برچسب (اختیاری)</label>
+            <input type="text" id="address-label" placeholder="مثلاً: منزل، محل کار"
+              class="form-input text-sm sm:text-base" />
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+            <div class="form-group">
+              <label class="form-label text-sm sm:text-base">نام <span class="text-red-500">*</span></label>
+              <input type="text" id="address-first-name" required class="form-input text-sm sm:text-base" />
+            </div>
+            <div class="form-group">
+              <label class="form-label text-sm sm:text-base">نام خانوادگی <span class="text-red-500">*</span></label>
+              <input type="text" id="address-last-name" required class="form-input text-sm sm:text-base" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+            <div class="form-group">
+              <label class="form-label text-sm sm:text-base">شماره تلفن <span class="text-red-500">*</span></label>
+              <input type="tel" id="address-phone" required placeholder="۰۹۱۲۳۴۵۶۷۸۹"
+                class="form-input text-sm sm:text-base" />
+            </div>
+            <div class="form-group">
+              <label class="form-label text-sm sm:text-base">کد پستی (اختیاری)</label>
+              <input type="text" id="address-postal-code" placeholder="۱۲۳۴۵۶۷۸۹۰"
+                class="form-input text-sm sm:text-base" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+            <div class="form-group">
+              <label class="form-label text-sm sm:text-base">استان <span class="text-red-500">*</span></label>
+              <input type="text" id="address-province" required placeholder="تهران"
+                class="form-input text-sm sm:text-base" />
+            </div>
+            <div class="form-group">
+              <label class="form-label text-sm sm:text-base">شهر <span class="text-red-500">*</span></label>
+              <input type="text" id="address-city" required placeholder="تهران"
+                class="form-input text-sm sm:text-base" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label text-sm sm:text-base">آدرس <span class="text-red-500">*</span></label>
+            <textarea id="address-line1" required rows="2" placeholder="خیابان، کوچه، پلاک"
+              class="form-input text-sm sm:text-base"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label text-sm sm:text-base">جزئیات آدرس (اختیاری)</label>
+            <textarea id="address-line2" rows="2" placeholder="واحد، طبقه و..."
+              class="form-input text-sm sm:text-base"></textarea>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <input type="checkbox" id="address-is-default" class="w-4 h-4 text-primary focus:ring-primary rounded" />
+            <label for="address-is-default" class="text-xs sm:text-sm text-gray-700 cursor-pointer">
+              تنظیم به عنوان آدرس پیش‌فرض
+            </label>
+          </div>
+
+          <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-2 sm:pt-4">
+            <button type="submit" class="btn-primary flex-1 text-sm sm:text-base py-2 sm:py-3">
+              ذخیره آدرس
+            </button>
+            <button type="button" id="cancel-address-modal" class="btn-secondary text-sm sm:text-base py-2 sm:py-3">
+              انصراف
+            </button>
+          </div>
         </form>
-        <div class="search-suggestions">
-          <p>پیشنهادات:</p>
-          <a href="#">سرم پوست</a>
-          <a href="#">رژ لب مات</a>
-          <a href="#">عطر Bloom</a>
-          <a href="#">کرم پودر</a>
-        </div>
       </div>
     </div>
+  </div>
 
-    <!-- Footer -->
-    <footer
-      id="about"
-      class="bg-gradient-to-b from-gray-900 to-black text-white py-20"
-    >
-      <div class="container mx-auto px-6">
-        <div
-          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-12"
-        >
-          <div class="lg:col-span-2">
-            <h3 class="text-3xl font-serif font-bold mb-6">KOALAW</h3>
-            <p class="text-gray-400 mb-6 leading-relaxed">
-              ارتقای زیبایی از طریق تجمل آگاهانه. هر محصول جشنی از بهترین مواد
-              طبیعی و علم نوآورانه است.
-            </p>
-            <div class="space-y-3 mb-8">
-              <div class="flex items-start gap-2 text-gray-300">
-                <i
-                  data-feather="map-pin"
-                  class="w-5 h-5 flex-shrink-0 mt-0.5"
-                ></i>
-                <address class="not-italic leading-relaxed">
-                  همدان، شهرک آیت‌الله مدنی
-                </address>
-              </div>
-              <div
-                class="rounded-xl overflow-hidden ring-1 ring-white/10 max-w-sm"
-              >
-                <iframe
-                  title="نقشه ایران، همدان، شهرک آیت‌الله مدنی"
-                  src="https://www.google.com/maps?q=ایران+همدان+شهرک+آیت+الله+مدنی&output=embed"
-                  width="100%"
-                  height="160"
-                  style="border: 0; filter: grayscale(20%)"
-                  allowfullscreen
-                  loading="lazy"
-                  referrerpolicy="no-referrer-when-downgrade"
-                ></iframe>
-              </div>
+  <!-- Profile Image Upload Input (Hidden) -->
+  <input type="file" id="profile-image-input" accept="image/*" class="hidden" />
+
+  <!-- Search Overlay -->
+  <div id="search-overlay" class="search-overlay">
+    <div class="search-container">
+      <button id="close-search-button" class="close-search-button">
+        <i data-feather="x" class="w-8 h-8"></i>
+      </button>
+      <form class="search-form">
+        <input type="search" id="search-input" placeholder="جستجو برای محصولات، برندها و..." class="search-input" />
+        <button type="submit" class="search-submit-button">
+          <i data-feather="search"></i>
+        </button>
+      </form>
+      <div class="search-suggestions">
+        <p>پیشنهادات:</p>
+        <a href="#">سرم پوست</a>
+        <a href="#">رژ لب مات</a>
+        <a href="#">عطر Bloom</a>
+        <a href="#">کرم پودر</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer id="about" class="bg-gradient-to-b from-gray-900 to-black text-white py-20">
+    <div class="container mx-auto px-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-12">
+        <div class="lg:col-span-2">
+          <h3 class="text-3xl font-serif font-bold mb-6">KOALAW</h3>
+          <p class="text-gray-400 mb-6 leading-relaxed">
+            ارتقای زیبایی از طریق تجمل آگاهانه. هر محصول جشنی از بهترین مواد
+            طبیعی و علم نوآورانه است.
+          </p>
+          <div class="space-y-3 mb-8">
+            <div class="flex items-start gap-2 text-gray-300">
+              <i data-feather="map-pin" class="w-5 h-5 flex-shrink-0 mt-0.5"></i>
+              <address class="not-italic leading-relaxed">
+                همدان، شهرک آیت‌الله مدنی
+              </address>
             </div>
-            <div class="flex gap-3">
-              <a
-                href="https://instagram.com/koalaw.shop"
-                target="_blank"
-                rel="noopener"
-                class="bg-gray-800 p-3 rounded-full hover:bg-gray-700 transition-all duration-300 transform hover:scale-110"
-              >
-                <i data-feather="instagram" class="w-5 h-5"></i>
+            <div class="rounded-xl overflow-hidden ring-1 ring-white/10 max-w-sm">
+              <iframe title="نقشه ایران، همدان، شهرک آیت‌الله مدنی"
+                src="https://www.google.com/maps?q=ایران+همدان+شهرک+آیت+الله+مدنی&output=embed" width="100%"
+                height="160" style="border: 0; filter: grayscale(20%)" allowfullscreen loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+          </div>
+          <div class="flex gap-3">
+            <a href="https://instagram.com/koalaw.shop" target="_blank" rel="noopener"
+              class="bg-gray-800 p-3 rounded-full hover:bg-gray-700 transition-all duration-300 transform hover:scale-110">
+              <i data-feather="instagram" class="w-5 h-5"></i>
+            </a>
+          </div>
+        </div>
+        <div id="footer-links" class="lg:col-span-3 grid grid-cols-2 md:grid-cols-3 gap-8"></div>
+      </div>
+      <div class="border-t border-gray-800 pt-8">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+          <div class="flex flex-col md:flex-row items-center mb-4 md:mb-0">
+            <p class="text-gray-400 text-sm mb-2 md:mb-0 md:ml-6">
+              © ۲۰۲۵ D.AI — تمام حقوق محفوظ است.
+            </p>
+            <div class="flex items-center gap-x-6 md:gap-x-8 text-sm flex-wrap">
+              <a href="/tos" class="text-gray-400 hover:text-white transition duration-300">
+                سیاست حفظ حریم خصوصی
               </a>
             </div>
           </div>
-          <div
-            id="footer-links"
-            class="lg:col-span-3 grid grid-cols-2 md:grid-cols-3 gap-8"
-          ></div>
-        </div>
-        <div class="border-t border-gray-800 pt-8">
-          <div class="flex flex-col md:flex-row justify-between items-center">
-            <div class="flex flex-col md:flex-row items-center mb-4 md:mb-0">
-              <p class="text-gray-400 text-sm mb-2 md:mb-0 md:ml-6">
-                © ۲۰۲۵ D.AI — تمام حقوق محفوظ است.
-              </p>
-              <div
-                class="flex items-center gap-x-6 md:gap-x-8 text-sm flex-wrap"
-              >
-                <a
-                  href="/tos"
-                  class="text-gray-400 hover:text-white transition duration-300"
-                >
-                  سیاست حفظ حریم خصوصی
-                </a>
-              </div>
-            </div>
-            <div class="flex items-center gap-x-4">
-              <span class="text-gray-400 text-sm ml-2">پرداخت امن:</span>
-              <img
-                src="/assets/images/visa.svg"
-                alt="Visa"
-                class="h-8 opacity-70 hover:opacity-100 transition-opacity duration-300"
-              />
-            </div>
+          <div class="flex items-center gap-x-4">
+            <span class="text-gray-400 text-sm ml-2">پرداخت امن:</span>
+            <img src="/assets/images/visa.svg" alt="Visa"
+              class="h-8 opacity-70 hover:opacity-100 transition-opacity duration-300" />
           </div>
         </div>
       </div>
-    </footer>
+    </div>
+  </footer>
 
-    <script src="/assets/js/utils.js"></script>
-    <script src="/assets/js/main.js"></script>
-    <script src="/assets/js/components/navbar.js"></script>
-    <script src="/assets/js/components/search.js"></script>
-    <script src="/assets/js/components/animations.js"></script>
-    <script src="/assets/js/components/cursor.js"></script>
-    <script src="/assets/js/pages/profile.js"></script>
-  </body>
+  <script src="/assets/js/utils.js"></script>
+  <script src="/assets/js/main.js"></script>
+  <script src="/assets/js/components/navbar.js"></script>
+  <script src="/assets/js/components/search.js"></script>
+  <script src="/assets/js/components/animations.js"></script>
+  <script src="/assets/js/components/cursor.js"></script>
+  <script src="/assets/js/pages/profile.js"></script>
+</body>
+
 </html>
