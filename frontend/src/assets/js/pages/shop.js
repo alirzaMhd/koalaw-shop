@@ -152,7 +152,7 @@
       const cIcon = iconMap[item.category] || "gift";
       const cLabel = labelMap[item.category] || "محصول";
       const img =
-        item.heroImageUrl || "/assets/images/products/placeholder.png";
+        item.heroImageUrl || "/assets/images/products/product.png";
       const { c1, c2 } = deriveCardColors(item);
       const catCls = `category-${String(item.category || "default")
         .toLowerCase()
