@@ -953,6 +953,155 @@ document.addEventListener("DOMContentLoaded", () => {
     // Execute the fetch
     fetchCampaignProducts();
   }
+
+  // ========== FETCH MAGAZINE ARTICLES FOR HOMEPAGE ==========
+  const magazineScroller = document.getElementById("magazine-scroller");
+  if (magazineScroller) {
+    const API_MAGAZINE = "/api/magazine/posts";
+
+    // Helper functions
+    const escapeHtml = (v) =>
+      String(v ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+    const toFa = (n) => {
+      try {
+        if (window.KUtils?.toFa) return window.KUtils.toFa(n);
+      } catch {}
+      return String(n);
+    };
+
+    // Format date to Persian
+    function formatPersianDate(dateString) {
+      if (!dateString) return "اخیراً";
+      try {
+        const date = new Date(dateString);
+        const options = { year: "numeric", month: "long", day: "numeric" };
+        return new Intl.DateTimeFormat("fa-IR", options).format(date);
+      } catch {
+        return "اخیراً";
+      }
+    }
+
+    // Category labels in Persian
+    const categoryLabels = {
+      GUIDE: "راهنما",
+      TUTORIAL: "آموزش",
+      LIFESTYLE: "لایف‌استایل",
+      TRENDS: "ترندها",
+      GENERAL: "عمومی",
+    };
+
+    async function fetchMagazineArticles() {
+      try {
+        const params = new URLSearchParams();
+        params.set("page", "1"); // First page only
+        params.set("size", "3"); // Exactly 3 articles
+        params.set("onlyPublished", "true"); // Only published articles
+        // ✅ ADD: Explicit sorting by newest
+        params.set("sortBy", "publishedAt"); // Sort by publish date
+        params.set("sortOrder", "desc"); // Descending (newest first)
+
+        console.log("Fetching 3 newest magazine articles:", params.toString());
+
+        const response = await fetch(`${API_MAGAZINE}?${params.toString()}`);
+        if (!response.ok) {
+          console.error("Failed to fetch magazine articles:", response.status);
+          return;
+        }
+
+        const data = await response.json();
+        console.log("Magazine Articles API Response:", data);
+
+        const articles = data.items || data.data?.items || [];
+
+        // ✅ ENSURE: Only take first 3 (in case backend returns more)
+        const topThree = articles.slice(0, 3);
+
+        if (topThree.length > 0) {
+          renderMagazineArticles(topThree);
+        } else {
+          console.warn("No magazine articles found");
+        }
+      } catch (error) {
+        console.error("Error fetching magazine articles:", error);
+      }
+    }
+
+    function renderMagazineArticles(articles) {
+      // Clear existing content
+      magazineScroller.innerHTML = "";
+
+      // ✅ VERIFY: Only render up to 3 articles
+      const limitedArticles = articles.slice(0, 3);
+
+      // Render each article
+      limitedArticles.forEach((article, index) => {
+        const category = article.category || "GENERAL";
+        const categoryLabel = categoryLabels[category] || "عمومی";
+        const image =
+          article.heroImageUrl || "/assets/images/magazine/article3.jpg";
+        const title = article.title || "مقاله";
+        const readTime = article.readTimeMinutes || 5;
+        const publishDate = formatPersianDate(article.publishedAt);
+        const slug = article.slug || "#";
+
+        const articleCard = document.createElement("a");
+        articleCard.href = `/magazine/${slug}`;
+        articleCard.className =
+          "group relative block h-72 rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 w-72 sm:w-80 md:w-96 lg:w-auto flex-shrink-0 snap-start";
+        articleCard.setAttribute("data-aos", "fade-up");
+        articleCard.setAttribute("data-aos-delay", index * 100);
+
+        articleCard.innerHTML = `
+        <img
+          src="${image}"
+          alt="${escapeHtml(title)}"
+          class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+        />
+        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
+        <div class="relative z-10 p-6 h-full flex flex-col justify-end text-white">
+          <div class="flex items-center gap-2 text-sm text-rose-200">
+            <i data-feather="tag" class="w-4 h-4"></i>
+            <span>${categoryLabel}</span>
+          </div>
+          <h3 class="mt-2 text-xl font-bold leading-8">
+            ${escapeHtml(title)}
+          </h3>
+          <div class="mt-3 flex items-center gap-4 text-sm text-rose-100/90">
+            <span class="inline-flex items-center gap-1">
+              <i data-feather="clock" class="w-4 h-4"></i>
+              ${toFa(readTime)} دقیقه
+            </span>
+            <span>${publishDate}</span>
+          </div>
+          <div class="mt-4 inline-flex items-center gap-2 text-sm font-semibold">
+            <span>ادامه مطلب</span>
+            <i data-feather="arrow-left" class="w-4 h-4 transition-transform duration-300 group-hover:-translate-x-1"></i>
+          </div>
+        </div>
+      `;
+
+        magazineScroller.appendChild(articleCard);
+      });
+
+      // Refresh icons and animations
+      if (window.KUtils?.refreshIcons) {
+        KUtils.refreshIcons();
+      }
+      if (window.AOS) {
+        AOS.refresh();
+      }
+    }
+
+    // Execute the fetch
+    fetchMagazineArticles();
+  }
+
   // Testimonials
   const tGrid = document.getElementById("testimonial-grid");
   if (tGrid) {
