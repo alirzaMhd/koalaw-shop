@@ -168,6 +168,7 @@ async function main() {
         ratingCount: 125,
         isBestseller: true,
         isFeatured: true,
+        isSpecialProduct: true,
         heroImageUrl: "/assets/images/products/lipstick-hero.jpg",
         images: {
           create: [
@@ -201,6 +202,7 @@ async function main() {
         ratingAvg: 4.8,
         ratingCount: 89,
         isFeatured: true,
+        isSpecialProduct: true,
         heroImageUrl: "/assets/images/products/serum-hero.jpg",
         variants: {
           create: [
@@ -245,6 +247,7 @@ async function main() {
         price: 2500000,
         ratingAvg: 4.2,
         ratingCount: 21,
+        isSpecialProduct: true,
         heroImageUrl: "/assets/images/products/perfume-hero.jpg",
         images: { create: [{ url: "/assets/images/products/perfume-1.jpg", alt: "ادو پارفوم", position: 0 }] },
         variants: {

@@ -736,6 +736,223 @@ document.addEventListener("DOMContentLoaded", () => {
     fetchBrands();
   }
 
+  // ========== FETCH SPECIAL PRODUCTS FOR CAMPAIGN SECTION ==========
+  const campaignContainer = document.querySelector(".campaign-section .grid");
+  if (campaignContainer) {
+    const API_PRODUCTS = "/api/products";
+
+    // Helper functions
+    const escapeHtml = (v) =>
+      String(v ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+    const toIRR = (n) => {
+      try {
+        if (window.KUtils?.toIRR) return window.KUtils.toIRR(n);
+      } catch {}
+      return new Intl.NumberFormat("fa-IR").format(Number(n || 0)) + " تومان";
+    };
+
+    const toFa = (n) => {
+      try {
+        if (window.KUtils?.toFa) return window.KUtils.toFa(n);
+      } catch {}
+      return String(n);
+    };
+
+    async function fetchCampaignProducts() {
+      try {
+        const params = new URLSearchParams();
+        params.set("page", "1");
+        params.set("perPage", "4"); // Get 4 special products
+        params.set("sort", "newest"); // Newest first
+        params.set("specialOnly", "true"); // Only special/discounted products
+        params.set("includeImages", "true");
+        params.set("activeOnly", "true");
+
+        console.log("Fetching campaign products:", params.toString());
+
+        const response = await fetch(`${API_PRODUCTS}?${params.toString()}`);
+        if (!response.ok) {
+          console.error("Failed to fetch campaign products:", response.status);
+          return;
+        }
+
+        const json = await response.json();
+        console.log("Campaign Products API Response:", json);
+        const products = json?.data?.items || [];
+
+        if (products.length > 0) {
+          renderCampaignProducts(products);
+        } else {
+          console.warn("No special products found for campaign");
+        }
+      } catch (error) {
+        console.error("Error fetching campaign products:", error);
+      }
+    }
+
+    function renderCampaignProducts(products) {
+      // Category labels for badges
+      const categoryLabels = {
+        SKINCARE: "مراقبت از پوست",
+        MAKEUP: "آرایش",
+        FRAGRANCE: "عطر",
+        HAIRCARE: "مراقبت از مو",
+        BODY_BATH: "بدن و حمام",
+      };
+
+      // Clear existing content
+      campaignContainer.innerHTML = "";
+
+      // ========== LARGE FEATURED CARD (First Product) ==========
+      if (products[0]) {
+        const product = products[0];
+        const image =
+          product.heroImageUrl || "/assets/images/products/skin.png";
+        const title = product.title || "محصول ویژه";
+        const description =
+          product.description ||
+          product.subtitle ||
+          "محصول ویژه با تخفیف استثنایی";
+        const category = categoryLabels[product.category] || "محصول ویژه";
+        const price = product.price || 0;
+        const discountPrice = product.discountPrice || price;
+        const discountPercent =
+          price > 0 ? Math.round(((price - discountPrice) / price) * 100) : 0;
+
+        const featuredCard = document.createElement("div");
+        featuredCard.className = "lg:col-span-2";
+        featuredCard.setAttribute("data-aos", "fade-right");
+        featuredCard.setAttribute("data-aos-duration", "700");
+        featuredCard.innerHTML = `
+        <a href="/product/${product.slug}" class="campaign-featured-card group">
+          <div class="campaign-featured-image-wrapper">
+            <img
+              src="${image}"
+              alt="${escapeHtml(title)}"
+              class="campaign-featured-image"
+            />
+          </div>
+          <div class="campaign-featured-content">
+            <span class="badge-cute bg-rose-100 text-rose-800 px-3 py-1 rounded-full text-sm font-semibold self-start">
+              <i data-feather="sparkles" class="w-4 h-4"></i>
+              <span>${discountPercent > 0 ? `${toFa(discountPercent)}% تخفیف` : "جدید و انحصاری"}</span>
+            </span>
+            <h3 class="text-3xl font-serif font-bold text-white mt-4 mb-3">
+              ${escapeHtml(title)}
+            </h3>
+            <p class="text-rose-100/90 mb-6 max-w-md">
+              ${escapeHtml(description)}
+            </p>
+            ${
+              discountPercent > 0
+                ? `
+              <div class="flex items-center gap-4 mb-6">
+                <span class="text-3xl font-bold text-white">${toIRR(discountPrice)}</span>
+                <span class="text-lg line-through text-rose-200/60">${toIRR(price)}</span>
+              </div>
+            `
+                : `
+              <div class="mb-6">
+                <span class="text-3xl font-bold text-white">${toIRR(price)}</span>
+              </div>
+            `
+            }
+            <div class="mt-auto pt-6">
+              <span class="inline-flex items-center gap-3 bg-white text-rose-900 font-bold px-8 py-4 rounded-full transition-all duration-300 group-hover:bg-rose-100 group-hover:shadow-lg">
+                <span>مشاهده محصول</span>
+                <i data-feather="arrow-left" class="w-5 h-5 transition-transform duration-300 group-hover:-translate-x-2"></i>
+              </span>
+            </div>
+          </div>
+        </a>
+      `;
+        campaignContainer.appendChild(featuredCard);
+      }
+
+      // ========== SIDE CARDS (3 smaller products) ==========
+      const sideCardsContainer = document.createElement("div");
+      sideCardsContainer.className = "flex flex-col gap-8";
+      sideCardsContainer.setAttribute("data-aos", "fade-left");
+      sideCardsContainer.setAttribute("data-aos-duration", "700");
+      sideCardsContainer.setAttribute("data-aos-delay", "200");
+
+      for (let i = 1; i < Math.min(products.length, 4); i++) {
+        const product = products[i];
+        const image =
+          product.heroImageUrl || "/assets/images/products/product.png";
+        const title = product.title || "محصول ویژه";
+        const description =
+          product.subtitle ||
+          product.description?.substring(0, 50) ||
+          "محصول ویژه با تخفیف";
+        const price = product.price || 0;
+        const discountPrice = product.discountPrice || price;
+        const discountPercent =
+          price > 0 ? Math.round(((price - discountPrice) / price) * 100) : 0;
+
+        const sideCard = document.createElement("a");
+        sideCard.href = `/product/${product.slug}`;
+        sideCard.className = "campaign-side-card group";
+        sideCard.innerHTML = `
+        <img
+          src="${image}"
+          alt="${escapeHtml(title)}"
+          class="campaign-side-image"
+        />
+        <div class="campaign-side-content">
+          ${
+            discountPercent > 0
+              ? `
+            <span class="inline-block bg-rose-500 text-white text-xs font-bold px-2 py-1 rounded-full mb-2">
+              ${toFa(discountPercent)}% تخفیف
+            </span>
+          `
+              : ""
+          }
+          <h4 class="font-bold text-lg text-gray-800">${escapeHtml(title)}</h4>
+          <p class="text-sm text-gray-500 mb-3">
+            ${escapeHtml(description)}
+          </p>
+          ${
+            discountPercent > 0
+              ? `
+            <div class="flex items-center gap-2">
+              <span class="font-semibold text-rose-700">${toIRR(discountPrice)}</span>
+              <span class="text-xs line-through text-gray-400">${toIRR(price)}</span>
+            </div>
+          `
+              : `
+            <span class="font-semibold text-rose-700">${toIRR(price)}</span>
+          `
+          }
+        </div>
+        <div class="campaign-side-arrow">
+          <i data-feather="chevron-left"></i>
+        </div>
+      `;
+        sideCardsContainer.appendChild(sideCard);
+      }
+
+      campaignContainer.appendChild(sideCardsContainer);
+
+      // Refresh icons and animations
+      if (window.KUtils?.refreshIcons) {
+        KUtils.refreshIcons();
+      }
+      if (window.AOS) {
+        AOS.refresh();
+      }
+    }
+
+    // Execute the fetch
+    fetchCampaignProducts();
+  }
   // Testimonials
   const tGrid = document.getElementById("testimonial-grid");
   if (tGrid) {
