@@ -46,6 +46,71 @@
     KUtils.refreshIcons();
     KUtils.buildFooterLinks();
 
+    // ========== AUTH & USER PROFILE ==========
+    let currentUser = null; // { id, email, profileImage, firstName, lastName }
+
+    // Check authentication and fetch user profile
+    async function checkAuth() {
+      try {
+        const res = await fetch("/api/auth/me", {
+          headers: { Accept: "application/json" },
+          credentials: "include", // include cookies
+        });
+
+        if (res.ok) {
+          const json = await res.json();
+          const user = json?.data?.user;
+
+          if (user) {
+            // Fetch full profile to get profile image
+            const profileRes = await fetch("/api/profile", {
+              headers: { Accept: "application/json" },
+              credentials: "include",
+            });
+
+            if (profileRes.ok) {
+              const profileJson = await profileRes.json();
+              const profile = profileJson?.data?.profile;
+
+              currentUser = {
+                id: user.id,
+                email: user.email,
+                firstName: profile?.firstName || "کاربر",
+                lastName: profile?.lastName || "",
+                profileImage:
+                  profile?.profileImage || "/assets/images/profile.png",
+              };
+
+              return true;
+            }
+          }
+        }
+      } catch (err) {
+        console.warn("Not authenticated or failed to fetch profile:", err);
+      }
+
+      currentUser = null;
+      return false;
+    }
+
+    // Call auth check at page load
+    const isAuthenticated = await checkAuth();
+
+    // Update review form based on auth status
+    if (isAuthenticated && currentUser) {
+      // Hide name field for authenticated users
+      if (reviewName) {
+        reviewName.value =
+          `${currentUser.firstName} ${currentUser.lastName}`.trim();
+        reviewName.disabled = true;
+        reviewName.classList.add("bg-gray-100");
+        const label = reviewName.parentElement?.querySelector("label");
+        if (label) label.textContent = "نام شما (وارد شده)";
+      }
+    }
+
+    // ========== END AUTH ==========
+
     // ---- Cart + Toast helpers ----
     const CART_KEY = "koalaw_cart";
 
@@ -117,6 +182,7 @@
 
     // ----------- Helpers -----------
     const API_BASE = "/api/products";
+    const REVIEWS_API = "/api/reviews"; // NEW
 
     const toFa = (n) => {
       try {
@@ -187,13 +253,12 @@
       const parts = url.pathname.split("/").filter(Boolean);
       if (!parts.length) return null;
 
-      // Support: /product/:slug, /products/:slug, /p/:slug, /shop/:category/:slug
       const prev = parts[parts.length - 2];
       if (["product", "products", "p"].includes(prev))
         return parts[parts.length - 1];
-      if (parts.length >= 3) return parts[parts.length - 1]; // /shop/:category/:slug
+      if (parts.length >= 3) return parts[parts.length - 1];
 
-      return parts[parts.length - 1]; // fallback
+      return parts[parts.length - 1];
     };
     const setVisible = (el, visible) =>
       el && el.classList.toggle("hidden", !visible);
@@ -264,7 +329,7 @@
 
     // ========== INVENTORY-AWARE QUANTITY SYSTEM ==========
     let quantity = 1;
-    let availableStock = 0; // Will be updated when product loads
+    let availableStock = 0;
     let selectedVariantId = null;
     const addBtn = document.querySelector(".add-to-cart-btn");
 
@@ -275,7 +340,6 @@
         badge = document.createElement("div");
         badge.id = "stock-badge";
         badge.className = "text-sm font-medium mb-4 flex items-center gap-2";
-        // Insert before quantity selector
         const qtyContainer =
           document.querySelector(".quantity-selector")?.parentElement;
         if (qtyContainer) {
@@ -307,12 +371,10 @@
       KUtils?.refreshIcons?.();
     };
 
-    // Render quantity with stock-aware button states
     const renderQty = () => {
       if (!qtyDisplay) return;
       qtyDisplay.textContent = toFa(quantity);
 
-      // Update decrement button
       const decBtn = document.querySelector('.quantity-btn[data-action="dec"]');
       if (decBtn) {
         const isDisabled = quantity <= 1;
@@ -321,7 +383,6 @@
         decBtn.style.cursor = isDisabled ? "not-allowed" : "pointer";
       }
 
-      // Update increment button
       const incBtn = document.querySelector('.quantity-btn[data-action="inc"]');
       if (incBtn) {
         const isDisabled = quantity >= availableStock;
@@ -330,7 +391,6 @@
         incBtn.style.cursor = isDisabled ? "not-allowed" : "pointer";
       }
 
-      // Update Add to Cart button
       if (addBtn) {
         if (availableStock <= 0) {
           addBtn.disabled = true;
@@ -347,15 +407,12 @@
       }
     };
 
-    // Initial render
     renderQty();
 
-    // Quantity button handlers with inventory limits
     document.addEventListener("click", (e) => {
       const btn = e.target.closest(".quantity-btn");
       if (!btn || btn.disabled) return;
 
-      // Robust detection: works with dataset and with Feather-replaced SVG
       const isMinus =
         btn.dataset.action === "dec" ||
         !!btn.querySelector(
@@ -365,7 +422,6 @@
       if (isMinus) {
         quantity = Math.max(1, quantity - 1);
       } else {
-        // Respect stock limit
         if (quantity < availableStock) {
           quantity = quantity + 1;
         } else {
@@ -399,11 +455,13 @@
       })
     );
 
-    // Reviews count + interactive rating
+    // ========== REVIEWS SYSTEM (BACKEND-INTEGRATED) ==========
     let currentRating = 0;
-    let initialReviewsCount = 0; // from DB
+    let initialReviewsCount = 0;
     let userReviewsCount = 0;
     let currentAvgRating = 0;
+    let currentProductId = null; // Store product ID for review submission
+
     const updateReviewCounts = () => {
       const total = initialReviewsCount + userReviewsCount;
       const fa = toFa(total);
@@ -439,39 +497,71 @@
     };
     setupRatingControl();
 
-    // Submit review -> POST to API, optimistic render
+    // Helper to get avatar for review
+    const getReviewAvatar = (review) => {
+      // If current user and this is their review, use their profile image
+      if (currentUser && review.userId === currentUser.id) {
+        return currentUser.profileImage;
+      }
+      // Default koala avatar
+      return "/assets/images/profile.png";
+    };
+
+    // Submit review -> POST to /api/reviews
     reviewForm &&
       reviewForm.addEventListener("submit", async (e) => {
         e.preventDefault();
+
         if (currentRating < 1) {
-          alert("لطفاً امتیاز بدهید.");
+          showToast("لطفاً امتیاز بدهید", "alert-circle");
           return;
         }
-        const name = (reviewName?.value || "").trim();
-        const text = (reviewText?.value || "").trim();
-        if (!name || !text) return;
 
+        const text = (reviewText?.value || "").trim();
+        if (!text) {
+          showToast("لطفاً متن نظر را وارد کنید", "alert-circle");
+          return;
+        }
+
+        if (!currentProductId) {
+          showToast("خطا در شناسایی محصول", "x-circle");
+          return;
+        }
+
+        // Build payload
         const payload = {
+          productId: currentProductId,
           rating: currentRating,
           body: text,
-          guestName: name,
+          title: null, // Optional: add title field to form if needed
         };
 
+        // Add guestName only if not authenticated
+        if (!isAuthenticated) {
+          const name = (reviewName?.value || "").trim();
+          if (!name) {
+            showToast("لطفاً نام خود را وارد کنید", "alert-circle");
+            return;
+          }
+          payload.guestName = name;
+        }
+
         try {
-          const slug = parseSlugFromUrl();
-          const res = await fetch(
-            `${API_BASE}/slug/${encodeURIComponent(slug)}/reviews`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Accept: "application/json",
-              },
-              credentials: "same-origin",
-              body: JSON.stringify(payload),
-            }
-          );
-          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          const res = await fetch(REVIEWS_API, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+            credentials: "include", // Include auth cookies
+            body: JSON.stringify(payload),
+          });
+
+          if (!res.ok) {
+            const errorJson = await res.json().catch(() => ({}));
+            throw new Error(errorJson?.message || `HTTP ${res.status}`);
+          }
+
           const json = await res.json();
           const r = json?.data?.review;
 
@@ -486,19 +576,25 @@
             )
             .join("");
 
-          const avatarSeed =
-            Math.random() > 0.5
-              ? "/assets/images/authors/maryam-rezaei.jpg"
-              : "/assets/images/authors/sara-ahmadi.jpg";
+          // Use current user's avatar if authenticated
+          const avatarUrl = currentUser
+            ? currentUser.profileImage
+            : "/assets/images/profile.png";
+
+          const displayName = currentUser
+            ? `${currentUser.firstName} ${currentUser.lastName}`.trim()
+            : payload.guestName || "کاربر";
+
           const card = document.createElement("div");
           card.className = "review-card";
           card.innerHTML = `
             <div class="flex items-center justify-between mb-3">
               <div class="flex items-center gap-3">
-                <img src="${avatarSeed}" class="w-10 h-10 rounded-full" alt="avatar">
-                <div><div class="font-semibold">${escapeHtml(
-                  r?.authorName || name
-                )}</div><div class="text-sm text-gray-500">لحظاتی پیش</div></div>
+                <img src="${avatarUrl}" class="w-10 h-10 rounded-full object-cover" alt="avatar">
+                <div>
+                  <div class="font-semibold">${escapeHtml(displayName)}</div>
+                  <div class="text-sm text-gray-500">لحظاتی پیش</div>
+                </div>
               </div>
               <div class="stars">${starsHtml}</div>
             </div>
@@ -507,15 +603,15 @@
           reviewsList?.prepend(card);
           KUtils.refreshIcons();
 
-          // Reset
+          // Reset form
           reviewForm.reset();
+          if (!isAuthenticated && reviewName) reviewName.value = "";
           currentRating = 0;
           setupRatingControl();
-          reviewMsg &&
-            (reviewMsg.classList.remove("hidden"),
-            setTimeout(() => reviewMsg.classList.add("hidden"), 2000));
 
-          // Update counts and top rating (approx)
+          showToast("نظر شما با موفقیت برای تایید به ادمین داده شد ✨", "check-circle");
+
+          // Update counts and top rating
           const oldCount = initialReviewsCount + userReviewsCount;
           const newAvg =
             (currentAvgRating * oldCount + payload.rating) /
@@ -527,9 +623,11 @@
           updateReviewCounts();
         } catch (err) {
           console.error("Failed to submit review:", err);
-          alert("خطا در ثبت نظر. لطفاً دوباره تلاش کنید.");
+          showToast(err.message || "خطا در ثبت نظر", "x-circle");
         }
       });
+
+    // ========== END REVIEWS SYSTEM ==========
 
     // Helper to fill star icons in product cards (after feather.replace)
     const fillCardStars = (root) => {
@@ -570,6 +668,9 @@
       const p = json?.data?.product;
       if (!p) throw new Error("Product not found in response");
 
+      // Store product ID for review submissions
+      currentProductId = p.id;
+
       // Update <title>
       try {
         document.title = `KOALAW | ${p.title} - محصولات لوکس آرایش`;
@@ -580,7 +681,7 @@
         productCategoryEl.textContent = categoryLabel(p.category);
       if (productTitleEl) productTitleEl.textContent = p.title || "";
 
-      // Breadcrumb (update last title + category link if possible)
+      // Breadcrumb
       const breadcrumb = document.querySelector(".breadcrumb");
       if (breadcrumb) {
         const last = breadcrumb.querySelector("span:last-child");
@@ -592,7 +693,7 @@
         }
       }
 
-      // Rating + review counts (use reviewSummary if present)
+      // Rating + review counts
       const sum = p.reviewSummary || {};
       currentAvgRating = Number(
         typeof sum.ratingAvg === "number" ? sum.ratingAvg : p.ratingAvg
@@ -606,7 +707,7 @@
       userReviewsCount = 0;
       updateReviewCounts();
 
-      // Badge chip over image (legacy visual)
+      // Badge chip
       const showLegacyBadges = () => {
         const hasDiscount =
           typeof p.compareAtPrice === "number" && p.compareAtPrice > p.price;
@@ -641,7 +742,7 @@
       };
       renderDbBadgeChip();
 
-      // Badges grid (DB-driven)
+      // Badges grid
       const renderDbBadgesGrid = () => {
         if (!badgesGrid) return;
         const badges = Array.isArray(p.badges) ? p.badges : [];
@@ -670,7 +771,7 @@
       };
       renderDbBadgesGrid();
 
-      // Images (hero + gallery)
+      // Images
       const images = (p.images && p.images.length ? p.images : [])
         .slice()
         .sort((a, b) => a.position - b.position);
@@ -695,29 +796,23 @@
 
       // ========== INVENTORY-AWARE VARIANT SYSTEM ==========
 
-      // Calculate available stock based on selected variant
       const getAvailableStock = () => {
         if (!selectedVariantId) {
-          // No variant selected: use product.stock if exists, else assume high stock
           return p.stock ?? 999;
         }
         const v = (p.variants || []).find((x) => x.id === selectedVariantId);
         return v?.stock ?? 0;
       };
 
-      // Update stock display and quantity limits
       const updateStock = () => {
         availableStock = getAvailableStock();
-        // Clamp quantity to valid range
         quantity = Math.min(quantity, Math.max(1, availableStock));
         if (quantity < 1) quantity = 1;
         renderQty();
         updateStockBadge();
       };
 
-      // Variants selector with stock awareness
       if (Array.isArray(p.variants) && p.variants.length > 0) {
-        // Select first IN-STOCK variant, or first variant if all out of stock
         const firstInStock = p.variants.find(
           (v) => v.stock > 0 && v.isActive !== false
         );
@@ -746,7 +841,6 @@
             btn.dataset.variantId = v.id;
             btn.title = outOfStock ? "ناموجود" : `موجود: ${toFa(v.stock)} عدد`;
 
-            // Initial state
             if (v.id === selectedVariantId) {
               btn.classList.add(...SELECTED);
             } else {
@@ -757,18 +851,16 @@
               btn.addEventListener("click", () => {
                 selectedVariantId = v.id;
 
-                // Reset all to unselected
                 list.querySelectorAll("button").forEach((b) => {
                   b.classList.remove(...SELECTED);
                   b.classList.add(...UNSELECTED);
                 });
 
-                // Apply selected
                 btn.classList.remove(...UNSELECTED);
                 btn.classList.add(...SELECTED);
 
                 renderPrice();
-                updateStock(); // Update stock limits
+                updateStock();
               });
             } else {
               btn.disabled = true;
@@ -781,12 +873,11 @@
         variantsContainer && variantsContainer.classList.add("hidden");
       }
 
-      // Initialize stock display
       updateStock();
 
       // ========== END INVENTORY-AWARE VARIANT SYSTEM ==========
 
-      // Price (reactive to variant selection)
+      // Price
       const currentPrice = () => {
         if (!selectedVariantId) return p.price;
         const v = (p.variants || []).find((x) => x.id === selectedVariantId);
@@ -815,10 +906,9 @@
       };
       renderPrice();
 
-      // ========== INVENTORY-AWARE ADD TO CART ==========
+      // Add to cart
       if (addBtn) {
         addBtn.addEventListener("click", () => {
-          // Validate stock availability
           if (availableStock <= 0) {
             showToast("این محصول ناموجود است", "x-circle");
             return;
@@ -850,7 +940,6 @@
           const cart = loadCart();
           const idx = cart.findIndex((x) => x.id === lineId);
 
-          // Check total quantity in cart
           const existingQty = idx > -1 ? cart[idx].qty : 0;
           const totalQty = existingQty + quantity;
 
@@ -888,9 +977,8 @@
           setTimeout(() => addBtn.classList.remove("opacity-90"), 200);
         });
       }
-      // ========== END INVENTORY-AWARE ADD TO CART ==========
 
-      // Tabs content (hide if empty)
+      // Tabs content
       const setHtmlOrHide = (tabName, mountEl, html) => {
         const btn = Array.from(tabButtons).find(
           (b) => b.dataset.tab === tabName
@@ -902,7 +990,6 @@
         if (has && mountEl) mountEl.innerHTML = html;
       };
 
-      // Description: as paragraphs
       const descHtml = (p.description || "")
         .split(/\n{2,}/)
         .map(
@@ -914,7 +1001,6 @@
         .join("");
       setHtmlOrHide("description", descriptionBody, descHtml);
 
-      // Ingredients: list or paragraph
       let ingHtml = "";
       if (p.ingredients) {
         const parts = p.ingredients
@@ -934,7 +1020,6 @@
       }
       setHtmlOrHide("ingredients", ingredientsBody, ingHtml);
 
-      // Usage: each line = step
       let usageHtml = "";
       if (p.howToUse) {
         const steps = p.howToUse
@@ -955,7 +1040,7 @@
       }
       setHtmlOrHide("usage", usageBody, usageHtml);
 
-      // Reviews: render from DB (p.reviews)
+      // Reviews: render from DB with avatar logic
       const renderStars = (n) =>
         Array(5)
           .fill(0)
@@ -971,18 +1056,17 @@
         reviewsList.innerHTML = "";
         const reviews = Array.isArray(p.reviews) ? p.reviews : [];
         reviews.forEach((r) => {
-          const avatarSeed =
-            Math.random() > 0.5
-              ? "/assets/images/authors/maryam-rezaei.jpg"
-              : "/assets/images/authors/sara-ahmadi.jpg";
+          // Use authenticated user's avatar if this is their review
+          const avatarUrl = getReviewAvatar(r);
+
           const card = document.createElement("div");
           card.className = "review-card";
           card.innerHTML = `
             <div class="flex items-center justify-between mb-3">
               <div class="flex items-center gap-3">
                 <img
-                  src="${avatarSeed}"
-                  class="w-10 h-10 rounded-full"
+                  src="${avatarUrl}"
+                  class="w-10 h-10 rounded-full object-cover"
                   alt="avatar"
                 />
                 <div>
@@ -1003,7 +1087,7 @@
         KUtils.refreshIcons();
       }
 
-      // Related products: render DB list and link to /product/:slug
+      // Related products
       const renderRelated = () => {
         if (!relatedList || !relatedSection) return;
         const items = Array.isArray(p.related) ? p.related : [];
@@ -1063,21 +1147,17 @@
           relatedList.appendChild(card);
         });
 
-        // Refresh icons and fill star fills based on rating number
         KUtils.refreshIcons();
         fillCardStars(relatedList);
       };
       renderRelated();
 
-      // Ensure first visible tab is selected
       const firstVisible = Array.from(tabButtons).find(
         (b) => !b.classList.contains("hidden")
       );
       if (firstVisible) showTabByName(firstVisible.dataset.tab);
 
-      // Refresh icons after DOM mutations
       KUtils.refreshIcons();
-      // Repaint rating stars after feather.replace
       setTopRating(currentAvgRating);
     } catch (err) {
       console.error("Failed to load product:", err);

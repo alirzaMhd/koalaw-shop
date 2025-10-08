@@ -5,6 +5,7 @@ import type { Request, Response, NextFunction, RequestHandler } from "express";
 import { z } from "zod";
 import { AppError } from "../../common/errors/AppError.js";
 import { reviewService, type ReviewStatus } from "./review.service.js";
+import logger from "../../config/logger.js";
 
 function ok(res: Response, data: any, status = 200) {
   return res.status(status).json({ success: true, data });
@@ -163,26 +164,36 @@ class ReviewController {
   };
 
   // POST /reviews (auth optional; guestName required when unauthenticated)
-  create: RequestHandler = async (req: AuthenticatedRequest, res, next) => {
-    try {
-      const body = await createSchema.parseAsync(req.body ?? {});
-      const { userId } = getRequester(req);
+  // In review.controller.ts, update the create method
 
-      const review = await reviewService.create({
-        productId: body.productId,
-        rating: body.rating,
-        body: body.body,
-        title: body.title ?? null,
-        userId: userId ?? null,
-        guestName: userId ? null : body.guestName ?? null,
-      });
+create: RequestHandler = async (req: AuthenticatedRequest, res, next) => {
+  try {
+    const body = await createSchema.parseAsync(req.body ?? {});
+    const { userId } = getRequester(req);
 
-      return ok(res, { review }, 201);
-    } catch (err: any) {
-      if (err?.issues?.length) return next(new AppError(err?.issues[0].message, 422, "VALIDATION_ERROR"));
-      next(err);
-    }
-  };
+    // DEBUG: Remove after testing
+    logger.debug({
+      userId,
+      hasReqUser: !!req.user,
+      guestName: body.guestName,
+      productId: body.productId,
+    }, "Review creation request");
+
+    const review = await reviewService.create({
+      productId: body.productId,
+      rating: body.rating,
+      body: body.body,
+      title: body.title ?? null,
+      userId: userId ?? null,
+      guestName: userId ? null : body.guestName ?? null,
+    });
+
+    return ok(res, { review }, 201);
+  } catch (err: any) {
+    if (err?.issues?.length) return next(new AppError(err?.issues[0].message, 422, "VALIDATION_ERROR"));
+    next(err);
+  }
+};
 
   // PATCH /reviews/:id (owner can edit while not approved; admin can edit anytime)
   updateContent: RequestHandler = async (req: AuthenticatedRequest, res, next) => {
