@@ -3,7 +3,8 @@
 import { Queue, Worker, QueueEvents } from "bullmq";
 import { env } from "../../config/env.js";
 import { logger } from "../../config/logger.js";
-function connection() {
+// Export connection factory function
+export function getRedisConnection() {
     if (env.REDIS_URL)
         return { url: String(env.REDIS_URL) };
     return {
@@ -13,6 +14,10 @@ function connection() {
         db: env.REDIS_DB ? Number(env.REDIS_DB) : undefined,
         tls: String(env.REDIS_TLS || "false") === "true" ? {} : undefined,
     };
+}
+// Legacy function name for backwards compatibility
+function connection() {
+    return getRedisConnection();
 }
 // Common queues
 export const emailQueue = new Queue("email", { connection: connection() });

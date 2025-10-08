@@ -1,6 +1,6 @@
 // src/infrastructure/queue/workers/newsletter.worker.ts
 import { Worker, Job } from "bullmq";
-import getRedisConnection from "../bullmq.js";
+import { getRedisConnection } from "../bullmq.js"; // Named import, not default
 import { newsletterService } from "../../../modules/newsletter/newsletter.service.js";
 import { logger } from "../../../config/logger.js";
 // Create worker for the "email" queue, filtering by job name
@@ -39,14 +39,12 @@ async (job) => {
         throw error; // Re-throw to trigger BullMQ retry logic
     }
 }, {
-    connection: getRedisConnection,
+    connection: getRedisConnection(), // Call the function to get connection object
     concurrency: 5, // Process 5 emails concurrently
     limiter: {
         max: 100, // Max 100 emails
         duration: 60000, // per minute (60 seconds)
     },
-    // Only process newsletter jobs
-    // (Note: BullMQ will still fetch all jobs, but we filter in the processor)
 });
 // Event listeners for monitoring
 newsletterWorker.on("completed", (job) => {
