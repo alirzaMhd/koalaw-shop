@@ -155,10 +155,10 @@
             ">": "&gt;",
             '"': "&quot;",
             "'": "&#039;",
-          }[m])
+          })[m]
       );
     const categoryLabel = (cat) => {
-      category = cat.toLowerCase();
+      const category = cat.toLowerCase();
       const map = {
         skincare: "مراقبت از پوست",
         makeup: "آرایش",
@@ -169,7 +169,7 @@
       return map[category] || category || "";
     };
     const categoryIcon = (cat) => {
-      category = cat.toLowerCase();
+      const category = cat.toLowerCase();
       const map = {
         skincare: "shield",
         makeup: "star",
@@ -262,25 +262,124 @@
         img.closest(".thumbnail")?.classList.add("active");
       });
 
-    // Quantity
+    // ========== INVENTORY-AWARE QUANTITY SYSTEM ==========
     let quantity = 1;
-    const renderQty = () => {
-      qtyDisplay && (qtyDisplay.textContent = toFa(quantity));
+    let availableStock = 0; // Will be updated when product loads
+    let selectedVariantId = null;
+    const addBtn = document.querySelector(".add-to-cart-btn");
+
+    // Stock badge UI component
+    const updateStockBadge = () => {
+      let badge = document.getElementById("stock-badge");
+      if (!badge) {
+        badge = document.createElement("div");
+        badge.id = "stock-badge";
+        badge.className = "text-sm font-medium mb-4 flex items-center gap-2";
+        // Insert before quantity selector
+        const qtyContainer =
+          document.querySelector(".quantity-selector")?.parentElement;
+        if (qtyContainer) {
+          qtyContainer.insertBefore(badge, qtyContainer.firstChild);
+        }
+      }
+
+      if (availableStock <= 0) {
+        badge.innerHTML = `
+          <i data-feather="x-circle" class="w-4 h-4 text-red-600"></i>
+          <span class="text-red-600 font-semibold">ناموجود</span>
+        `;
+      } else if (availableStock <= 5) {
+        badge.innerHTML = `
+          <i data-feather="alert-circle" class="w-4 h-4 text-orange-600"></i>
+          <span class="text-orange-600">تنها ${toFa(availableStock)} عدد باقی مانده</span>
+        `;
+      } else if (availableStock <= 20) {
+        badge.innerHTML = `
+          <i data-feather="check-circle" class="w-4 h-4 text-green-600"></i>
+          <span class="text-green-600">موجود (${toFa(availableStock)} عدد)</span>
+        `;
+      } else {
+        badge.innerHTML = `
+          <i data-feather="check-circle" class="w-4 h-4 text-green-600"></i>
+          <span class="text-green-600">موجود</span>
+        `;
+      }
+      KUtils?.refreshIcons?.();
     };
+
+    // Render quantity with stock-aware button states
+    const renderQty = () => {
+      if (!qtyDisplay) return;
+      qtyDisplay.textContent = toFa(quantity);
+
+      // Update decrement button
+      const decBtn = document.querySelector('.quantity-btn[data-action="dec"]');
+      if (decBtn) {
+        const isDisabled = quantity <= 1;
+        decBtn.disabled = isDisabled;
+        decBtn.style.opacity = isDisabled ? "0.4" : "1";
+        decBtn.style.cursor = isDisabled ? "not-allowed" : "pointer";
+      }
+
+      // Update increment button
+      const incBtn = document.querySelector('.quantity-btn[data-action="inc"]');
+      if (incBtn) {
+        const isDisabled = quantity >= availableStock;
+        incBtn.disabled = isDisabled;
+        incBtn.style.opacity = isDisabled ? "0.4" : "1";
+        incBtn.style.cursor = isDisabled ? "not-allowed" : "pointer";
+      }
+
+      // Update Add to Cart button
+      if (addBtn) {
+        if (availableStock <= 0) {
+          addBtn.disabled = true;
+          addBtn.innerHTML = `<i data-feather="x-circle" class="w-5 h-5"></i> ناموجود`;
+          addBtn.classList.add("opacity-60", "cursor-not-allowed");
+          addBtn.style.cursor = "not-allowed";
+        } else {
+          addBtn.disabled = false;
+          addBtn.innerHTML = `<i data-feather="shopping-bag" class="w-5 h-5"></i> افزودن به سبد خرید`;
+          addBtn.classList.remove("opacity-60", "cursor-not-allowed");
+          addBtn.style.cursor = "pointer";
+        }
+        KUtils?.refreshIcons?.();
+      }
+    };
+
+    // Initial render
     renderQty();
 
+    // Quantity button handlers with inventory limits
     document.addEventListener("click", (e) => {
       const btn = e.target.closest(".quantity-btn");
-      if (!btn) return;
+      if (!btn || btn.disabled) return;
 
       // Robust detection: works with dataset and with Feather-replaced SVG
       const isMinus =
         btn.dataset.action === "dec" ||
-        !!btn.querySelector('[data-feather="minus"], svg.feather.feather-minus');
+        !!btn.querySelector(
+          '[data-feather="minus"], svg.feather.feather-minus'
+        );
 
-      quantity = Math.max(1, quantity + (isMinus ? -1 : 1));
+      if (isMinus) {
+        quantity = Math.max(1, quantity - 1);
+      } else {
+        // Respect stock limit
+        if (quantity < availableStock) {
+          quantity = quantity + 1;
+        } else {
+          showToast(
+            `حداکثر ${toFa(availableStock)} عدد موجود است`,
+            "alert-circle"
+          );
+        }
+      }
+
       renderQty();
     });
+
+    // ========== END INVENTORY SYSTEM ==========
 
     // Tabs
     const showTabByName = (name) => {
@@ -488,7 +587,7 @@
         if (last) last.textContent = p.title || "";
         const catLink = breadcrumb.querySelector('a[href^="/shop/"]');
         if (catLink) {
-          catLink.href = `shop?category=${p.category}`;
+          catLink.href = `/shop?category=${p.category}`;
           catLink.textContent = categoryLabel(p.category);
         }
       }
@@ -594,10 +693,36 @@
         });
       }
 
-      // Variants (simple selector buttons) — optional
-      let selectedVariantId = null;
+      // ========== INVENTORY-AWARE VARIANT SYSTEM ==========
+
+      // Calculate available stock based on selected variant
+      const getAvailableStock = () => {
+        if (!selectedVariantId) {
+          // No variant selected: use product.stock if exists, else assume high stock
+          return p.stock ?? 999;
+        }
+        const v = (p.variants || []).find((x) => x.id === selectedVariantId);
+        return v?.stock ?? 0;
+      };
+
+      // Update stock display and quantity limits
+      const updateStock = () => {
+        availableStock = getAvailableStock();
+        // Clamp quantity to valid range
+        quantity = Math.min(quantity, Math.max(1, availableStock));
+        if (quantity < 1) quantity = 1;
+        renderQty();
+        updateStockBadge();
+      };
+
+      // Variants selector with stock awareness
       if (Array.isArray(p.variants) && p.variants.length > 0) {
-        selectedVariantId = p.variants[0].id;
+        // Select first IN-STOCK variant, or first variant if all out of stock
+        const firstInStock = p.variants.find(
+          (v) => v.stock > 0 && v.isActive !== false
+        );
+        selectedVariantId = firstInStock ? firstInStock.id : p.variants[0].id;
+
         if (variantsContainer) {
           variantsContainer.innerHTML = `
             <div class="flex items-center gap-4">
@@ -607,25 +732,28 @@
           `;
           const list = variantsContainer.querySelector("#variant-list");
 
-          // Requested styles
           const SELECTED = ["border-black", "bg-rose-50"];
           const UNSELECTED = ["border-gray-300", "bg-white"];
 
-          p.variants.forEach((v, idx) => {
-            const disabled = v.stock <= 0 || v.isActive === false;
+          p.variants.forEach((v) => {
+            const outOfStock = v.stock <= 0 || v.isActive === false;
             const btn = document.createElement("button");
             btn.type = "button";
             btn.className = `px-3 py-1 rounded-lg border text-sm transition hover:border-black ${
-              disabled ? "opacity-60 cursor-not-allowed" : ""
+              outOfStock ? "opacity-40 cursor-not-allowed line-through" : ""
             }`;
             btn.textContent = v.variantName;
             btn.dataset.variantId = v.id;
+            btn.title = outOfStock ? "ناموجود" : `موجود: ${toFa(v.stock)} عدد`;
 
             // Initial state
-            if (idx === 0) btn.classList.add(...SELECTED);
-            else btn.classList.add(...UNSELECTED);
+            if (v.id === selectedVariantId) {
+              btn.classList.add(...SELECTED);
+            } else {
+              btn.classList.add(...UNSELECTED);
+            }
 
-            if (!disabled) {
+            if (!outOfStock) {
               btn.addEventListener("click", () => {
                 selectedVariantId = v.id;
 
@@ -635,12 +763,15 @@
                   b.classList.add(...UNSELECTED);
                 });
 
-                // Apply selected to clicked
+                // Apply selected
                 btn.classList.remove(...UNSELECTED);
                 btn.classList.add(...SELECTED);
 
                 renderPrice();
+                updateStock(); // Update stock limits
               });
+            } else {
+              btn.disabled = true;
             }
             list.appendChild(btn);
           });
@@ -649,6 +780,11 @@
       } else {
         variantsContainer && variantsContainer.classList.add("hidden");
       }
+
+      // Initialize stock display
+      updateStock();
+
+      // ========== END INVENTORY-AWARE VARIANT SYSTEM ==========
 
       // Price (reactive to variant selection)
       const currentPrice = () => {
@@ -679,21 +815,32 @@
       };
       renderPrice();
 
-      // Add to cart (localStorage) + toast + update navbar badge
-      const addBtn = document.querySelector(".add-to-cart-btn");
+      // ========== INVENTORY-AWARE ADD TO CART ==========
       if (addBtn) {
         addBtn.addEventListener("click", () => {
+          // Validate stock availability
+          if (availableStock <= 0) {
+            showToast("این محصول ناموجود است", "x-circle");
+            return;
+          }
+
+          if (quantity > availableStock) {
+            showToast(
+              `حداکثر ${toFa(availableStock)} عدد موجود است`,
+              "alert-circle"
+            );
+            return;
+          }
+
           const vObj =
             selectedVariantId && Array.isArray(p.variants)
               ? p.variants.find((v) => v.id === selectedVariantId)
               : null;
 
-          // Build a unique line id (supports variants)
           const lineId = selectedVariantId
             ? `${p.id}__${selectedVariantId}`
             : String(p.id);
 
-          // Safe hero image fallback
           const imageUrl =
             document.getElementById("main-product-image")?.src ||
             p.heroImageUrl ||
@@ -703,8 +850,24 @@
           const cart = loadCart();
           const idx = cart.findIndex((x) => x.id === lineId);
 
+          // Check total quantity in cart
+          const existingQty = idx > -1 ? cart[idx].qty : 0;
+          const totalQty = existingQty + quantity;
+
+          if (totalQty > availableStock) {
+            showToast(
+              `شما ${toFa(
+                existingQty
+              )} عدد از این محصول در سبد دارید. حداکثر موجود: ${toFa(
+                availableStock
+              )}`,
+              "alert-circle"
+            );
+            return;
+          }
+
           if (idx > -1) {
-            cart[idx].qty += quantity;
+            cart[idx].qty = totalQty;
           } else {
             cart.push({
               id: lineId,
@@ -721,11 +884,11 @@
           updateNavCartCount();
           showToast("به سبد اضافه شد", "check-circle");
 
-          // Optional: small click feedback
           addBtn.classList.add("opacity-90");
           setTimeout(() => addBtn.classList.remove("opacity-90"), 200);
         });
       }
+      // ========== END INVENTORY-AWARE ADD TO CART ==========
 
       // Tabs content (hide if empty)
       const setHtmlOrHide = (tabName, mountEl, html) => {
@@ -861,7 +1024,7 @@
           const href = `/product/${encodeURIComponent(item.slug)}`;
           const hero = item.heroImageUrl || "/assets/images/product.png";
 
-        const card = document.createElement("a");
+          const card = document.createElement("a");
           card.href = href;
           card.className = `w-3/4 sm:w-1/2 md:w-1/3 lg:w-auto flex-shrink-0 snap-start product-card-v3 ${categoryClass}`;
           card.setAttribute("data-aos", "fade-up");
@@ -870,14 +1033,14 @@
           card.innerHTML = `
             <div class="card-bg"></div>
             <div class="card-blob">
-              <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/200/svg">
+              <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
                 <path d="M48.1,-58.9C62.2,-51.9,73.4,-37.2,77,-21.2C80.6,-5.2,76.5,12.2,68.4,26.1C60.3,40,48.2,50.4,34.5,58.3C20.8,66.2,5.5,71.6,-9.3,71.1C-24.1,70.7,-38.4,64.4,-50.9,54.7C-63.4,44.9,-74,31.7,-77.8,16.5C-81.6,1.2,-78.6,-16,-69.8,-29.3C-61,-42.6,-46.4,-52,-32.1,-59.5C-17.8,-67,-3.9,-72.6,9.6,-71.7C23.1,-70.8,48.1,-58.9,48.1,-58.9Z" transform="translate(100 100)"></path>
               </svg>
             </div>
             <div class="card-image-wrapper">
               <img src="${hero}" alt="${escapeHtml(
-            item.title
-          )}" class="card-image" />
+                item.title
+              )}" class="card-image" />
             </div>
             <div class="card-content">
               <div class="card-category">
