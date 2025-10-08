@@ -18,6 +18,7 @@ import notificationRouter from "./modules/notifications/notification.routes.js";
 import searchRouter from "./modules/search/search.routes.js";
 import magazineRoutes from "./modules/magazine/magazine.routes.js";
 import profileRoutes from "./modules/profile/profile.routes.js";
+import newsletterRoutes from "./modules/newsletter/newsletter.routes.js";
 
 export function buildApiRouter() {
   const api = Router();
@@ -40,7 +41,7 @@ export function buildApiRouter() {
   api.use("/search", searchRouter); // <-- added
   api.use('/magazine', magazineRoutes);
   api.use('/profile', profileRoutes);
-
+  api.use("/api/newsletter", newsletterRoutes);
   return api;
 }
 

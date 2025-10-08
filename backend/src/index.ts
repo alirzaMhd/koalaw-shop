@@ -5,6 +5,7 @@ import http from "http";
 import { env } from "./config/env.js";
 import { logger } from "./config/logger.js";
 import createApp from "./app.js";
+import "./infrastructure/queue/workers/newsletter.worker.js";
 
 // Infra for graceful shutdown
 import { prisma } from "./infrastructure/db/prismaClient.js";
