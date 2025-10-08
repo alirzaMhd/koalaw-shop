@@ -1,8 +1,8 @@
 // src/modules/reviews/review.routes.ts
-// Registers review endpoints
 import { Router } from "express";
 import { reviewController } from "./review.controller.js";
 import { authGuard } from "../../common/middlewares/authGuard.js";
+import { optionalAuthGuard } from "../../common/middlewares/optionalAuthGuard.js"; // ← NEW
 import { AppError } from "../../common/errors/AppError.js";
 export const reviewRouter = Router();
 const requireAdmin = (req, _res, next) => {
@@ -13,10 +13,12 @@ const requireAdmin = (req, _res, next) => {
 };
 // Public: list approved reviews for a product
 reviewRouter.get("/products/:productId", reviewController.listForProduct);
-// Self: list my reviews
+// Self: list my reviews (requires auth)
 reviewRouter.get("/me", authGuard, reviewController.listMine);
-// Public: create a review (auth optional; guests must provide guestName)
-reviewRouter.post("/", reviewController.create);
+// Public with optional auth: create a review
+// - Authenticated users: userId auto-populated from token
+// - Guests: must provide guestName in request body
+reviewRouter.post("/", optionalAuthGuard, reviewController.create); // ← CHANGED
 // Admin: list all reviews with filters
 reviewRouter.get("/", authGuard, requireAdmin, reviewController.listAll);
 // Admin: moderate a review's status
@@ -27,6 +29,5 @@ reviewRouter.get("/:id", reviewController.getById);
 reviewRouter.patch("/:id", authGuard, reviewController.updateContent);
 // Auth: delete own review (if not approved) or admin delete
 reviewRouter.delete("/:id", authGuard, reviewController.delete);
-// Default export for router registration convenience
 export default reviewRouter;
 //# sourceMappingURL=review.routes.js.map

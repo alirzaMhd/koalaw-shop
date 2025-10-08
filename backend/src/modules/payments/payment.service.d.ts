@@ -1,30 +1,6 @@
 declare class PaymentService {
-    getById(paymentId: string): Promise<{
-        status: import("@prisma/client").$Enums.PaymentStatus;
-        id: string;
-        createdAt: Date;
-        updatedAt: Date;
-        orderId: string;
-        currencyCode: string;
-        method: import("@prisma/client").$Enums.PaymentMethod;
-        amount: number;
-        authority: string | null;
-        transactionRef: string | null;
-        paidAt: Date | null;
-    }>;
-    listForOrder(orderId: string): Promise<{
-        status: import("@prisma/client").$Enums.PaymentStatus;
-        id: string;
-        createdAt: Date;
-        updatedAt: Date;
-        orderId: string;
-        currencyCode: string;
-        method: import("@prisma/client").$Enums.PaymentMethod;
-        amount: number;
-        authority: string | null;
-        transactionRef: string | null;
-        paidAt: Date | null;
-    }[]>;
+    getById(paymentId: string): Promise<any>;
+    listForOrder(orderId: string): Promise<any>;
     markPaid(args: {
         orderId: string;
         paymentId: string;
@@ -42,19 +18,7 @@ declare class PaymentService {
         paymentId: string;
         reason?: string | null;
         amount?: number | null;
-    }): Promise<{
-        status: import("@prisma/client").$Enums.PaymentStatus;
-        id: string;
-        createdAt: Date;
-        updatedAt: Date;
-        orderId: string;
-        currencyCode: string;
-        method: import("@prisma/client").$Enums.PaymentMethod;
-        amount: number;
-        authority: string | null;
-        transactionRef: string | null;
-        paidAt: Date | null;
-    }>;
+    }): Promise<any>;
     /**
      * Handle Stripe webhook. Provide the raw request body (string or Buffer) and headers.
      * - Verifies signature if STRIPE_WEBHOOK_SECRET and Stripe SDK are available.

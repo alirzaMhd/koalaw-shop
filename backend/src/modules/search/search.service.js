@@ -5,6 +5,9 @@ import { logger } from "../../config/logger.js";
 import { AppError } from "../../common/errors/AppError.js";
 export const PRODUCTS_INDEX = process.env.ELASTICSEARCH_PRODUCTS_INDEX || "products";
 export const MAGAZINE_INDEX = process.env.ELASTICSEARCH_MAGAZINE_INDEX || "magazine";
+// ============================================================================
+// INDEX DEFINITIONS
+// ============================================================================
 const productIndexDefinition = {
     settings: {
         number_of_shards: 1,
@@ -130,7 +133,9 @@ export async function ensureSearchIndices() {
     await ensureIndex(PRODUCTS_INDEX, productIndexDefinition);
     await ensureIndex(MAGAZINE_INDEX, magazineIndexDefinition);
 }
-// Product functions
+// ============================================================================
+// PRODUCT FUNCTIONS
+// ============================================================================
 const toDoc = (p) => ({
     id: p.id,
     slug: p.slug,
@@ -259,7 +264,9 @@ export async function searchProducts(opts) {
         : res.hits.total?.value || 0;
     return { items, total, page, size, took: res.took };
 }
-// Magazine functions
+// ============================================================================
+// MAGAZINE FUNCTIONS
+// ============================================================================
 const toMagazineDoc = (post) => ({
     id: post.id,
     slug: post.slug,
@@ -350,9 +357,9 @@ export async function searchMagazinePosts(opts) {
     const { q, category, tags, page = 1, size = 9, sort = "relevance" } = opts;
     // Check if Elasticsearch is available
     const esAvailable = await ping().catch(() => false);
-    // If ES is not available or no search query, fallback to Prisma
-    if (!esAvailable || (!q && !category && !tags)) {
-        logger.info("Using Prisma fallback for magazine search");
+    // If ES is not available, fallback to Prisma
+    if (!esAvailable) {
+        logger.info("Elasticsearch not available, using Prisma fallback");
         return await searchMagazinePostsWithPrisma(opts);
     }
     try {
@@ -498,8 +505,8 @@ async function searchMagazinePostsWithElasticsearch(opts) {
         page,
         size,
         totalPages,
-        took: res.took,
         source: "elasticsearch",
+        took: res.took,
     };
 }
 /**

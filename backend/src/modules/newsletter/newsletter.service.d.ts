@@ -3,14 +3,7 @@ export declare const newsletterService: {
      * Subscribe a new email to the newsletter
      */
     subscribe(email: string, source?: string, ipAddress?: string): Promise<{
-        subscription: {
-            id: string;
-            email: string;
-            createdAt: Date;
-            source: string | null;
-            consent: boolean;
-            unsubscribedAt: Date | null;
-        };
+        subscription: any;
         isNew: boolean;
         reactivated: boolean;
     }>;
@@ -18,29 +11,15 @@ export declare const newsletterService: {
      * Unsubscribe an email from the newsletter
      */
     unsubscribe(email: string, token?: string): Promise<{
-        subscription: {
-            id: string;
-            email: string;
-            createdAt: Date;
-            source: string | null;
-            consent: boolean;
-            unsubscribedAt: Date | null;
-        };
+        subscription: any;
         alreadyUnsubscribed: boolean;
     }>;
     /**
      * Get all active subscriptions (for admin/analytics)
      */
     getActiveSubscriptions(page?: number, perPage?: number): Promise<{
-        subscriptions: {
-            id: string;
-            email: string;
-            createdAt: Date;
-            source: string | null;
-            consent: boolean;
-            unsubscribedAt: Date | null;
-        }[];
-        total: number;
+        subscriptions: any;
+        total: any;
         page: number;
         perPage: number;
         totalPages: number;
@@ -49,10 +28,10 @@ export declare const newsletterService: {
      * Get newsletter statistics
      */
     getStatistics(): Promise<{
-        totalSubscribers: number;
-        activeSubscribers: number;
+        totalSubscribers: any;
+        activeSubscribers: any;
         unsubscribedSubscribers: number;
-        recentSubscribers: number;
+        recentSubscribers: any;
         unsubscribeRate: number;
     }>;
     /**
@@ -90,8 +69,8 @@ export declare const newsletterService: {
         test: boolean;
         queued?: undefined;
     } | {
-        sent: number;
-        recipients: any[];
+        sent: any;
+        recipients: any;
         test: boolean;
         queued: boolean;
     }>;

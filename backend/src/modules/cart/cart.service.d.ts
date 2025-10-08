@@ -44,7 +44,7 @@ declare class CartService {
         deleted: boolean;
     }>;
     clear(cartId: string): Promise<{
-        cleared: number;
+        cleared: any;
     }>;
     quote(cartId: string, opts?: QuoteOptions): Promise<QuoteResult>;
     /**

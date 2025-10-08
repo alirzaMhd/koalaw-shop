@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>KOALAW Admin Panel</title>
+  <link rel="icon" type="image/x-icon" href="/assets/static/favicon.ico" />
+  <link rel="stylesheet" href="/assets/css/tailwind.css" />
+  <link rel="stylesheet" href="/assets/css/main.css" />
+  <link rel="stylesheet" href="/assets/css/admin.css" />
+  <script src="/assets/vendor/feather/feather.min.js"></script>
+</head>
+
+<body class="bg-gray-50">
+  <!-- Admin Sidebar -->
+  <aside id="admin-sidebar" class="admin-sidebar">
+    <div class="admin-sidebar-header">
+      <a href="/" class="admin-logo">
+        <span class="text-2xl font-serif font-bold">KOALAW</span>
+        <span class="admin-badge">Admin</span>
+      </a>
+    </div>
+
+    <nav class="admin-nav">
+      <a href="#dashboard" class="admin-nav-item" data-route="dashboard">
+        <i data-feather="home"></i>
+        <span>داشبورد</span>
+      </a>
+      <a href="#products" class="admin-nav-item" data-route="products">
+        <i data-feather="package"></i>
+        <span>محصولات</span>
+      </a>
+      <a href="#orders" class="admin-nav-item" data-route="orders">
+        <i data-feather="shopping-cart"></i>
+        <span>سفارش‌ها</span>
+      </a>
+      <a href="#users" class="admin-nav-item" data-route="users">
+        <i data-feather="users"></i>
+        <span>کاربران</span>
+      </a>
+      <a href="#magazine" class="admin-nav-item" data-route="magazine">
+        <i data-feather="book-open"></i>
+        <span>مجله</span>
+      </a>
+      <a href="#newsletter" class="admin-nav-item" data-route="newsletter">
+        <i data-feather="mail"></i>
+        <span>خبرنامه</span>
+      </a>
+      <a href="#reviews" class="admin-nav-item" data-route="reviews">
+        <i data-feather="star"></i>
+        <span>نظرات</span>
+        <span id="pending-reviews-badge" class="admin-badge-count hidden">0</span>
+      </a>
+      <a href="#brands" class="admin-nav-item" data-route="brands">
+        <i data-feather="award"></i>
+        <span>برندها</span>
+      </a>
+      <a href="#collections" class="admin-nav-item" data-route="collections">
+        <i data-feather="grid"></i>
+        <span>کالکشن‌ها</span>
+      </a>
+      <a href="#coupons" class="admin-nav-item" data-route="coupons">
+        <i data-feather="tag"></i>
+        <span>کوپن‌ها</span>
+      </a>
+    </nav>
+
+    <div class="admin-sidebar-footer">
+      <a href="/" class="admin-nav-item">
+        <i data-feather="external-link"></i>
+        <span>بازگشت به سایت</span>
+      </a>
+      <a href="#logout" class="admin-nav-item text-red-600" data-route="logout">
+        <i data-feather="log-out"></i>
+        <span>خروج</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="admin-content">
+    <!-- Top Bar -->
+    <header class="admin-topbar">
+      <button id="sidebar-toggle" class="admin-mobile-toggle">
+        <i data-feather="menu"></i>
+      </button>
+      <h1 class="admin-page-title" id="page-title">داشبورد</h1>
+      <div class="admin-topbar-actions">
+        <span class="admin-user-info">
+          <i data-feather="user"></i>
+          <span id="admin-username">ادمین</span>
+        </span>
+      </div>
+    </header>
+
+    <!-- Dynamic Content Container -->
+    <div id="app-content" class="admin-container">
+      <!-- Content will be dynamically loaded here -->
+      <div class="text-center py-12">
+        <div class="inline-flex items-center gap-3 text-gray-500">
+          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-rose-600"></div>
+          <span class="text-lg">در حال بارگذاری...</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modals Container -->
+  <div id="modals-container"></div>
+
+  <script src="/assets/js/utils.js"></script>
+  <script src="/assets/js/pages/admin.js"></script>
+    <script src="/assets/js/main.js"></script>
+    <script src="/assets/js/components/navbar.js"></script>
+    <script src="/assets/js/components/search.js"></script>
+    <script src="/assets/js/components/animations.js"></script>
+    <script src="/assets/js/components/newsletter.js"></script>
+  <script>
+    // Initialize feather icons
+    if (typeof feather !== "undefined") {
+      feather.replace();
+    }
+  </script>
+</body>
+</html>

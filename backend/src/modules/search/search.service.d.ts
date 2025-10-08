@@ -1,8 +1,17 @@
 export declare const PRODUCTS_INDEX: string;
 export declare const MAGAZINE_INDEX: string;
+interface MagazineSearchResult {
+    items: any[];
+    total: number;
+    page: number;
+    size: number;
+    totalPages: number;
+    source: "elasticsearch" | "database";
+    took?: number;
+}
 export declare function ensureSearchIndices(): Promise<void>;
 export declare function reindexAllProducts(): Promise<{
-    count: number;
+    count: any;
 }>;
 export declare function indexProductById(productId: string): Promise<void>;
 export declare function deleteProductById(productId: string): Promise<void>;
@@ -22,7 +31,7 @@ export declare function searchProducts(opts: {
     took: any;
 }>;
 export declare function reindexAllMagazinePosts(): Promise<{
-    count: number;
+    count: any;
 }>;
 export declare function indexMagazinePostById(postId: string): Promise<void>;
 export declare function deleteMagazinePostById(postId: string): Promise<void>;
@@ -36,36 +45,6 @@ export declare function searchMagazinePosts(opts: {
     page?: number;
     size?: number;
     sort?: "relevance" | "newest" | "oldest";
-}): Promise<{
-    items: {
-        id: any;
-        slug: any;
-        title: any;
-        excerpt: any;
-        content: any;
-        category: any;
-        authorId: any;
-        authorName: any;
-        tags: string;
-        heroImageUrl: any;
-        readTimeMinutes: any;
-        isPublished: any;
-        publishedAt: any;
-        createdAt: any;
-        updatedAt: any;
-    }[];
-    total: number;
-    page: number;
-    size: number;
-    totalPages: number;
-    source: string;
-} | {
-    items: any;
-    total: any;
-    page: number;
-    size: number;
-    totalPages: number;
-    took: any;
-    source: string;
-}>;
+}): Promise<MagazineSearchResult>;
+export {};
 //# sourceMappingURL=search.service.d.ts.map

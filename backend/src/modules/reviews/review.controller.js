@@ -3,6 +3,7 @@
 import { z } from "zod";
 import { AppError } from "../../common/errors/AppError.js";
 import { reviewService } from "./review.service.js";
+import logger from "../../config/logger.js";
 function ok(res, data, status = 200) {
     return res.status(status).json({ success: true, data });
 }
@@ -145,10 +146,18 @@ class ReviewController {
         }
     };
     // POST /reviews (auth optional; guestName required when unauthenticated)
+    // In review.controller.ts, update the create method
     create = async (req, res, next) => {
         try {
             const body = await createSchema.parseAsync(req.body ?? {});
             const { userId } = getRequester(req);
+            // DEBUG: Remove after testing
+            logger.debug({
+                userId,
+                hasReqUser: !!req.user,
+                guestName: body.guestName,
+                productId: body.productId,
+            }, "Review creation request");
             const review = await reviewService.create({
                 productId: body.productId,
                 rating: body.rating,

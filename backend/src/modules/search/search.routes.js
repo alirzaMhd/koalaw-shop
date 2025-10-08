@@ -149,8 +149,7 @@ router.get("/magazine", async (req, res, next) => {
             params.tags = tags;
         const result = await searchMagazinePosts(params);
         logger.info({ total: result.total, page: result.page, source: result.source }, "Magazine search response");
-        // Build response with optional took
-        const response = {
+        res.json({
             ok: true,
             success: true,
             items: result.items,
@@ -164,12 +163,8 @@ router.get("/magazine", async (req, res, next) => {
                 totalPages: result.totalPages,
             },
             source: result.source,
-        };
-        // Only include 'took' if it exists (from Elasticsearch)
-        if (result.took !== undefined) {
-            response.took = result.took;
-        }
-        res.json(response);
+            ...(result.took !== undefined && { took: result.took }),
+        });
     }
     catch (e) {
         logger.error({ error: e, query: req.query }, "Magazine search error");
