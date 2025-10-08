@@ -28,6 +28,7 @@ function assertHasSub(p: Decoded): asserts p is Decoded & { sub: string } {
   }
 }
 
+// src/common/middlewares/authGuard.ts
 export const authGuard: RequestHandler = (req, _res, next) => {
   try {
     const h = req.headers.authorization || "";
@@ -36,32 +37,45 @@ export const authGuard: RequestHandler = (req, _res, next) => {
 
     const fromCookie = (req as any).cookies?.[ACCESS_COOKIE];
 
+    // Debug logging
+    console.log("🔐 AuthGuard Debug:", {
+      path: req.path,
+      hasAuthHeader: !!fromHeader,
+      hasCookie: !!fromCookie,
+      cookieName: ACCESS_COOKIE,
+      allCookies: Object.keys((req as any).cookies || {}),
+    });
+
     const token = fromHeader || fromCookie;
-    if (!token) throw AppError.unauthorized();
+    if (!token) {
+      console.log("❌ No token found");
+      throw AppError.unauthorized("احراز هویت لازم است.");
+    }
 
     let decoded: Decoded;
     try {
       decoded = jwt.verify(token, ACCESS_SECRET) as Decoded;
-    } catch {
+    } catch (err) {
+      console.log("❌ Token verification failed:", err);
       throw AppError.unauthorized("توکن نامعتبر یا منقضی است.");
     }
+
     if (decoded.typ && decoded.typ !== "access") {
       throw AppError.unauthorized("نوع توکن نامعتبر است.");
     }
 
-    // Ensure 'sub' exists so we don't assign undefined to 'id' or 'sub'
     assertHasSub(decoded);
 
-    // Avoid spreading undefined for role/sub which would violate exactOptionalPropertyTypes
     const { sub, role, ...rest } = decoded;
 
     req.user = {
-      ...rest, // other claims
+      ...rest,
       id: sub,
       sub,
       ...(typeof role === "string" ? { role } : {}),
     };
 
+    console.log("✅ Auth successful:", { userId: sub, role });
     next();
   } catch (e) {
     next(e);

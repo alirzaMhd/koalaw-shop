@@ -40,6 +40,7 @@ function getClientIp(req: Request): string | undefined {
   return (xfwd.split(",")[0] || req.ip || "").trim() || undefined;
 }
 
+// In auth.controller.ts - update setAuthCookies function
 function setAuthCookies(
   res: Response,
   opts: {
@@ -63,6 +64,19 @@ function setAuthCookies(
 
   res.cookie(ACCESS_COOKIE, opts.accessToken, { ...base, maxAge: accessMs });
   res.cookie(REFRESH_COOKIE, opts.refreshToken, { ...base, maxAge: refreshMs });
+
+  // Debug logging
+  logger.info({
+    msg: "Cookies set",
+    accessCookie: ACCESS_COOKIE,
+    refreshCookie: REFRESH_COOKIE,
+    accessMaxAge: accessMs,
+    refreshMaxAge: refreshMs,
+    secure: COOKIE_SECURE,
+    sameSite: COOKIE_SAME_SITE,
+    domain: COOKIE_DOMAIN || "(not set)",
+    path: COOKIE_PATH,
+  });
 }
 
 function clearAuthCookies(res: Response) {
