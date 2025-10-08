@@ -2,115 +2,115 @@ import { Prisma } from "@prisma/client";
 export declare const userRepo: {
     findById(id: string): Prisma.Prisma__UserClient<{
         id: string;
-        email: string;
-        passwordHash: string;
         phone: string | null;
+        email: string;
         firstName: string | null;
         lastName: string | null;
         birthDate: Date | null;
         gender: import("@prisma/client").$Enums.Gender;
         customerTier: import("@prisma/client").$Enums.CustomerTier;
-        emailVerifiedAt: Date | null;
         phoneVerifiedAt: Date | null;
         createdAt: Date;
         updatedAt: Date;
-        profileImageUrl: string | null;
         role: import("@prisma/client").$Enums.UserRole;
+        emailVerifiedAt: Date | null;
+        passwordHash: string;
+        profileImageUrl: string | null;
     } | null, null, import("@prisma/client/runtime/library").DefaultArgs, {
         log: any;
     }>;
     findByPhone(phone: string): Prisma.Prisma__UserClient<{
         id: string;
-        email: string;
-        passwordHash: string;
         phone: string | null;
+        email: string;
         firstName: string | null;
         lastName: string | null;
         birthDate: Date | null;
         gender: import("@prisma/client").$Enums.Gender;
         customerTier: import("@prisma/client").$Enums.CustomerTier;
-        emailVerifiedAt: Date | null;
         phoneVerifiedAt: Date | null;
         createdAt: Date;
         updatedAt: Date;
-        profileImageUrl: string | null;
         role: import("@prisma/client").$Enums.UserRole;
+        emailVerifiedAt: Date | null;
+        passwordHash: string;
+        profileImageUrl: string | null;
     } | null, null, import("@prisma/client/runtime/library").DefaultArgs, {
         log: any;
     }>;
     findByEmail(email: string): Prisma.Prisma__UserClient<{
         id: string;
-        email: string;
-        passwordHash: string;
         phone: string | null;
+        email: string;
         firstName: string | null;
         lastName: string | null;
         birthDate: Date | null;
         gender: import("@prisma/client").$Enums.Gender;
         customerTier: import("@prisma/client").$Enums.CustomerTier;
-        emailVerifiedAt: Date | null;
         phoneVerifiedAt: Date | null;
         createdAt: Date;
         updatedAt: Date;
-        profileImageUrl: string | null;
         role: import("@prisma/client").$Enums.UserRole;
+        emailVerifiedAt: Date | null;
+        passwordHash: string;
+        profileImageUrl: string | null;
     } | null, null, import("@prisma/client/runtime/library").DefaultArgs, {
         log: any;
     }>;
-    create(data: Prisma.UserCreateInput): Prisma.Prisma__UserClient<{
+    create(data: any): Prisma.Prisma__UserClient<{
         id: string;
-        email: string;
-        passwordHash: string;
         phone: string | null;
+        email: string;
         firstName: string | null;
         lastName: string | null;
         birthDate: Date | null;
         gender: import("@prisma/client").$Enums.Gender;
         customerTier: import("@prisma/client").$Enums.CustomerTier;
-        emailVerifiedAt: Date | null;
         phoneVerifiedAt: Date | null;
         createdAt: Date;
         updatedAt: Date;
-        profileImageUrl: string | null;
         role: import("@prisma/client").$Enums.UserRole;
+        emailVerifiedAt: Date | null;
+        passwordHash: string;
+        profileImageUrl: string | null;
     }, never, import("@prisma/client/runtime/library").DefaultArgs, {
         log: any;
     }>;
-    update(id: string, data: Prisma.UserUpdateInput): Prisma.Prisma__UserClient<{
+    update(id: string, data: any): Prisma.Prisma__UserClient<{
         id: string;
-        email: string;
-        passwordHash: string;
         phone: string | null;
+        email: string;
         firstName: string | null;
         lastName: string | null;
         birthDate: Date | null;
         gender: import("@prisma/client").$Enums.Gender;
         customerTier: import("@prisma/client").$Enums.CustomerTier;
-        emailVerifiedAt: Date | null;
         phoneVerifiedAt: Date | null;
         createdAt: Date;
         updatedAt: Date;
-        profileImageUrl: string | null;
         role: import("@prisma/client").$Enums.UserRole;
+        emailVerifiedAt: Date | null;
+        passwordHash: string;
+        profileImageUrl: string | null;
     }, never, import("@prisma/client/runtime/library").DefaultArgs, {
         log: any;
     }>;
-    upsertByEmail(email: string, createData: Prisma.UserCreateInput, updateData: Prisma.UserUpdateInput): Prisma.Prisma__UserClient<{
+    upsertByEmail(email: string, createData: any, updateData: any): Prisma.Prisma__UserClient<{
         id: string;
-        email: string;
-        passwordHash: string;
         phone: string | null;
+        email: string;
         firstName: string | null;
         lastName: string | null;
         birthDate: Date | null;
         gender: import("@prisma/client").$Enums.Gender;
         customerTier: import("@prisma/client").$Enums.CustomerTier;
-        emailVerifiedAt: Date | null;
         phoneVerifiedAt: Date | null;
         createdAt: Date;
         updatedAt: Date;
-        profileImageUrl: string | null;
         role: import("@prisma/client").$Enums.UserRole;
+        emailVerifiedAt: Date | null;
+        passwordHash: string;
+        profileImageUrl: string | null;
     }, never, import("@prisma/client/runtime/library").DefaultArgs, {
         log: any;
     }>;
@@ -125,7 +125,7 @@ export declare const userRepo: {
     } | null, null, import("@prisma/client/runtime/library").DefaultArgs, {
         log: any;
     }>;
-    upsertNotificationPrefs(userId: string, data: Prisma.UserNotificationPrefsUncheckedCreateInput): Prisma.Prisma__UserNotificationPrefsClient<{
+    upsertNotificationPrefs(userId: string, data: any): Prisma.Prisma__UserNotificationPrefsClient<{
         createdAt: Date;
         updatedAt: Date;
         userId: string;
@@ -153,7 +153,7 @@ export declare const userRepo: {
         country: string;
         isDefault: boolean;
     }[]>;
-    createAddress(userId: string, data: Omit<Prisma.UserAddressUncheckedCreateInput, "userId">): Prisma.Prisma__UserAddressClient<{
+    createAddress(userId: string, data: Omit<any, "userId">): Prisma.Prisma__UserAddressClient<{
         id: string;
         phone: string;
         firstName: string;
@@ -172,7 +172,7 @@ export declare const userRepo: {
     }, never, import("@prisma/client/runtime/library").DefaultArgs, {
         log: any;
     }>;
-    updateAddress(id: string, data: Prisma.UserAddressUncheckedUpdateInput): Prisma.Prisma__UserAddressClient<{
+    updateAddress(id: string, data: any): Prisma.Prisma__UserAddressClient<{
         id: string;
         phone: string;
         firstName: string;

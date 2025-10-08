@@ -82,12 +82,12 @@ export declare const createProductInputSchema: z.ZodEffects<z.ZodObject<{
         position: z.ZodOptional<z.ZodNumber>;
     }, "strip", z.ZodTypeAny, {
         url: string;
-        alt?: string | undefined;
         position?: number | undefined;
+        alt?: string | undefined;
     }, {
         url: string;
-        alt?: string | undefined;
         position?: number | undefined;
+        alt?: string | undefined;
     }>, "many">>;
     variants: z.ZodOptional<z.ZodArray<z.ZodObject<{
         variantName: z.ZodString;
@@ -140,8 +140,8 @@ export declare const createProductInputSchema: z.ZodEffects<z.ZodObject<{
     heroImageUrl?: string | undefined;
     images?: {
         url: string;
-        alt?: string | undefined;
         position?: number | undefined;
+        alt?: string | undefined;
     }[] | undefined;
     variants?: {
         currencyCode: "IRR" | "USD" | "EUR";
@@ -175,8 +175,8 @@ export declare const createProductInputSchema: z.ZodEffects<z.ZodObject<{
     heroImageUrl?: string | undefined;
     images?: {
         url: string;
-        alt?: string | undefined;
         position?: number | undefined;
+        alt?: string | undefined;
     }[] | undefined;
     variants?: {
         variantName: string;
@@ -210,8 +210,8 @@ export declare const createProductInputSchema: z.ZodEffects<z.ZodObject<{
     heroImageUrl?: string | undefined;
     images?: {
         url: string;
-        alt?: string | undefined;
         position?: number | undefined;
+        alt?: string | undefined;
     }[] | undefined;
     variants?: {
         currencyCode: "IRR" | "USD" | "EUR";
@@ -245,8 +245,8 @@ export declare const createProductInputSchema: z.ZodEffects<z.ZodObject<{
     heroImageUrl?: string | undefined;
     images?: {
         url: string;
-        alt?: string | undefined;
         position?: number | undefined;
+        alt?: string | undefined;
     }[] | undefined;
     variants?: {
         variantName: string;
@@ -286,12 +286,12 @@ export declare const updateProductInputSchema: z.ZodObject<{
         position: z.ZodOptional<z.ZodNumber>;
     }, "strip", z.ZodTypeAny, {
         url: string;
-        alt?: string | undefined;
         position?: number | undefined;
+        alt?: string | undefined;
     }, {
         url: string;
-        alt?: string | undefined;
         position?: number | undefined;
+        alt?: string | undefined;
     }>, "many">>;
     variants: z.ZodOptional<z.ZodArray<z.ZodObject<{
         variantName: z.ZodString;
@@ -344,8 +344,8 @@ export declare const updateProductInputSchema: z.ZodObject<{
     heroImageUrl?: string | null | undefined;
     images?: {
         url: string;
-        alt?: string | undefined;
         position?: number | undefined;
+        alt?: string | undefined;
     }[] | undefined;
     variants?: {
         currencyCode: "IRR" | "USD" | "EUR";
@@ -379,8 +379,8 @@ export declare const updateProductInputSchema: z.ZodObject<{
     heroImageUrl?: string | null | undefined;
     images?: {
         url: string;
-        alt?: string | undefined;
         position?: number | undefined;
+        alt?: string | undefined;
     }[] | undefined;
     variants?: {
         variantName: string;
@@ -400,26 +400,26 @@ export declare const addImageInputSchema: z.ZodObject<{
     alt: z.ZodOptional<z.ZodString>;
     position: z.ZodDefault<z.ZodOptional<z.ZodNumber>>;
 }, "strip", z.ZodTypeAny, {
-    url: string;
     position: number;
+    url: string;
     alt?: string | undefined;
 }, {
     url: string;
-    alt?: string | undefined;
     position?: number | undefined;
+    alt?: string | undefined;
 }>;
 export declare const updateImageInputSchema: z.ZodObject<{
     url: z.ZodOptional<z.ZodString>;
     alt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     position: z.ZodOptional<z.ZodNumber>;
 }, "strip", z.ZodTypeAny, {
+    position?: number | undefined;
     url?: string | undefined;
     alt?: string | null | undefined;
-    position?: number | undefined;
 }, {
+    position?: number | undefined;
     url?: string | undefined;
     alt?: string | null | undefined;
-    position?: number | undefined;
 }>;
 export declare const addVariantInputSchema: z.ZodObject<{
     variantName: z.ZodString;
@@ -434,8 +434,8 @@ export declare const addVariantInputSchema: z.ZodObject<{
 }, "strip", z.ZodTypeAny, {
     currencyCode: "IRR" | "USD" | "EUR";
     isActive: boolean;
-    position: number;
     variantName: string;
+    position: number;
     stock: number;
     price?: number | undefined;
     sku?: string | undefined;
@@ -466,8 +466,8 @@ export declare const updateVariantInputSchema: z.ZodObject<{
     currencyCode?: "IRR" | "USD" | "EUR" | undefined;
     price?: number | null | undefined;
     isActive?: boolean | undefined;
-    position?: number | undefined;
     variantName?: string | undefined;
+    position?: number | undefined;
     sku?: string | null | undefined;
     stock?: number | undefined;
     colorName?: string | null | undefined;
@@ -476,8 +476,8 @@ export declare const updateVariantInputSchema: z.ZodObject<{
     currencyCode?: "IRR" | "USD" | "EUR" | undefined;
     price?: number | null | undefined;
     isActive?: boolean | undefined;
-    position?: number | undefined;
     variantName?: string | undefined;
+    position?: number | undefined;
     sku?: string | null | undefined;
     stock?: number | undefined;
     colorName?: string | null | undefined;
@@ -559,8 +559,8 @@ export declare const validateProductInput: {
         heroImageUrl?: string | undefined;
         images?: {
             url: string;
-            alt?: string | undefined;
             position?: number | undefined;
+            alt?: string | undefined;
         }[] | undefined;
         variants?: {
             currencyCode: "IRR" | "USD" | "EUR";
@@ -595,8 +595,8 @@ export declare const validateProductInput: {
         heroImageUrl?: string | null | undefined;
         images?: {
             url: string;
-            alt?: string | undefined;
             position?: number | undefined;
+            alt?: string | undefined;
         }[] | undefined;
         variants?: {
             currencyCode: "IRR" | "USD" | "EUR";
@@ -612,20 +612,20 @@ export declare const validateProductInput: {
         brandSlug?: string | undefined;
     };
     addImage: (data: unknown) => {
-        url: string;
         position: number;
+        url: string;
         alt?: string | undefined;
     };
     updateImage: (data: unknown) => {
+        position?: number | undefined;
         url?: string | undefined;
         alt?: string | null | undefined;
-        position?: number | undefined;
     };
     addVariant: (data: unknown) => {
         currencyCode: "IRR" | "USD" | "EUR";
         isActive: boolean;
-        position: number;
         variantName: string;
+        position: number;
         stock: number;
         price?: number | undefined;
         sku?: string | undefined;
@@ -636,8 +636,8 @@ export declare const validateProductInput: {
         currencyCode?: "IRR" | "USD" | "EUR" | undefined;
         price?: number | null | undefined;
         isActive?: boolean | undefined;
-        position?: number | undefined;
         variantName?: string | undefined;
+        position?: number | undefined;
         sku?: string | null | undefined;
         stock?: number | undefined;
         colorName?: string | null | undefined;

@@ -4,8 +4,8 @@ declare class PaymentService {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        currencyCode: string;
         orderId: string;
+        currencyCode: string;
         method: import("@prisma/client").$Enums.PaymentMethod;
         amount: number;
         authority: string | null;
@@ -17,8 +17,8 @@ declare class PaymentService {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        currencyCode: string;
         orderId: string;
+        currencyCode: string;
         method: import("@prisma/client").$Enums.PaymentMethod;
         amount: number;
         authority: string | null;
@@ -47,8 +47,8 @@ declare class PaymentService {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        currencyCode: string;
         orderId: string;
+        currencyCode: string;
         method: import("@prisma/client").$Enums.PaymentMethod;
         amount: number;
         authority: string | null;

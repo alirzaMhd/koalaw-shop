@@ -5,7 +5,8 @@ import { Queue, Worker, QueueEvents } from "bullmq";
 import { env } from "../../config/env.js";
 import { logger } from "../../config/logger.js";
 
-function connection() {
+// Export connection factory function
+export function getRedisConnection() {
   if (env.REDIS_URL) return { url: String(env.REDIS_URL) };
   return {
     host: env.REDIS_HOST || "127.0.0.1",
@@ -14,6 +15,11 @@ function connection() {
     db: env.REDIS_DB ? Number(env.REDIS_DB) : undefined,
     tls: String(env.REDIS_TLS || "false") === "true" ? {} : undefined,
   };
+}
+
+// Legacy function name for backwards compatibility
+function connection() {
+  return getRedisConnection();
 }
 
 // Common queues

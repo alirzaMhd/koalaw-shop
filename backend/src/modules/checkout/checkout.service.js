@@ -6,7 +6,6 @@ import { env } from "../../config/env.js";
 import { logger } from "../../config/logger.js";
 import { eventBus } from "../../events/eventBus.js";
 import { AppError } from "../../common/errors/AppError.js";
-import { $Enums } from "@prisma/client";
 import { pricingService, } from "../pricing/pricing.service.js";
 import { taxService } from "../pricing/tax.service.js";
 import { toLatinDigits, normalizeIranPhone } from "../../common/utils/validation.js";

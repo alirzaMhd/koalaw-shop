@@ -156,11 +156,12 @@ async function main() {
                 ratingCount: 125,
                 isBestseller: true,
                 isFeatured: true,
-                heroImageUrl: "/assets/images/products/lipstick-hero.jpg",
+                isSpecialProduct: true,
+                heroImageUrl: "/assets/images/products/cosmetic.png",
                 images: {
                     create: [
-                        { url: "/assets/images/products/lipstick-1.jpg", alt: "نمای جلوی رژ لب", position: 0 },
-                        { url: "/assets/images/products/lipstick-2.jpg", alt: "سوآچ‌های رژ لب", position: 1 },
+                        { url: "/assets/images/products/cosmetic.png", alt: "نمای جلوی رژ لب", position: 0 },
+                        { url: "/assets/images/products/cosmetic.png", alt: "سوآچ‌های رژ لب", position: 1 },
                     ],
                 },
                 variants: {
@@ -189,7 +190,8 @@ async function main() {
                 ratingAvg: 4.8,
                 ratingCount: 89,
                 isFeatured: true,
-                heroImageUrl: "/assets/images/products/serum-hero.jpg",
+                isSpecialProduct: true,
+                heroImageUrl: "/assets/images/products/body.png",
                 variants: {
                     create: [
                         { variantName: "۳۰ میل", sku: "SER-001-30", stock: 25 },
@@ -214,7 +216,7 @@ async function main() {
                 ratingCount: 56,
                 isSpecialProduct: true,
                 images: {
-                    create: [{ url: "/assets/images/products/eyeshadow-1.jpg", alt: "پالت سایه چشم", position: 0 }],
+                    create: [{ url: "/assets/images/products/skin.png", alt: "پالت سایه چشم", position: 0 }],
                 },
                 variants: { create: [{ variantName: "پیش‌فرض", sku: "EYE-001", stock: 40 }] },
                 badges: { connect: [{ id: badges[3].id }, { id: badges[2].id }] }, // ضمانت بازگشت + ارسال رایگان
@@ -233,8 +235,9 @@ async function main() {
                 price: 2500000,
                 ratingAvg: 4.2,
                 ratingCount: 21,
-                heroImageUrl: "/assets/images/products/perfume-hero.jpg",
-                images: { create: [{ url: "/assets/images/products/perfume-1.jpg", alt: "ادو پارفوم", position: 0 }] },
+                isSpecialProduct: true,
+                heroImageUrl: "/assets/images/products/perfume.png",
+                images: { create: [{ url: "/assets/images/products/perfume.png", alt: "ادو پارفوم", position: 0 }] },
                 variants: {
                     create: [
                         { variantName: "۵۰ میل", sku: "PER-001-50", stock: 20 },
@@ -257,8 +260,8 @@ async function main() {
                 price: 600000,
                 ratingAvg: 4.3,
                 ratingCount: 34,
-                heroImageUrl: "/assets/images/products/shampoo-hero.jpg",
-                images: { create: [{ url: "/assets/images/products/shampoo-1.jpg", alt: "شامپو گیاهی", position: 0 }] },
+                heroImageUrl: "/assets/images/products/product.png",
+                images: { create: [{ url: "/assets/images/products/product.png", alt: "شامپو گیاهی", position: 0 }] },
                 variants: {
                     create: [
                         { variantName: "۳۰۰ میل", sku: "SHA-001-300", stock: 40 },
@@ -422,7 +425,7 @@ async function main() {
                 name: "تیم بیوتی",
                 slug: "beauty-team",
                 bio: "تیم متخصصان زیبایی",
-                avatarUrl: "/assets/images/authors/beauty-team.jpg",
+                avatarUrl: "/assets/images/authors/sara-ahmadi.jpg",
             },
         }),
         prisma.magazineAuthor.create({
@@ -430,7 +433,7 @@ async function main() {
                 name: "علی مرادی",
                 slug: "ali-moradi",
                 bio: "نویسنده و پژوهشگر حوزه زیبایی",
-                avatarUrl: "/assets/images/authors/ali-moradi.jpg",
+                avatarUrl: "/assets/images/authors/maryam-rezaei.jpg",
             },
         }),
         prisma.magazineAuthor.create({
@@ -438,7 +441,7 @@ async function main() {
                 name: "نیلوفر رحیمی",
                 slug: "niloofar-rahimi",
                 bio: "کارشناس مراقبت مو",
-                avatarUrl: "/assets/images/authors/niloofar-rahimi.jpg",
+                avatarUrl: "/assets/images/authors/maryam-rezaei.jpg",
             },
         }),
     ]);
@@ -512,7 +515,7 @@ async function main() {
                 content: `
 # روتین یکشنبه
 ...`,
-                heroImageUrl: "/assets/images/magazine/article4.jpg",
+                heroImageUrl: "/assets/images/magazine/article4.png",
                 readTimeMinutes: 6,
                 publishedAt: new Date("2024-01-25"),
                 tags: { create: [{ tagId: tags[3].id }] },
@@ -528,7 +531,7 @@ async function main() {
                 content: `
 # مراقبت از مو در تابستان
 ...`,
-                heroImageUrl: "/assets/images/magazine/article5.jpg",
+                heroImageUrl: "/assets/images/magazine/article4.png",
                 readTimeMinutes: 7,
                 publishedAt: new Date("2024-01-30"),
                 tags: { create: [{ tagId: tags[4].id }] },
@@ -562,7 +565,7 @@ async function main() {
                     hero: {
                         title: "سال نو، زیبایی نو",
                         subtitle: "جدیدترین کالکشن ما را کشف کنید",
-                        imageUrl: "/assets/images/banners/hero-banner.jpg",
+                        imageUrl: "/assets/images/hero.png",
                         ctaText: "اکنون خرید کنید",
                         ctaUrl: "/shop",
                     },

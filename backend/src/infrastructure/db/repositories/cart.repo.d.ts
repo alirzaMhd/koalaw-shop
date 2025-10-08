@@ -67,9 +67,9 @@ export declare const cartRepo: {
         currencyCode: string;
         productId: string;
         title: string;
-        variantName: string | null;
         cartId: string;
         variantId: string | null;
+        variantName: string | null;
         unitPrice: number;
         quantity: number;
         lineTotal: number;
@@ -82,9 +82,9 @@ export declare const cartRepo: {
         currencyCode: string;
         productId: string;
         title: string;
-        variantName: string | null;
         cartId: string;
         variantId: string | null;
+        variantName: string | null;
         unitPrice: number;
         quantity: number;
         lineTotal: number;
@@ -99,9 +99,9 @@ export declare const cartRepo: {
         currencyCode: string;
         productId: string;
         title: string;
-        variantName: string | null;
         cartId: string;
         variantId: string | null;
+        variantName: string | null;
         unitPrice: number;
         quantity: number;
         lineTotal: number;
@@ -109,16 +109,16 @@ export declare const cartRepo: {
     } | null, null, import("@prisma/client/runtime/library").DefaultArgs, {
         log: any;
     }>;
-    addItem(data: Prisma.CartItemUncheckedCreateInput): Prisma.Prisma__CartItemClient<{
+    addItem(data: any): Prisma.Prisma__CartItemClient<{
         id: string;
         createdAt: Date;
         updatedAt: Date;
         currencyCode: string;
         productId: string;
         title: string;
-        variantName: string | null;
         cartId: string;
         variantId: string | null;
+        variantName: string | null;
         unitPrice: number;
         quantity: number;
         lineTotal: number;
@@ -126,16 +126,16 @@ export declare const cartRepo: {
     }, never, import("@prisma/client/runtime/library").DefaultArgs, {
         log: any;
     }>;
-    updateItem(id: string, data: Prisma.CartItemUncheckedUpdateInput): Prisma.Prisma__CartItemClient<{
+    updateItem(id: string, data: any): Prisma.Prisma__CartItemClient<{
         id: string;
         createdAt: Date;
         updatedAt: Date;
         currencyCode: string;
         productId: string;
         title: string;
-        variantName: string | null;
         cartId: string;
         variantId: string | null;
+        variantName: string | null;
         unitPrice: number;
         quantity: number;
         lineTotal: number;
@@ -150,9 +150,9 @@ export declare const cartRepo: {
         currencyCode: string;
         productId: string;
         title: string;
-        variantName: string | null;
         cartId: string;
         variantId: string | null;
+        variantName: string | null;
         unitPrice: number;
         quantity: number;
         lineTotal: number;

@@ -201,6 +201,7 @@ export function toProductDetailDto(p) {
     };
     return dto;
 }
+// Prisma v5: use string enum literals for values; type via Prisma.$Enums
 const CategoryEnumBySlug = {
     skincare: "SKINCARE",
     makeup: "MAKEUP",

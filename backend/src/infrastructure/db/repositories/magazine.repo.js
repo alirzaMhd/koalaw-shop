@@ -1,4 +1,4 @@
-import { Prisma, MagazineCategory } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { prisma } from '../prismaClient.js';
 const defaultPostInclude = {
     author: true,

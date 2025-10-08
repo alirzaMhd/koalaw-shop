@@ -12,6 +12,10 @@ const TIER_STARS = {
     STANDARD: { stars: 3, label: "مشتری عادی" },
     VIP: { stars: 5, label: "مشتری ویژه" },
 };
+// Helper function to get tier info with fallback
+function getTierInfo(tier) {
+    return TIER_STARS[tier] || TIER_STARS.STANDARD;
+}
 export const profileService = {
     async getProfile(userId) {
         const user = await prisma.user.findUnique({
@@ -38,7 +42,7 @@ export const profileService = {
         // Get stats
         const stats = await this.getStats(userId);
         // Get tier info
-        const tierInfo = TIER_STARS[user.customerTier] || TIER_STARS.STANDARD;
+        const tierInfo = getTierInfo(user.customerTier);
         // Apply cute koala defaults
         return {
             id: user.id,
@@ -178,7 +182,7 @@ export const profileService = {
                 profileImageUrl: true, // NEW
             },
         });
-        const tierInfo = TIER_STARS[user.customerTier] || TIER_STARS.STANDARD;
+        const tierInfo = getTierInfo(user.customerTier) || TIER_STARS.STANDARD;
         return {
             id: user.id,
             email: user.email,

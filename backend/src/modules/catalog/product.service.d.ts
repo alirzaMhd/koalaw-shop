@@ -26,12 +26,12 @@ declare class ProductService {
     }>;
     listReviewsByProductId(productId: string, query: ListReviewsQuery): Promise<{
         items: {
-            id: string;
+            id: any;
             authorName: any;
-            rating: number;
-            title: string | null;
-            body: string;
-            createdAt: string;
+            rating: any;
+            title: any;
+            body: any;
+            createdAt: any;
         }[];
         meta: {
             page: number;
@@ -42,12 +42,12 @@ declare class ProductService {
     }>;
     listReviewsBySlug(slug: string, query: ListReviewsQuery): Promise<{
         items: {
-            id: string;
+            id: any;
             authorName: any;
-            rating: number;
-            title: string | null;
-            body: string;
-            createdAt: string;
+            rating: any;
+            title: any;
+            body: any;
+            createdAt: any;
         }[];
         meta: {
             page: number;
@@ -75,14 +75,14 @@ declare class ProductService {
     getFilterOptions(): Promise<{
         categories: import("./category.entity.js").Category[];
         brands: {
-            id: string;
-            name: string;
-            slug: string;
-            count: number;
+            id: unknown;
+            name: any;
+            slug: any;
+            count: any;
         }[];
         collections: {
             id: string;
-            name: string;
+            name: any;
             count: number;
         }[];
         priceRange: {

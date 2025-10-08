@@ -4,25 +4,25 @@ export declare const orderRepo: {
         items: {
             id: string;
             createdAt: Date;
+            orderId: string;
             currencyCode: string;
             productId: string | null;
             title: string;
-            orderId: string;
-            position: number;
-            variantName: string | null;
             variantId: string | null;
+            variantName: string | null;
             unitPrice: number;
             quantity: number;
             lineTotal: number;
             imageUrl: string | null;
+            position: number;
         }[];
         payments: {
             status: import("@prisma/client").$Enums.PaymentStatus;
             id: string;
             createdAt: Date;
             updatedAt: Date;
-            currencyCode: string;
             orderId: string;
+            currencyCode: string;
             method: import("@prisma/client").$Enums.PaymentMethod;
             amount: number;
             authority: string | null;
@@ -64,25 +64,25 @@ export declare const orderRepo: {
         items: {
             id: string;
             createdAt: Date;
+            orderId: string;
             currencyCode: string;
             productId: string | null;
             title: string;
-            orderId: string;
-            position: number;
-            variantName: string | null;
             variantId: string | null;
+            variantName: string | null;
             unitPrice: number;
             quantity: number;
             lineTotal: number;
             imageUrl: string | null;
+            position: number;
         }[];
         payments: {
             status: import("@prisma/client").$Enums.PaymentStatus;
             id: string;
             createdAt: Date;
             updatedAt: Date;
-            currencyCode: string;
             orderId: string;
+            currencyCode: string;
             method: import("@prisma/client").$Enums.PaymentMethod;
             amount: number;
             authority: string | null;
@@ -124,25 +124,25 @@ export declare const orderRepo: {
         items: {
             id: string;
             createdAt: Date;
+            orderId: string;
             currencyCode: string;
             productId: string | null;
             title: string;
-            orderId: string;
-            position: number;
-            variantName: string | null;
             variantId: string | null;
+            variantName: string | null;
             unitPrice: number;
             quantity: number;
             lineTotal: number;
             imageUrl: string | null;
+            position: number;
         }[];
         payments: {
             status: import("@prisma/client").$Enums.PaymentStatus;
             id: string;
             createdAt: Date;
             updatedAt: Date;
-            currencyCode: string;
             orderId: string;
+            currencyCode: string;
             method: import("@prisma/client").$Enums.PaymentMethod;
             amount: number;
             authority: string | null;
@@ -180,8 +180,8 @@ export declare const orderRepo: {
     }) | null, null, import("@prisma/client/runtime/library").DefaultArgs, {
         log: any;
     }>;
-    count(where?: Prisma.OrderWhereInput): Prisma.PrismaPromise<number>;
-    list(where: Prisma.OrderWhereInput, page?: number, perPage?: number): Prisma.PrismaPromise<{
+    count(where?: any): Prisma.PrismaPromise<number>;
+    list(where: any, page?: number, perPage?: number): Prisma.PrismaPromise<{
         status: import("@prisma/client").$Enums.OrderStatus;
         id: string;
         orderNumber: string;
@@ -192,36 +192,8 @@ export declare const orderRepo: {
             items: number;
         };
     }[]>;
-    create(data: Prisma.OrderCreateInput, items?: Array<Prisma.OrderItemUncheckedCreateInput>, payment?: Prisma.PaymentUncheckedCreateInput): Promise<{
-        status: import("@prisma/client").$Enums.OrderStatus;
-        id: string;
-        createdAt: Date;
-        updatedAt: Date;
-        userId: string | null;
-        orderNumber: string;
-        shippingMethod: import("@prisma/client").$Enums.ShippingMethod;
-        paymentMethod: import("@prisma/client").$Enums.PaymentMethod;
-        couponCode: string | null;
-        giftWrap: boolean;
-        note: string | null;
-        subtotal: number;
-        discountTotal: number;
-        shippingTotal: number;
-        giftWrapTotal: number;
-        total: number;
-        currencyCode: string;
-        shippingFirstName: string;
-        shippingLastName: string;
-        shippingPhone: string;
-        shippingPostalCode: string | null;
-        shippingProvince: string;
-        shippingCity: string;
-        shippingAddressLine1: string;
-        shippingAddressLine2: string | null;
-        shippingCountry: string;
-        placedAt: Date;
-    }>;
-    updateStatus(id: string, status: NonNullable<Prisma.OrderUpdateInput["status"]>): Prisma.Prisma__OrderClient<{
+    create(data: any, items?: Array<any>, payment?: any): Promise<any>;
+    updateStatus(id: string, status: NonNullable<any>): Prisma.Prisma__OrderClient<{
         status: import("@prisma/client").$Enums.OrderStatus;
         id: string;
         createdAt: Date;
@@ -252,13 +224,13 @@ export declare const orderRepo: {
     }, never, import("@prisma/client/runtime/library").DefaultArgs, {
         log: any;
     }>;
-    createPayment(orderId: string, data: Prisma.PaymentUncheckedCreateInput): Prisma.Prisma__PaymentClient<{
+    createPayment(orderId: string, data: any): Prisma.Prisma__PaymentClient<{
         status: import("@prisma/client").$Enums.PaymentStatus;
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        currencyCode: string;
         orderId: string;
+        currencyCode: string;
         method: import("@prisma/client").$Enums.PaymentMethod;
         amount: number;
         authority: string | null;
@@ -270,17 +242,17 @@ export declare const orderRepo: {
     listItems(orderId: string): Prisma.PrismaPromise<{
         id: string;
         createdAt: Date;
+        orderId: string;
         currencyCode: string;
         productId: string | null;
         title: string;
-        orderId: string;
-        position: number;
-        variantName: string | null;
         variantId: string | null;
+        variantName: string | null;
         unitPrice: number;
         quantity: number;
         lineTotal: number;
         imageUrl: string | null;
+        position: number;
     }[]>;
 };
 export default orderRepo;

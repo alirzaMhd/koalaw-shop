@@ -5,8 +5,8 @@ export declare const paymentRepo: {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        currencyCode: string;
         orderId: string;
+        currencyCode: string;
         method: import("@prisma/client").$Enums.PaymentMethod;
         amount: number;
         authority: string | null;
@@ -20,21 +20,21 @@ export declare const paymentRepo: {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        currencyCode: string;
         orderId: string;
+        currencyCode: string;
         method: import("@prisma/client").$Enums.PaymentMethod;
         amount: number;
         authority: string | null;
         transactionRef: string | null;
         paidAt: Date | null;
     }[]>;
-    create(data: Prisma.PaymentUncheckedCreateInput): Prisma.Prisma__PaymentClient<{
+    create(data: any): Prisma.Prisma__PaymentClient<{
         status: import("@prisma/client").$Enums.PaymentStatus;
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        currencyCode: string;
         orderId: string;
+        currencyCode: string;
         method: import("@prisma/client").$Enums.PaymentMethod;
         amount: number;
         authority: string | null;
@@ -43,13 +43,13 @@ export declare const paymentRepo: {
     }, never, import("@prisma/client/runtime/library").DefaultArgs, {
         log: any;
     }>;
-    update(id: string, data: Prisma.PaymentUncheckedUpdateInput): Prisma.Prisma__PaymentClient<{
+    update(id: string, data: any): Prisma.Prisma__PaymentClient<{
         status: import("@prisma/client").$Enums.PaymentStatus;
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        currencyCode: string;
         orderId: string;
+        currencyCode: string;
         method: import("@prisma/client").$Enums.PaymentMethod;
         amount: number;
         authority: string | null;
@@ -63,8 +63,8 @@ export declare const paymentRepo: {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        currencyCode: string;
         orderId: string;
+        currencyCode: string;
         method: import("@prisma/client").$Enums.PaymentMethod;
         amount: number;
         authority: string | null;
@@ -78,8 +78,8 @@ export declare const paymentRepo: {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        currencyCode: string;
         orderId: string;
+        currencyCode: string;
         method: import("@prisma/client").$Enums.PaymentMethod;
         amount: number;
         authority: string | null;
