@@ -110,8 +110,6 @@
           if (data.data?.user) {
             localStorage.setItem("user", JSON.stringify(data.data.user));
           }
-          console.log("🍪 Document cookies:", document.cookie);
-          console.log("📦 Response data:", data);
           window.location.href = "/profile";
           return;
         }
