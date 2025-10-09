@@ -2,7 +2,6 @@ import { PrismaClient } from "@prisma/client";
 import path from "path";
 import dotenv from "dotenv";
 import { logger } from "../src/config/logger.js";
-import bcrypt from "bcryptjs"; // It's good practice to hash passwords in the seed script itself
 
 // Load .env from project root
 dotenv.config({ path: path.resolve(process.cwd(), ".env") });
@@ -61,32 +60,14 @@ async function main() {
     prisma.colorTheme.create({ data: { name: "سنگ روشن", slug: "light-stone", hexCode: "#E5E4E2" } }),
   ]);
 
-  // 3) Users
+  // 3) Users (5)
   logger.info("Seeding users...");
   
-  // Hash passwords for seed data
-  const testPasswordHash = bcrypt.hashSync("password123", 10);
-  // Hash for the new admin user. The plain text is "HeLLo@&2512@&Po"
-  const adminPasswordHash = bcrypt.hashSync("HeLLo@&2512@&Po", 10);
+  // For seed data, using bcrypt hash of "password123" (for testing only)
+  // Hash generated with: bcrypt.hash("password123", 10)
+  const testPasswordHash = "$2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW";
 
   const users = await Promise.all([
-    // --- NEW ADMIN USER ADDED HERE ---
-    prisma.user.create({
-      data: {
-        email: "pouria.momtaz.7900@gmail.com",
-        passwordHash: adminPasswordHash,
-        firstName: "Pouria",
-        lastName: "Momtaz",
-        phone: "+989212556879",
-        gender: "MALE",
-        customerTier: "VIP", // Represents admin/best privileges
-        phoneVerifiedAt: new Date(),
-        notificationPrefs: {
-          create: { orderUpdates: true, promotions: true, newProducts: true, marketing: true },
-        },
-      },
-    }),
-    // --- END OF NEW USER ---
     prisma.user.create({
       data: {
         phone: "+989100000001",
@@ -341,7 +322,7 @@ async function main() {
     prisma.productReview.create({
       data: {
         productId: products[0].id,
-        userId: users[2].id, // Note: Indices shifted due to new user, this is now 'customer1'
+        userId: users[1].id,
         rating: 5,
         title: "فینیش مات بی‌نقص!",
         body: "این رژ لب فوق‌العاده است! تمام روز بدون خشکی باقی می‌ماند.",
@@ -360,7 +341,7 @@ async function main() {
     prisma.productReview.create({
       data: {
         productId: products[2].id,
-        userId: users[3].id, // This is now 'customer2'
+        userId: users[2].id,
         rating: 5,
         title: "رنگ‌های جذاب",
         body: "پیگمنت عالی و ماندگاری خوب.",
@@ -370,7 +351,7 @@ async function main() {
     prisma.productReview.create({
       data: {
         productId: products[3].id,
-        userId: users[4].id, // This is now 'customer3'
+        userId: users[3].id,
         rating: 4,
         title: "رایحه‌ی شیک",
         body: "برای استفاده روزانه عالیه.",
@@ -380,7 +361,7 @@ async function main() {
     prisma.productReview.create({
       data: {
         productId: products[4].id,
-        userId: users[5].id, // This is now 'customer4'
+        userId: users[4].id,
         rating: 5,
         title: "احساس سبکی مو",
         body: "بدون سولفات و خیلی ملایم.",
