@@ -4,6 +4,14 @@ import { z } from "zod";
 // Common schemas
 const currencyCodeSchema = z.enum(["IRR", "USD", "EUR"]).default("IRR");
 const positionSchema = z.number().int().min(0).optional();
+// Helper: URL that accepts empty string and converts to null
+const optionalUrlSchema = z.preprocess((val) => {
+    if (val === null || val === undefined)
+        return null;
+    if (typeof val === "string" && val.trim() === "")
+        return null;
+    return val;
+}, z.string().url("آدرس URL معتبر نیست").nullable().optional());
 const imageInputSchema = z.object({
     url: z.string().url("آدرس تصویر معتبر نیست"),
     alt: z.string().max(255, "متن جایگزین تصویر حداکثر ۲۵۵ کاراکتر").optional(),
@@ -52,6 +60,7 @@ export const createProductInputSchema = z.object({
     brandSlug: z.string().optional(),
     // Relations
     colorThemeId: z.string().uuid("شناسه تم رنگ معتبر نیست").optional(),
+    collectionId: z.string().uuid("شناسه کالکشن معتبر نیست").optional(),
     // Core fields
     category: z.string().min(1, "دسته‌بندی الزامی است").max(50),
     title: z.string().min(1, "عنوان محصول الزامی است").max(200),
@@ -69,8 +78,10 @@ export const createProductInputSchema = z.object({
     isFeatured: z.boolean().default(false),
     isSpecialProduct: z.boolean().default(false),
     isActive: z.boolean().default(true),
-    // Media
-    heroImageUrl: z.string().url("آدرس تصویر اصلی معتبر نیست").optional(),
+    // Media - use the helper schema
+    heroImageUrl: optionalUrlSchema,
+    // Internal
+    internalNotes: z.string().max(2000).optional(),
     // Child resources
     images: z.array(imageInputSchema).max(20, "حداکثر ۲۰ تصویر مجاز است").optional(),
     variants: z.array(variantInputSchema).max(50, "حداکثر ۵۰ واریانت مجاز است").optional(),
@@ -82,6 +93,7 @@ export const updateProductInputSchema = z.object({
     brandSlug: z.string().optional(),
     // Relations
     colorThemeId: z.string().uuid("شناسه تم رنگ معتبر نیست").optional(),
+    collectionId: z.string().uuid("شناسه کالکشن معتبر نیست").optional(),
     // Core fields
     category: z.string().min(1).max(50).optional(),
     title: z.string().min(1).max(200).optional(),
@@ -99,8 +111,10 @@ export const updateProductInputSchema = z.object({
     isFeatured: z.boolean().optional(),
     isSpecialProduct: z.boolean().optional(),
     isActive: z.boolean().optional(),
-    // Media
-    heroImageUrl: z.string().url("آدرس تصویر اصلی معتبر نیست").nullable().optional(),
+    // Media - use the helper schema
+    heroImageUrl: optionalUrlSchema,
+    // Internal
+    internalNotes: z.string().max(2000).nullable().optional(),
     // Child resources (if provided, replaces entire set)
     images: z.array(imageInputSchema).max(20, "حداکثر ۲۰ تصویر مجاز است").optional(),
     variants: z.array(variantInputSchema).max(50, "حداکثر ۵۰ واریانت مجاز است").optional(),

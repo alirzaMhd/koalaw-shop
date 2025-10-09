@@ -17,6 +17,8 @@ import searchRouter from "./modules/search/search.routes.js";
 import magazineRoutes from "./modules/magazine/magazine.routes.js";
 import profileRoutes from "./modules/profile/profile.routes.js";
 import newsletterRoutes from "./modules/newsletter/newsletter.routes.js";
+import adminRoutes from "./modules/admin/admin.routes.js";
+import uploadRouter from "./modules/upload/upload.routes.js";
 export function buildApiRouter() {
     const api = Router();
     // Health
@@ -36,7 +38,9 @@ export function buildApiRouter() {
     api.use("/search", searchRouter); // <-- added
     api.use('/magazine', magazineRoutes);
     api.use('/profile', profileRoutes);
-    api.use("/api/newsletter", newsletterRoutes);
+    api.use("/newsletter", newsletterRoutes);
+    api.use("/admin", adminRoutes); // ADD THIS
+    api.use("/upload", uploadRouter);
     return api;
 }
 export default buildApiRouter;

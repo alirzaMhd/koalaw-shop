@@ -35,6 +35,7 @@
     "@types/cors": "^2.8.19",
     "@types/helmet": "^0.0.48",
     "bcrypt": "^6.0.0",
+    "bcryptjs": "^3.0.2",
     "bullmq": "^5.7.9",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.7",

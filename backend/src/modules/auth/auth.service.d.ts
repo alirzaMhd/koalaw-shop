@@ -5,10 +5,10 @@ export declare const authService: {
         ip?: string;
     }): Promise<{
         user: {
-            id: any;
-            email: any;
-            role: any;
-            emailVerifiedAt: any;
+            id: string;
+            email: string;
+            role: import("@prisma/client").$Enums.UserRole;
+            emailVerifiedAt: Date | null;
         };
         needsVerification: boolean;
     }>;
@@ -19,10 +19,10 @@ export declare const authService: {
         userAgent?: string;
     }): Promise<{
         user: {
-            id: any;
-            email: any;
-            role: any;
-            emailVerifiedAt: any;
+            id: string;
+            email: string;
+            role: import("@prisma/client").$Enums.UserRole;
+            emailVerifiedAt: Date;
         };
         tokens: {
             accessToken: string;
@@ -37,10 +37,10 @@ export declare const authService: {
         code: string;
     }): Promise<{
         user: {
-            id: any;
-            email: any;
-            role: any;
-            emailVerifiedAt: any;
+            id: string;
+            email: string;
+            role: import("@prisma/client").$Enums.UserRole;
+            emailVerifiedAt: Date | null;
         };
         tokens: {
             accessToken: string;
@@ -73,10 +73,10 @@ export declare const authService: {
         userAgent?: string | undefined;
     }): Promise<{
         user: {
-            id: any;
-            email: any;
-            role: any;
-            emailVerifiedAt: any;
+            id: string;
+            email: string;
+            role: import("@prisma/client").$Enums.UserRole;
+            emailVerifiedAt: Date | null;
         };
         tokens: {
             accessToken: string;
@@ -94,13 +94,13 @@ export declare const authService: {
         revoked: boolean;
     }>;
     me(userId: string): Promise<{
-        id: any;
-        email: any;
-        phone: any;
-        firstName: any;
-        lastName: any;
-        role: any;
-        emailVerifiedAt: any;
+        id: string;
+        email: string;
+        phone: string | null;
+        firstName: string | null;
+        lastName: string | null;
+        role: import("@prisma/client").$Enums.UserRole;
+        emailVerifiedAt: Date | null;
     }>;
 };
 //# sourceMappingURL=auth.service.d.ts.map

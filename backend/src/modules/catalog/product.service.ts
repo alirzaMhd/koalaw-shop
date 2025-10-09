@@ -79,19 +79,20 @@ function pickCoreProductData(input: CreateProductInput | UpdateProductInput, bra
   const data: any = {
     // Relations
     ...(brandId ? { brandId } : {}),
-    ...(input.colorThemeId ? { colorThemeId: input.colorThemeId } : {}),
+    ...(input.colorThemeId !== undefined ? { colorThemeId: input.colorThemeId || null } : {}),
+    ...(input.collectionId !== undefined ? { collectionId: input.collectionId || null } : {}),
 
     // Scalars
     ...(input.category ? { category: input.category } : {}),
     ...(input.title ? { title: input.title } : {}),
-    ...(typeof input.subtitle !== "undefined" ? { subtitle: input.subtitle } : {}),
-    ...(typeof input.slug !== "undefined" ? { slug: input.slug } : {}),
-    ...(typeof input.description !== "undefined" ? { description: input.description } : {}),
-    ...(typeof input.ingredients !== "undefined" ? { ingredients: input.ingredients } : {}),
-    ...(typeof input.howToUse !== "undefined" ? { howToUse: input.howToUse } : {}),
+    ...(input.subtitle !== undefined ? { subtitle: input.subtitle || null } : {}),
+    ...(input.slug !== undefined ? { slug: input.slug } : {}),
+    ...(input.description !== undefined ? { description: input.description || null } : {}),
+    ...(input.ingredients !== undefined ? { ingredients: input.ingredients || null } : {}),
+    ...(input.howToUse !== undefined ? { howToUse: input.howToUse || null } : {}),
 
     ...(typeof input.price === "number" ? { price: input.price } : {}),
-    ...(typeof input.compareAtPrice !== "undefined" ? { compareAtPrice: input.compareAtPrice } : {}),
+    ...(input.compareAtPrice !== undefined ? { compareAtPrice: input.compareAtPrice || null } : {}),
     ...(input.currencyCode ? { currencyCode: input.currencyCode } : {}),
 
     ...(typeof (input as any).ratingAvg === "number" ? { ratingAvg: (input as any).ratingAvg } : {}),
@@ -102,7 +103,12 @@ function pickCoreProductData(input: CreateProductInput | UpdateProductInput, bra
     ...(typeof input.isSpecialProduct === "boolean" ? { isSpecialProduct: input.isSpecialProduct } : {}),
     ...(typeof input.isActive === "boolean" ? { isActive: input.isActive } : {}),
 
-    ...(typeof input.heroImageUrl !== "undefined" ? { heroImageUrl: input.heroImageUrl } : {}),
+    // Fix heroImageUrl handling - accept null, undefined, or valid URL
+    ...(input.heroImageUrl !== undefined ? { 
+      heroImageUrl: input.heroImageUrl 
+    } : {}),
+    
+    ...(input.internalNotes !== undefined ? { internalNotes: input.internalNotes || null } : {}),
   };
   return data;
 }

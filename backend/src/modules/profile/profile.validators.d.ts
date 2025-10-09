@@ -6,17 +6,17 @@ export declare const updateProfileSchema: z.ZodObject<{
     birthDate: z.ZodNullable<z.ZodOptional<z.ZodString>>;
     gender: z.ZodOptional<z.ZodEnum<["UNDISCLOSED", "MALE", "FEMALE"]>>;
 }, "strip", z.ZodTypeAny, {
+    phone?: string | null | undefined;
     firstName?: string | undefined;
     lastName?: string | undefined;
-    phone?: string | null | undefined;
     birthDate?: string | null | undefined;
-    gender?: "FEMALE" | "MALE" | "UNDISCLOSED" | undefined;
+    gender?: "UNDISCLOSED" | "MALE" | "FEMALE" | undefined;
 }, {
+    phone?: string | null | undefined;
     firstName?: string | undefined;
     lastName?: string | undefined;
-    phone?: string | null | undefined;
     birthDate?: string | null | undefined;
-    gender?: "FEMALE" | "MALE" | "UNDISCLOSED" | undefined;
+    gender?: "UNDISCLOSED" | "MALE" | "FEMALE" | undefined;
 }>;
 export declare const updateNotificationPrefsSchema: z.ZodObject<{
     orderUpdates: z.ZodOptional<z.ZodBoolean>;
@@ -47,29 +47,29 @@ export declare const createAddressSchema: z.ZodObject<{
     country: z.ZodOptional<z.ZodString>;
     isDefault: z.ZodOptional<z.ZodBoolean>;
 }, "strip", z.ZodTypeAny, {
+    phone: string;
     firstName: string;
     lastName: string;
-    phone: string;
     province: string;
     city: string;
     addressLine1: string;
-    isDefault?: boolean | undefined;
     label?: string | null | undefined;
     postalCode?: string | null | undefined;
     addressLine2?: string | null | undefined;
     country?: string | undefined;
+    isDefault?: boolean | undefined;
 }, {
+    phone: string;
     firstName: string;
     lastName: string;
-    phone: string;
     province: string;
     city: string;
     addressLine1: string;
-    isDefault?: boolean | undefined;
     label?: string | null | undefined;
     postalCode?: string | null | undefined;
     addressLine2?: string | null | undefined;
     country?: string | undefined;
+    isDefault?: boolean | undefined;
 }>;
 export declare const updateAddressSchema: z.ZodObject<{
     label: z.ZodNullable<z.ZodOptional<z.ZodString>>;
@@ -83,26 +83,26 @@ export declare const updateAddressSchema: z.ZodObject<{
     addressLine2: z.ZodNullable<z.ZodOptional<z.ZodString>>;
     isDefault: z.ZodOptional<z.ZodBoolean>;
 }, "strip", z.ZodTypeAny, {
+    phone?: string | undefined;
     firstName?: string | undefined;
     lastName?: string | undefined;
-    phone?: string | undefined;
-    isDefault?: boolean | undefined;
     label?: string | null | undefined;
     postalCode?: string | null | undefined;
     province?: string | undefined;
     city?: string | undefined;
     addressLine1?: string | undefined;
     addressLine2?: string | null | undefined;
+    isDefault?: boolean | undefined;
 }, {
+    phone?: string | undefined;
     firstName?: string | undefined;
     lastName?: string | undefined;
-    phone?: string | undefined;
-    isDefault?: boolean | undefined;
     label?: string | null | undefined;
     postalCode?: string | null | undefined;
     province?: string | undefined;
     city?: string | undefined;
     addressLine1?: string | undefined;
     addressLine2?: string | null | undefined;
+    isDefault?: boolean | undefined;
 }>;
 //# sourceMappingURL=profile.validators.d.ts.map

@@ -2,11 +2,11 @@ import { type ProductImage, type ProductVariant } from "./product.entity.js";
 import { type ListProductsQuery, type CreateProductInput, type UpdateProductInput, type AddImageInput, type UpdateImageInput, type AddReviewInput, type ListReviewsQuery } from "./product.validators.js";
 declare class ProductService {
     list(query: ListProductsQuery): Promise<{
-        items: any;
+        items: import("./product.entity.js").ProductCardDto[];
         meta: {
             page: number;
             perPage: number;
-            total: any;
+            total: number;
             totalPages: number;
         };
     }>;
@@ -25,46 +25,69 @@ declare class ProductService {
         deleted: boolean;
     }>;
     listReviewsByProductId(productId: string, query: ListReviewsQuery): Promise<{
-        items: any;
+        items: {
+            id: any;
+            authorName: any;
+            rating: any;
+            title: any;
+            body: any;
+            createdAt: any;
+        }[];
         meta: {
             page: number;
             perPage: number;
-            total: any;
+            total: number;
             totalPages: number;
         };
     }>;
     listReviewsBySlug(slug: string, query: ListReviewsQuery): Promise<{
-        items: any;
+        items: {
+            id: any;
+            authorName: any;
+            rating: any;
+            title: any;
+            body: any;
+            createdAt: any;
+        }[];
         meta: {
             page: number;
             perPage: number;
-            total: any;
+            total: number;
             totalPages: number;
         };
     }>;
     addReviewByProductId(productId: string, input: AddReviewInput, userId?: string | null): Promise<{
-        id: any;
+        id: string;
         authorName: string;
-        rating: any;
-        title: any;
-        body: any;
-        createdAt: any;
+        rating: number;
+        title: string | null;
+        body: string;
+        createdAt: string;
     }>;
     addReviewBySlug(slug: string, input: AddReviewInput, userId?: string | null): Promise<{
-        id: any;
+        id: string;
         authorName: string;
-        rating: any;
-        title: any;
-        body: any;
-        createdAt: any;
+        rating: number;
+        title: string | null;
+        body: string;
+        createdAt: string;
     }>;
     getFilterOptions(): Promise<{
         categories: import("./category.entity.js").Category[];
-        brands: any;
-        collections: any;
+        brands: {
+            id: unknown;
+            name: any;
+            slug: any;
+            count: any;
+        }[];
+        collections: {
+            id: string;
+            name: any;
+            count: number;
+        }[];
         priceRange: {
-            min: any;
-            max: any;
+            min: number;
+            max: number;
         };
     }>;
 }

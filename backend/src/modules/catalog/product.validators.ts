@@ -8,6 +8,35 @@ const currencyCodeSchema = z.enum(["IRR", "USD", "EUR"]).default("IRR");
 
 const positionSchema = z.number().int().min(0).optional();
 
+// Helper: URL that accepts empty string, null, undefined and converts them to undefined
+// Only validates if the value is a non-empty string
+// Helper: URL that accepts both absolute URLs and relative paths
+const optionalUrlSchema = z
+  .string()
+  .transform((val) => {
+    if (!val || val.trim() === "") return undefined;
+    return val.trim();
+  })
+  .refine(
+    (val) => {
+      if (val === undefined) return true;
+      
+      // Allow relative paths that start with /
+      if (val.startsWith("/")) return true;
+      
+      // Allow absolute URLs
+      try {
+        new URL(val);
+        return true;
+      } catch {
+        return false;
+      }
+    },
+    { message: "آدرس URL یا مسیر تصویر معتبر نیست" }
+  )
+  .optional()
+  .nullable();
+
 const imageInputSchema = z.object({
   url: z.string().url("آدرس تصویر معتبر نیست"),
   alt: z.string().max(255, "متن جایگزین تصویر حداکثر ۲۵۵ کاراکتر").optional(),
@@ -63,6 +92,7 @@ export const createProductInputSchema = z.object({
   
   // Relations
   colorThemeId: z.string().uuid("شناسه تم رنگ معتبر نیست").optional(),
+  collectionId: z.string().uuid("شناسه کالکشن معتبر نیست").optional(),
   
   // Core fields
   category: z.string().min(1, "دسته‌بندی الزامی است").max(50),
@@ -84,8 +114,11 @@ export const createProductInputSchema = z.object({
   isSpecialProduct: z.boolean().default(false),
   isActive: z.boolean().default(true),
   
-  // Media
-  heroImageUrl: z.string().url("آدرس تصویر اصلی معتبر نیست").optional(),
+  // Media - use the helper schema
+  heroImageUrl: optionalUrlSchema,
+  
+  // Internal
+  internalNotes: z.string().max(2000).optional(),
   
   // Child resources
   images: z.array(imageInputSchema).max(20, "حداکثر ۲۰ تصویر مجاز است").optional(),
@@ -103,6 +136,7 @@ export const updateProductInputSchema = z.object({
   
   // Relations
   colorThemeId: z.string().uuid("شناسه تم رنگ معتبر نیست").optional(),
+  collectionId: z.string().uuid("شناسه کالکشن معتبر نیست").optional(),
   
   // Core fields
   category: z.string().min(1).max(50).optional(),
@@ -124,8 +158,11 @@ export const updateProductInputSchema = z.object({
   isSpecialProduct: z.boolean().optional(),
   isActive: z.boolean().optional(),
   
-  // Media
-  heroImageUrl: z.string().url("آدرس تصویر اصلی معتبر نیست").nullable().optional(),
+  // Media - use the helper schema
+  heroImageUrl: optionalUrlSchema,
+  
+  // Internal
+  internalNotes: z.string().max(2000).nullable().optional(),
   
   // Child resources (if provided, replaces entire set)
   images: z.array(imageInputSchema).max(20, "حداکثر ۲۰ تصویر مجاز است").optional(),

@@ -98,9 +98,10 @@ async function upsertTagsByNamesOrSlugs(values: string[] = []): Promise<any[]> {
 }
 
 function toPostDTO(post: any): PostDTO {
-  const tags = (post.tags || []).map((pt: any) => pt.tag);
-  const relatedOut = (post.relatedOut || []).map((r: any) => r.relatedPost);
-  const relatedIn = (post.relatedIn || []).map((r: any) => r.post);
+
+  const tags = (post.tags || []).map((pt: any) => pt.tag).filter(Boolean);
+  const relatedOut = (post.relatedOut || []).map((r: any) => r.relatedPost).filter(Boolean);
+  const relatedIn = (post.relatedIn || []).map((r: any) => r.post).filter(Boolean);
 
   // unique by id for related
   const relatedMap = new Map<string, any>();
@@ -152,7 +153,6 @@ export class MagazineService {
       pageSize: safePageSize,
       onlyPublished: params.onlyPublished ?? true,
       // Conditionally add optional properties only if they have a non-falsy value.
-      // This avoids assigning `undefined` and satisfies `exactOptionalPropertyTypes`.
       ...(params.category && { category: params.category as any }),
       ...(params.tagSlugs && { tagSlugs: params.tagSlugs }),
       ...(params.authorSlug && { authorSlug: params.authorSlug }),
@@ -182,6 +182,13 @@ export class MagazineService {
     return toPostDTO(post);
   }
 
+  async getPostById(id: string) {
+    const post = await magazineRepo.findPostById(id);
+    if (!post) throw new AppError('Post not found', 404);
+    // For admin, we don't need to check if it's published
+    return toPostDTO(post);
+  }
+
   async createPost(input: {
     authorId?: string | null;
     category: DerivedCategory;
@@ -200,7 +207,7 @@ export class MagazineService {
     if (input.slug && input.slug.trim()) {
       slug = slugify(input.slug);
       const exists = await prisma.magazinePost.count({ where: { slug } });
-      if (exists) throw new AppError('Slug already in use', 409);
+      if (exists) throw new AppError('این اسلاگ قبلا استفاده شده است', 409);
     } else {
       slug = await generateUniqueSlugForPost(input.title);
     }
@@ -209,26 +216,27 @@ export class MagazineService {
       ? (await upsertTagsByNamesOrSlugs(input.tags)).map((t: any) => t.id)
       : [];
 
-    // Use loose typing to avoid relying on Prisma's Unchecked types
+    const authorId = input.authorId && input.authorId.trim() !== "" ? input.authorId.trim() : null;
+
     const data: any = {
-      authorId: typeof input.authorId !== 'undefined' ? input.authorId : null,
+      authorId,
       category: input.category,
       title: input.title,
       slug,
-      excerpt: typeof input.excerpt !== 'undefined' ? input.excerpt : null,
+      excerpt: input.excerpt ?? null,
       content: input.content,
-      heroImageUrl: typeof input.heroImageUrl !== 'undefined' ? input.heroImageUrl : null,
-      readTimeMinutes: typeof input.readTimeMinutes !== 'undefined' ? input.readTimeMinutes : null,
-      publishedAt: typeof input.publishedAt !== 'undefined' ? input.publishedAt : null,
-      isPublished: typeof input.isPublished !== 'undefined' ? input.isPublished : true,
+      heroImageUrl: input.heroImageUrl ?? null,
+      readTimeMinutes: input.readTimeMinutes ?? null,
+      publishedAt: input.publishedAt ?? null,
+      isPublished: input.isPublished ?? true,
     };
 
     const created = await magazineRepo.createPost(data, tagIds, input.relatedPostIds ?? []);
+    if (!created) {
+      throw new AppError('Failed to create post', 500);
+    }
     const dto = toPostDTO(created);
-
-    // Index in Elasticsearch
-    await onMagazinePostSaved(created!.id);
-
+    await onMagazinePostSaved(created.id);
     return dto;
   }
 
@@ -256,7 +264,9 @@ export class MagazineService {
 
     if (typeof input.title !== 'undefined') data.title = input.title;
     if (typeof input.category !== 'undefined') data.category = input.category;
-    if (typeof input.authorId !== 'undefined') data.authorId = input.authorId;
+    if (typeof input.authorId !== 'undefined') {
+      data.authorId = input.authorId && input.authorId.trim() !== "" ? input.authorId.trim() : null;
+    }
     if (typeof input.excerpt !== 'undefined') data.excerpt = input.excerpt;
     if (typeof input.content !== 'undefined') data.content = input.content;
     if (typeof input.heroImageUrl !== 'undefined') data.heroImageUrl = input.heroImageUrl;
@@ -267,23 +277,19 @@ export class MagazineService {
     if (typeof input.slug !== 'undefined') {
       const cleanSlug = slugify(input.slug);
       if (cleanSlug !== existing.slug) {
-        const exists = await prisma.magazinePost.count({ where: { slug: cleanSlug } });
-        if (exists) throw new AppError('Slug already in use', 409);
+        const exists = await prisma.magazinePost.count({ where: { slug: cleanSlug, id: { not: id } } });
+        if (exists) throw new AppError('این اسلاگ قبلا استفاده شده است', 409);
       }
       data.slug = cleanSlug;
     }
 
-    const tagIds =
-      typeof input.tags !== 'undefined'
-        ? (await upsertTagsByNamesOrSlugs(input.tags)).map((t: any) => t.id)
-        : undefined;
+    const tagIds = typeof input.tags !== 'undefined'
+      ? (await upsertTagsByNamesOrSlugs(input.tags)).map((t: any) => t.id)
+      : undefined;
 
     const updated = await magazineRepo.updatePost(id, data, tagIds, input.relatedPostIds);
     const dto = toPostDTO(updated);
-
-    // Re-index in Elasticsearch
-    await onMagazinePostSaved(updated!.id);
-
+    await onMagazinePostSaved(updated.id);
     return dto;
   }
 
@@ -318,8 +324,8 @@ export class MagazineService {
     return magazineRepo.createAuthor({
       name: input.name,
       slug,
-      bio: typeof input.bio !== 'undefined' ? input.bio : null,
-      avatarUrl: typeof input.avatarUrl !== 'undefined' ? input.avatarUrl : null,
+      bio: input.bio ?? null,
+      avatarUrl: input.avatarUrl ?? null,
     });
   }
 

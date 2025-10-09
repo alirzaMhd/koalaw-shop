@@ -1,35 +1,67 @@
 export declare const profileService: {
     getProfile(userId: string): Promise<{
-        id: any;
-        email: any;
-        phone: any;
-        firstName: any;
-        lastName: any;
-        birthDate: any;
-        gender: any;
-        customerTier: any;
+        id: string;
+        email: string;
+        phone: string;
+        firstName: string;
+        lastName: string;
+        birthDate: string | undefined;
+        gender: import("@prisma/client").$Enums.Gender;
+        customerTier: import("@prisma/client").$Enums.CustomerTier;
         tierStars: number;
         tierLabel: string;
-        profileImage: any;
+        profileImage: string;
         bio: string;
-        emailVerifiedAt: any;
-        phoneVerifiedAt: any;
-        createdAt: any;
-        notificationPrefs: any;
+        emailVerifiedAt: Date | null;
+        phoneVerifiedAt: Date | null;
+        createdAt: Date;
+        notificationPrefs: {
+            createdAt: Date;
+            updatedAt: Date;
+            userId: string;
+            orderUpdates: boolean;
+            promotions: boolean;
+            newProducts: boolean;
+            marketing: boolean;
+        } | {
+            orderUpdates: true;
+            promotions: true;
+            newProducts: true;
+            marketing: false;
+        };
         stats: {
-            totalOrders: any;
-            pendingShipment: any;
+            totalOrders: number;
+            pendingShipment: number;
             wishlistCount: number;
             discountPercent: number;
         };
     }>;
     getStats(userId: string): Promise<{
-        totalOrders: any;
-        pendingShipment: any;
+        totalOrders: number;
+        pendingShipment: number;
         wishlistCount: number;
         discountPercent: number;
     }>;
-    getOrders(userId: string, status?: string): Promise<any>;
+    getOrders(userId: string, status?: string): Promise<{
+        id: any;
+        orderNumber: any;
+        status: string;
+        statusLabel: string;
+        total: any;
+        currencyCode: any;
+        createdAt: any;
+        placedAt: any;
+        items: {
+            id: any;
+            title: any;
+            variantName: any;
+            quantity: any;
+            unitPrice: any;
+            lineTotal: any;
+            imageUrl: any;
+        }[];
+        itemCount: number;
+    }[]>;
     getStatusLabel(status: string): string;
     updateProfile(userId: string, data: {
         firstName?: string | undefined;
@@ -38,25 +70,47 @@ export declare const profileService: {
         birthDate?: string | undefined;
         gender?: "UNDISCLOSED" | "MALE" | "FEMALE" | undefined;
     }): Promise<{
-        id: any;
-        email: any;
-        phone: any;
-        firstName: any;
-        lastName: any;
-        birthDate: any;
-        gender: any;
-        customerTier: any;
+        id: string;
+        email: string;
+        phone: string;
+        firstName: string;
+        lastName: string;
+        birthDate: string | undefined;
+        gender: import("@prisma/client").$Enums.Gender;
+        customerTier: import("@prisma/client").$Enums.CustomerTier;
         tierStars: number;
         tierLabel: string;
-        profileImage: any;
+        profileImage: string;
     }>;
     updateNotificationPrefs(userId: string, prefs: {
         orderUpdates?: boolean | undefined;
         promotions?: boolean | undefined;
         newProducts?: boolean | undefined;
         marketing?: boolean | undefined;
-    }): Promise<any>;
-    getAddresses(userId: string): Promise<any>;
+    }): Promise<{
+        createdAt: Date;
+        updatedAt: Date;
+        userId: string;
+        orderUpdates: boolean;
+        promotions: boolean;
+        newProducts: boolean;
+        marketing: boolean;
+    }>;
+    getAddresses(userId: string): Promise<{
+        id: any;
+        label: any;
+        firstName: any;
+        lastName: any;
+        phone: any;
+        postalCode: any;
+        province: any;
+        city: any;
+        addressLine1: any;
+        addressLine2: any;
+        country: any;
+        isDefault: any;
+        createdAt: any;
+    }[]>;
     createAddress(userId: string, data: {
         label?: string | undefined;
         firstName: string;
@@ -69,7 +123,23 @@ export declare const profileService: {
         addressLine2?: string | undefined;
         country?: string | undefined;
         isDefault?: boolean | undefined;
-    }): Promise<any>;
+    }): Promise<{
+        id: string;
+        phone: string;
+        firstName: string;
+        lastName: string;
+        createdAt: Date;
+        updatedAt: Date;
+        userId: string;
+        label: string | null;
+        postalCode: string | null;
+        province: string;
+        city: string;
+        addressLine1: string;
+        addressLine2: string | null;
+        country: string;
+        isDefault: boolean;
+    }>;
     updateAddress(userId: string, addressId: string, data: {
         label?: string | undefined;
         firstName?: string | undefined;
@@ -81,7 +151,23 @@ export declare const profileService: {
         addressLine1?: string | undefined;
         addressLine2?: string | undefined;
         isDefault?: boolean | undefined;
-    }): Promise<any>;
+    }): Promise<{
+        id: string;
+        phone: string;
+        firstName: string;
+        lastName: string;
+        createdAt: Date;
+        updatedAt: Date;
+        userId: string;
+        label: string | null;
+        postalCode: string | null;
+        province: string;
+        city: string;
+        addressLine1: string;
+        addressLine2: string | null;
+        country: string;
+        isDefault: boolean;
+    }>;
     deleteAddress(userId: string, addressId: string): Promise<{
         success: boolean;
     }>;

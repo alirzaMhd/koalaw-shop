@@ -12,6 +12,10 @@
     collections: [],
     coupons: [],
     reviews: [],
+    magazines: [],
+    authors: [],
+    tags: [],
+    colorThemes: [],
   };
 
   // ========== UTILITY FUNCTIONS ==========
@@ -31,6 +35,18 @@
         year: "numeric",
         month: "long",
         day: "numeric",
+      }).format(date);
+    },
+
+    formatDateTime(dateString) {
+      if (!dateString) return "-";
+      const date = new Date(dateString);
+      return new Intl.DateTimeFormat("fa-IR", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
       }).format(date);
     },
 
@@ -96,7 +112,7 @@
           <i data-feather="alert-circle" class="w-12 h-12 text-red-500 mx-auto mb-4"></i>
           <h3 class="text-lg font-bold text-red-800 mb-2">خطا</h3>
           <p class="text-red-600 mb-4">${message}</p>
-          <button onclick="location.reload()" class="admin-btn admin-btn-primary">
+          <button data-action="reload" class="admin-btn admin-btn-primary">
             تلاش مجدد
           </button>
         </div>
@@ -107,6 +123,18 @@
       if (typeof feather !== "undefined") {
         feather.replace();
       }
+    },
+
+    // Convert ISO date to input format (YYYY-MM-DD)
+    toInputDate(isoDate) {
+      if (!isoDate) return "";
+      return new Date(isoDate).toISOString().split("T")[0];
+    },
+
+    // Convert ISO datetime to input format (YYYY-MM-DDTHH:MM)
+    toInputDateTime(isoDate) {
+      if (!isoDate) return "";
+      return new Date(isoDate).toISOString().slice(0, 16);
     },
   };
 
@@ -143,24 +171,40 @@
       return result.data || result;
     },
 
+    // Dashboard
     getDashboard() {
       return this.fetch("/api/admin/dashboard");
     },
 
+    // Products
     getProducts(params = {}) {
       const query = new URLSearchParams(params).toString();
       return this.fetch(`/api/admin/products?${query}`);
     },
-
+    getProduct(id) {
+      return this.fetch(`/api/products/${id}`);
+    },
+    createProduct(data) {
+      return this.fetch("/api/products", {
+        method: "POST",
+        body: JSON.stringify(data),
+      });
+    },
+    updateProduct(id, data) {
+      return this.fetch(`/api/products/${id}`, {
+        method: "PATCH",
+        body: JSON.stringify(data),
+      });
+    },
     deleteProduct(id) {
       return this.fetch(`/api/admin/products/${id}`, { method: "DELETE" });
     },
 
+    // Orders
     getOrders(params = {}) {
       const query = new URLSearchParams(params).toString();
       return this.fetch(`/api/admin/orders?${query}`);
     },
-
     updateOrderStatus(id, status) {
       return this.fetch(`/api/admin/orders/${id}/status`, {
         method: "PATCH",
@@ -168,30 +212,35 @@
       });
     },
 
+    // Users
     getUsers(params = {}) {
       const query = new URLSearchParams(params).toString();
       return this.fetch(`/api/admin/users?${query}`);
     },
-
+    getUser(id) {
+      return this.fetch(`/api/admin/users/${id}`);
+    },
     updateUserRole(id, role) {
       return this.fetch(`/api/admin/users/${id}/role`, {
         method: "PATCH",
         body: JSON.stringify({ role }),
       });
     },
-
     updateUserTier(id, tier) {
       return this.fetch(`/api/admin/users/${id}/tier`, {
         method: "PATCH",
         body: JSON.stringify({ tier }),
       });
     },
+    deleteUser(id) {
+      return this.fetch(`/api/admin/users/${id}`, { method: "DELETE" });
+    },
 
+    // Reviews
     getReviews(params = {}) {
       const query = new URLSearchParams(params).toString();
       return this.fetch(`/api/admin/reviews/pending?${query}`);
     },
-
     updateReviewStatus(id, status) {
       return this.fetch(`/api/reviews/${id}/status`, {
         method: "PATCH",
@@ -199,75 +248,1627 @@
       });
     },
 
+    // Brands
     getBrands() {
       return this.fetch("/api/admin/brands");
     },
-
     createBrand(data) {
       return this.fetch("/api/admin/brands", {
         method: "POST",
         body: JSON.stringify(data),
       });
     },
-
     updateBrand(id, data) {
       return this.fetch(`/api/admin/brands/${id}`, {
         method: "PUT",
         body: JSON.stringify(data),
       });
     },
-
     deleteBrand(id) {
       return this.fetch(`/api/admin/brands/${id}`, { method: "DELETE" });
     },
 
+    // Collections
     getCollections() {
       return this.fetch("/api/admin/collections");
     },
-
     createCollection(data) {
       return this.fetch("/api/admin/collections", {
         method: "POST",
         body: JSON.stringify(data),
       });
     },
-
     updateCollection(id, data) {
       return this.fetch(`/api/admin/collections/${id}`, {
         method: "PUT",
         body: JSON.stringify(data),
       });
     },
-
     deleteCollection(id) {
       return this.fetch(`/api/admin/collections/${id}`, { method: "DELETE" });
     },
 
+    // Coupons
     getCoupons(params = {}) {
       const query = new URLSearchParams(params).toString();
       return this.fetch(`/api/admin/coupons?${query}`);
     },
-
     createCoupon(data) {
       return this.fetch("/api/admin/coupons", {
         method: "POST",
         body: JSON.stringify(data),
       });
     },
-
     updateCoupon(id, data) {
       return this.fetch(`/api/admin/coupons/${id}`, {
         method: "PUT",
         body: JSON.stringify(data),
       });
     },
-
     deleteCoupon(id) {
       return this.fetch(`/api/admin/coupons/${id}`, { method: "DELETE" });
     },
 
+    // Newsletter
     getNewsletterStats() {
       return this.fetch("/api/admin/newsletter/stats");
+    },
+    sendNewsletter(data) {
+      return this.fetch("/api/newsletter/send", {
+        method: "POST",
+        body: JSON.stringify(data),
+      });
+    },
+
+    // Magazine
+    getMagazinePosts(params = {}) {
+      const query = new URLSearchParams(params).toString();
+      return this.fetch(`/api/magazine/posts?${query}`);
+    },
+    getMagazinePost(id) {
+      return this.fetch(`/api/magazine/posts/${id}`);
+    },
+    createMagazinePost(data) {
+      return this.fetch("/api/magazine/posts", {
+        method: "POST",
+        body: JSON.stringify(data),
+      });
+    },
+    updateMagazinePost(id, data) {
+      return this.fetch(`/api/magazine/posts/${id}`, {
+        method: "PUT",
+        body: JSON.stringify(data),
+      });
+    },
+    deleteMagazinePost(id) {
+      return this.fetch(`/api/magazine/posts/${id}`, { method: "DELETE" });
+    },
+
+    // Magazine Authors
+    getMagazineAuthors() {
+      return this.fetch("/api/magazine/authors");
+    },
+
+    // Magazine Tags
+    getMagazineTags() {
+      return this.fetch("/api/magazine/tags");
+    },
+
+    // Color Themes (for products)
+    getColorThemes() {
+      return this.fetch("/api/products/filters").then(
+        (data) => data.colorThemes || []
+      );
+    },
+  };
+
+  // ========== SIDE PANEL SYSTEM ==========
+  const panel = {
+    open(content, title = "فرم") {
+      const existing = document.getElementById("admin-side-panel");
+      if (existing) existing.remove();
+
+      const overlay = document.createElement("div");
+      overlay.id = "admin-side-panel";
+      overlay.className = "admin-panel-overlay";
+      overlay.innerHTML = `
+        <div class="admin-panel">
+          <div class="admin-panel-header">
+            <h2 class="admin-panel-title">${title}</h2>
+            <button class="admin-panel-close" data-action="closePanel">
+              <i data-feather="x"></i>
+            </button>
+          </div>
+          <div class="admin-panel-body">
+            ${content}
+          </div>
+        </div>
+      `;
+
+      document.body.appendChild(overlay);
+      utils.refreshIcons();
+
+      // Animate in
+      setTimeout(() => overlay.classList.add("active"), 10);
+
+      // Close on overlay click
+      overlay.addEventListener("click", (e) => {
+        if (e.target === overlay) this.close();
+      });
+    },
+
+    close() {
+      const overlay = document.getElementById("admin-side-panel");
+      if (overlay) {
+        overlay.classList.remove("active");
+        setTimeout(() => overlay.remove(), 300);
+      }
+    },
+
+    showLoading() {
+      this.open(utils.showLoading(), "در حال بارگذاری...");
+    },
+  };
+
+  // ========== FORM GENERATORS ==========
+  const forms = {
+    // Product Form
+    // Product Form
+    // Product Form
+    // Product Form - COMPLETE VERSION
+    async product(productId = null) {
+      panel.showLoading();
+
+      try {
+        // Load dependencies
+        const [brands, collections] = await Promise.all([
+          api.getBrands(),
+          api.getCollections(),
+        ]);
+
+        let product = null;
+        if (productId) {
+          // Fetch the specific product for editing
+          try {
+            const productData = await api.getProduct(productId);
+            product = productData.product || productData;
+          } catch (error) {
+            console.error("Error fetching product:", error);
+            throw new Error("خطا در بارگذاری اطلاعات محصول");
+          }
+        }
+
+        const isEdit = !!productId;
+        const data = product || {};
+
+        const formHtml = `
+      <form id="product-form" class="admin-form" enctype="multipart/form-data">
+        <input type="hidden" name="id" value="${data.id || ""}" />
+
+        <div class="admin-form-section">
+          <h3 class="admin-form-section-title">اطلاعات اصلی</h3>
+
+          <div class="admin-form-group">
+            <label class="admin-form-label required">عنوان محصول</label>
+            <input type="text" name="title" class="admin-form-input" value="${data.title || ""}" required />
+          </div>
+
+          <div class="admin-form-group">
+            <label class="admin-form-label">زیرعنوان</label>
+            <input type="text" name="subtitle" class="admin-form-input" value="${data.subtitle || ""}" />
+          </div>
+
+          <div class="admin-form-group">
+            <label class="admin-form-label">اسلاگ (URL)</label>
+            <input type="text" name="slug" class="admin-form-input" value="${data.slug || ""}" />
+            <small class="text-gray-500">خالی بگذارید تا خودکار ساخته شود</small>
+          </div>
+
+          <div class="admin-form-row">
+            <div class="admin-form-group">
+              <label class="admin-form-label required">برند</label>
+              <select name="brandId" class="admin-form-input" required>
+                <option value="">انتخاب کنید</option>
+                ${brands.brands
+                  .map(
+                    (b) => `
+                  <option value="${b.id}" ${data.brandId === b.id ? "selected" : ""}>
+                    ${b.name}
+                  </option>
+                `
+                  )
+                  .join("")}
+              </select>
+            </div>
+
+            <div class="admin-form-group">
+              <label class="admin-form-label">کالکشن</label>
+              <select name="collectionId" class="admin-form-input">
+                <option value="">هیچکدام</option>
+                ${collections.collections
+                  .map(
+                    (c) => `
+                  <option value="${c.id}" ${data.collectionId === c.id ? "selected" : ""}>
+                    ${c.name}
+                  </option>
+                `
+                  )
+                  .join("")}
+              </select>
+            </div>
+          </div>
+
+          <div class="admin-form-group">
+            <label class="admin-form-label required">دسته‌بندی</label>
+            <select name="category" class="admin-form-input" required>
+              <option value="">انتخاب کنید</option>
+              <option value="SKINCARE" ${data.category === "SKINCARE" ? "selected" : ""}>مراقبت از پوست</option>
+              <option value="MAKEUP" ${data.category === "MAKEUP" ? "selected" : ""}>آرایش</option>
+              <option value="FRAGRANCE" ${data.category === "FRAGRANCE" ? "selected" : ""}>عطر</option>
+              <option value="HAIRCARE" ${data.category === "HAIRCARE" ? "selected" : ""}>مراقبت از مو</option>
+              <option value="BODY_BATH" ${data.category === "BODY_BATH" ? "selected" : ""}>بدن و حمام</option>
+            </select>
+          </div>
+
+          <div class="admin-form-group">
+            <label class="admin-form-label">توضیحات</label>
+            <textarea name="description" class="admin-form-input" rows="4">${data.description || ""}</textarea>
+          </div>
+
+          <div class="admin-form-group">
+            <label class="admin-form-label">مواد تشکیل‌دهنده</label>
+            <textarea name="ingredients" class="admin-form-input" rows="3">${data.ingredients || ""}</textarea>
+          </div>
+
+          <div class="admin-form-group">
+            <label class="admin-form-label">نحوه استفاده</label>
+            <textarea name="howToUse" class="admin-form-input" rows="3">${data.howToUse || ""}</textarea>
+          </div>
+        </div>
+
+        <div class="admin-form-section">
+          <h3 class="admin-form-section-title">قیمت‌گذاری</h3>
+
+          <div class="admin-form-row">
+            <div class="admin-form-group">
+              <label class="admin-form-label required">قیمت (تومان)</label>
+              <input type="number" name="price" class="admin-form-input" value="${data.price || ""}" required />
+            </div>
+
+            <div class="admin-form-group">
+              <label class="admin-form-label">قیمت قبلی (تومان)</label>
+              <input type="number" name="compareAtPrice" class="admin-form-input" value="${data.compareAtPrice || ""}" />
+            </div>
+          </div>
+        </div>
+
+        <div class="admin-form-section">
+          <h3 class="admin-form-section-title">تصویر محصول</h3>
+
+          ${
+            data.heroImageUrl
+              ? `
+            <div class="admin-form-group">
+              <label class="admin-form-label">تصویر فعلی</label>
+              <div class="admin-image-preview">
+                <img src="${data.heroImageUrl}" alt="Current product image" id="current-image-preview" />
+              </div>
+            </div>
+          `
+              : ""
+          }
+
+          <div class="admin-form-group">
+            <label class="admin-form-label">آپلود تصویر جدید</label>
+            <input type="file" name="imageFile" id="image-file-input" class="admin-form-input" accept="image/*" />
+            <small class="text-gray-500">فرمت‌های مجاز: JPG, PNG, WebP (حداکثر 5MB)</small>
+          </div>
+
+          <div id="new-image-preview" class="admin-image-preview" style="display: none;">
+            <img src="" alt="Preview" id="new-image-preview-img" />
+            <button type="button" class="admin-btn-remove-preview" id="remove-preview-btn">
+              <i data-feather="x"></i>
+              حذف
+            </button>
+          </div>
+
+          <div class="admin-form-divider">
+            <span>یا</span>
+          </div>
+
+          <div class="admin-form-group">
+            <label class="admin-form-label">آدرس URL تصویر</label>
+            <input type="url" name="heroImageUrl" id="hero-image-url" class="admin-form-input" value="${data.heroImageUrl || ""}" placeholder="https://example.com/image.jpg" />
+            <small class="text-gray-500">در صورت آپلود فایل، این فیلد نادیده گرفته می‌شود</small>
+          </div>
+        </div>
+
+        <div class="admin-form-section">
+          <h3 class="admin-form-section-title">تنظیمات</h3>
+
+          <div class="admin-form-group">
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" name="isActive" class="w-4 h-4" ${data.isActive !== false ? "checked" : ""} />
+              <span>فعال</span>
+            </label>
+          </div>
+
+          <div class="admin-form-group">
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" name="isFeatured" class="w-4 h-4" ${data.isFeatured ? "checked" : ""} />
+              <span>ویژه</span>
+            </label>
+          </div>
+
+          <div class="admin-form-group">
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" name="isBestseller" class="w-4 h-4" ${data.isBestseller ? "checked" : ""} />
+              <span>پرفروش</span>
+            </label>
+          </div>
+
+          <div class="admin-form-group">
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" name="isSpecialProduct" class="w-4 h-4" ${data.isSpecialProduct ? "checked" : ""} />
+              <span>محصول ویژه</span>
+            </label>
+          </div>
+
+          <div class="admin-form-group">
+            <label class="admin-form-label">یادداشت‌های داخلی</label>
+            <textarea name="internalNotes" class="admin-form-input" rows="2">${data.internalNotes || ""}</textarea>
+          </div>
+        </div>
+
+        <div class="admin-form-actions">
+          <button type="button" class="admin-btn admin-btn-secondary" data-action="closePanel">
+            انصراف
+          </button>
+          <button type="submit" class="admin-btn admin-btn-primary" id="submit-product-btn">
+            ${isEdit ? "ذخیره تغییرات" : "افزودن محصول"}
+          </button>
+        </div>
+      </form>
+    `;
+
+        panel.open(formHtml, isEdit ? "ویرایش محصول" : "افزودن محصول");
+
+        // ========== IMAGE PREVIEW FUNCTIONALITY ==========
+        const fileInput = document.getElementById("image-file-input");
+        const newPreview = document.getElementById("new-image-preview");
+        const newPreviewImg = document.getElementById("new-image-preview-img");
+        const removePreviewBtn = document.getElementById("remove-preview-btn");
+        const urlInput = document.getElementById("hero-image-url");
+
+        fileInput.addEventListener("change", (e) => {
+          const file = e.target.files[0];
+          if (file) {
+            // Validate file size (5MB)
+            if (file.size > 5 * 1024 * 1024) {
+              alert("حجم فایل نباید بیشتر از 5 مگابایت باشد.");
+              fileInput.value = "";
+              return;
+            }
+
+            // Validate file type
+            const validTypes = [
+              "image/jpeg",
+              "image/jpg",
+              "image/png",
+              "image/webp",
+              "image/gif",
+            ];
+            if (!validTypes.includes(file.type)) {
+              alert("فقط فایل‌های تصویری (JPG, PNG, WebP, GIF) مجاز هستند.");
+              fileInput.value = "";
+              return;
+            }
+
+            // Show preview
+            const reader = new FileReader();
+            reader.onload = (event) => {
+              newPreviewImg.src = event.target.result;
+              newPreview.style.display = "block";
+              // Clear URL input when file is selected
+              urlInput.value = "";
+            };
+            reader.readAsDataURL(file);
+          }
+        });
+
+        removePreviewBtn?.addEventListener("click", () => {
+          fileInput.value = "";
+          newPreview.style.display = "none";
+          newPreviewImg.src = "";
+        });
+
+        // ========== FORM SUBMIT HANDLER ==========
+        document
+          .getElementById("product-form")
+          .addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const submitBtn = document.getElementById("submit-product-btn");
+            const originalText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML =
+              '<i data-feather="loader" class="animate-spin"></i> در حال ذخیره...';
+            utils.refreshIcons();
+
+            try {
+              const formData = new FormData(e.target);
+              const imageFile = formData.get("imageFile");
+
+              let heroImageUrl = null;
+
+              // ========== STEP 1: HANDLE IMAGE UPLOAD ==========
+              if (imageFile && imageFile.size > 0) {
+                console.log("Uploading new image file...");
+                const uploadFormData = new FormData();
+                uploadFormData.append("image", imageFile);
+
+                try {
+                  const uploadResponse = await fetch(
+                    "/api/upload/product-image",
+                    {
+                      method: "POST",
+                      credentials: "include",
+                      body: uploadFormData,
+                    }
+                  );
+
+                  if (uploadResponse.status === 401) {
+                    throw new Error(
+                      "احراز هویت انجام نشد. لطفا دوباره وارد شوید."
+                    );
+                  }
+
+                  if (uploadResponse.status === 403) {
+                    throw new Error(
+                      "شما دسترسی لازم برای آپلود تصویر را ندارید."
+                    );
+                  }
+
+                  if (!uploadResponse.ok) {
+                    const errorData = await uploadResponse
+                      .json()
+                      .catch(() => ({}));
+                    throw new Error(errorData.message || "خطا در آپلود تصویر");
+                  }
+
+                  const uploadResult = await uploadResponse.json();
+                  heroImageUrl =
+                    uploadResult.data?.imageUrl || uploadResult.imageUrl;
+                  console.log("Image uploaded successfully:", heroImageUrl);
+                } catch (uploadError) {
+                  console.error("Upload error:", uploadError);
+                  throw new Error("خطا در آپلود تصویر: " + uploadError.message);
+                }
+              } else {
+                // No file uploaded, check URL input
+                const urlValue = formData.get("heroImageUrl");
+                if (urlValue && typeof urlValue === "string") {
+                  const trimmedUrl = urlValue.trim();
+                  if (trimmedUrl !== "") {
+                    // Validate URL format
+                    try {
+                      new URL(trimmedUrl);
+                      heroImageUrl = trimmedUrl;
+                      console.log("Using URL from input:", heroImageUrl);
+                    } catch (urlError) {
+                      throw new Error("آدرس URL تصویر معتبر نیست.");
+                    }
+                  } else if (isEdit && data.heroImageUrl) {
+                    // Keep existing image if editing and no new image provided
+                    heroImageUrl = data.heroImageUrl;
+                    console.log("Keeping existing image:", heroImageUrl);
+                  }
+                } else if (isEdit && data.heroImageUrl) {
+                  heroImageUrl = data.heroImageUrl;
+                  console.log("Keeping existing image:", heroImageUrl);
+                }
+              }
+
+              // ========== STEP 2: HELPER FUNCTIONS ==========
+              const getStringValue = (key) => {
+                const val = formData.get(key);
+                if (val === null || val === undefined) return undefined;
+                const str = val.toString().trim();
+                return str === "" ? undefined : str;
+              };
+
+              const getNumberValue = (key) => {
+                const str = getStringValue(key);
+                if (str === undefined) return undefined;
+                const num = parseInt(str, 10);
+                return isNaN(num) ? undefined : num;
+              };
+
+              // ========== STEP 3: BUILD PAYLOAD ==========
+              const payload = {};
+
+              // Required fields
+              const title = getStringValue("title");
+              const brandId = getStringValue("brandId");
+              const category = getStringValue("category");
+              const price = getNumberValue("price");
+
+              // Validate required fields
+              if (!title) throw new Error("عنوان محصول الزامی است.");
+              if (!brandId) throw new Error("انتخاب برند الزامی است.");
+              if (!category) throw new Error("انتخاب دسته‌بندی الزامی است.");
+              if (!price || price <= 0)
+                throw new Error(
+                  "قیمت محصول الزامی است و باید بیشتر از صفر باشد."
+                );
+
+              payload.title = title;
+              payload.brandId = brandId;
+              payload.category = category;
+              payload.price = price;
+
+              // Optional string fields - only add if they have values
+              const subtitle = getStringValue("subtitle");
+              const slug = getStringValue("slug");
+              const description = getStringValue("description");
+              const ingredients = getStringValue("ingredients");
+              const howToUse = getStringValue("howToUse");
+              const internalNotes = getStringValue("internalNotes");
+              const collectionId = getStringValue("collectionId");
+
+              if (subtitle) payload.subtitle = subtitle;
+              if (slug) payload.slug = slug;
+              if (description) payload.description = description;
+              if (ingredients) payload.ingredients = ingredients;
+              if (howToUse) payload.howToUse = howToUse;
+              if (internalNotes) payload.internalNotes = internalNotes;
+              if (collectionId) payload.collectionId = collectionId;
+
+              // Optional number fields
+              const compareAtPrice = getNumberValue("compareAtPrice");
+              if (compareAtPrice !== undefined && compareAtPrice > 0) {
+                payload.compareAtPrice = compareAtPrice;
+              }
+
+              // Boolean fields
+              payload.isActive = formData.get("isActive") === "on";
+              payload.isFeatured = formData.get("isFeatured") === "on";
+              payload.isBestseller = formData.get("isBestseller") === "on";
+              payload.isSpecialProduct =
+                formData.get("isSpecialProduct") === "on";
+
+              // Image URL - CRITICAL: Only add if it's a valid non-empty string
+              if (
+                heroImageUrl &&
+                typeof heroImageUrl === "string" &&
+                heroImageUrl.trim() !== ""
+              ) {
+                payload.heroImageUrl = heroImageUrl.trim();
+              }
+
+              // ========== STEP 4: LOG FOR DEBUGGING ==========
+              console.log("=== PRODUCT FORM SUBMISSION ===");
+              console.log("Is Edit:", isEdit);
+              console.log("Product ID:", productId);
+              console.log("Payload:", JSON.stringify(payload, null, 2));
+              console.log("================================");
+
+              // ========== STEP 5: API CALL ==========
+              if (isEdit) {
+                await api.updateProduct(productId, payload);
+                alert("محصول با موفقیت ویرایش شد");
+              } else {
+                await api.createProduct(payload);
+                alert("محصول با موفقیت افزوده شد");
+              }
+
+              panel.close();
+              handlers.products();
+            } catch (error) {
+              console.error("Product save error:", error);
+              alert("خطا: " + error.message);
+              submitBtn.disabled = false;
+              submitBtn.innerHTML = originalText;
+              utils.refreshIcons();
+            }
+          });
+
+        utils.refreshIcons();
+      } catch (error) {
+        console.error("Product form error:", error);
+        panel.open(
+          utils.showError(error.message || "خطا در بارگذاری فرم"),
+          "خطا"
+        );
+      }
+    },
+
+    // User Form
+    async user(userId) {
+      panel.showLoading();
+
+      try {
+        const users = await api.getUsers();
+        const user = users.users.find((u) => u.id === userId);
+
+        if (!user) {
+          throw new Error("کاربر یافت نشد");
+        }
+
+        const formHtml = `
+          <form id="user-form" class="admin-form">
+            <div class="admin-form-section">
+              <h3 class="admin-form-section-title">اطلاعات کاربر</h3>
+
+              <div class="admin-form-group">
+                <label class="admin-form-label">ایمیل</label>
+                <input type="email" class="admin-form-input" value="${user.email}" disabled />
+              </div>
+
+              <div class="admin-form-group">
+                <label class="admin-form-label">نام</label>
+                <input type="text" class="admin-form-input" value="${user.firstName || ""} ${user.lastName || ""}" disabled />
+              </div>
+
+              <div class="admin-form-group">
+                <label class="admin-form-label">تلفن</label>
+                <input type="text" class="admin-form-input" value="${user.phone || "-"}" disabled />
+              </div>
+
+              <div class="admin-form-group">
+                <label class="admin-form-label required">نقش</label>
+                <select name="role" class="admin-form-input" required>
+                  <option value="CUSTOMER" ${user.role === "CUSTOMER" ? "selected" : ""}>مشتری</option>
+                  <option value="STAFF" ${user.role === "STAFF" ? "selected" : ""}>کارمند</option>
+                  <option value="ADMIN" ${user.role === "ADMIN" ? "selected" : ""}>ادمین</option>
+                </select>
+              </div>
+
+              <div class="admin-form-group">
+                <label class="admin-form-label required">سطح</label>
+                <select name="tier" class="admin-form-input" required>
+                  <option value="STANDARD" ${user.customerTier === "STANDARD" ? "selected" : ""}>عادی</option>
+                  <option value="VIP" ${user.customerTier === "VIP" ? "selected" : ""}>VIP</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="admin-form-actions">
+              <button type="button" class="admin-btn admin-btn-danger" data-action="deleteUserConfirm" data-id="${userId}">
+                <i data-feather="trash-2" class="w-4 h-4"></i>
+                حذف کاربر
+              </button>
+              <div class="flex-1"></div>
+              <button type="button" class="admin-btn admin-btn-secondary" data-action="closePanel">
+                انصراف
+              </button>
+              <button type="submit" class="admin-btn admin-btn-primary">
+                ذخیره تغییرات
+              </button>
+            </div>
+          </form>
+        `;
+
+        panel.open(formHtml, "ویرایش کاربر");
+
+        // Handle form submit
+        document
+          .getElementById("user-form")
+          .addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+
+            try {
+              await api.updateUserRole(userId, formData.get("role"));
+              await api.updateUserTier(userId, formData.get("tier"));
+              alert("کاربر با موفقیت ویرایش شد");
+              panel.close();
+              handlers.users();
+            } catch (error) {
+              alert("خطا: " + error.message);
+            }
+          });
+      } catch (error) {
+        panel.open(utils.showError(error.message), "خطا");
+      }
+    },
+
+    // Magazine Form - WITH IMAGE UPLOAD
+    async magazine(postId = null) {
+      panel.showLoading();
+
+      try {
+        const [authorsResponse, tagsResponse] = await Promise.all([
+          api.getMagazineAuthors(),
+          api.getMagazineTags(),
+        ]);
+
+        const authors = authorsResponse?.data || authorsResponse || [];
+        const tags = tagsResponse?.data || tagsResponse || [];
+
+        let post = null;
+        if (postId) {
+          try {
+            const postData = await api.getMagazinePost(postId);
+            post = postData.data || postData;
+          } catch (error) {
+            console.error("Error fetching post:", error);
+            throw new Error("خطا در بارگذاری اطلاعات مقاله");
+          }
+        }
+
+        const isEdit = !!postId;
+        const data = post || {};
+
+        const formHtml = `
+      <form id="magazine-form" class="admin-form" enctype="multipart/form-data">
+        <input type="hidden" name="id" value="${data.id || ""}" />
+
+        <div class="admin-form-section">
+          <h3 class="admin-form-section-title">اطلاعات مقاله</h3>
+
+          <div class="admin-form-group">
+            <label class="admin-form-label required">عنوان</label>
+            <input type="text" name="title" class="admin-form-input" value="${data.title || ""}" required />
+          </div>
+
+          <div class="admin-form-group">
+            <label class="admin-form-label">اسلاگ (URL)</label>
+            <input type="text" name="slug" class="admin-form-input" value="${data.slug || ""}" />
+            <small class="text-gray-500">خالی بگذارید تا خودکار ساخته شود</small>
+          </div>
+
+          <div class="admin-form-group">
+            <label class="admin-form-label">نویسنده</label>
+            <select name="authorId" class="admin-form-input">
+              <option value="">هیچکدام</option>
+              ${
+                Array.isArray(authors)
+                  ? authors
+                      .map(
+                        (a) => `
+                <option value="${a.id}" ${data.authorId === a.id ? "selected" : ""}>
+                  ${a.name}
+                </option>
+              `
+                      )
+                      .join("")
+                  : ""
+              }
+            </select>
+          </div>
+
+          <div class="admin-form-group">
+            <label class="admin-form-label required">دسته‌بندی</label>
+            <select name="category" class="admin-form-input" required>
+              <option value="GUIDE" ${data.category === "GUIDE" ? "selected" : ""}>راهنما</option>
+              <option value="TUTORIAL" ${data.category === "TUTORIAL" ? "selected" : ""}>آموزش</option>
+              <option value="TRENDS" ${data.category === "TRENDS" ? "selected" : ""}>ترندها</option>
+              <option value="LIFESTYLE" ${data.category === "LIFESTYLE" ? "selected" : ""}>سبک زندگی</option>
+              <option value="GENERAL" ${data.category === "GENERAL" ? "selected" : ""}>عمومی</option>
+            </select>
+          </div>
+
+          <div class="admin-form-group">
+            <label class="admin-form-label">خلاصه</label>
+            <textarea name="excerpt" class="admin-form-input" rows="3">${data.excerpt || ""}</textarea>
+          </div>
+
+          <div class="admin-form-group">
+            <label class="admin-form-label required">محتوا</label>
+            <textarea name="content" class="admin-form-input" rows="10" required>${data.content || ""}</textarea>
+          </div>
+        </div>
+
+        <div class="admin-form-section">
+          <h3 class="admin-form-section-title">تصویر شاخص</h3>
+
+          ${
+            data.heroImageUrl
+              ? `
+            <div class="admin-form-group">
+              <label class="admin-form-label">تصویر فعلی</label>
+              <div class="admin-image-preview">
+                <img src="${data.heroImageUrl}" alt="Current hero image" id="current-hero-preview" />
+              </div>
+            </div>
+          `
+              : ""
+          }
+
+          <div class="admin-form-group">
+            <label class="admin-form-label">آپلود تصویر جدید</label>
+            <input type="file" name="heroImageFile" id="hero-image-input" class="admin-form-input" accept="image/*" />
+            <small class="text-gray-500">فرمت‌های مجاز: JPG, PNG, WebP (حداکثر 5MB)</small>
+          </div>
+
+          <div id="new-hero-preview" class="admin-image-preview" style="display: none;">
+            <img src="" alt="Preview" id="new-hero-preview-img" />
+            <button type="button" class="admin-btn-remove-preview" id="remove-hero-preview-btn">
+              <i data-feather="x"></i>
+              حذف
+            </button>
+          </div>
+
+          <div class="admin-form-divider">
+            <span>یا</span>
+          </div>
+
+          <div class="admin-form-group">
+            <label class="admin-form-label">آدرس URL تصویر</label>
+            <input type="url" name="heroImageUrl" id="hero-url-input" class="admin-form-input" value="${data.heroImageUrl || ""}" placeholder="https://example.com/image.jpg" />
+            <small class="text-gray-500">در صورت آپلود فایل، این فیلد نادیده گرفته می‌شود</small>
+          </div>
+        </div>
+
+        <div class="admin-form-section">
+          <h3 class="admin-form-section-title">تنظیمات اضافی</h3>
+
+          <div class="admin-form-group">
+            <label class="admin-form-label">زمان خواندن (دقیقه)</label>
+            <input type="number" name="readTimeMinutes" class="admin-form-input" value="${data.readTimeMinutes || ""}" />
+          </div>
+
+          <div class="admin-form-group">
+            <label class="admin-form-label">تاریخ انتشار</label>
+            <input type="datetime-local" name="publishedAt" class="admin-form-input" value="${utils.toInputDateTime(data.publishedAt)}" />
+          </div>
+
+          <div class="admin-form-group">
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" name="isPublished" class="w-4 h-4" ${data.isPublished !== false ? "checked" : ""} />
+              <span>منتشر شده</span>
+            </label>
+          </div>
+
+          <div class="admin-form-group">
+            <label class="admin-form-label">برچسب‌ها (با کاما جدا کنید)</label>
+            <input type="text" name="tags" class="admin-form-input" value="${data.tags?.map((t) => t.tag?.name || t.name).join(", ") || ""}" />
+            ${
+              Array.isArray(tags) && tags.length
+                ? `
+              <small class="text-gray-500">برچسب‌های موجود: ${tags.map((t) => t.name).join(", ")}</small>
+            `
+                : ""
+            }
+          </div>
+        </div>
+
+        <div class="admin-form-actions">
+          <button type="button" class="admin-btn admin-btn-secondary" data-action="closePanel">
+            انصراف
+          </button>
+          <button type="submit" class="admin-btn admin-btn-primary" id="submit-magazine-btn">
+            ${isEdit ? "ذخیره تغییرات" : "افزودن مقاله"}
+          </button>
+        </div>
+      </form>
+    `;
+
+        panel.open(formHtml, isEdit ? "ویرایش مقاله" : "افزودن مقاله");
+
+        // ========== IMAGE PREVIEW FUNCTIONALITY ==========
+        const fileInput = document.getElementById("hero-image-input");
+        const newPreview = document.getElementById("new-hero-preview");
+        const newPreviewImg = document.getElementById("new-hero-preview-img");
+        const removePreviewBtn = document.getElementById(
+          "remove-hero-preview-btn"
+        );
+        const urlInput = document.getElementById("hero-url-input");
+
+        fileInput.addEventListener("change", (e) => {
+          const file = e.target.files[0];
+          if (file) {
+            if (file.size > 5 * 1024 * 1024) {
+              alert("حجم فایل نباید بیشتر از 5 مگابایت باشد.");
+              fileInput.value = "";
+              return;
+            }
+
+            const validTypes = [
+              "image/jpeg",
+              "image/jpg",
+              "image/png",
+              "image/webp",
+              "image/gif",
+            ];
+            if (!validTypes.includes(file.type)) {
+              alert("فقط فایل‌های تصویری (JPG, PNG, WebP, GIF) مجاز هستند.");
+              fileInput.value = "";
+              return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+              newPreviewImg.src = event.target.result;
+              newPreview.style.display = "block";
+              urlInput.value = "";
+            };
+            reader.readAsDataURL(file);
+          }
+        });
+
+        removePreviewBtn?.addEventListener("click", () => {
+          fileInput.value = "";
+          newPreview.style.display = "none";
+          newPreviewImg.src = "";
+        });
+
+        // ========== FORM SUBMIT HANDLER ==========
+        document
+          .getElementById("magazine-form")
+          .addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const submitBtn = document.getElementById("submit-magazine-btn");
+            const originalText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML =
+              '<i data-feather="loader" class="animate-spin"></i> در حال ذخیره...';
+            utils.refreshIcons();
+
+            try {
+              const formData = new FormData(e.target);
+              const imageFile = formData.get("heroImageFile");
+
+              let heroImageUrl = null;
+
+              // Handle image upload
+              if (imageFile && imageFile.size > 0) {
+                console.log("Uploading magazine hero image...");
+                const uploadFormData = new FormData();
+                uploadFormData.append("image", imageFile);
+
+                try {
+                  const uploadResponse = await fetch(
+                    "/api/upload/product-image",
+                    {
+                      method: "POST",
+                      credentials: "include",
+                      body: uploadFormData,
+                    }
+                  );
+
+                  if (!uploadResponse.ok) {
+                    const errorData = await uploadResponse
+                      .json()
+                      .catch(() => ({}));
+                    throw new Error(errorData.message || "خطا در آپلود تصویر");
+                  }
+
+                  const uploadResult = await uploadResponse.json();
+                  heroImageUrl =
+                    uploadResult.data?.imageUrl || uploadResult.imageUrl;
+                  console.log("Hero image uploaded:", heroImageUrl);
+                } catch (uploadError) {
+                  throw new Error("خطا در آپلود تصویر: " + uploadError.message);
+                }
+              } else {
+                const urlValue = formData.get("heroImageUrl");
+                if (urlValue && typeof urlValue === "string") {
+                  const trimmedUrl = urlValue.trim();
+                  if (trimmedUrl !== "") {
+                    heroImageUrl = trimmedUrl;
+                  } else if (isEdit && data.heroImageUrl) {
+                    heroImageUrl = data.heroImageUrl;
+                  }
+                } else if (isEdit && data.heroImageUrl) {
+                  heroImageUrl = data.heroImageUrl;
+                }
+              }
+
+              // Build payload
+              const tagsInput = formData.get("tags");
+              const tagsArray = tagsInput
+                ? tagsInput
+                    .toString()
+                    .split(",")
+                    .map((t) => t.trim())
+                    .filter(Boolean)
+                : [];
+
+              // Get authorId - convert empty string to null
+              const authorIdValue = formData.get("authorId");
+              const authorId =
+                authorIdValue && authorIdValue !== "" ? authorIdValue : null;
+
+              const payload = {
+                title: formData.get("title"),
+                category: formData.get("category"),
+                content: formData.get("content"),
+                authorId: authorId,
+                isPublished: formData.get("isPublished") === "on",
+              };
+
+              // Add optional fields only if they have values
+              const slug = formData.get("slug");
+              if (slug && slug.toString().trim() !== "") {
+                payload.slug = slug.toString().trim();
+              }
+
+              const excerpt = formData.get("excerpt");
+              if (excerpt && excerpt.toString().trim() !== "") {
+                payload.excerpt = excerpt.toString().trim();
+              }
+
+              if (heroImageUrl) {
+                payload.heroImageUrl = heroImageUrl;
+              }
+
+              const readTimeMinutes = formData.get("readTimeMinutes");
+              if (readTimeMinutes && readTimeMinutes !== "") {
+                payload.readTimeMinutes = parseInt(readTimeMinutes);
+              }
+
+              const publishedAt = formData.get("publishedAt");
+              if (publishedAt && publishedAt !== "") {
+                payload.publishedAt = new Date(publishedAt).toISOString();
+              }
+
+              if (tagsArray.length) {
+                payload.tags = tagsArray;
+              }
+
+              console.log("Magazine payload:", payload);
+
+              if (isEdit) {
+                await api.updateMagazinePost(postId, payload);
+                alert("مقاله با موفقیت ویرایش شد");
+              } else {
+                await api.createMagazinePost(payload);
+                alert("مقاله با موفقیت افزوده شد");
+              }
+
+              panel.close();
+              handlers.magazine();
+            } catch (error) {
+              console.error("Magazine save error:", error);
+              alert("خطا: " + error.message);
+              submitBtn.disabled = false;
+              submitBtn.innerHTML = originalText;
+              utils.refreshIcons();
+            }
+          });
+
+        utils.refreshIcons();
+      } catch (error) {
+        console.error("Magazine form error:", error);
+        panel.open(
+          utils.showError(error.message || "خطا در بارگذاری فرم"),
+          "خطا"
+        );
+      }
+    },
+
+    // Newsletter Form
+    newsletter() {
+      const formHtml = `
+        <form id="newsletter-form" class="admin-form">
+          <div class="admin-form-section">
+            <h3 class="admin-form-section-title">ایجاد خبرنامه</h3>
+
+            <div class="admin-form-group">
+              <label class="admin-form-label required">عنوان ایمیل</label>
+              <input type="text" name="subject" class="admin-form-input" required />
+            </div>
+
+            <div class="admin-form-group">
+              <label class="admin-form-label required">محتوای HTML</label>
+              <textarea name="htmlContent" class="admin-form-input" rows="15" required placeholder="<h1>سلام!</h1><p>محتوای خبرنامه...</p>"></textarea>
+              <small class="text-gray-500">از تگ‌های HTML استفاده کنید</small>
+            </div>
+
+            <div class="admin-form-group">
+              <label class="admin-form-label">محتوای متنی (اختیاری)</label>
+              <textarea name="textContent" class="admin-form-input" rows="5" placeholder="نسخه متنی برای ایمیل کلاینت‌هایی که HTML نمایش نمی‌دهند"></textarea>
+            </div>
+
+            <div class="admin-form-group">
+              <label class="admin-form-label">ایمیل تستی</label>
+              <input type="email" name="testEmail" class="admin-form-input" placeholder="برای ارسال تست، ایمیل خود را وارد کنید" />
+              <small class="text-gray-500">برای ارسال به همه مشترکین، این فیلد را خالی بگذارید</small>
+            </div>
+          </div>
+
+          <div class="admin-form-actions">
+            <button type="button" class="admin-btn admin-btn-secondary" data-action="closePanel">
+              انصراف
+            </button>
+            <button type="submit" class="admin-btn admin-btn-primary">
+              <i data-feather="send" class="w-4 h-4"></i>
+              ارسال خبرنامه
+            </button>
+          </div>
+        </form>
+      `;
+
+      panel.open(formHtml, "ایجاد خبرنامه");
+
+      // Handle form submit
+      document
+        .getElementById("newsletter-form")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const formData = new FormData(e.target);
+
+          const payload = {
+            subject: formData.get("subject"),
+            htmlContent: formData.get("htmlContent"),
+            textContent: formData.get("textContent") || undefined,
+            testEmail: formData.get("testEmail") || undefined,
+          };
+
+          if (
+            !payload.testEmail &&
+            !confirm("آیا مطمئن هستید که می‌خواهید به همه مشترکین ارسال کنید؟")
+          ) {
+            return;
+          }
+
+          try {
+            const result = await api.sendNewsletter(payload);
+            alert(
+              payload.testEmail
+                ? "ایمیل تستی ارسال شد"
+                : `خبرنامه برای ${result.sent} مشترک ارسال شد`
+            );
+            panel.close();
+          } catch (error) {
+            alert("خطا: " + error.message);
+          }
+        });
+
+      utils.refreshIcons();
+    },
+
+    // Brand Form
+    brand(brandId = null) {
+      const brand = brandId ? state.brands.find((b) => b.id === brandId) : null;
+      const isEdit = !!brandId;
+
+      const formHtml = `
+        <form id="brand-form" class="admin-form">
+          <div class="admin-form-section">
+            <h3 class="admin-form-section-title">اطلاعات برند</h3>
+
+            <div class="admin-form-group">
+              <label class="admin-form-label required">نام برند</label>
+              <input type="text" name="name" class="admin-form-input" value="${brand?.name || ""}" required />
+            </div>
+
+            <div class="admin-form-group">
+              <label class="admin-form-label">اسلاگ (URL)</label>
+              <input type="text" name="slug" class="admin-form-input" value="${brand?.slug || ""}" />
+              <small class="text-gray-500">خالی بگذارید تا خودکار ساخته شود</small>
+            </div>
+          </div>
+
+          <div class="admin-form-actions">
+            <button type="button" class="admin-btn admin-btn-secondary" data-action="closePanel">
+              انصراف
+            </button>
+            <button type="submit" class="admin-btn admin-btn-primary">
+              ${isEdit ? "ذخیره تغییرات" : "افزودن برند"}
+            </button>
+          </div>
+        </form>
+      `;
+
+      panel.open(formHtml, isEdit ? "ویرایش برند" : "افزودن برند");
+
+      // Handle form submit
+      document
+        .getElementById("brand-form")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const formData = new FormData(e.target);
+
+          const payload = {
+            name: formData.get("name"),
+            slug: formData.get("slug") || undefined,
+          };
+
+          try {
+            if (isEdit) {
+              await api.updateBrand(brandId, payload);
+              alert("برند با موفقیت ویرایش شد");
+            } else {
+              await api.createBrand(payload);
+              alert("برند با موفقیت افزوده شد");
+            }
+            panel.close();
+            handlers.brands();
+          } catch (error) {
+            alert("خطا: " + error.message);
+          }
+        });
+    },
+
+    // Collection Form
+    collection(collectionId = null) {
+      const collection = collectionId
+        ? state.collections.find((c) => c.id === collectionId)
+        : null;
+      const isEdit = !!collectionId;
+
+      const formHtml = `
+        <form id="collection-form" class="admin-form">
+          <div class="admin-form-section">
+            <h3 class="admin-form-section-title">اطلاعات کالکشن</h3>
+
+            <div class="admin-form-group">
+              <label class="admin-form-label required">نام کالکشن</label>
+              <input type="text" name="name" class="admin-form-input" value="${collection?.name || ""}" required />
+            </div>
+          </div>
+
+          <div class="admin-form-actions">
+            <button type="button" class="admin-btn admin-btn-secondary" data-action="closePanel">
+              انصراف
+            </button>
+            <button type="submit" class="admin-btn admin-btn-primary">
+              ${isEdit ? "ذخیره تغییرات" : "افزودن کالکشن"}
+            </button>
+          </div>
+        </form>
+      `;
+
+      panel.open(formHtml, isEdit ? "ویرایش کالکشن" : "افزودن کالکشن");
+
+      // Handle form submit
+      document
+        .getElementById("collection-form")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const formData = new FormData(e.target);
+
+          const payload = {
+            name: formData.get("name"),
+          };
+
+          try {
+            if (isEdit) {
+              await api.updateCollection(collectionId, payload);
+              alert("کالکشن با موفقیت ویرایش شد");
+            } else {
+              await api.createCollection(payload);
+              alert("کالکشن با موفقیت افزوده شد");
+            }
+            panel.close();
+            handlers.collections();
+          } catch (error) {
+            alert("خطا: " + error.message);
+          }
+        });
+    },
+
+    // Coupon Form
+    coupon(couponId = null) {
+      const coupon = couponId
+        ? state.coupons.find((c) => c.id === couponId)
+        : null;
+      const isEdit = !!couponId;
+
+      const formHtml = `
+        <form id="coupon-form" class="admin-form">
+          <div class="admin-form-section">
+            <h3 class="admin-form-section-title">اطلاعات کوپن</h3>
+
+            <div class="admin-form-group">
+              <label class="admin-form-label required">کد کوپن</label>
+              <input type="text" name="code" class="admin-form-input" value="${coupon?.code || ""}" required style="text-transform: uppercase;" />
+              <small class="text-gray-500">حروف بزرگ انگلیسی و اعداد</small>
+            </div>
+
+            <div class="admin-form-group">
+              <label class="admin-form-label required">نوع تخفیف</label>
+              <select name="type" class="admin-form-input" id="coupon-type" required>
+                <option value="PERCENT" ${coupon?.type === "PERCENT" ? "selected" : ""}>درصدی</option>
+                <option value="AMOUNT" ${coupon?.type === "AMOUNT" ? "selected" : ""}>مبلغ ثابت</option>
+                <option value="FREE_SHIPPING" ${coupon?.type === "FREE_SHIPPING" ? "selected" : ""}>ارسال رایگان</option>
+              </select>
+            </div>
+
+            <div class="admin-form-group" id="percent-group" style="display: ${coupon?.type === "PERCENT" || !coupon ? "block" : "none"};">
+              <label class="admin-form-label">درصد تخفیف</label>
+              <input type="number" name="percentValue" class="admin-form-input" min="0" max="100" value="${coupon?.percentValue || ""}" />
+              <small class="text-gray-500">بین 0 تا 100</small>
+            </div>
+
+            <div class="admin-form-group" id="amount-group" style="display: ${coupon?.type === "AMOUNT" ? "block" : "none"};">
+              <label class="admin-form-label">مبلغ تخفیف (تومان)</label>
+              <input type="number" name="amountValue" class="admin-form-input" min="0" value="${coupon?.amountValue || ""}" />
+            </div>
+
+            <div class="admin-form-group">
+              <label class="admin-form-label">حداقل خرید (تومان)</label>
+              <input type="number" name="minSubtotal" class="admin-form-input" min="0" value="${coupon?.minSubtotal || 0}" />
+            </div>
+
+            <div class="admin-form-row">
+              <div class="admin-form-group">
+                <label class="admin-form-label">حداکثر تعداد استفاده</label>
+                <input type="number" name="maxUses" class="admin-form-input" min="1" value="${coupon?.maxUses || ""}" />
+                <small class="text-gray-500">خالی = نامحدود</small>
+              </div>
+
+              <div class="admin-form-group">
+                <label class="admin-form-label">حداکثر برای هر کاربر</label>
+                <input type="number" name="maxUsesPerUser" class="admin-form-input" min="1" value="${coupon?.maxUsesPerUser || ""}" />
+                <small class="text-gray-500">خالی = نامحدود</small>
+              </div>
+            </div>
+
+            <div class="admin-form-row">
+              <div class="admin-form-group">
+                <label class="admin-form-label">تاریخ شروع</label>
+                <input type="datetime-local" name="startsAt" class="admin-form-input" value="${utils.toInputDateTime(coupon?.startsAt)}" />
+              </div>
+
+              <div class="admin-form-group">
+                <label class="admin-form-label">تاریخ پایان</label>
+                <input type="datetime-local" name="endsAt" class="admin-form-input" value="${utils.toInputDateTime(coupon?.endsAt)}" />
+              </div>
+            </div>
+
+            <div class="admin-form-group">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" name="isActive" class="w-4 h-4" ${coupon?.isActive !== false ? "checked" : ""} />
+                <span>فعال</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="admin-form-actions">
+            <button type="button" class="admin-btn admin-btn-secondary" data-action="closePanel">
+              انصراف
+            </button>
+            <button type="submit" class="admin-btn admin-btn-primary">
+              ${isEdit ? "ذخیره تغییرات" : "افزودن کوپن"}
+            </button>
+          </div>
+        </form>
+      `;
+
+      panel.open(formHtml, isEdit ? "ویرایش کوپن" : "افزودن کوپن");
+
+      // Toggle percent/amount fields
+      document.getElementById("coupon-type").addEventListener("change", (e) => {
+        const type = e.target.value;
+        document.getElementById("percent-group").style.display =
+          type === "PERCENT" ? "block" : "none";
+        document.getElementById("amount-group").style.display =
+          type === "AMOUNT" ? "block" : "none";
+      });
+
+      // Handle form submit
+      document
+        .getElementById("coupon-form")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const formData = new FormData(e.target);
+
+          const type = formData.get("type");
+          const payload = {
+            code: formData.get("code").toUpperCase(),
+            type: type,
+            percentValue:
+              type === "PERCENT"
+                ? parseInt(formData.get("percentValue"))
+                : undefined,
+            amountValue:
+              type === "AMOUNT"
+                ? parseInt(formData.get("amountValue"))
+                : undefined,
+            minSubtotal: parseInt(formData.get("minSubtotal")) || 0,
+            maxUses: formData.get("maxUses")
+              ? parseInt(formData.get("maxUses"))
+              : undefined,
+            maxUsesPerUser: formData.get("maxUsesPerUser")
+              ? parseInt(formData.get("maxUsesPerUser"))
+              : undefined,
+            startsAt: formData.get("startsAt") || undefined,
+            endsAt: formData.get("endsAt") || undefined,
+            isActive: formData.get("isActive") === "on",
+          };
+
+          try {
+            if (isEdit) {
+              await api.updateCoupon(couponId, payload);
+              alert("کوپن با موفقیت ویرایش شد");
+            } else {
+              await api.createCoupon(payload);
+              alert("کوپن با موفقیت افزوده شد");
+            }
+            panel.close();
+            handlers.coupons();
+          } catch (error) {
+            alert("خطا: " + error.message);
+          }
+        });
+    },
+  };
+
+  // ========== EVENT DELEGATION SYSTEM ==========
+  const eventHandlers = {
+    init() {
+      // Delegate all clicks to document
+      document.addEventListener("click", (e) => {
+        const target = e.target.closest("[data-action]");
+        if (!target) return;
+
+        const action = target.dataset.action;
+        const id = target.dataset.id;
+        const handler = this.actions[action];
+
+        if (handler) {
+          e.preventDefault();
+          handler.call(this, id, target);
+        }
+      });
+    },
+
+    actions: {
+      // Utility actions
+      reload() {
+        location.reload();
+      },
+
+      closePanel() {
+        panel.close();
+      },
+
+      // Product actions
+      createProduct() {
+        forms.product();
+      },
+
+      editProduct(id) {
+        forms.product(id);
+      },
+
+      deleteProduct(id) {
+        if (confirm("آیا مطمئن هستید که می‌خواهید این محصول را حذف کنید؟")) {
+          api
+            .deleteProduct(id)
+            .then(() => {
+              alert("محصول با موفقیت حذف شد");
+              handlers.products();
+            })
+            .catch((error) => alert("خطا: " + error.message));
+        }
+      },
+
+      // Order actions
+      viewOrder(id) {
+        alert("مشاهده جزئیات سفارش: " + id);
+      },
+
+      // User actions
+      editUser(id) {
+        forms.user(id);
+      },
+
+      deleteUserConfirm(id) {
+        if (confirm("آیا مطمئن هستید که می‌خواهید این کاربر را حذف کنید؟")) {
+          api
+            .deleteUser(id)
+            .then(() => {
+              alert("کاربر با موفقیت حذف شد");
+              panel.close();
+              handlers.users();
+            })
+            .catch((error) => alert("خطا: " + error.message));
+        }
+      },
+
+      // Review actions
+      approveReview(id) {
+        api
+          .updateReviewStatus(id, "APPROVED")
+          .then(() => {
+            alert("نظر تایید شد");
+            handlers.reviews();
+          })
+          .catch((error) => alert("خطا: " + error.message));
+      },
+
+      rejectReview(id) {
+        api
+          .updateReviewStatus(id, "REJECTED")
+          .then(() => {
+            alert("نظر رد شد");
+            handlers.reviews();
+          })
+          .catch((error) => alert("خطا: " + error.message));
+      },
+
+      // Magazine actions
+      createMagazine() {
+        forms.magazine();
+      },
+
+      editMagazine(id) {
+        forms.magazine(id);
+      },
+
+      deleteMagazine(id) {
+        if (confirm("آیا مطمئن هستید که می‌خواهید این مقاله را حذف کنید؟")) {
+          api
+            .deleteMagazinePost(id)
+            .then(() => {
+              alert("مقاله حذف شد");
+              handlers.magazine();
+            })
+            .catch((error) => alert("خطا: " + error.message));
+        }
+      },
+
+      // Newsletter actions
+      createNewsletter() {
+        forms.newsletter();
+      },
+
+      // Brand actions
+      createBrand() {
+        forms.brand();
+      },
+
+      editBrand(id) {
+        forms.brand(id);
+      },
+
+      deleteBrand(id) {
+        if (confirm("آیا مطمئن هستید که می‌خواهید این برند را حذف کنید؟")) {
+          api
+            .deleteBrand(id)
+            .then(() => {
+              alert("برند حذف شد");
+              handlers.brands();
+            })
+            .catch((error) => alert("خطا: " + error.message));
+        }
+      },
+
+      // Collection actions
+      createCollection() {
+        forms.collection();
+      },
+
+      editCollection(id) {
+        forms.collection(id);
+      },
+
+      deleteCollection(id) {
+        if (confirm("آیا مطمئن هستید که می‌خواهید این کالکشن را حذف کنید؟")) {
+          api
+            .deleteCollection(id)
+            .then(() => {
+              alert("کالکشن حذف شد");
+              handlers.collections();
+            })
+            .catch((error) => alert("خطا: " + error.message));
+        }
+      },
+
+      // Coupon actions
+      createCoupon() {
+        forms.coupon();
+      },
+
+      editCoupon(id) {
+        forms.coupon(id);
+      },
+
+      deleteCoupon(id) {
+        if (confirm("آیا مطمئن هستید که می‌خواهید این کوپن را حذف کنید؟")) {
+          api
+            .deleteCoupon(id)
+            .then(() => {
+              alert("کوپن حذف شد");
+              handlers.coupons();
+            })
+            .catch((error) => alert("خطا: " + error.message));
+        }
+      },
     },
   };
 
@@ -397,10 +1998,10 @@
               <option value="BODY_BATH">بدن و حمام</option>
             </select>
           </div>
-          <a href="/admin/products/new" class="admin-btn admin-btn-primary">
+          <button data-action="createProduct" class="admin-btn admin-btn-primary">
             <i data-feather="plus"></i>
             <span>افزودن محصول</span>
-          </a>
+          </button>
         </div>
 
         <div class="admin-card">
@@ -546,7 +2147,7 @@
       return `
         <div class="mb-6 flex justify-between items-center">
           <h2 class="text-xl font-bold">مدیریت برندها</h2>
-          <button onclick="AdminApp.showCreateBrandModal()" class="admin-btn admin-btn-primary">
+          <button data-action="createBrand" class="admin-btn admin-btn-primary">
             <i data-feather="plus"></i>
             <span>افزودن برند</span>
           </button>
@@ -563,7 +2164,7 @@
       return `
         <div class="mb-6 flex justify-between items-center">
           <h2 class="text-xl font-bold">مدیریت کالکشن‌ها</h2>
-          <button onclick="AdminApp.showCreateCollectionModal()" class="admin-btn admin-btn-primary">
+          <button data-action="createCollection" class="admin-btn admin-btn-primary">
             <i data-feather="plus"></i>
             <span>افزودن کالکشن</span>
           </button>
@@ -580,7 +2181,7 @@
       return `
         <div class="mb-6 flex justify-between items-center">
           <h2 class="text-xl font-bold">مدیریت کوپن‌ها</h2>
-          <button onclick="AdminApp.showCreateCouponModal()" class="admin-btn admin-btn-primary">
+          <button data-action="createCoupon" class="admin-btn admin-btn-primary">
             <i data-feather="plus"></i>
             <span>افزودن کوپن</span>
           </button>
@@ -652,11 +2253,11 @@
             <h3 class="admin-card-title">ارسال خبرنامه</h3>
           </div>
           <div class="admin-card-body">
-            <p class="text-gray-600 mb-4">برای ارسال خبرنامه از صفحه اصلی استفاده کنید.</p>
-            <a href="/admin/newsletter/compose" class="admin-btn admin-btn-primary">
+            <p class="text-gray-600 mb-4">ایجاد و ارسال خبرنامه به مشترکین فعال</p>
+            <button data-action="createNewsletter" class="admin-btn admin-btn-primary">
               <i data-feather="mail"></i>
               <span>ایجاد خبرنامه</span>
-            </a>
+            </button>
           </div>
         </div>
       `;
@@ -665,20 +2266,34 @@
     // Magazine View
     magazine() {
       return `
+        <div class="mb-6 flex justify-between items-center">
+          <h2 class="text-xl font-bold">مدیریت مجله</h2>
+          <button data-action="createMagazine" class="admin-btn admin-btn-primary">
+            <i data-feather="plus"></i>
+            <span>افزودن مقاله</span>
+          </button>
+        </div>
+
         <div class="admin-card">
-          <div class="admin-card-header">
-            <h3 class="admin-card-title">مدیریت مجله</h3>
-            <a href="/admin/magazine/new" class="admin-btn admin-btn-primary">
-              <i data-feather="plus"></i>
-              <span>مقاله جدید</span>
-            </a>
-          </div>
           <div class="admin-card-body">
-            <p class="text-gray-600">مدیریت مقالات مجله از طریق API موجود است.</p>
-            <div class="mt-4">
-              <a href="/magazine" target="_blank" class="admin-link">
-                مشاهده مجله
-              </a>
+            <div class="admin-table-container">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>عنوان</th>
+                    <th>نویسنده</th>
+                    <th>دسته‌بندی</th>
+                    <th>وضعیت</th>
+                    <th>تاریخ انتشار</th>
+                    <th>عملیات</th>
+                  </tr>
+                </thead>
+                <tbody id="magazine-tbody">
+                  <tr>
+                    <td colspan="6">${utils.showLoading()}</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
@@ -764,7 +2379,7 @@
                 <div class="flex-1">
                   <div class="font-medium">${product.title}</div>
                   <div class="text-sm text-gray-500">
-                    ${utils.toFa(product.ratingCount || 0)} نظر - ${(product.ratingAvg || 0)} ⭐
+                    ${utils.toFa(product.ratingCount || 0)} نظر - ${product.ratingAvg || 0} ⭐
                   </div>
                 </div>
                 <div class="font-semibold">${utils.toIRR(product.price)}</div>
@@ -835,10 +2450,10 @@
                 </td>
                 <td>
                   <div class="flex gap-2">
-                    <button onclick="AdminApp.editProduct('${product.id}')" class="admin-btn admin-btn-secondary">
+                    <button data-action="editProduct" data-id="${product.id}" class="admin-btn admin-btn-secondary">
                       <i data-feather="edit-2" class="w-4 h-4"></i>
                     </button>
-                    <button onclick="AdminApp.deleteProduct('${product.id}')" class="admin-btn admin-btn-danger">
+                    <button data-action="deleteProduct" data-id="${product.id}" class="admin-btn admin-btn-danger">
                       <i data-feather="trash-2" class="w-4 h-4"></i>
                     </button>
                   </div>
@@ -883,7 +2498,7 @@
                   </span>
                 </td>
                 <td>
-                  <button onclick="AdminApp.viewOrder('${order.id}')" class="admin-btn admin-btn-secondary">
+                  <button data-action="viewOrder" data-id="${order.id}" class="admin-btn admin-btn-secondary">
                     <i data-feather="eye" class="w-4 h-4"></i>
                   </button>
                 </td>
@@ -928,7 +2543,7 @@
                 <td>${user.customerTier}</td>
                 <td>${utils.toFa(user._count?.orders || 0)}</td>
                 <td>
-                  <button onclick="AdminApp.editUser('${user.id}')" class="admin-btn admin-btn-secondary">
+                  <button data-action="editUser" data-id="${user.id}" class="admin-btn admin-btn-secondary">
                     <i data-feather="edit-2" class="w-4 h-4"></i>
                   </button>
                 </td>
@@ -982,11 +2597,11 @@
                 </div>
                 <p class="text-gray-700 mb-4">${review.body}</p>
                 <div class="flex gap-2">
-                  <button onclick="AdminApp.approveReview('${review.id}')" class="admin-btn admin-btn-primary">
+                  <button data-action="approveReview" data-id="${review.id}" class="admin-btn admin-btn-primary">
                     <i data-feather="check" class="w-4 h-4"></i>
                     تایید
                   </button>
-                  <button onclick="AdminApp.rejectReview('${review.id}')" class="admin-btn admin-btn-danger">
+                  <button data-action="rejectReview" data-id="${review.id}" class="admin-btn admin-btn-danger">
                     <i data-feather="x" class="w-4 h-4"></i>
                     رد
                   </button>
@@ -1031,11 +2646,11 @@
                     <span class="text-sm text-gray-600">${utils.toFa(brand._count?.products || 0)} محصول</span>
                   </div>
                   <div class="flex gap-2 mt-4">
-                    <button onclick="AdminApp.editBrand('${brand.id}')" class="admin-btn admin-btn-secondary flex-1">
+                    <button data-action="editBrand" data-id="${brand.id}" class="admin-btn admin-btn-secondary flex-1">
                       <i data-feather="edit-2" class="w-4 h-4"></i>
                       ویرایش
                     </button>
-                    <button onclick="AdminApp.deleteBrand('${brand.id}')" class="admin-btn admin-btn-danger">
+                    <button data-action="deleteBrand" data-id="${brand.id}" class="admin-btn admin-btn-danger">
                       <i data-feather="trash-2" class="w-4 h-4"></i>
                     </button>
                   </div>
@@ -1079,11 +2694,11 @@
                     <span class="text-sm text-gray-600">${utils.toFa(collection._count?.products || 0)} محصول</span>
                   </div>
                   <div class="flex gap-2 mt-4">
-                    <button onclick="AdminApp.editCollection('${collection.id}')" class="admin-btn admin-btn-secondary flex-1">
+                    <button data-action="editCollection" data-id="${collection.id}" class="admin-btn admin-btn-secondary flex-1">
                       <i data-feather="edit-2" class="w-4 h-4"></i>
                       ویرایش
                     </button>
-                    <button onclick="AdminApp.deleteCollection('${collection.id}')" class="admin-btn admin-btn-danger">
+                    <button data-action="deleteCollection" data-id="${collection.id}" class="admin-btn admin-btn-danger">
                       <i data-feather="trash-2" class="w-4 h-4"></i>
                     </button>
                   </div>
@@ -1136,10 +2751,10 @@
                 </td>
                 <td>
                   <div class="flex gap-2">
-                    <button onclick="AdminApp.editCoupon('${coupon.id}')" class="admin-btn admin-btn-secondary">
+                    <button data-action="editCoupon" data-id="${coupon.id}" class="admin-btn admin-btn-secondary">
                       <i data-feather="edit-2" class="w-4 h-4"></i>
                     </button>
-                    <button onclick="AdminApp.deleteCoupon('${coupon.id}')" class="admin-btn admin-btn-danger">
+                    <button data-action="deleteCoupon" data-id="${coupon.id}" class="admin-btn admin-btn-danger">
                       <i data-feather="trash-2" class="w-4 h-4"></i>
                     </button>
                   </div>
@@ -1182,7 +2797,55 @@
     },
 
     async magazine() {
-      utils.refreshIcons();
+      try {
+        const data = await api.getMagazinePosts({
+          page: 1,
+          onlyPublished: false,
+        });
+        state.magazines = data.items;
+
+        const tbody = document.getElementById("magazine-tbody");
+        if (tbody) {
+          tbody.innerHTML = "";
+          if (!data.items || data.items.length === 0) {
+            tbody.innerHTML =
+              '<tr><td colspan="6" class="text-center py-8 text-gray-500">مقاله‌ای وجود ندارد</td></tr>';
+          } else {
+            data.items.forEach((post) => {
+              const tr = document.createElement("tr");
+              tr.innerHTML = `
+                <td>${post.title}</td>
+                <td>${post.author?.name || "-"}</td>
+                <td>${post.category}</td>
+                <td>
+                  <span class="admin-badge-${post.isPublished ? "success" : "warning"}">
+                    ${post.isPublished ? "منتشر شده" : "پیش‌نویس"}
+                  </span>
+                </td>
+                <td>${utils.formatDate(post.publishedAt)}</td>
+                <td>
+                  <div class="flex gap-2">
+                    <button data-action="editMagazine" data-id="${post.id}" class="admin-btn admin-btn-secondary">
+                      <i data-feather="edit-2" class="w-4 h-4"></i>
+                    </button>
+                    <button data-action="deleteMagazine" data-id="${post.id}" class="admin-btn admin-btn-danger">
+                      <i data-feather="trash-2" class="w-4 h-4"></i>
+                    </button>
+                  </div>
+                </td>
+              `;
+              tbody.appendChild(tr);
+            });
+          }
+        }
+
+        utils.refreshIcons();
+      } catch (error) {
+        console.error("Magazine error:", error);
+        document.getElementById("app-content").innerHTML = utils.showError(
+          error.message
+        );
+      }
     },
 
     logout() {
@@ -1328,172 +2991,9 @@
     },
   };
 
-  // ========== PUBLIC API (for onclick handlers) ==========
-  window.AdminApp = {
-    // Product actions
-    async deleteProduct(id) {
-      if (confirm("آیا مطمئن هستید که می‌خواهید این محصول را حذف کنید؟")) {
-        try {
-          await api.deleteProduct(id);
-          alert("محصول با موفقیت حذف شد");
-          handlers.products();
-        } catch (error) {
-          alert("خطا: " + error.message);
-        }
-      }
-    },
-
-    editProduct(id) {
-      window.location.href = `/admin/products/edit/${id}`;
-    },
-
-    // Order actions
-    viewOrder(id) {
-      alert("مشاهده جزئیات سفارش: " + id);
-    },
-
-    // User actions
-    editUser(id) {
-      alert("ویرایش کاربر: " + id);
-    },
-
-    // Review actions
-    async approveReview(id) {
-      try {
-        await api.updateReviewStatus(id, "APPROVED");
-        alert("نظر تایید شد");
-        handlers.reviews();
-      } catch (error) {
-        alert("خطا: " + error.message);
-      }
-    },
-
-    async rejectReview(id) {
-      try {
-        await api.updateReviewStatus(id, "REJECTED");
-        alert("نظر رد شد");
-        handlers.reviews();
-      } catch (error) {
-        alert("خطا: " + error.message);
-      }
-    },
-
-    // Brand actions
-    showCreateBrandModal() {
-      const name = prompt("نام برند:");
-      if (name) {
-        api
-          .createBrand({ name })
-          .then(() => {
-            alert("برند با موفقیت ایجاد شد");
-            handlers.brands();
-          })
-          .catch((error) => {
-            alert("خطا: " + error.message);
-          });
-      }
-    },
-
-    editBrand(id) {
-      const brand = state.brands.find((b) => b.id === id);
-      if (brand) {
-        const name = prompt("نام جدید برند:", brand.name);
-        if (name) {
-          api
-            .updateBrand(id, { name })
-            .then(() => {
-              alert("برند با موفقیت ویرایش شد");
-              handlers.brands();
-            })
-            .catch((error) => {
-              alert("خطا: " + error.message);
-            });
-        }
-      }
-    },
-
-    async deleteBrand(id) {
-      if (confirm("آیا مطمئن هستید؟")) {
-        try {
-          await api.deleteBrand(id);
-          alert("برند حذف شد");
-          handlers.brands();
-        } catch (error) {
-          alert("خطا: " + error.message);
-        }
-      }
-    },
-
-    // Collection actions
-    showCreateCollectionModal() {
-      const name = prompt("نام کالکشن:");
-      if (name) {
-        api
-          .createCollection({ name })
-          .then(() => {
-            alert("کالکشن با موفقیت ایجاد شد");
-            handlers.collections();
-          })
-          .catch((error) => {
-            alert("خطا: " + error.message);
-          });
-      }
-    },
-
-    editCollection(id) {
-      const collection = state.collections.find((c) => c.id === id);
-      if (collection) {
-        const name = prompt("نام جدید کالکشن:", collection.name);
-        if (name) {
-          api
-            .updateCollection(id, { name })
-            .then(() => {
-              alert("کالکشن با موفقیت ویرایش شد");
-              handlers.collections();
-            })
-            .catch((error) => {
-              alert("خطا: " + error.message);
-            });
-        }
-      }
-    },
-
-    async deleteCollection(id) {
-      if (confirm("آیا مطمئن هستید؟")) {
-        try {
-          await api.deleteCollection(id);
-          alert("کالکشن حذف شد");
-          handlers.collections();
-        } catch (error) {
-          alert("خطا: " + error.message);
-        }
-      }
-    },
-
-    // Coupon actions
-    showCreateCouponModal() {
-      alert("فرم ایجاد کوپن (می‌توانید یک مدال کامل بسازید)");
-    },
-
-    editCoupon(id) {
-      alert("ویرایش کوپن: " + id);
-    },
-
-    async deleteCoupon(id) {
-      if (confirm("آیا مطمئن هستید؟")) {
-        try {
-          await api.deleteCoupon(id);
-          alert("کوپن حذف شد");
-          handlers.coupons();
-        } catch (error) {
-          alert("خطا: " + error.message);
-        }
-      }
-    },
-  };
-
   // ========== INIT ==========
   document.addEventListener("DOMContentLoaded", () => {
+    eventHandlers.init(); // Initialize event delegation
     router.init();
   });
 })();

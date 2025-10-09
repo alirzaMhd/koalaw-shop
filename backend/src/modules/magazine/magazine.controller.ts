@@ -1,6 +1,8 @@
+// backend/src/modules/magazine/magazine.controller.ts
 import type { Request, Response, NextFunction } from 'express';
 import { magazineService } from './magazine.service.js';
 import AppError from '../../common/errors/AppError.js';
+import { z } from 'zod';
 
 export class MagazineController {
   // POSTS
@@ -17,34 +19,20 @@ export class MagazineController {
         onlyPublished = true,
       } = req.query as any;
 
-      // merge single tag and tags[]
       const tagSlugs = (tags as string[] | undefined) ?? (tag ? [String(tag)] : undefined);
 
-      // --- FIX: Conditionally build the options object to satisfy "exactOptionalPropertyTypes" ---
-      // This helper type infers the exact options type from the service method.
       type ListPostOptions = Parameters<typeof magazineService.listPosts>[0];
 
-      // Start with the required properties.
       const options: ListPostOptions = {
         page: Number(page),
         pageSize: Number(pageSize),
         onlyPublished: onlyPublished === true || String(onlyPublished) === 'true',
       };
 
-      // Only add optional properties if they have a value.
-      if (category) {
-        options.category = category;
-      }
-      if (tagSlugs) {
-        options.tagSlugs = tagSlugs;
-      }
-      if (authorSlug) {
-        options.authorSlug = authorSlug as string;
-      }
-      if (q) {
-        options.q = q as string;
-      }
-      // --- End of Fix ---
+      if (category) options.category = category;
+      if (tagSlugs) options.tagSlugs = tagSlugs;
+      if (authorSlug) options.authorSlug = authorSlug as string;
+      if (q) options.q = q as string;
 
       const result = await magazineService.listPosts(options);
 
@@ -58,6 +46,17 @@ export class MagazineController {
     try {
       const { slug } = req.params;
       const post = await magazineService.getPostBySlug(slug!);
+      res.json({ success: true, data: post });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  // NEW HANDLER
+  getPostById = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { id } = z.object({ id: z.string().uuid() }).parse(req.params);
+      const post = await magazineService.getPostById(id);
       res.json({ success: true, data: post });
     } catch (err) {
       next(err);
@@ -90,6 +89,8 @@ export class MagazineController {
       next(err);
     }
   };
+
+  // ... (rest of the controller remains the same)
 
   // AUTHORS
   listAuthors = async (_req: Request, res: Response, next: NextFunction) => {

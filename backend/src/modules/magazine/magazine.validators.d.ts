@@ -20,42 +20,42 @@ export declare const listPostsSchema: z.ZodObject<{
         page: number;
         pageSize: number;
         category?: MagazineCategory | undefined;
-        q?: string | undefined;
         tags?: string[] | undefined;
+        tag?: string | undefined;
+        q?: string | undefined;
         authorSlug?: string | undefined;
         onlyPublished?: boolean | undefined;
-        tag?: string | undefined;
     }, {
         category?: MagazineCategory | undefined;
+        tags?: string | undefined;
+        tag?: string | undefined;
         page?: number | undefined;
         q?: string | undefined;
-        tags?: string | undefined;
         pageSize?: number | undefined;
         authorSlug?: string | undefined;
         onlyPublished?: boolean | undefined;
-        tag?: string | undefined;
     }>;
 }, "strip", z.ZodTypeAny, {
     query: {
         page: number;
         pageSize: number;
         category?: MagazineCategory | undefined;
-        q?: string | undefined;
         tags?: string[] | undefined;
+        tag?: string | undefined;
+        q?: string | undefined;
         authorSlug?: string | undefined;
         onlyPublished?: boolean | undefined;
-        tag?: string | undefined;
     };
 }, {
     query: {
         category?: MagazineCategory | undefined;
+        tags?: string | undefined;
+        tag?: string | undefined;
         page?: number | undefined;
         q?: string | undefined;
-        tags?: string | undefined;
         pageSize?: number | undefined;
         authorSlug?: string | undefined;
         onlyPublished?: boolean | undefined;
-        tag?: string | undefined;
     };
 }>;
 export declare const getPostBySlugSchema: z.ZodObject<{
@@ -90,60 +90,60 @@ export declare const createPostSchema: z.ZodObject<{
         tags: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
         relatedPostIds: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
     }, "strip", z.ZodTypeAny, {
-        category: MagazineCategory;
         title: string;
+        category: MagazineCategory;
         content: string;
         slug?: string | undefined;
         heroImageUrl?: string | undefined;
-        tags?: string[] | undefined;
-        publishedAt?: Date | null | undefined;
-        excerpt?: string | undefined;
-        isPublished?: boolean | undefined;
         authorId?: string | null | undefined;
+        excerpt?: string | undefined;
         readTimeMinutes?: number | undefined;
+        publishedAt?: Date | null | undefined;
+        isPublished?: boolean | undefined;
+        tags?: string[] | undefined;
         relatedPostIds?: string[] | undefined;
     }, {
-        category: MagazineCategory;
         title: string;
+        category: MagazineCategory;
         content: string;
         slug?: string | undefined;
         heroImageUrl?: string | undefined;
-        tags?: string[] | undefined;
-        publishedAt?: Date | null | undefined;
-        excerpt?: string | undefined;
-        isPublished?: boolean | undefined;
         authorId?: string | null | undefined;
+        excerpt?: string | undefined;
         readTimeMinutes?: number | undefined;
+        publishedAt?: Date | null | undefined;
+        isPublished?: boolean | undefined;
+        tags?: string[] | undefined;
         relatedPostIds?: string[] | undefined;
     }>;
 }, "strip", z.ZodTypeAny, {
     body: {
-        category: MagazineCategory;
         title: string;
+        category: MagazineCategory;
         content: string;
         slug?: string | undefined;
         heroImageUrl?: string | undefined;
-        tags?: string[] | undefined;
-        publishedAt?: Date | null | undefined;
-        excerpt?: string | undefined;
-        isPublished?: boolean | undefined;
         authorId?: string | null | undefined;
+        excerpt?: string | undefined;
         readTimeMinutes?: number | undefined;
+        publishedAt?: Date | null | undefined;
+        isPublished?: boolean | undefined;
+        tags?: string[] | undefined;
         relatedPostIds?: string[] | undefined;
     };
 }, {
     body: {
-        category: MagazineCategory;
         title: string;
+        category: MagazineCategory;
         content: string;
         slug?: string | undefined;
         heroImageUrl?: string | undefined;
-        tags?: string[] | undefined;
-        publishedAt?: Date | null | undefined;
-        excerpt?: string | undefined;
-        isPublished?: boolean | undefined;
         authorId?: string | null | undefined;
+        excerpt?: string | undefined;
         readTimeMinutes?: number | undefined;
+        publishedAt?: Date | null | undefined;
+        isPublished?: boolean | undefined;
+        tags?: string[] | undefined;
         relatedPostIds?: string[] | undefined;
     };
 }>;
@@ -169,56 +169,56 @@ export declare const updatePostSchema: z.ZodObject<{
         tags: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
         relatedPostIds: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
     }, "strip", z.ZodTypeAny, {
+        title?: string | undefined;
         slug?: string | undefined;
         category?: MagazineCategory | undefined;
-        title?: string | undefined;
         heroImageUrl?: string | undefined;
-        tags?: string[] | undefined;
-        content?: string | undefined;
-        publishedAt?: Date | null | undefined;
-        excerpt?: string | undefined;
-        isPublished?: boolean | undefined;
         authorId?: string | null | undefined;
+        excerpt?: string | undefined;
+        content?: string | undefined;
         readTimeMinutes?: number | undefined;
+        publishedAt?: Date | null | undefined;
+        isPublished?: boolean | undefined;
+        tags?: string[] | undefined;
         relatedPostIds?: string[] | undefined;
     }, {
+        title?: string | undefined;
         slug?: string | undefined;
         category?: MagazineCategory | undefined;
-        title?: string | undefined;
         heroImageUrl?: string | undefined;
-        tags?: string[] | undefined;
-        content?: string | undefined;
-        publishedAt?: Date | null | undefined;
-        excerpt?: string | undefined;
-        isPublished?: boolean | undefined;
         authorId?: string | null | undefined;
+        excerpt?: string | undefined;
+        content?: string | undefined;
         readTimeMinutes?: number | undefined;
+        publishedAt?: Date | null | undefined;
+        isPublished?: boolean | undefined;
+        tags?: string[] | undefined;
         relatedPostIds?: string[] | undefined;
     }>, {
+        title?: string | undefined;
         slug?: string | undefined;
         category?: MagazineCategory | undefined;
-        title?: string | undefined;
         heroImageUrl?: string | undefined;
-        tags?: string[] | undefined;
-        content?: string | undefined;
-        publishedAt?: Date | null | undefined;
-        excerpt?: string | undefined;
-        isPublished?: boolean | undefined;
         authorId?: string | null | undefined;
+        excerpt?: string | undefined;
+        content?: string | undefined;
         readTimeMinutes?: number | undefined;
+        publishedAt?: Date | null | undefined;
+        isPublished?: boolean | undefined;
+        tags?: string[] | undefined;
         relatedPostIds?: string[] | undefined;
     }, {
+        title?: string | undefined;
         slug?: string | undefined;
         category?: MagazineCategory | undefined;
-        title?: string | undefined;
         heroImageUrl?: string | undefined;
-        tags?: string[] | undefined;
-        content?: string | undefined;
-        publishedAt?: Date | null | undefined;
-        excerpt?: string | undefined;
-        isPublished?: boolean | undefined;
         authorId?: string | null | undefined;
+        excerpt?: string | undefined;
+        content?: string | undefined;
         readTimeMinutes?: number | undefined;
+        publishedAt?: Date | null | undefined;
+        isPublished?: boolean | undefined;
+        tags?: string[] | undefined;
         relatedPostIds?: string[] | undefined;
     }>;
 }, "strip", z.ZodTypeAny, {
@@ -226,17 +226,17 @@ export declare const updatePostSchema: z.ZodObject<{
         id: string;
     };
     body: {
+        title?: string | undefined;
         slug?: string | undefined;
         category?: MagazineCategory | undefined;
-        title?: string | undefined;
         heroImageUrl?: string | undefined;
-        tags?: string[] | undefined;
-        content?: string | undefined;
-        publishedAt?: Date | null | undefined;
-        excerpt?: string | undefined;
-        isPublished?: boolean | undefined;
         authorId?: string | null | undefined;
+        excerpt?: string | undefined;
+        content?: string | undefined;
         readTimeMinutes?: number | undefined;
+        publishedAt?: Date | null | undefined;
+        isPublished?: boolean | undefined;
+        tags?: string[] | undefined;
         relatedPostIds?: string[] | undefined;
     };
 }, {
@@ -244,17 +244,17 @@ export declare const updatePostSchema: z.ZodObject<{
         id: string;
     };
     body: {
+        title?: string | undefined;
         slug?: string | undefined;
         category?: MagazineCategory | undefined;
-        title?: string | undefined;
         heroImageUrl?: string | undefined;
-        tags?: string[] | undefined;
-        content?: string | undefined;
-        publishedAt?: Date | null | undefined;
-        excerpt?: string | undefined;
-        isPublished?: boolean | undefined;
         authorId?: string | null | undefined;
+        excerpt?: string | undefined;
+        content?: string | undefined;
         readTimeMinutes?: number | undefined;
+        publishedAt?: Date | null | undefined;
+        isPublished?: boolean | undefined;
+        tags?: string[] | undefined;
         relatedPostIds?: string[] | undefined;
     };
 }>;
@@ -284,27 +284,27 @@ export declare const createAuthorSchema: z.ZodObject<{
     }, "strip", z.ZodTypeAny, {
         name: string;
         slug?: string | undefined;
-        avatarUrl?: string | undefined;
         bio?: string | undefined;
+        avatarUrl?: string | undefined;
     }, {
         name: string;
         slug?: string | undefined;
-        avatarUrl?: string | undefined;
         bio?: string | undefined;
+        avatarUrl?: string | undefined;
     }>;
 }, "strip", z.ZodTypeAny, {
     body: {
         name: string;
         slug?: string | undefined;
-        avatarUrl?: string | undefined;
         bio?: string | undefined;
+        avatarUrl?: string | undefined;
     };
 }, {
     body: {
         name: string;
         slug?: string | undefined;
-        avatarUrl?: string | undefined;
         bio?: string | undefined;
+        avatarUrl?: string | undefined;
     };
 }>;
 export declare const updateAuthorSchema: z.ZodObject<{
@@ -323,23 +323,23 @@ export declare const updateAuthorSchema: z.ZodObject<{
     }, "strip", z.ZodTypeAny, {
         name?: string | undefined;
         slug?: string | undefined;
-        avatarUrl?: string | undefined;
         bio?: string | undefined;
+        avatarUrl?: string | undefined;
     }, {
         name?: string | undefined;
         slug?: string | undefined;
-        avatarUrl?: string | undefined;
         bio?: string | undefined;
+        avatarUrl?: string | undefined;
     }>, {
         name?: string | undefined;
         slug?: string | undefined;
-        avatarUrl?: string | undefined;
         bio?: string | undefined;
+        avatarUrl?: string | undefined;
     }, {
         name?: string | undefined;
         slug?: string | undefined;
-        avatarUrl?: string | undefined;
         bio?: string | undefined;
+        avatarUrl?: string | undefined;
     }>;
 }, "strip", z.ZodTypeAny, {
     params: {
@@ -348,8 +348,8 @@ export declare const updateAuthorSchema: z.ZodObject<{
     body: {
         name?: string | undefined;
         slug?: string | undefined;
-        avatarUrl?: string | undefined;
         bio?: string | undefined;
+        avatarUrl?: string | undefined;
     };
 }, {
     params: {
@@ -358,8 +358,8 @@ export declare const updateAuthorSchema: z.ZodObject<{
     body: {
         name?: string | undefined;
         slug?: string | undefined;
-        avatarUrl?: string | undefined;
         bio?: string | undefined;
+        avatarUrl?: string | undefined;
     };
 }>;
 export declare const deleteAuthorSchema: z.ZodObject<{

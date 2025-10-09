@@ -1,1 +1,1 @@
-{"version":3,"file":"newsletter.repo.d.ts","sourceRoot":"","sources":["newsletter.repo.ts"],"names":[],"mappings":"AAGA,eAAO,MAAM,cAAc;qBACF,MAAM,WAAW,MAAM;uBAerB,MAAM;uBASN,MAAM;wBAML,MAAM;;;;;;;CA6BjC,CAAC"}
+{"version":3,"file":"newsletter.repo.d.ts","sourceRoot":"","sources":["newsletter.repo.ts"],"names":[],"mappings":"AAGA,eAAO,MAAM,cAAc;qBACF,MAAM,WAAW,MAAM;;;;;;;;uBAerB,MAAM;;;;;;;;uBASN,MAAM;;;;;;;;wBAML,MAAM;;;;;;;;;;;;;;CA6BjC,CAAC"}
