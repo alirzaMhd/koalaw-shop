@@ -77,7 +77,7 @@ async function main() {
         passwordHash: adminPasswordHash,
         firstName: "Pouria",
         lastName: "Momtaz",
-        phone: "+989100000000",
+        phone: "+989212556879",
         gender: "MALE",
         customerTier: "VIP", // Represents admin/best privileges
         phoneVerifiedAt: new Date(),
