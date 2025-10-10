@@ -19,7 +19,23 @@ import {
 
 const router = Router();
 
-// Public
+// ========== ADMIN ROUTES (protected, use ID) ==========
+router.get("/admin/posts/:id", authGuard, magazineController.getPostById);
+router.post("/admin/posts", authGuard, validate(createPostSchema), magazineController.createPost);
+router.put("/admin/posts/:id", authGuard, validate(updatePostSchema), magazineController.updatePost);
+router.delete("/admin/posts/:id", authGuard, validate(deletePostSchema), magazineController.deletePost);
+
+router.get("/admin/authors", authGuard, magazineController.listAuthors);
+router.post("/admin/authors", authGuard, validate(createAuthorSchema), magazineController.createAuthor);
+router.put("/admin/authors/:id", authGuard, validate(updateAuthorSchema), magazineController.updateAuthor);
+router.delete("/admin/authors/:id", authGuard, validate(deleteAuthorSchema), magazineController.deleteAuthor);
+
+router.get("/admin/tags", authGuard, magazineController.listTags);
+router.post("/admin/tags", authGuard, validate(createTagSchema), magazineController.createTag);
+router.put("/admin/tags/:id", authGuard, validate(updateTagSchema), magazineController.updateTag);
+router.delete("/admin/tags/:id", authGuard, validate(deleteTagSchema), magazineController.deleteTag);
+
+// ========== PUBLIC ROUTES (use slug) ==========
 router.get('/posts', validate(listPostsSchema), magazineController.listPosts);
 router.get('/posts/:slug', validate(getPostBySlugSchema), magazineController.getPostBySlug);
 
@@ -27,19 +43,5 @@ router.get("/authors", magazineController.listAuthors);
 router.get("/authors/:slug", magazineController.getAuthorBySlug);
 
 router.get("/tags", magazineController.listTags);
-
-// Admin (protect as needed)
-router.get("/posts/:id", authGuard, magazineController.getPostById); // GET BY ID FOR ADMIN
-router.post("/posts", authGuard, validate(createPostSchema), magazineController.createPost);
-router.put("/posts/:id", authGuard, validate(updatePostSchema), magazineController.updatePost); // Use PUT for full updates
-router.delete("/posts/:id", authGuard, validate(deletePostSchema), magazineController.deletePost);
-
-router.post("/authors", authGuard, validate(createAuthorSchema), magazineController.createAuthor);
-router.put("/authors/:id", authGuard, validate(updateAuthorSchema), magazineController.updateAuthor);
-router.delete("/authors/:id", authGuard, validate(deleteAuthorSchema), magazineController.deleteAuthor);
-
-router.post("/tags", authGuard, validate(createTagSchema), magazineController.createTag);
-router.put("/tags/:id", authGuard, validate(updateTagSchema), magazineController.updateTag);
-router.delete("/tags/:id", authGuard, validate(deleteTagSchema), magazineController.deleteTag);
 
 export default router;

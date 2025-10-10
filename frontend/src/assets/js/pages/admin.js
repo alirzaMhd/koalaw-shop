@@ -321,37 +321,47 @@
     },
 
     // Magazine
+    // In the api object, update these methods:
+
     getMagazinePosts(params = {}) {
       const query = new URLSearchParams(params).toString();
-      return this.fetch(`/api/magazine/posts?${query}`);
+      return this.fetch(`/api/magazine/posts?${query}`); // ✅ Keep as-is
     },
+
     getMagazinePost(id) {
-      return this.fetch(`/api/magazine/posts/${id}`);
+      return this.fetch(`/api/magazine/admin/posts/${id}`); // ✅ Change to admin route
     },
+
     createMagazinePost(data) {
-      return this.fetch("/api/magazine/posts", {
+      return this.fetch("/api/magazine/admin/posts", {
+        // ✅ Change to admin route
         method: "POST",
         body: JSON.stringify(data),
       });
     },
+
     updateMagazinePost(id, data) {
-      return this.fetch(`/api/magazine/posts/${id}`, {
+      return this.fetch(`/api/magazine/admin/posts/${id}`, {
+        // ✅ Change to admin route
         method: "PUT",
         body: JSON.stringify(data),
       });
     },
+
     deleteMagazinePost(id) {
-      return this.fetch(`/api/magazine/posts/${id}`, { method: "DELETE" });
+      return this.fetch(`/api/magazine/admin/posts/${id}`, {
+        method: "DELETE",
+      }); // ✅ Change to admin route
     },
 
     // Magazine Authors
     getMagazineAuthors() {
-      return this.fetch("/api/magazine/authors");
+      return this.fetch("/api/magazine/admin/authors"); // ✅ Change to admin route
     },
 
     // Magazine Tags
     getMagazineTags() {
-      return this.fetch("/api/magazine/tags");
+      return this.fetch("/api/magazine/admin/tags"); // ✅ Change to admin route
     },
 
     // Color Themes (for products)
