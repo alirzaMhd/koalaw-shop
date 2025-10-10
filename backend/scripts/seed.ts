@@ -71,12 +71,13 @@ async function main() {
     prisma.user.create({
       data: {
         phone: "+989100000001",
-        email: "admin@beauty.com",
+        email: "alimahmoodi7094@gmail.com",
         passwordHash: testPasswordHash,
         firstName: "ادمین",
         lastName: "کاربر",
-        gender: "FEMALE",
+        gender: "MALE",
         customerTier: "VIP",
+        role: "ADMIN",
         phoneVerifiedAt: new Date(),
         notificationPrefs: {
           create: { orderUpdates: true, promotions: true, newProducts: true, marketing: true },
