@@ -74,6 +74,12 @@ async function generateUniqueSlugForAuthor(baseInput: string) {
   }
 }
 
+/**
+ * Upsert tags by names or slugs
+ * Handles duplicate tag names/slugs gracefully by returning existing tags
+ * @param values Array of tag names or slugs
+ * @returns Array of tag objects
+ */
 async function upsertTagsByNamesOrSlugs(values: string[] = []): Promise<any[]> {
   // Deduplicate by slug and ignore empty values
   const map = new Map<string, string>(); // slug -> name
@@ -85,20 +91,69 @@ async function upsertTagsByNamesOrSlugs(values: string[] = []): Promise<any[]> {
   }
 
   const results: any[] = [];
+  
   for (const [slug, name] of map.entries()) {
-    const existing = await magazineRepo.findTagBySlug(slug);
+    // First, try to find existing tag by slug
+    let existing = await magazineRepo.findTagBySlug(slug);
+    
     if (existing) {
       results.push(existing);
-    } else {
+      continue;
+    }
+
+    // If not found by slug, check if a tag with this name already exists
+    const allTags = await magazineRepo.listTags();
+    const existingByName = allTags.find(
+      t => t.name.toLowerCase() === name.toLowerCase()
+    );
+    
+    if (existingByName) {
+      results.push(existingByName);
+      continue;
+    }
+
+    // Tag doesn't exist, try to create it
+    try {
       const created = await magazineRepo.createTag({ name, slug });
       results.push(created);
+    } catch (error: any) {
+      // Handle unique constraint violations (P2002)
+      if (error.code === 'P2002') {
+        // Race condition: tag was created between our check and create attempt
+        // Try to find it again
+        const retryBySlug = await magazineRepo.findTagBySlug(slug);
+        if (retryBySlug) {
+          results.push(retryBySlug);
+          continue;
+        }
+
+        // If still not found by slug, try by name
+        const retryTags = await magazineRepo.listTags();
+        const retryByName = retryTags.find(
+          t => t.name.toLowerCase() === name.toLowerCase()
+        );
+        
+        if (retryByName) {
+          results.push(retryByName);
+          continue;
+        }
+
+        // If we still can't find it, something is wrong
+        throw new AppError(
+          `برچسب "${name}" از قبل وجود دارد اما قابل بازیابی نیست`,
+          409
+        );
+      }
+      
+      // Re-throw other errors
+      throw error;
     }
   }
+  
   return results;
 }
 
 function toPostDTO(post: any): PostDTO {
-
   const tags = (post.tags || []).map((pt: any) => pt.tag).filter(Boolean);
   const relatedOut = (post.relatedOut || []).map((r: any) => r.relatedPost).filter(Boolean);
   const relatedIn = (post.relatedIn || []).map((r: any) => r.post).filter(Boolean);
