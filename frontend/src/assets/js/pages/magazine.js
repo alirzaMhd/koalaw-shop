@@ -91,7 +91,7 @@
       const highlightedExcerpt = article._highlights?.excerpt?.[0] || excerpt;
 
       return `
-        <a href="/article?slug=${article.slug}" 
+        <a href="/magazine/${article.slug}" 
            class="group block rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 bg-white article-card"
            data-aos="fade-up" 
            data-aos-delay="${delay}">
