@@ -479,7 +479,7 @@
         const [brands, collections, colorThemes, badges] = await Promise.all([
           api.getBrands(),
           api.getCollections(),
-          api.getColorThemes(),
+          api.getColorThemesAdmin(),
           api.getBadges(),
         ]);
 
@@ -559,13 +559,13 @@
               <label class="admin-form-label">تم رنگی</label>
               <select name="colorThemeId" class="admin-form-input">
                 <option value="">هیچکدام</option>
-                ${colorThemes
+                ${(colorThemes?.colorThemes || [])
                   .map(
                     (ct) => `
-                  <option value="${ct.id}" ${data.colorThemeId === ct.id ? "selected" : ""}>
-                    ${ct.name}
-                  </option>
-                `
+                   <option value="${ct.id}" ${data.colorThemeId === ct.id ? "selected" : ""}>
+                     ${ct.name}
+                   </option>
+                 `
                   )
                   .join("")}
               </select>
