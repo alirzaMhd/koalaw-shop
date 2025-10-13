@@ -364,4 +364,47 @@ export const adminController = {
       next(err);
     }
   }) as RequestHandler,
+  // Add to existing admin.controller.ts
+
+  // ========== USERS (ENHANCED) ==========
+  getUser: (async (req, res, next) => {
+    try {
+      const { id } = await idParamSchema.parseAsync(req.params);
+      const user = await adminService.getUser(id);
+      return ok(res, { user }, 200);
+    } catch (err: any) {
+      if (err?.issues?.length) {
+        return next(new AppError(err.issues[0].message, 422, "VALIDATION_ERROR"));
+      }
+      next(err);
+    }
+  }) as RequestHandler,
+
+  deleteUser: (async (req, res, next) => {
+    try {
+      const { id } = await idParamSchema.parseAsync(req.params);
+      const result = await adminService.deleteUser(id);
+      return ok(res, result, 200);
+    } catch (err: any) {
+      if (err?.issues?.length) {
+        return next(new AppError(err.issues[0].message, 422, "VALIDATION_ERROR"));
+      }
+      next(err);
+    }
+  }) as RequestHandler,
+
+  // ========== NEWSLETTER (ENHANCED) ==========
+  listNewsletterSubscribers: (async (req, res, next) => {
+    try {
+      const query = {
+        page: parseInt(req.query.page as string) || 1,
+        perPage: parseInt(req.query.perPage as string) || 20,
+        status: req.query.status as string, // 'active' | 'unsubscribed' | 'all'
+      };
+      const result = await adminService.listNewsletterSubscribers(query);
+      return ok(res, result, 200);
+    } catch (err) {
+      next(err);
+    }
+  }) as RequestHandler,
 };

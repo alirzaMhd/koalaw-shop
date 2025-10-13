@@ -520,4 +520,98 @@ export const adminService = {
     await prisma.coupon.delete({ where: { id } });
     return { deleted: true };
   },
+  // Add to existing admin.service.ts
+
+  // ========== USER MANAGEMENT (ENHANCED) ==========
+  async getUser(userId: string) {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        phone: true,
+        birthDate: true,
+        gender: true,
+        role: true,
+        customerTier: true,
+        profileImageUrl: true,
+        emailVerifiedAt: true,
+        phoneVerifiedAt: true,
+        createdAt: true,
+        updatedAt: true,
+        _count: {
+          select: {
+            orders: true,
+            productReviews: true,
+            addresses: true,
+          },
+        },
+      },
+    });
+
+    if (!user) throw AppError.notFound("کاربر یافت نشد");
+    return user;
+  },
+
+  async deleteUser(userId: string) {
+    // Check if user has active orders
+    const activeOrders = await prisma.order.count({
+      where: {
+        userId,
+        status: { in: ["AWAITING_PAYMENT", "PAID", "PROCESSING", "SHIPPED"] },
+      },
+    });
+
+    if (activeOrders > 0) {
+      throw AppError.badRequest(
+        `این کاربر دارای ${activeOrders} سفارش فعال است. ابتدا آن‌ها را تکمیل کنید.`
+      );
+    }
+
+    await prisma.user.delete({ where: { id: userId } });
+    logger.info({ userId }, "User deleted by admin");
+    return { deleted: true };
+  },
+
+  // ========== NEWSLETTER SUBSCRIBERS ==========
+  async listNewsletterSubscribers(query: {
+    page?: number;
+    perPage?: number;
+    status?: string;
+  }) {
+    const page = Math.max(1, query.page || 1);
+    const perPage = Math.min(100, Math.max(1, query.perPage || 20));
+    const skip = (page - 1) * perPage;
+
+    const where: any = {};
+
+    if (query.status === "active") {
+      where.unsubscribedAt = null;
+    } else if (query.status === "unsubscribed") {
+      where.unsubscribedAt = { not: null };
+    }
+    // 'all' = no filter
+
+    const [total, subscribers] = await Promise.all([
+      prisma.newsletterSubscription.count({ where }),
+      prisma.newsletterSubscription.findMany({
+        where,
+        skip,
+        take: perPage,
+        orderBy: { createdAt: "desc" },
+      }),
+    ]);
+
+    return {
+      subscribers,
+      meta: {
+        page,
+        perPage,
+        total,
+        totalPages: Math.ceil(total / perPage),
+      },
+    };
+  },
 };

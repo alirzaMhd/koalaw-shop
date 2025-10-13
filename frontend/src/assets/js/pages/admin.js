@@ -16,6 +16,8 @@
     authors: [],
     tags: [],
     colorThemes: [],
+    badges: [],
+    newsletterSubscribers: [],
   };
 
   // ========== UTILITY FUNCTIONS ==========
@@ -125,16 +127,34 @@
       }
     },
 
-    // Convert ISO date to input format (YYYY-MM-DD)
     toInputDate(isoDate) {
       if (!isoDate) return "";
       return new Date(isoDate).toISOString().split("T")[0];
     },
 
-    // Convert ISO datetime to input format (YYYY-MM-DDTHH:MM)
     toInputDateTime(isoDate) {
       if (!isoDate) return "";
       return new Date(isoDate).toISOString().slice(0, 16);
+    },
+
+    showToast(message, type = "info") {
+      const toast = document.createElement("div");
+      toast.className = `admin-toast admin-toast-${type}`;
+      toast.innerHTML = `
+        <div class="flex items-center gap-3">
+          <i data-feather="${type === "success" ? "check-circle" : type === "error" ? "alert-circle" : "info"}"></i>
+          <span>${message}</span>
+        </div>
+      `;
+      document.body.appendChild(toast);
+
+      setTimeout(() => toast.classList.add("show"), 100);
+      setTimeout(() => {
+        toast.classList.remove("show");
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+
+      feather.replace();
     },
   };
 
@@ -248,6 +268,25 @@
       });
     },
 
+    // Color Themes
+    getColorThemesAdmin() {
+      return this.fetch("/api/admin/color-themes");
+    },
+    createColorTheme(data) {
+      return this.fetch("/api/admin/color-themes", {
+        method: "POST",
+        body: JSON.stringify(data),
+      });
+    },
+    updateColorTheme(id, data) {
+      return this.fetch(`/api/admin/color-themes/${id}`, {
+        method: "PUT",
+        body: JSON.stringify(data),
+      });
+    },
+    deleteColorTheme(id) {
+      return this.fetch(`/api/admin/color-themes/${id}`, { method: "DELETE" });
+    },
     // Brands
     getBrands() {
       return this.fetch("/api/admin/brands");
@@ -313,6 +352,10 @@
     getNewsletterStats() {
       return this.fetch("/api/admin/newsletter/stats");
     },
+    getNewsletterSubscribers(params = {}) {
+      const query = new URLSearchParams(params).toString();
+      return this.fetch(`/api/admin/newsletter/subscribers?${query}`);
+    },
     sendNewsletter(data) {
       return this.fetch("/api/newsletter/send", {
         method: "POST",
@@ -321,47 +364,55 @@
     },
 
     // Magazine
-    // In the api object, update these methods:
-
     getMagazinePosts(params = {}) {
       const query = new URLSearchParams(params).toString();
-      return this.fetch(`/api/magazine/posts?${query}`); // ✅ Keep as-is
+      return this.fetch(`/api/magazine/posts?${query}`);
     },
-
     getMagazinePost(id) {
-      return this.fetch(`/api/magazine/admin/posts/${id}`); // ✅ Change to admin route
+      return this.fetch(`/api/magazine/admin/posts/${id}`);
     },
-
     createMagazinePost(data) {
       return this.fetch("/api/magazine/admin/posts", {
-        // ✅ Change to admin route
         method: "POST",
         body: JSON.stringify(data),
       });
     },
-
     updateMagazinePost(id, data) {
       return this.fetch(`/api/magazine/admin/posts/${id}`, {
-        // ✅ Change to admin route
         method: "PUT",
         body: JSON.stringify(data),
       });
     },
-
     deleteMagazinePost(id) {
       return this.fetch(`/api/magazine/admin/posts/${id}`, {
         method: "DELETE",
-      }); // ✅ Change to admin route
+      });
     },
-
-    // Magazine Authors
     getMagazineAuthors() {
-      return this.fetch("/api/magazine/admin/authors"); // ✅ Change to admin route
+      return this.fetch("/api/magazine/admin/authors");
+    },
+    getMagazineTags() {
+      return this.fetch("/api/magazine/admin/tags");
     },
 
-    // Magazine Tags
-    getMagazineTags() {
-      return this.fetch("/api/magazine/admin/tags"); // ✅ Change to admin route
+    // Badges
+    getBadges() {
+      return this.fetch("/api/admin/badges");
+    },
+    createBadge(data) {
+      return this.fetch("/api/admin/badges", {
+        method: "POST",
+        body: JSON.stringify(data),
+      });
+    },
+    updateBadge(id, data) {
+      return this.fetch(`/api/admin/badges/${id}`, {
+        method: "PUT",
+        body: JSON.stringify(data),
+      });
+    },
+    deleteBadge(id) {
+      return this.fetch(`/api/admin/badges/${id}`, { method: "DELETE" });
     },
 
     // Color Themes (for products)
@@ -398,10 +449,8 @@
       document.body.appendChild(overlay);
       utils.refreshIcons();
 
-      // Animate in
       setTimeout(() => overlay.classList.add("active"), 10);
 
-      // Close on overlay click
       overlay.addEventListener("click", (e) => {
         if (e.target === overlay) this.close();
       });
@@ -423,22 +472,19 @@
   // ========== FORM GENERATORS ==========
   const forms = {
     // Product Form
-    // Product Form
-    // Product Form
-    // Product Form - COMPLETE VERSION
     async product(productId = null) {
       panel.showLoading();
 
       try {
-        // Load dependencies
-        const [brands, collections] = await Promise.all([
+        const [brands, collections, colorThemes, badges] = await Promise.all([
           api.getBrands(),
           api.getCollections(),
+          api.getColorThemes(),
+          api.getBadges(),
         ]);
 
         let product = null;
         if (productId) {
-          // Fetch the specific product for editing
           try {
             const productData = await api.getProduct(productId);
             product = productData.product || productData;
@@ -508,16 +554,57 @@
             </div>
           </div>
 
+          <div class="admin-form-row">
+            <div class="admin-form-group">
+              <label class="admin-form-label">تم رنگی</label>
+              <select name="colorThemeId" class="admin-form-input">
+                <option value="">هیچکدام</option>
+                ${colorThemes
+                  .map(
+                    (ct) => `
+                  <option value="${ct.id}" ${data.colorThemeId === ct.id ? "selected" : ""}>
+                    ${ct.name}
+                  </option>
+                `
+                  )
+                  .join("")}
+              </select>
+            </div>
+
+            <div class="admin-form-group">
+              <label class="admin-form-label required">دسته‌بندی</label>
+              <select name="category" class="admin-form-input" required>
+                <option value="">انتخاب کنید</option>
+                <option value="SKINCARE" ${data.category === "SKINCARE" ? "selected" : ""}>مراقبت از پوست</option>
+                <option value="MAKEUP" ${data.category === "MAKEUP" ? "selected" : ""}>آرایش</option>
+                <option value="FRAGRANCE" ${data.category === "FRAGRANCE" ? "selected" : ""}>عطر</option>
+                <option value="HAIRCARE" ${data.category === "HAIRCARE" ? "selected" : ""}>مراقبت از مو</option>
+                <option value="BODY_BATH" ${data.category === "BODY_BATH" ? "selected" : ""}>بدن و حمام</option>
+              </select>
+            </div>
+          </div>
+
           <div class="admin-form-group">
-            <label class="admin-form-label required">دسته‌بندی</label>
-            <select name="category" class="admin-form-input" required>
-              <option value="">انتخاب کنید</option>
-              <option value="SKINCARE" ${data.category === "SKINCARE" ? "selected" : ""}>مراقبت از پوست</option>
-              <option value="MAKEUP" ${data.category === "MAKEUP" ? "selected" : ""}>آرایش</option>
-              <option value="FRAGRANCE" ${data.category === "FRAGRANCE" ? "selected" : ""}>عطر</option>
-              <option value="HAIRCARE" ${data.category === "HAIRCARE" ? "selected" : ""}>مراقبت از مو</option>
-              <option value="BODY_BATH" ${data.category === "BODY_BATH" ? "selected" : ""}>بدن و حمام</option>
-            </select>
+            <label class="admin-form-label">نشان‌ها</label>
+            <div class="space-y-2" id="badges-checklist">
+              ${badges.badges
+                .map(
+                  (b) => `
+                <label class="flex items-center gap-2 cursor-pointer p-2 hover:bg-gray-50 rounded">
+                  <input 
+                    type="checkbox" 
+                    name="badges" 
+                    value="${b.id}" 
+                    class="w-4 h-4"
+                    ${(data.badges || []).some((db) => db.id === b.id) ? "checked" : ""}
+                  />
+                  <i data-feather="${b.icon}" class="w-4 h-4 text-rose-600"></i>
+                  <span>${b.title}</span>
+                </label>
+              `
+                )
+                .join("")}
+            </div>
           </div>
 
           <div class="admin-form-group">
@@ -643,7 +730,7 @@
 
         panel.open(formHtml, isEdit ? "ویرایش محصول" : "افزودن محصول");
 
-        // ========== IMAGE PREVIEW FUNCTIONALITY ==========
+        // Image preview functionality
         const fileInput = document.getElementById("image-file-input");
         const newPreview = document.getElementById("new-image-preview");
         const newPreviewImg = document.getElementById("new-image-preview-img");
@@ -653,14 +740,12 @@
         fileInput.addEventListener("change", (e) => {
           const file = e.target.files[0];
           if (file) {
-            // Validate file size (5MB)
             if (file.size > 5 * 1024 * 1024) {
               alert("حجم فایل نباید بیشتر از 5 مگابایت باشد.");
               fileInput.value = "";
               return;
             }
 
-            // Validate file type
             const validTypes = [
               "image/jpeg",
               "image/jpg",
@@ -674,12 +759,10 @@
               return;
             }
 
-            // Show preview
             const reader = new FileReader();
             reader.onload = (event) => {
               newPreviewImg.src = event.target.result;
               newPreview.style.display = "block";
-              // Clear URL input when file is selected
               urlInput.value = "";
             };
             reader.readAsDataURL(file);
@@ -692,7 +775,7 @@
           newPreviewImg.src = "";
         });
 
-        // ========== FORM SUBMIT HANDLER ==========
+        // Form submit handler
         document
           .getElementById("product-form")
           .addEventListener("submit", async (e) => {
@@ -710,7 +793,7 @@
 
               let heroImageUrl = null;
 
-              // ========== STEP 1: HANDLE IMAGE UPLOAD ==========
+              // Handle image upload
               if (imageFile && imageFile.size > 0) {
                 console.log("Uploading new image file...");
                 const uploadFormData = new FormData();
@@ -754,31 +837,29 @@
                   throw new Error("خطا در آپلود تصویر: " + uploadError.message);
                 }
               } else {
-                // No file uploaded, check URL input
                 const urlValue = formData.get("heroImageUrl");
                 if (urlValue && typeof urlValue === "string") {
                   const trimmedUrl = urlValue.trim();
                   if (trimmedUrl !== "") {
-                    // Validate URL format
-                    try {
-                      new URL(trimmedUrl);
+                    if (
+                      trimmedUrl.startsWith("/") ||
+                      trimmedUrl.startsWith("http")
+                    ) {
                       heroImageUrl = trimmedUrl;
-                      console.log("Using URL from input:", heroImageUrl);
-                    } catch (urlError) {
-                      throw new Error("آدرس URL تصویر معتبر نیست.");
+                    } else {
+                      throw new Error(
+                        "آدرس URL تصویر باید با / یا http شروع شود."
+                      );
                     }
                   } else if (isEdit && data.heroImageUrl) {
-                    // Keep existing image if editing and no new image provided
                     heroImageUrl = data.heroImageUrl;
-                    console.log("Keeping existing image:", heroImageUrl);
                   }
                 } else if (isEdit && data.heroImageUrl) {
                   heroImageUrl = data.heroImageUrl;
-                  console.log("Keeping existing image:", heroImageUrl);
                 }
               }
 
-              // ========== STEP 2: HELPER FUNCTIONS ==========
+              // Helper functions
               const getStringValue = (key) => {
                 const val = formData.get(key);
                 if (val === null || val === undefined) return undefined;
@@ -793,7 +874,7 @@
                 return isNaN(num) ? undefined : num;
               };
 
-              // ========== STEP 3: BUILD PAYLOAD ==========
+              // Build payload
               const payload = {};
 
               // Required fields
@@ -802,7 +883,6 @@
               const category = getStringValue("category");
               const price = getNumberValue("price");
 
-              // Validate required fields
               if (!title) throw new Error("عنوان محصول الزامی است.");
               if (!brandId) throw new Error("انتخاب برند الزامی است.");
               if (!category) throw new Error("انتخاب دسته‌بندی الزامی است.");
@@ -816,7 +896,7 @@
               payload.category = category;
               payload.price = price;
 
-              // Optional string fields - only add if they have values
+              // Optional fields
               const subtitle = getStringValue("subtitle");
               const slug = getStringValue("slug");
               const description = getStringValue("description");
@@ -824,6 +904,7 @@
               const howToUse = getStringValue("howToUse");
               const internalNotes = getStringValue("internalNotes");
               const collectionId = getStringValue("collectionId");
+              const colorThemeId = getStringValue("colorThemeId");
 
               if (subtitle) payload.subtitle = subtitle;
               if (slug) payload.slug = slug;
@@ -832,8 +913,8 @@
               if (howToUse) payload.howToUse = howToUse;
               if (internalNotes) payload.internalNotes = internalNotes;
               if (collectionId) payload.collectionId = collectionId;
+              if (colorThemeId) payload.colorThemeId = colorThemeId;
 
-              // Optional number fields
               const compareAtPrice = getNumberValue("compareAtPrice");
               if (compareAtPrice !== undefined && compareAtPrice > 0) {
                 payload.compareAtPrice = compareAtPrice;
@@ -846,7 +927,7 @@
               payload.isSpecialProduct =
                 formData.get("isSpecialProduct") === "on";
 
-              // Image URL - CRITICAL: Only add if it's a valid non-empty string
+              // Image URL
               if (
                 heroImageUrl &&
                 typeof heroImageUrl === "string" &&
@@ -855,27 +936,34 @@
                 payload.heroImageUrl = heroImageUrl.trim();
               }
 
-              // ========== STEP 4: LOG FOR DEBUGGING ==========
+              // Badges
+              const selectedBadges = Array.from(
+                document.querySelectorAll('input[name="badges"]:checked')
+              ).map((cb) => cb.value);
+
+              if (selectedBadges.length > 0) {
+                payload.badgeIds = selectedBadges;
+              }
+
               console.log("=== PRODUCT FORM SUBMISSION ===");
               console.log("Is Edit:", isEdit);
               console.log("Product ID:", productId);
               console.log("Payload:", JSON.stringify(payload, null, 2));
               console.log("================================");
 
-              // ========== STEP 5: API CALL ==========
               if (isEdit) {
                 await api.updateProduct(productId, payload);
-                alert("محصول با موفقیت ویرایش شد");
+                utils.showToast("محصول با موفقیت ویرایش شد", "success");
               } else {
                 await api.createProduct(payload);
-                alert("محصول با موفقیت افزوده شد");
+                utils.showToast("محصول با موفقیت افزوده شد", "success");
               }
 
               panel.close();
               handlers.products();
             } catch (error) {
               console.error("Product save error:", error);
-              alert("خطا: " + error.message);
+              utils.showToast("خطا: " + error.message, "error");
               submitBtn.disabled = false;
               submitBtn.innerHTML = originalText;
               utils.refreshIcons();
@@ -890,6 +978,82 @@
           "خطا"
         );
       }
+    },
+
+    // Add this new form method inside the `forms` object
+    colorTheme(themeId = null) {
+      const theme = themeId
+        ? state.colorThemes.find((t) => t.id === themeId)
+        : null;
+      const isEdit = !!themeId;
+
+      const formHtml = `
+    <form id="colorTheme-form" class="admin-form">
+      <div class="admin-form-section">
+        <h3 class="admin-form-section-title">اطلاعات تم رنگی</h3>
+        <div class="admin-form-group">
+          <label class="admin-form-label required">نام</label>
+          <input type="text" name="name" class="admin-form-input" value="${theme?.name || ""}" required />
+        </div>
+        <div class="admin-form-group">
+          <label class="admin-form-label">اسلاگ (URL)</label>
+          <input type="text" name="slug" class="admin-form-input" value="${theme?.slug || ""}" />
+          <small class="text-gray-500">خالی بگذارید تا خودکار ساخته شود</small>
+        </div>
+        <div class="admin-form-group">
+          <label class="admin-form-label">کد رنگ Hex</label>
+          <div class="flex items-center gap-2">
+              <input type="color" id="hex-color-picker" value="${theme?.hexCode || "#ffffff"}">
+              <input type="text" name="hexCode" id="hex-color-input" class="admin-form-input" value="${theme?.hexCode || ""}" placeholder="#RRGGBB" />
+          </div>
+        </div>
+      </div>
+      <div class="admin-form-actions">
+        <button type="button" class="admin-btn admin-btn-secondary" data-action="closePanel">انصراف</button>
+        <button type="submit" class="admin-btn admin-btn-primary">${isEdit ? "ذخیره تغییرات" : "افزودن تم رنگی"}</button>
+      </div>
+    </form>
+  `;
+
+      panel.open(formHtml, isEdit ? "ویرایش تم رنگی" : "افزودن تم رنگی");
+
+      // Link color picker and text input
+      const colorPicker = document.getElementById("hex-color-picker");
+      const colorInput = document.getElementById("hex-color-input");
+      colorPicker.addEventListener(
+        "input",
+        (e) => (colorInput.value = e.target.value)
+      );
+      colorInput.addEventListener(
+        "input",
+        (e) => (colorPicker.value = e.target.value)
+      );
+
+      document
+        .getElementById("colorTheme-form")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const formData = new FormData(e.target);
+          const payload = {
+            name: formData.get("name"),
+            slug: formData.get("slug") || undefined,
+            hexCode: formData.get("hexCode") || undefined,
+          };
+
+          try {
+            if (isEdit) {
+              await api.updateColorTheme(themeId, payload);
+              utils.showToast("تم رنگی با موفقیت ویرایش شد", "success");
+            } else {
+              await api.createColorTheme(payload);
+              utils.showToast("تم رنگی با موفقیت افزوده شد", "success");
+            }
+            panel.close();
+            handlers.colorThemes();
+          } catch (error) {
+            utils.showToast("خطا: " + error.message, "error");
+          }
+        });
     },
 
     // User Form
@@ -911,33 +1075,45 @@
 
               <div class="admin-form-group">
                 <label class="admin-form-label">ایمیل</label>
-                <input type="email" class="admin-form-input" value="${user.email}" disabled />
+                <input type="email" class="admin-form-input" value="${user.user.email}" disabled />
               </div>
 
               <div class="admin-form-group">
                 <label class="admin-form-label">نام</label>
-                <input type="text" class="admin-form-input" value="${user.firstName || ""} ${user.lastName || ""}" disabled />
+                <input type="text" class="admin-form-input" value="${user.user.firstName || ""} ${user.user.lastName || ""}" disabled />
               </div>
 
               <div class="admin-form-group">
                 <label class="admin-form-label">تلفن</label>
-                <input type="text" class="admin-form-input" value="${user.phone || "-"}" disabled />
+                <input type="text" class="admin-form-input" value="${user.user.phone || "-"}" disabled />
+              </div>
+
+              <div class="admin-form-row">
+                <div class="admin-form-group">
+                  <label class="admin-form-label">تعداد سفارش‌ها</label>
+                  <input type="text" class="admin-form-input" value="${user.user._count?.orders || 0}" disabled />
+                </div>
+
+                <div class="admin-form-group">
+                  <label class="admin-form-label">تعداد نظرات</label>
+                  <input type="text" class="admin-form-input" value="${user.user._count?.productReviews || 0}" disabled />
+                </div>
               </div>
 
               <div class="admin-form-group">
                 <label class="admin-form-label required">نقش</label>
                 <select name="role" class="admin-form-input" required>
-                  <option value="CUSTOMER" ${user.role === "CUSTOMER" ? "selected" : ""}>مشتری</option>
-                  <option value="STAFF" ${user.role === "STAFF" ? "selected" : ""}>کارمند</option>
-                  <option value="ADMIN" ${user.role === "ADMIN" ? "selected" : ""}>ادمین</option>
+                  <option value="CUSTOMER" ${user.user.role === "CUSTOMER" ? "selected" : ""}>مشتری</option>
+                  <option value="STAFF" ${user.user.role === "STAFF" ? "selected" : ""}>کارمند</option>
+                  <option value="ADMIN" ${user.user.role === "ADMIN" ? "selected" : ""}>ادمین</option>
                 </select>
               </div>
 
               <div class="admin-form-group">
                 <label class="admin-form-label required">سطح</label>
                 <select name="tier" class="admin-form-input" required>
-                  <option value="STANDARD" ${user.customerTier === "STANDARD" ? "selected" : ""}>عادی</option>
-                  <option value="VIP" ${user.customerTier === "VIP" ? "selected" : ""}>VIP</option>
+                  <option value="STANDARD" ${user.user.customerTier === "STANDARD" ? "selected" : ""}>عادی</option>
+                  <option value="VIP" ${user.user.customerTier === "VIP" ? "selected" : ""}>VIP</option>
                 </select>
               </div>
             </div>
@@ -960,7 +1136,6 @@
 
         panel.open(formHtml, "ویرایش کاربر");
 
-        // Handle form submit
         document
           .getElementById("user-form")
           .addEventListener("submit", async (e) => {
@@ -970,19 +1145,21 @@
             try {
               await api.updateUserRole(userId, formData.get("role"));
               await api.updateUserTier(userId, formData.get("tier"));
-              alert("کاربر با موفقیت ویرایش شد");
+              utils.showToast("کاربر با موفقیت ویرایش شد", "success");
               panel.close();
               handlers.users();
             } catch (error) {
-              alert("خطا: " + error.message);
+              utils.showToast("خطا: " + error.message, "error");
             }
           });
+
+        utils.refreshIcons();
       } catch (error) {
         panel.open(utils.showError(error.message), "خطا");
       }
     },
 
-    // Magazine Form - WITH IMAGE UPLOAD
+    // Magazine Form
     async magazine(postId = null) {
       panel.showLoading();
 
@@ -1156,7 +1333,6 @@
 
         panel.open(formHtml, isEdit ? "ویرایش مقاله" : "افزودن مقاله");
 
-        // ========== IMAGE PREVIEW FUNCTIONALITY ==========
         const fileInput = document.getElementById("hero-image-input");
         const newPreview = document.getElementById("new-hero-preview");
         const newPreviewImg = document.getElementById("new-hero-preview-img");
@@ -1203,7 +1379,6 @@
           newPreviewImg.src = "";
         });
 
-        // ========== FORM SUBMIT HANDLER ==========
         document
           .getElementById("magazine-form")
           .addEventListener("submit", async (e) => {
@@ -1221,7 +1396,6 @@
 
               let heroImageUrl = null;
 
-              // Handle image upload
               if (imageFile && imageFile.size > 0) {
                 console.log("Uploading magazine hero image...");
                 const uploadFormData = new FormData();
@@ -1265,7 +1439,6 @@
                 }
               }
 
-              // Build payload
               const tagsInput = formData.get("tags");
               const tagsArray = tagsInput
                 ? tagsInput
@@ -1275,7 +1448,6 @@
                     .filter(Boolean)
                 : [];
 
-              // Get authorId - convert empty string to null
               const authorIdValue = formData.get("authorId");
               const authorId =
                 authorIdValue && authorIdValue !== "" ? authorIdValue : null;
@@ -1288,7 +1460,6 @@
                 isPublished: formData.get("isPublished") === "on",
               };
 
-              // Add optional fields only if they have values
               const slug = formData.get("slug");
               if (slug && slug.toString().trim() !== "") {
                 payload.slug = slug.toString().trim();
@@ -1321,17 +1492,17 @@
 
               if (isEdit) {
                 await api.updateMagazinePost(postId, payload);
-                alert("مقاله با موفقیت ویرایش شد");
+                utils.showToast("مقاله با موفقیت ویرایش شد", "success");
               } else {
                 await api.createMagazinePost(payload);
-                alert("مقاله با موفقیت افزوده شد");
+                utils.showToast("مقاله با موفقیت افزوده شد", "success");
               }
 
               panel.close();
               handlers.magazine();
             } catch (error) {
               console.error("Magazine save error:", error);
-              alert("خطا: " + error.message);
+              utils.showToast("خطا: " + error.message, "error");
               submitBtn.disabled = false;
               submitBtn.innerHTML = originalText;
               utils.refreshIcons();
@@ -1392,7 +1563,6 @@
 
       panel.open(formHtml, "ایجاد خبرنامه");
 
-      // Handle form submit
       document
         .getElementById("newsletter-form")
         .addEventListener("submit", async (e) => {
@@ -1415,14 +1585,15 @@
 
           try {
             const result = await api.sendNewsletter(payload);
-            alert(
+            utils.showToast(
               payload.testEmail
                 ? "ایمیل تستی ارسال شد"
-                : `خبرنامه برای ${result.sent} مشترک ارسال شد`
+                : `خبرنامه برای ${result.sent} مشترک ارسال شد`,
+              "success"
             );
             panel.close();
           } catch (error) {
-            alert("خطا: " + error.message);
+            utils.showToast("خطا: " + error.message, "error");
           }
         });
 
@@ -1464,7 +1635,6 @@
 
       panel.open(formHtml, isEdit ? "ویرایش برند" : "افزودن برند");
 
-      // Handle form submit
       document
         .getElementById("brand-form")
         .addEventListener("submit", async (e) => {
@@ -1479,15 +1649,15 @@
           try {
             if (isEdit) {
               await api.updateBrand(brandId, payload);
-              alert("برند با موفقیت ویرایش شد");
+              utils.showToast("برند با موفقیت ویرایش شد", "success");
             } else {
               await api.createBrand(payload);
-              alert("برند با موفقیت افزوده شد");
+              utils.showToast("برند با موفقیت افزوده شد", "success");
             }
             panel.close();
             handlers.brands();
           } catch (error) {
-            alert("خطا: " + error.message);
+            utils.showToast("خطا: " + error.message, "error");
           }
         });
     },
@@ -1523,7 +1693,6 @@
 
       panel.open(formHtml, isEdit ? "ویرایش کالکشن" : "افزودن کالکشن");
 
-      // Handle form submit
       document
         .getElementById("collection-form")
         .addEventListener("submit", async (e) => {
@@ -1537,15 +1706,15 @@
           try {
             if (isEdit) {
               await api.updateCollection(collectionId, payload);
-              alert("کالکشن با موفقیت ویرایش شد");
+              utils.showToast("کالکشن با موفقیت ویرایش شد", "success");
             } else {
               await api.createCollection(payload);
-              alert("کالکشن با موفقیت افزوده شد");
+              utils.showToast("کالکشن با موفقیت افزوده شد", "success");
             }
             panel.close();
             handlers.collections();
           } catch (error) {
-            alert("خطا: " + error.message);
+            utils.showToast("خطا: " + error.message, "error");
           }
         });
     },
@@ -1640,7 +1809,6 @@
 
       panel.open(formHtml, isEdit ? "ویرایش کوپن" : "افزودن کوپن");
 
-      // Toggle percent/amount fields
       document.getElementById("coupon-type").addEventListener("change", (e) => {
         const type = e.target.value;
         document.getElementById("percent-group").style.display =
@@ -1649,7 +1817,6 @@
           type === "AMOUNT" ? "block" : "none";
       });
 
-      // Handle form submit
       document
         .getElementById("coupon-form")
         .addEventListener("submit", async (e) => {
@@ -1683,24 +1850,111 @@
           try {
             if (isEdit) {
               await api.updateCoupon(couponId, payload);
-              alert("کوپن با موفقیت ویرایش شد");
+              utils.showToast("کوپن با موفقیت ویرایش شد", "success");
             } else {
               await api.createCoupon(payload);
-              alert("کوپن با موفقیت افزوده شد");
+              utils.showToast("کوپن با موفقیت افزوده شد", "success");
             }
             panel.close();
             handlers.coupons();
           } catch (error) {
-            alert("خطا: " + error.message);
+            utils.showToast("خطا: " + error.message, "error");
           }
         });
+    },
+
+    // Badge Form
+    badge(badgeId = null) {
+      const badge = badgeId ? state.badges.find((b) => b.id === badgeId) : null;
+      const isEdit = !!badgeId;
+
+      const formHtml = `
+        <form id="badge-form" class="admin-form">
+          <div class="admin-form-section">
+            <h3 class="admin-form-section-title">اطلاعات نشان</h3>
+
+            <div class="admin-form-group">
+              <label class="admin-form-label required">عنوان نشان</label>
+              <input type="text" name="title" class="admin-form-input" value="${badge?.title || ""}" required />
+            </div>
+
+            <div class="admin-form-group">
+              <label class="admin-form-label required">آیکون (Feather Icon)</label>
+              <input type="text" name="icon" class="admin-form-input" value="${badge?.icon || ""}" required placeholder="award" />
+              <small class="text-gray-500">
+                نام آیکون Feather مثل: award, shield, star, check-circle
+                <a href="https://feathericons.com/" target="_blank" class="text-rose-600">مشاهده لیست</a>
+              </small>
+            </div>
+
+            <div class="admin-form-group">
+              <label class="admin-form-label">پیش‌نمایش آیکون</label>
+              <div class="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
+                <i id="icon-preview" data-feather="${badge?.icon || "award"}" class="w-8 h-8 text-rose-600"></i>
+                <span id="icon-name" class="font-medium">${badge?.icon || "award"}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="admin-form-actions">
+            <button type="button" class="admin-btn admin-btn-secondary" data-action="closePanel">
+              انصراف
+            </button>
+            <button type="submit" class="admin-btn admin-btn-primary">
+              ${isEdit ? "ذخیره تغییرات" : "افزودن نشان"}
+            </button>
+          </div>
+        </form>
+      `;
+
+      panel.open(formHtml, isEdit ? "ویرایش نشان" : "افزودن نشان");
+
+      const iconInput = document.querySelector('input[name="icon"]');
+      const iconPreview = document.getElementById("icon-preview");
+      const iconName = document.getElementById("icon-name");
+
+      iconInput?.addEventListener("input", (e) => {
+        const iconValue = e.target.value.trim();
+        if (iconValue) {
+          iconPreview?.setAttribute("data-feather", iconValue);
+          iconName.textContent = iconValue;
+          utils.refreshIcons();
+        }
+      });
+
+      document
+        .getElementById("badge-form")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const formData = new FormData(e.target);
+
+          const payload = {
+            title: formData.get("title"),
+            icon: formData.get("icon"),
+          };
+
+          try {
+            if (isEdit) {
+              await api.updateBadge(badgeId, payload);
+              utils.showToast("نشان با موفقیت ویرایش شد", "success");
+            } else {
+              await api.createBadge(payload);
+              utils.showToast("نشان با موفقیت افزوده شد", "success");
+            }
+            panel.close();
+            handlers.badges();
+          } catch (error) {
+            utils.showToast("خطا: " + error.message, "error");
+          }
+        });
+
+      utils.refreshIcons();
     },
   };
 
   // ========== EVENT DELEGATION SYSTEM ==========
   const eventHandlers = {
     init() {
-      // Delegate all clicks to document
       document.addEventListener("click", (e) => {
         const target = e.target.closest("[data-action]");
         if (!target) return;
@@ -1717,7 +1971,6 @@
     },
 
     actions: {
-      // Utility actions
       reload() {
         location.reload();
       },
@@ -1740,16 +1993,18 @@
           api
             .deleteProduct(id)
             .then(() => {
-              alert("محصول با موفقیت حذف شد");
+              utils.showToast("محصول با موفقیت حذف شد", "success");
               handlers.products();
             })
-            .catch((error) => alert("خطا: " + error.message));
+            .catch((error) =>
+              utils.showToast("خطا: " + error.message, "error")
+            );
         }
       },
 
       // Order actions
       viewOrder(id) {
-        alert("مشاهده جزئیات سفارش: " + id);
+        utils.showToast("مشاهده جزئیات سفارش: " + id, "info");
       },
 
       // User actions
@@ -1762,11 +2017,13 @@
           api
             .deleteUser(id)
             .then(() => {
-              alert("کاربر با موفقیت حذف شد");
+              utils.showToast("کاربر با موفقیت حذف شد", "success");
               panel.close();
               handlers.users();
             })
-            .catch((error) => alert("خطا: " + error.message));
+            .catch((error) =>
+              utils.showToast("خطا: " + error.message, "error")
+            );
         }
       },
 
@@ -1775,20 +2032,20 @@
         api
           .updateReviewStatus(id, "APPROVED")
           .then(() => {
-            alert("نظر تایید شد");
+            utils.showToast("نظر تایید شد", "success");
             handlers.reviews();
           })
-          .catch((error) => alert("خطا: " + error.message));
+          .catch((error) => utils.showToast("خطا: " + error.message, "error"));
       },
 
       rejectReview(id) {
         api
           .updateReviewStatus(id, "REJECTED")
           .then(() => {
-            alert("نظر رد شد");
+            utils.showToast("نظر رد شد", "success");
             handlers.reviews();
           })
-          .catch((error) => alert("خطا: " + error.message));
+          .catch((error) => utils.showToast("خطا: " + error.message, "error"));
       },
 
       // Magazine actions
@@ -1805,10 +2062,12 @@
           api
             .deleteMagazinePost(id)
             .then(() => {
-              alert("مقاله حذف شد");
+              utils.showToast("مقاله حذف شد", "success");
               handlers.magazine();
             })
-            .catch((error) => alert("خطا: " + error.message));
+            .catch((error) =>
+              utils.showToast("خطا: " + error.message, "error")
+            );
         }
       },
 
@@ -1831,13 +2090,35 @@
           api
             .deleteBrand(id)
             .then(() => {
-              alert("برند حذف شد");
+              utils.showToast("برند حذف شد", "success");
               handlers.brands();
             })
-            .catch((error) => alert("خطا: " + error.message));
+            .catch((error) =>
+              utils.showToast("خطا: " + error.message, "error")
+            );
         }
       },
 
+      // Add inside eventHandlers.actions object
+      createColorTheme() {
+        forms.colorTheme();
+      },
+      editColorTheme(id) {
+        forms.colorTheme(id);
+      },
+      deleteColorTheme(id) {
+        if (confirm("آیا مطمئن هستید که می‌خواهید این تم رنگی را حذف کنید؟")) {
+          api
+            .deleteColorTheme(id)
+            .then(() => {
+              utils.showToast("تم رنگی حذف شد", "success");
+              handlers.colorThemes();
+            })
+            .catch((error) =>
+              utils.showToast("خطا: " + error.message, "error")
+            );
+        }
+      },
       // Collection actions
       createCollection() {
         forms.collection();
@@ -1852,10 +2133,12 @@
           api
             .deleteCollection(id)
             .then(() => {
-              alert("کالکشن حذف شد");
+              utils.showToast("کالکشن حذف شد", "success");
               handlers.collections();
             })
-            .catch((error) => alert("خطا: " + error.message));
+            .catch((error) =>
+              utils.showToast("خطا: " + error.message, "error")
+            );
         }
       },
 
@@ -1873,10 +2156,35 @@
           api
             .deleteCoupon(id)
             .then(() => {
-              alert("کوپن حذف شد");
+              utils.showToast("کوپن حذف شد", "success");
               handlers.coupons();
             })
-            .catch((error) => alert("خطا: " + error.message));
+            .catch((error) =>
+              utils.showToast("خطا: " + error.message, "error")
+            );
+        }
+      },
+
+      // Badge actions
+      createBadge() {
+        forms.badge();
+      },
+
+      editBadge(id) {
+        forms.badge(id);
+      },
+
+      deleteBadge(id) {
+        if (confirm("آیا مطمئن هستید که می‌خواهید این نشان را حذف کنید؟")) {
+          api
+            .deleteBadge(id)
+            .then(() => {
+              utils.showToast("نشان حذف شد", "success");
+              handlers.badges();
+            })
+            .catch((error) =>
+              utils.showToast("خطا: " + error.message, "error")
+            );
         }
       },
     },
@@ -1884,10 +2192,8 @@
 
   // ========== VIEW RENDERERS ==========
   const views = {
-    // Dashboard View
     dashboard() {
       return `
-        <!-- Stats Cards -->
         <div class="admin-stats-grid">
           <div class="admin-stat-card">
             <div class="admin-stat-icon bg-blue-100 text-blue-600">
@@ -1930,9 +2236,7 @@
           </div>
         </div>
 
-        <!-- Recent Activity -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-          <!-- Recent Orders -->
           <div class="admin-card">
             <div class="admin-card-header">
               <h3 class="admin-card-title">آخرین سفارش‌ها</h3>
@@ -1945,7 +2249,6 @@
             </div>
           </div>
 
-          <!-- Top Products -->
           <div class="admin-card">
             <div class="admin-card-header">
               <h3 class="admin-card-title">محصولات برتر</h3>
@@ -1959,7 +2262,6 @@
           </div>
         </div>
 
-        <!-- Recent Users -->
         <div class="admin-card mt-6">
           <div class="admin-card-header">
             <h3 class="admin-card-title">کاربران جدید</h3>
@@ -1988,7 +2290,6 @@
       `;
     },
 
-    // Products View
     products() {
       return `
         <div class="mb-6 flex justify-between items-center">
@@ -2041,8 +2342,38 @@
         </div>
       `;
     },
+    colorThemes() {
+      return `
+    <div class="mb-6 flex justify-between items-center">
+      <h2 class="text-xl font-bold">مدیریت تم‌های رنگی</h2>
+      <button data-action="createColorTheme" class="admin-btn admin-btn-primary">
+        <i data-feather="plus"></i>
+        <span>افزودن تم رنگی</span>
+      </button>
+    </div>
+    <div class="admin-card">
+        <div class="admin-card-body">
+            <div class="admin-table-container">
+                <table class="admin-table">
+                    <thead>
+                    <tr>
+                        <th>رنگ</th>
+                        <th>نام</th>
+                        <th>اسلاگ</th>
+                        <th>تعداد محصولات</th>
+                        <th>عملیات</th>
+                    </tr>
+                    </thead>
+                    <tbody id="colorThemes-tbody">
+                    <tr><td colspan="5">${utils.showLoading()}</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+  `;
+    },
 
-    // Orders View
     orders() {
       return `
         <div class="mb-6 flex gap-4">
@@ -2090,7 +2421,6 @@
       `;
     },
 
-    // Users View
     users() {
       return `
         <div class="mb-6 flex gap-4">
@@ -2136,7 +2466,6 @@
       `;
     },
 
-    // Reviews View
     reviews() {
       return `
         <div class="admin-card">
@@ -2152,7 +2481,6 @@
       `;
     },
 
-    // Brands View
     brands() {
       return `
         <div class="mb-6 flex justify-between items-center">
@@ -2169,7 +2497,6 @@
       `;
     },
 
-    // Collections View
     collections() {
       return `
         <div class="mb-6 flex justify-between items-center">
@@ -2186,7 +2513,6 @@
       `;
     },
 
-    // Coupons View
     coupons() {
       return `
         <div class="mb-6 flex justify-between items-center">
@@ -2223,7 +2549,6 @@
       `;
     },
 
-    // Newsletter View
     newsletter() {
       return `
         <div class="admin-stats-grid mb-6">
@@ -2258,22 +2583,36 @@
           </div>
         </div>
 
-        <div class="admin-card">
-          <div class="admin-card-header">
-            <h3 class="admin-card-title">ارسال خبرنامه</h3>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div class="admin-card">
+            <div class="admin-card-header">
+              <h3 class="admin-card-title">ارسال خبرنامه</h3>
+            </div>
+            <div class="admin-card-body">
+              <p class="text-gray-600 mb-4">ایجاد و ارسال خبرنامه به مشترکین فعال</p>
+              <button data-action="createNewsletter" class="admin-btn admin-btn-primary">
+                <i data-feather="mail"></i>
+                <span>ایجاد خبرنامه</span>
+              </button>
+            </div>
           </div>
-          <div class="admin-card-body">
-            <p class="text-gray-600 mb-4">ایجاد و ارسال خبرنامه به مشترکین فعال</p>
-            <button data-action="createNewsletter" class="admin-btn admin-btn-primary">
-              <i data-feather="mail"></i>
-              <span>ایجاد خبرنامه</span>
-            </button>
+
+          <div class="admin-card">
+            <div class="admin-card-header">
+              <h3 class="admin-card-title">مشاهده مشترکین</h3>
+            </div>
+            <div class="admin-card-body">
+              <p class="text-gray-600 mb-4">مشاهده لیست کامل مشترکین خبرنامه</p>
+              <a href="#newsletterSubscribers" class="admin-btn admin-btn-secondary">
+                <i data-feather="list"></i>
+                <span>لیست مشترکین</span>
+              </a>
+            </div>
           </div>
         </div>
       `;
     },
 
-    // Magazine View
     magazine() {
       return `
         <div class="mb-6 flex justify-between items-center">
@@ -2309,6 +2648,58 @@
         </div>
       `;
     },
+
+    badges() {
+      return `
+        <div class="mb-6 flex justify-between items-center">
+          <h2 class="text-xl font-bold">مدیریت نشان‌ها</h2>
+          <button data-action="createBadge" class="admin-btn admin-btn-primary">
+            <i data-feather="plus"></i>
+            <span>افزودن نشان</span>
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" id="badges-grid">
+          ${utils.showLoading()}
+        </div>
+      `;
+    },
+
+    newsletterSubscribers() {
+      return `
+        <div class="mb-6 flex gap-4">
+          <select id="subscriber-status-filter" class="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500">
+            <option value="all">همه اشتراک‌ها</option>
+            <option value="active">فعال</option>
+            <option value="unsubscribed">لغو شده</option>
+          </select>
+        </div>
+
+        <div class="admin-card">
+          <div class="admin-card-body">
+            <div class="admin-table-container">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>ایمیل</th>
+                    <th>منبع</th>
+                    <th>وضعیت</th>
+                    <th>تاریخ عضویت</th>
+                    <th>تاریخ لغو</th>
+                  </tr>
+                </thead>
+                <tbody id="subscribers-tbody">
+                  <tr>
+                    <td colspan="5">${utils.showLoading()}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div id="subscribers-pagination" class="mt-4"></div>
+          </div>
+        </div>
+      `;
+    },
   };
 
   // ========== ROUTE HANDLERS ==========
@@ -2318,7 +2709,6 @@
         const data = await api.getDashboard();
         state.stats = data.stats;
 
-        // Update stats
         document.getElementById("stat-products").textContent = utils.toFa(
           data.stats.totalProducts
         );
@@ -2332,7 +2722,6 @@
           data.stats.totalRevenue
         );
 
-        // Update pending reviews badge
         if (data.stats.pendingReviews > 0) {
           const badge = document.getElementById("pending-reviews-badge");
           if (badge) {
@@ -2341,7 +2730,6 @@
           }
         }
 
-        // Render recent orders
         const ordersList = document.getElementById("recent-orders-list");
         if (ordersList) {
           ordersList.innerHTML = "";
@@ -2371,7 +2759,6 @@
           }
         }
 
-        // Render top products
         const productsList = document.getElementById("top-products-list");
         if (productsList) {
           productsList.innerHTML = "";
@@ -2399,7 +2786,6 @@
           }
         }
 
-        // Render recent users
         const usersTbody = document.getElementById("recent-users-tbody");
         if (usersTbody) {
           usersTbody.innerHTML = "";
@@ -2477,6 +2863,48 @@
         utils.refreshIcons();
       } catch (error) {
         console.error("Products error:", error);
+        document.getElementById("app-content").innerHTML = utils.showError(
+          error.message
+        );
+      }
+    },
+
+    async colorThemes() {
+      try {
+        const data = await api.getColorThemesAdmin();
+        state.colorThemes = data.colorThemes;
+
+        const tbody = document.getElementById("colorThemes-tbody");
+        if (tbody) {
+          tbody.innerHTML = data.colorThemes?.length
+            ? data.colorThemes
+                .map(
+                  (theme) => `
+        <tr>
+          <td>
+            <span class="inline-block w-6 h-6 rounded-full border" style="background-color: ${theme.hexCode || "transparent"}"></span>
+          </td>
+          <td>${theme.name}</td>
+          <td>${theme.slug}</td>
+          <td>${utils.toFa(theme._count?.products || 0)}</td>
+          <td>
+            <div class="flex gap-2">
+              <button data-action="editColorTheme" data-id="${theme.id}" class="admin-btn admin-btn-secondary">
+                <i data-feather="edit-2" class="w-4 h-4"></i>
+              </button>
+              <button data-action="deleteColorTheme" data-id="${theme.id}" class="admin-btn admin-btn-danger">
+                <i data-feather="trash-2" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      `
+                )
+                .join("")
+            : '<tr><td colspan="5" class="text-center py-8 text-gray-500">تم رنگی وجود ندارد</td></tr>';
+        }
+        utils.refreshIcons();
+      } catch (error) {
         document.getElementById("app-content").innerHTML = utils.showError(
           error.message
         );
@@ -2858,6 +3286,111 @@
       }
     },
 
+    async badges() {
+      try {
+        const data = await api.getBadges();
+        state.badges = data.badges;
+
+        const grid = document.getElementById("badges-grid");
+        if (grid) {
+          grid.innerHTML = "";
+          if (!data.badges || data.badges.length === 0) {
+            grid.innerHTML =
+              '<p class="col-span-full text-center py-8 text-gray-500">نشانی وجود ندارد</p>';
+          } else {
+            data.badges.forEach((badge) => {
+              const card = document.createElement("div");
+              card.className = "admin-card hover:shadow-lg transition-shadow";
+              card.innerHTML = `
+                <div class="admin-card-body">
+                  <div class="flex items-start gap-4 mb-4">
+                    <div class="flex-shrink-0 w-12 h-12 bg-rose-100 rounded-lg flex items-center justify-center">
+                      <i data-feather="${badge.icon}" class="w-6 h-6 text-rose-600"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                      <h4 class="font-bold text-lg truncate">${badge.title}</h4>
+                      <p class="text-sm text-gray-500">
+                        <i data-feather="package" class="w-3 h-3 inline"></i>
+                        ${utils.toFa(badge._count?.products || 0)} محصول
+                      </p>
+                    </div>
+                  </div>
+                  <div class="flex gap-2">
+                    <button data-action="editBadge" data-id="${badge.id}" class="admin-btn admin-btn-secondary flex-1">
+                      <i data-feather="edit-2" class="w-4 h-4"></i>
+                      ویرایش
+                    </button>
+                    <button data-action="deleteBadge" data-id="${badge.id}" class="admin-btn admin-btn-danger">
+                      <i data-feather="trash-2" class="w-4 h-4"></i>
+                    </button>
+                  </div>
+                </div>
+              `;
+              grid.appendChild(card);
+            });
+          }
+        }
+
+        utils.refreshIcons();
+      } catch (error) {
+        console.error("Badges error:", error);
+        document.getElementById("app-content").innerHTML = utils.showError(
+          error.message
+        );
+      }
+    },
+
+    async newsletterSubscribers() {
+      try {
+        const status =
+          document.getElementById("subscriber-status-filter")?.value || "all";
+        const data = await api.getNewsletterSubscribers({
+          page: 1,
+          perPage: 50,
+          status,
+        });
+
+        const tbody = document.getElementById("subscribers-tbody");
+        if (tbody) {
+          tbody.innerHTML = "";
+          if (!data.subscribers || data.subscribers.length === 0) {
+            tbody.innerHTML =
+              '<tr><td colspan="5" class="text-center py-8 text-gray-500">مشترکی وجود ندارد</td></tr>';
+          } else {
+            data.subscribers.forEach((sub) => {
+              const tr = document.createElement("tr");
+              const isActive = !sub.unsubscribedAt;
+              tr.innerHTML = `
+                <td>${sub.email}</td>
+                <td>${sub.source || "-"}</td>
+                <td>
+                  <span class="admin-badge-${isActive ? "success" : "danger"}">
+                    ${isActive ? "فعال" : "لغو شده"}
+                  </span>
+                </td>
+                <td>${utils.formatDate(sub.createdAt)}</td>
+                <td>${sub.unsubscribedAt ? utils.formatDate(sub.unsubscribedAt) : "-"}</td>
+              `;
+              tbody.appendChild(tr);
+            });
+          }
+        }
+
+        document
+          .getElementById("subscriber-status-filter")
+          ?.addEventListener("change", () => {
+            handlers.newsletterSubscribers();
+          });
+
+        utils.refreshIcons();
+      } catch (error) {
+        console.error("Newsletter subscribers error:", error);
+        document.getElementById("app-content").innerHTML = utils.showError(
+          error.message
+        );
+      }
+    },
+
     logout() {
       if (confirm("آیا مطمئن هستید که می‌خواهید خارج شوید؟")) {
         fetch("/api/auth/logout", {
@@ -2882,6 +3415,11 @@
         title: "مدیریت محصولات",
         view: views.products,
         handler: handlers.products,
+      },
+      colorThemes: {
+        title: "تم‌های رنگی",
+        view: views.colorThemes,
+        handler: handlers.colorThemes,
       },
       orders: {
         title: "مدیریت سفارش‌ها",
@@ -2923,6 +3461,16 @@
         view: views.magazine,
         handler: handlers.magazine,
       },
+      badges: {
+        title: "مدیریت نشان‌ها",
+        view: views.badges,
+        handler: handlers.badges,
+      },
+      newsletterSubscribers: {
+        title: "مشترکین خبرنامه",
+        view: views.newsletterSubscribers,
+        handler: handlers.newsletterSubscribers,
+      },
       logout: { title: "خروج", view: null, handler: handlers.logout },
     },
 
@@ -2933,20 +3481,16 @@
         return;
       }
 
-      // Handle logout specially
       if (routeName === "logout") {
         route.handler();
         return;
       }
 
-      // Update state
       state.currentRoute = routeName;
 
-      // Update page title
       document.getElementById("page-title").textContent = route.title;
       document.title = `KOALAW Admin | ${route.title}`;
 
-      // Update active nav item
       document.querySelectorAll(".admin-nav-item").forEach((item) => {
         item.classList.remove("active");
         if (item.dataset.route === routeName) {
@@ -2954,30 +3498,25 @@
         }
       });
 
-      // Render view
       const content = document.getElementById("app-content");
       if (route.view) {
         content.innerHTML = route.view();
         utils.refreshIcons();
       }
 
-      // Call handler
       if (route.handler) {
         route.handler();
       }
 
-      // Close mobile sidebar
       document.getElementById("admin-sidebar")?.classList.remove("active");
     },
 
     init() {
-      // Handle hash navigation
       window.addEventListener("hashchange", () => {
         const hash = window.location.hash.slice(1) || "dashboard";
         this.navigate(hash);
       });
 
-      // Handle nav clicks
       document.querySelectorAll(".admin-nav-item").forEach((item) => {
         item.addEventListener("click", (e) => {
           e.preventDefault();
@@ -2988,14 +3527,18 @@
         });
       });
 
-      // Mobile sidebar toggle
-      document
-        .getElementById("sidebar-toggle")
-        ?.addEventListener("click", () => {
-          document.getElementById("admin-sidebar")?.classList.toggle("active");
-        });
+      const sidebarToggle = document.getElementById("sidebar-toggle");
+      const sidebar = document.getElementById("admin-sidebar");
+      const overlay = document.getElementById("admin-sidebar-overlay");
 
-      // Initial route
+      sidebarToggle?.addEventListener("click", () => {
+        sidebar?.classList.toggle("active");
+      });
+
+      overlay?.addEventListener("click", () => {
+        sidebar?.classList.remove("active");
+      });
+
       const hash = window.location.hash.slice(1) || "dashboard";
       this.navigate(hash);
     },
@@ -3003,7 +3546,7 @@
 
   // ========== INIT ==========
   document.addEventListener("DOMContentLoaded", () => {
-    eventHandlers.init(); // Initialize event delegation
+    eventHandlers.init();
     router.init();
   });
-})();
+  })();
