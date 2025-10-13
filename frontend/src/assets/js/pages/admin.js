@@ -1556,13 +1556,21 @@
       panel.showLoading();
 
       try {
-        const [authorsResponse, tagsResponse] = await Promise.all([
-          api.getMagazineAuthors(),
-          api.getMagazineTags(),
-        ]);
-
+        const [authorsResponse, tagsResponse, postsResponse] =
+          await Promise.all([
+            api.getMagazineAuthors(),
+            api.getMagazineTags(),
+            api.getMagazinePosts({
+              page: 1,
+              pageSize: 100,
+              onlyPublished: false,
+            }),
+          ]);
+ 
         const authors = authorsResponse?.data || authorsResponse || [];
         const tags = tagsResponse?.data || tagsResponse || [];
+        const allPosts =
+          postsResponse?.items || postsResponse?.data?.items || [];
 
         let post = null;
         if (postId) {
@@ -1577,6 +1585,9 @@
 
         const isEdit = !!postId;
         const data = post || {};
+        const existingRelatedIds = Array.isArray(data.related)
+          ? data.related.map((r) => r.id)
+          : [];
 
         const formHtml = `
       <form id="magazine-form" class="admin-form" enctype="multipart/form-data">
@@ -1676,7 +1687,27 @@
             <small class="text-gray-500">در صورت آپلود فایل، این فیلد نادیده گرفته می‌شود</small>
           </div>
         </div>
-
+        <div class="admin-form-section">
+          <h3 class="admin-form-section-title">مقالات مرتبط</h3>
+          <div class="admin-form-group">
+            <label class="admin-form-label">انتخاب مقالات مرتبط</label>
+            <select name="relatedPostIds" id="related-posts-select" class="admin-form-input" multiple size="8">
+              ${Array.isArray(allPosts)
+                ? allPosts
+                    .filter((p) => !data.id || p.id !== data.id)
+                    .map(
+                      (p) => `
+                <option value="${p.id}" ${existingRelatedIds.includes(p.id) ? "selected" : ""}>
+                  ${p.title}
+                </option>`
+                    )
+                    .join("")
+                : ""
+              }
+            </select>
+            <small class="text-gray-500">برای انتخاب چند مورد، کلید Ctrl/⌘ را نگه دارید.</small>
+          </div>
+        </div>
         <div class="admin-form-section">
           <h3 class="admin-form-section-title">تنظیمات اضافی</h3>
 
@@ -1875,6 +1906,15 @@
 
               if (tagsArray.length) {
                 payload.tags = tagsArray;
+              }
+
+              // Related posts
+              const relatedSelect = document.getElementById("related-posts-select");
+              if (relatedSelect) {
+                const selectedIds = Array.from(relatedSelect.selectedOptions)
+                  .map((o) => o.value)
+                  .filter((id) => id && (!data.id || id !== data.id));
+                payload.relatedPostIds = selectedIds;
               }
 
               console.log("Magazine payload:", payload);
