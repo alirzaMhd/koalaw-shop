@@ -123,6 +123,7 @@ export const createProductInputSchema = z.object({
   // Child resources
   images: z.array(imageInputSchema).max(20, "حداکثر ۲۰ تصویر مجاز است").optional(),
   variants: z.array(variantInputSchema).max(50, "حداکثر ۵۰ واریانت مجاز است").optional(),
+  badgeIds: z.array(z.string().uuid()).optional(),
 }).refine(
   (data) => data.brandId || data.brandSlug,
   { message: "شناسه یا اسلاگ برند الزامی است", path: ["brandId"] }
@@ -167,6 +168,7 @@ export const updateProductInputSchema = z.object({
   // Child resources (if provided, replaces entire set)
   images: z.array(imageInputSchema).max(20, "حداکثر ۲۰ تصویر مجاز است").optional(),
   variants: z.array(variantInputSchema).max(50, "حداکثر ۵۰ واریانت مجاز است").optional(),
+  badgeIds: z.array(z.string().uuid()).optional(),
 });
 
 // Image schemas

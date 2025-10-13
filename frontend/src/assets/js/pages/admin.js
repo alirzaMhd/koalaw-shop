@@ -1072,9 +1072,7 @@
                 document.querySelectorAll('input[name="badges"]:checked')
               ).map((cb) => cb.value);
 
-              if (selectedBadges.length > 0) {
-                payload.badgeIds = selectedBadges;
-              }
+              payload.badgeIds = selectedBadges;
 
               console.log("=== PRODUCT FORM SUBMISSION ===");
               console.log("Is Edit:", isEdit);
