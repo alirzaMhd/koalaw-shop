@@ -394,6 +394,40 @@
     getMagazineTags() {
       return this.fetch("/api/magazine/admin/tags");
     },
+    createMagazineAuthor(data) {
+      return this.fetch("/api/magazine/admin/authors", {
+        method: "POST",
+        body: JSON.stringify(data),
+      });
+    },
+    updateMagazineAuthor(id, data) {
+      return this.fetch(`/api/magazine/admin/authors/${id}`, {
+        method: "PUT",
+        body: JSON.stringify(data),
+      });
+    },
+    deleteMagazineAuthor(id) {
+      return this.fetch(`/api/magazine/admin/authors/${id}`, {
+        method: "DELETE",
+      });
+    },
+    createMagazineTag(data) {
+      return this.fetch("/api/magazine/admin/tags", {
+        method: "POST",
+        body: JSON.stringify(data),
+      });
+    },
+    updateMagazineTag(id, data) {
+      return this.fetch(`/api/magazine/admin/tags/${id}`, {
+        method: "PUT",
+        body: JSON.stringify(data),
+      });
+    },
+    deleteMagazineTag(id) {
+      return this.fetch(`/api/magazine/admin/tags/${id}`, {
+        method: "DELETE",
+      });
+    },
 
     // Badges
     getBadges() {
@@ -471,6 +505,183 @@
 
   // ========== FORM GENERATORS ==========
   const forms = {
+
+    // Magazine Author Form
+    magazineAuthor(authorId = null) {
+      const author = authorId ? (state.authors || []).find((a) => a.id === authorId) : null;
+      const isEdit = !!authorId;
+      const formHtml = `
+        <form id="magazine-author-form" class="admin-form">
+          <div class="admin-form-section">
+            <h3 class="admin-form-section-title">${isEdit ? "ویرایش نویسنده" : "افزودن نویسنده"}</h3>
+            <div class="admin-form-group">
+              <label class="admin-form-label required">نام</label>
+              <input type="text" name="name" class="admin-form-input" value="${author?.name || ""}" required />
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">اسلاگ (URL)</label>
+              <input type="text" name="slug" class="admin-form-input" value="${author?.slug || ""}" />
+              <small class="text-gray-500">خالی بگذارید تا خودکار ساخته شود</small>
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">آواتار</label>
+              ${
+        author?.avatarUrl
+          ? `
+                <div class="mb-3">
+                  <img src="${author.avatarUrl}" alt="${author.name || ""}" class="w-16 h-16 rounded object-cover border" />
+                  <small class="text-gray-500 block mt-1">آواتار فعلی</small>
+                </div>
+              `
+          : ""
+      }
+              <input type="file" id="author-avatar-file" class="admin-form-input" accept="image/*" />
+              <small class="text-gray-500">فرمت‌های مجاز: JPG, PNG, WebP, GIF (حداکثر 5MB)</small>
+              <div id="author-avatar-preview" class="mt-3 hidden">
+                <img id="author-avatar-preview-img" src="" alt="پیش‌نمایش" class="w-16 h-16 rounded object-cover border" />
+              </div>
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">بیو</label>
+              <textarea name="bio" class="admin-form-input" rows="4">${author?.bio || ""}</textarea>
+            </div>
+          </div>
+          <div class="admin-form-actions">
+            <button type="button" class="admin-btn admin-btn-secondary" data-action="closePanel">انصراف</button>
+            <button type="submit" class="admin-btn admin-btn-primary">${isEdit ? "ذخیره تغییرات" : "افزودن نویسنده"}</button>
+          </div>
+        </form>
+      `;
+      panel.open(formHtml, isEdit ? "ویرایش نویسنده مجله" : "افزودن نویسنده مجله");
+      // Preview selected avatar
+      const avatarInput = document.getElementById("author-avatar-file");
+      const previewWrap = document.getElementById("author-avatar-preview");
+      const previewImg = document.getElementById("author-avatar-preview-img");
+      avatarInput?.addEventListener("change", (e) => {
+        const file = e.target.files?.[0];
+        if (!file) {
+          previewWrap?.classList.add("hidden");
+          return;
+        }
+        if (file.size > 5 * 1024 * 1024) {
+          utils.showToast("حجم فایل نباید بیشتر از 5 مگابایت باشد.", "error");
+          avatarInput.value = "";
+          previewWrap?.classList.add("hidden");
+          return;
+        }
+        const validTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp", "image/gif"];
+        if (!validTypes.includes(file.type)) {
+          utils.showToast("فقط فایل‌های تصویری (JPG, PNG, WebP, GIF) مجاز هستند.", "error");
+          avatarInput.value = "";
+          previewWrap?.classList.add("hidden");
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          if (previewImg) previewImg.src = ev.target?.result || "";
+          previewWrap?.classList.remove("hidden");
+        };
+        reader.readAsDataURL(file);
+      });
+      document.getElementById("magazine-author-form")?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const fd = new FormData(e.target);
+        const payload = {
+          name: String(fd.get("name") || "").trim(),
+          slug: (fd.get("slug") || "").toString().trim() || undefined,
+          bio: (fd.get("bio") || "").toString().trim() || undefined,
+        };
+
+        // If a new file is selected, upload and set avatarUrl
+        const fileInput = document.getElementById("author-avatar-file");
+        const file = fileInput?.files?.[0];
+        if (file) {
+          const uploadFd = new FormData();
+          uploadFd.append("image", file);
+          try {
+            const res = await fetch("/api/upload/product-image", {
+              method: "POST",
+              credentials: "include",
+              body: uploadFd,
+            });
+            if (!res.ok) {
+              const err = await res.json().catch(() => ({}));
+              throw new Error(err.message || `HTTP ${res.status}`);
+            }
+            const json = await res.json();
+            const imageUrl = json?.data?.imageUrl || json?.imageUrl;
+            if (imageUrl) {
+              payload.avatarUrl = imageUrl;
+            }
+          } catch (err) {
+            utils.showToast("خطا در آپلود تصویر: " + (err.message || err), "error");
+            return; // stop submit on upload failure
+          }
+        }
+
+        try {
+          if (isEdit) {
+            await api.updateMagazineAuthor(authorId, payload);
+            utils.showToast("نویسنده ویرایش شد", "success");
+          } else {
+            await api.createMagazineAuthor(payload);
+            utils.showToast("نویسنده افزوده شد", "success");
+          }
+          panel.close();
+          handlers.magazineAuthors();
+        } catch (err) {
+          utils.showToast("خطا: " + err.message, "error");
+        }
+      });
+    },
+
+    // Magazine Tag Form
+    magazineTag(tagId = null) {
+      const tag = tagId ? (state.tags || []).find((t) => t.id === tagId) : null;
+      const isEdit = !!tagId;
+      const formHtml = `
+        <form id="magazine-tag-form" class="admin-form">
+          <div class="admin-form-section">
+            <h3 class="admin-form-section-title">${isEdit ? "ویرایش برچسب" : "افزودن برچسب"}</h3>
+            <div class="admin-form-group">
+              <label class="admin-form-label required">نام</label>
+              <input type="text" name="name" class="admin-form-input" value="${tag?.name || ""}" required />
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">اسلاگ (URL)</label>
+              <input type="text" name="slug" class="admin-form-input" value="${tag?.slug || ""}" />
+              <small class="text-gray-500">خالی بگذارید تا خودکار ساخته شود</small>
+            </div>
+          </div>
+          <div class="admin-form-actions">
+            <button type="button" class="admin-btn admin-btn-secondary" data-action="closePanel">انصراف</button>
+            <button type="submit" class="admin-btn admin-btn-primary">${isEdit ? "ذخیره تغییرات" : "افزودن برچسب"}</button>
+          </div>
+        </form>
+      `;
+      panel.open(formHtml, isEdit ? "ویرایش برچسب مجله" : "افزودن برچسب مجله");
+      document.getElementById("magazine-tag-form")?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const fd = new FormData(e.target);
+        const payload = {
+          name: String(fd.get("name") || "").trim(),
+          slug: (fd.get("slug") || "").toString().trim() || undefined,
+        };
+        try {
+          if (isEdit) {
+            await api.updateMagazineTag(tagId, payload);
+            utils.showToast("برچسب ویرایش شد", "success");
+          } else {
+            await api.createMagazineTag(payload);
+            utils.showToast("برچسب افزوده شد", "success");
+          }
+          panel.close();
+          handlers.magazineTags();
+        } catch (err) {
+          utils.showToast("خطا: " + err.message, "error");
+        }
+      });
+    },
     // Product Form
     async product(productId = null) {
       panel.showLoading();
@@ -1256,45 +1467,45 @@
 
               <div class="admin-form-group">
                 <label class="admin-form-label">ایمیل</label>
-                <input type="email" class="admin-form-input" value="${user.user.email}" disabled />
+                <input type="email" class="admin-form-input" value="${user.email}" disabled />
               </div>
 
               <div class="admin-form-group">
                 <label class="admin-form-label">نام</label>
-                <input type="text" class="admin-form-input" value="${user.user.firstName || ""} ${user.user.lastName || ""}" disabled />
+                <input type="text" class="admin-form-input" value="${user.firstName || ""} ${user.lastName || ""}" disabled />
               </div>
 
               <div class="admin-form-group">
                 <label class="admin-form-label">تلفن</label>
-                <input type="text" class="admin-form-input" value="${user.user.phone || "-"}" disabled />
+                <input type="text" class="admin-form-input" value="${user.phone || "-"}" disabled />
               </div>
 
               <div class="admin-form-row">
                 <div class="admin-form-group">
                   <label class="admin-form-label">تعداد سفارش‌ها</label>
-                  <input type="text" class="admin-form-input" value="${user.user._count?.orders || 0}" disabled />
+                  <input type="text" class="admin-form-input" value="${user._count?.orders || 0}" disabled />
                 </div>
 
                 <div class="admin-form-group">
                   <label class="admin-form-label">تعداد نظرات</label>
-                  <input type="text" class="admin-form-input" value="${user.user._count?.productReviews || 0}" disabled />
+                  <input type="text" class="admin-form-input" value="${user._count?.productReviews || 0}" disabled />
                 </div>
               </div>
 
               <div class="admin-form-group">
                 <label class="admin-form-label required">نقش</label>
                 <select name="role" class="admin-form-input" required>
-                  <option value="CUSTOMER" ${user.user.role === "CUSTOMER" ? "selected" : ""}>مشتری</option>
-                  <option value="STAFF" ${user.user.role === "STAFF" ? "selected" : ""}>کارمند</option>
-                  <option value="ADMIN" ${user.user.role === "ADMIN" ? "selected" : ""}>ادمین</option>
+                  <option value="CUSTOMER" ${user.role === "CUSTOMER" ? "selected" : ""}>مشتری</option>
+                  <option value="STAFF" ${user.role === "STAFF" ? "selected" : ""}>کارمند</option>
+                  <option value="ADMIN" ${user.role === "ADMIN" ? "selected" : ""}>ادمین</option>
                 </select>
               </div>
 
               <div class="admin-form-group">
                 <label class="admin-form-label required">سطح</label>
                 <select name="tier" class="admin-form-input" required>
-                  <option value="STANDARD" ${user.user.customerTier === "STANDARD" ? "selected" : ""}>عادی</option>
-                  <option value="VIP" ${user.user.customerTier === "VIP" ? "selected" : ""}>VIP</option>
+                  <option value="STANDARD" ${user.customerTier === "STANDARD" ? "selected" : ""}>عادی</option>
+                  <option value="VIP" ${user.customerTier === "VIP" ? "selected" : ""}>VIP</option>
                 </select>
               </div>
             </div>
@@ -2235,6 +2446,43 @@
         forms.magazine(id);
       },
 
+      // Magazine Authors
+      createMagazineAuthor() {
+        forms.magazineAuthor();
+      },
+      editMagazineAuthor(id) {
+        forms.magazineAuthor(id);
+      },
+      deleteMagazineAuthor(id) {
+        if (confirm("آیا مطمئن هستید که می‌خواهید این نویسنده را حذف کنید؟")) {
+          api
+            .deleteMagazineAuthor(id)
+            .then(() => {
+              utils.showToast("نویسنده حذف شد", "success");
+              handlers.magazineAuthors();
+            })
+            .catch((error) => utils.showToast("خطا: " + error.message, "error"));
+        }
+      },
+      // Magazine Tags
+      createMagazineTag() {
+        forms.magazineTag();
+      },
+      editMagazineTag(id) {
+        forms.magazineTag(id);
+      },
+      deleteMagazineTag(id) {
+        if (confirm("آیا مطمئن هستید که می‌خواهید این برچسب را حذف کنید؟")) {
+          api
+            .deleteMagazineTag(id)
+            .then(() => {
+              utils.showToast("برچسب حذف شد", "success");
+              handlers.magazineTags();
+            })
+            .catch((error) => utils.showToast("خطا: " + error.message, "error"));
+        }
+      },
+
       deleteMagazine(id) {
         if (confirm("آیا مطمئن هستید که می‌خواهید این مقاله را حذف کنید؟")) {
           api
@@ -2370,6 +2618,65 @@
 
   // ========== VIEW RENDERERS ==========
   const views = {
+    magazineAuthors() {
+      return `
+        <div class="mb-6 flex justify-between items-center">
+          <h2 class="text-xl font-bold">نویسندگان مجله</h2>
+          <button data-action="createMagazineAuthor" class="admin-btn admin-btn-primary">
+            <i data-feather="plus"></i>
+            <span>افزودن نویسنده</span>
+          </button>
+        </div>
+        <div class="admin-card">
+          <div class="admin-card-body">
+            <div class="admin-table-container">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>نام</th>
+                    <th>اسلاگ</th>
+                    <th>آواتار</th>
+                    <th>عملیات</th>
+                  </tr>
+                </thead>
+                <tbody id="magazine-authors-tbody">
+                  <tr><td colspan="4">${utils.showLoading()}</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      `;
+    },
+    magazineTags() {
+      return `
+        <div class="mb-6 flex justify-between items-center">
+          <h2 class="text-xl font-bold">برچسب‌های مجله</h2>
+          <button data-action="createMagazineTag" class="admin-btn admin-btn-primary">
+            <i data-feather="plus"></i>
+            <span>افزودن برچسب</span>
+          </button>
+        </div>
+        <div class="admin-card">
+          <div class="admin-card-body">
+            <div class="admin-table-container">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>نام</th>
+                    <th>اسلاگ</th>
+                    <th>عملیات</th>
+                  </tr>
+                </thead>
+                <tbody id="magazine-tags-tbody">
+                  <tr><td colspan="3">${utils.showLoading()}</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      `;
+    },
     dashboard() {
       return `
         <div class="admin-stats-grid">
@@ -3464,6 +3771,78 @@
       }
     },
 
+    async magazineAuthors() {
+      try {
+        const authors = await api.getMagazineAuthors();
+        state.authors = authors || [];
+        const tbody = document.getElementById("magazine-authors-tbody");
+        if (tbody) {
+          tbody.innerHTML = "";
+          if (!authors || authors.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" class="text-center py-8 text-gray-500">نویسنده‌ای وجود ندارد</td></tr>';
+          } else {
+            authors.forEach((a) => {
+              const tr = document.createElement("tr");
+              tr.innerHTML = `
+                <td>${a.name}</td>
+                <td>${a.slug || "-"}</td>
+                <td>${a.avatarUrl ? `<img src="${a.avatarUrl}" alt="${a.name}" class="w-10 h-10 rounded object-cover">` : "-"}</td>
+                <td>
+                  <div class="flex gap-2">
+                    <button data-action="editMagazineAuthor" data-id="${a.id}" class="admin-btn admin-btn-secondary">
+                      <i data-feather="edit-2" class="w-4 h-4"></i>
+                    </button>
+                    <button data-action="deleteMagazineAuthor" data-id="${a.id}" class="admin-btn admin-btn-danger">
+                      <i data-feather="trash-2" class="w-4 h-4"></i>
+                    </button>
+                  </div>
+                </td>
+              `;
+              tbody.appendChild(tr);
+            });
+          }
+        }
+        utils.refreshIcons();
+      } catch (error) {
+        document.getElementById("app-content").innerHTML = utils.showError(error.message);
+      }
+    },
+    async magazineTags() {
+      try {
+        const tags = await api.getMagazineTags();
+        state.tags = tags || [];
+        const tbody = document.getElementById("magazine-tags-tbody");
+        if (tbody) {
+          tbody.innerHTML = "";
+          if (!tags || tags.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="3" class="text-center py-8 text-gray-500">برچسبی وجود ندارد</td></tr>';
+          } else {
+            tags.forEach((t) => {
+              const tr = document.createElement("tr");
+              tr.innerHTML = `
+                <td>${t.name}</td>
+                <td>${t.slug}</td>
+                <td>
+                  <div class="flex gap-2">
+                    <button data-action="editMagazineTag" data-id="${t.id}" class="admin-btn admin-btn-secondary">
+                      <i data-feather="edit-2" class="w-4 h-4"></i>
+                    </button>
+                    <button data-action="deleteMagazineTag" data-id="${t.id}" class="admin-btn admin-btn-danger">
+                      <i data-feather="trash-2" class="w-4 h-4"></i>
+                    </button>
+                  </div>
+                </td>
+              `;
+              tbody.appendChild(tr);
+            });
+          }
+        }
+        utils.refreshIcons();
+      } catch (error) {
+        document.getElementById("app-content").innerHTML = utils.showError(error.message);
+      }
+    },
+
     async badges() {
       try {
         const data = await api.getBadges();
@@ -3638,6 +4017,16 @@
         title: "مدیریت مجله",
         view: views.magazine,
         handler: handlers.magazine,
+      },
+      magazineAuthors: {
+        title: "نویسندگان مجله",
+        view: views.magazineAuthors,
+        handler: handlers.magazineAuthors,
+      },
+      magazineTags: {
+        title: "برچسب‌های مجله",
+        view: views.magazineTags,
+        handler: handlers.magazineTags,
       },
       badges: {
         title: "مدیریت نشان‌ها",
