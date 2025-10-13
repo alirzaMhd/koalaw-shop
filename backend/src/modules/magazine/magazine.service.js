@@ -41,6 +41,12 @@ async function generateUniqueSlugForAuthor(baseInput) {
             throw new Error('Unable to generate unique slug for author');
     }
 }
+/**
+ * Upsert tags by names or slugs
+ * Handles duplicate tag names/slugs gracefully by returning existing tags
+ * @param values Array of tag names or slugs
+ * @returns Array of tag objects
+ */
 async function upsertTagsByNamesOrSlugs(values = []) {
     // Deduplicate by slug and ignore empty values
     const map = new Map(); // slug -> name
@@ -54,21 +60,54 @@ async function upsertTagsByNamesOrSlugs(values = []) {
     }
     const results = [];
     for (const [slug, name] of map.entries()) {
-        const existing = await magazineRepo.findTagBySlug(slug);
+        // First, try to find existing tag by slug
+        let existing = await magazineRepo.findTagBySlug(slug);
         if (existing) {
             results.push(existing);
+            continue;
         }
-        else {
+        // If not found by slug, check if a tag with this name already exists
+        const allTags = await magazineRepo.listTags();
+        const existingByName = allTags.find((t) => t.name.toLowerCase() === name.toLowerCase());
+        if (existingByName) {
+            results.push(existingByName);
+            continue;
+        }
+        // Tag doesn't exist, try to create it
+        try {
             const created = await magazineRepo.createTag({ name, slug });
             results.push(created);
+        }
+        catch (error) {
+            // Handle unique constraint violations (P2002)
+            if (error.code === 'P2002') {
+                // Race condition: tag was created between our check and create attempt
+                // Try to find it again
+                const retryBySlug = await magazineRepo.findTagBySlug(slug);
+                if (retryBySlug) {
+                    results.push(retryBySlug);
+                    continue;
+                }
+                // If still not found by slug, try by name
+                const retryTags = await magazineRepo.listTags();
+                const retryByName = retryTags.find((t) => t.name.toLowerCase() === name.toLowerCase());
+                if (retryByName) {
+                    results.push(retryByName);
+                    continue;
+                }
+                // If we still can't find it, something is wrong
+                throw new AppError(`برچسب "${name}" از قبل وجود دارد اما قابل بازیابی نیست`, 409);
+            }
+            // Re-throw other errors
+            throw error;
         }
     }
     return results;
 }
 function toPostDTO(post) {
-    const tags = (post.tags || []).map((pt) => pt.tag);
-    const relatedOut = (post.relatedOut || []).map((r) => r.relatedPost);
-    const relatedIn = (post.relatedIn || []).map((r) => r.post);
+    const tags = (post.tags || []).map((pt) => pt.tag).filter(Boolean);
+    const relatedOut = (post.relatedOut || []).map((r) => r.relatedPost).filter(Boolean);
+    const relatedIn = (post.relatedIn || []).map((r) => r.post).filter(Boolean);
     // unique by id for related
     const relatedMap = new Map();
     [...relatedOut, ...relatedIn].forEach((p) => {
@@ -110,7 +149,6 @@ export class MagazineService {
             pageSize: safePageSize,
             onlyPublished: params.onlyPublished ?? true,
             // Conditionally add optional properties only if they have a non-falsy value.
-            // This avoids assigning `undefined` and satisfies `exactOptionalPropertyTypes`.
             ...(params.category && { category: params.category }),
             ...(params.tagSlugs && { tagSlugs: params.tagSlugs }),
             ...(params.authorSlug && { authorSlug: params.authorSlug }),
@@ -136,13 +174,20 @@ export class MagazineService {
         }
         return toPostDTO(post);
     }
+    async getPostById(id) {
+        const post = await magazineRepo.findPostById(id);
+        if (!post)
+            throw new AppError('Post not found', 404);
+        // For admin, we don't need to check if it's published
+        return toPostDTO(post);
+    }
     async createPost(input) {
         let slug;
         if (input.slug && input.slug.trim()) {
             slug = slugify(input.slug);
             const exists = await prisma.magazinePost.count({ where: { slug } });
             if (exists)
-                throw new AppError('Slug already in use', 409);
+                throw new AppError('این اسلاگ قبلا استفاده شده است', 409);
         }
         else {
             slug = await generateUniqueSlugForPost(input.title);
@@ -150,22 +195,24 @@ export class MagazineService {
         const tagIds = input.tags?.length
             ? (await upsertTagsByNamesOrSlugs(input.tags)).map((t) => t.id)
             : [];
-        // Use loose typing to avoid relying on Prisma's Unchecked types
+        const authorId = input.authorId && input.authorId.trim() !== "" ? input.authorId.trim() : null;
         const data = {
-            authorId: typeof input.authorId !== 'undefined' ? input.authorId : null,
+            authorId,
             category: input.category,
             title: input.title,
             slug,
-            excerpt: typeof input.excerpt !== 'undefined' ? input.excerpt : null,
+            excerpt: input.excerpt ?? null,
             content: input.content,
-            heroImageUrl: typeof input.heroImageUrl !== 'undefined' ? input.heroImageUrl : null,
-            readTimeMinutes: typeof input.readTimeMinutes !== 'undefined' ? input.readTimeMinutes : null,
-            publishedAt: typeof input.publishedAt !== 'undefined' ? input.publishedAt : null,
-            isPublished: typeof input.isPublished !== 'undefined' ? input.isPublished : true,
+            heroImageUrl: input.heroImageUrl ?? null,
+            readTimeMinutes: input.readTimeMinutes ?? null,
+            publishedAt: input.publishedAt ?? null,
+            isPublished: input.isPublished ?? true,
         };
         const created = await magazineRepo.createPost(data, tagIds, input.relatedPostIds ?? []);
+        if (!created) {
+            throw new AppError('Failed to create post', 500);
+        }
         const dto = toPostDTO(created);
-        // Index in Elasticsearch
         await onMagazinePostSaved(created.id);
         return dto;
     }
@@ -178,8 +225,9 @@ export class MagazineService {
             data.title = input.title;
         if (typeof input.category !== 'undefined')
             data.category = input.category;
-        if (typeof input.authorId !== 'undefined')
-            data.authorId = input.authorId;
+        if (typeof input.authorId !== 'undefined') {
+            data.authorId = input.authorId && input.authorId.trim() !== "" ? input.authorId.trim() : null;
+        }
         if (typeof input.excerpt !== 'undefined')
             data.excerpt = input.excerpt;
         if (typeof input.content !== 'undefined')
@@ -195,9 +243,9 @@ export class MagazineService {
         if (typeof input.slug !== 'undefined') {
             const cleanSlug = slugify(input.slug);
             if (cleanSlug !== existing.slug) {
-                const exists = await prisma.magazinePost.count({ where: { slug: cleanSlug } });
+                const exists = await prisma.magazinePost.count({ where: { slug: cleanSlug, id: { not: id } } });
                 if (exists)
-                    throw new AppError('Slug already in use', 409);
+                    throw new AppError('این اسلاگ قبلا استفاده شده است', 409);
             }
             data.slug = cleanSlug;
         }
@@ -206,7 +254,6 @@ export class MagazineService {
             : undefined;
         const updated = await magazineRepo.updatePost(id, data, tagIds, input.relatedPostIds);
         const dto = toPostDTO(updated);
-        // Re-index in Elasticsearch
         await onMagazinePostSaved(updated.id);
         return dto;
     }
@@ -239,8 +286,8 @@ export class MagazineService {
         return magazineRepo.createAuthor({
             name: input.name,
             slug,
-            bio: typeof input.bio !== 'undefined' ? input.bio : null,
-            avatarUrl: typeof input.avatarUrl !== 'undefined' ? input.avatarUrl : null,
+            bio: input.bio ?? null,
+            avatarUrl: input.avatarUrl ?? null,
         });
     }
     async updateAuthor(id, input) {

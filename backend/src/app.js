@@ -80,12 +80,13 @@ export function createApp() {
     const frontendAssets = path.join(frontendRoot, "assets");
     const frontendPages = path.join(frontendRoot, "pages");
     const backendPublic = path.join(backendRoot, "public"); // optional folder for favicon, etc.
+    const rootPublic = path.join(repoRoot, "public"); // optional folder for favicon, etc.
     // Serve static assets from frontend/src/assets at /assets
     app.use("/assets", express.static(frontendAssets));
     // Backward-compatible alias so old links like /frontend/src/assets/... still work
     app.use("/frontend/src/assets", express.static(frontendAssets));
     // Optional backend public directory (use /static/favicon.ico, etc.)
-    app.use("/static", express.static(backendPublic));
+    app.use("/static", express.static(rootPublic));
     // NEW: expose /auth alias (so frontend calling /auth/... works)
     app.use("/auth", authRouter);
     // API routes under /api

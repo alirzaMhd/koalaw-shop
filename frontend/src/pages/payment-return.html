@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>KOALAW | نتیجه پرداخت</title>
+    <link rel="icon" type="image/x-icon" href="/assets/static/favicon.ico" />
+    <link rel="stylesheet" href="/assets/css/tailwind.css" />
+    <link rel="stylesheet" href="/assets/css/main.css" />
+    <script src="/assets/vendor/feather/feather.min.js"></script>
+  </head>
+
+  <body class="bg-gradient-to-b from-rose-50 to-white">
+    <div class="min-h-screen flex items-center justify-center p-6">
+      <div class="profile-card max-w-md w-full text-center">
+        <!-- Loading State -->
+        <div id="loading-state">
+          <div class="mx-auto w-16 h-16 rounded-full border-4 border-rose-200 border-t-rose-600 animate-spin mb-4"></div>
+          <h3 class="text-lg font-bold text-gray-800 mb-2">
+            در حال بررسی پرداخت...
+          </h3>
+          <p class="text-gray-600">لطفاً صبر کنید</p>
+        </div>
+
+        <!-- Success State -->
+        <div id="success-state" class="hidden">
+          <div class="mx-auto w-16 h-16 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center mb-4">
+            <i data-feather="check-circle" class="w-10 h-10"></i>
+          </div>
+          <h3 class="text-lg font-bold text-gray-800 mb-2">
+            پرداخت موفق بود!
+          </h3>
+          <p class="text-gray-600 mb-4">
+            سفارش شما با موفقیت ثبت شد.
+          </p>
+          <div class="bg-gray-50 rounded-xl p-4 mb-6 text-right">
+            <div class="flex justify-between mb-2">
+              <span class="text-gray-600">شماره سفارش:</span>
+              <span id="order-number" class="font-bold text-gray-800">-</span>
+            </div>
+            <div class="flex justify-between mb-2">
+              <span class="text-gray-600">کد رهگیری:</span>
+              <span id="ref-id" class="font-mono text-sm text-gray-800">-</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-600">مبلغ:</span>
+              <span id="amount" class="font-bold text-gray-800">-</span>
+            </div>
+          </div>
+          <a href="/" class="btn-primary w-full">
+            <i data-feather="home"></i>
+            بازگشت به صفحه اصلی
+          </a>
+        </div>
+
+        <!-- Error State -->
+        <div id="error-state" class="hidden">
+          <div class="mx-auto w-16 h-16 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center mb-4">
+            <i data-feather="x-circle" class="w-10 h-10"></i>
+          </div>
+          <h3 class="text-lg font-bold text-gray-800 mb-2">
+            پرداخت ناموفق
+          </h3>
+          <p id="error-message" class="text-gray-600 mb-6">
+            متأسفانه پرداخت شما انجام نشد.
+          </p>
+          <div class="flex gap-3">
+            <a href="/cart" class="btn-primary flex-1">
+              بازگشت به سبد خرید
+            </a>
+            <button id="retry-btn" class="btn-secondary flex-1">
+              تلاش مجدد
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="/assets/js/utils.js"></script>
+    <script>
+      (async function() {
+        feather.replace();
+        
+        const loadingState = document.getElementById("loading-state");
+        const successState = document.getElementById("success-state");
+        const errorState = document.getElementById("error-state");
+        const errorMessage = document.getElementById("error-message");
+
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const authority = urlParams.get("Authority");
+        const status = urlParams.get("Status");
+
+        if (!authority) {
+          showError("پارامترهای پرداخت یافت نشد");
+          return;
+        }
+
+        if (status !== "OK") {
+          showError("پرداخت توسط کاربر لغو شد یا با خطا مواجه شد");
+          return;
+        }
+
+        // Get pending payment info from localStorage
+        const pendingPayment = KUtils.getJSON("koalaw_pending_payment");
+        
+        if (!pendingPayment || pendingPayment.authority !== authority) {
+          showError("اطلاعات پرداخت یافت نشد");
+          return;
+        }
+
+        // Verify payment with backend
+        try {
+          // Note: The backend automatically verifies when Zarinpal redirects
+          // But we can also call the return endpoint explicitly
+          const response = await fetch(`/api/payments/zarinpal/return?Authority=${authority}&Status=OK`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+
+          if (!response.ok) {
+            throw new Error("خطا در تأیید پرداخت");
+          }
+
+          const result = await response.json();
+          
+          if (result.success && result.data.verified) {
+            // Payment successful
+            showSuccess(result.data);
+            
+            // Clear pending payment and cart
+            localStorage.removeItem("koalaw_pending_payment");
+            localStorage.removeItem("koalaw_cart");
+            
+          } else {
+            showError("تأیید پرداخت با خطا مواجه شد");
+          }
+        } catch (error) {
+          console.error("Payment verification error:", error);
+          showError(error.message || "خطا در بررسی پرداخت");
+        }
+
+        function showSuccess(data) {
+          loadingState.classList.add("hidden");
+          successState.classList.remove("hidden");
+          
+          const lastOrder = KUtils.getJSON("koalaw_last_order");
+          if (lastOrder) {
+            document.getElementById("order-number").textContent = lastOrder.orderNumber || "-";
+            document.getElementById("amount").textContent = KUtils.toIRR(lastOrder.amounts?.total || 0);
+          }
+          
+          if (data.refId) {
+            document.getElementById("ref-id").textContent = data.refId;
+          }
+          
+          feather.replace();
+        }
+
+        function showError(msg) {
+          loadingState.classList.add("hidden");
+          errorState.classList.remove("hidden");
+          errorMessage.textContent = msg;
+          
+          // Retry button
+          document.getElementById("retry-btn").addEventListener("click", () => {
+            window.location.href = "/cart#/payment";
+          });
+          
+          feather.replace();
+        }
+      })();
+    </script>
+  </body>
+</html>

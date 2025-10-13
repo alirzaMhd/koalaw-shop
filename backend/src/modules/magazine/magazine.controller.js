@@ -1,32 +1,25 @@
 import { magazineService } from './magazine.service.js';
 import AppError from '../../common/errors/AppError.js';
+import { z } from 'zod';
 export class MagazineController {
     // POSTS
     listPosts = async (req, res, next) => {
         try {
             const { page = 1, pageSize = 20, category, tag, tags, authorSlug, q, onlyPublished = true, } = req.query;
-            // merge single tag and tags[]
             const tagSlugs = tags ?? (tag ? [String(tag)] : undefined);
-            // Start with the required properties.
             const options = {
                 page: Number(page),
                 pageSize: Number(pageSize),
                 onlyPublished: onlyPublished === true || String(onlyPublished) === 'true',
             };
-            // Only add optional properties if they have a value.
-            if (category) {
+            if (category)
                 options.category = category;
-            }
-            if (tagSlugs) {
+            if (tagSlugs)
                 options.tagSlugs = tagSlugs;
-            }
-            if (authorSlug) {
+            if (authorSlug)
                 options.authorSlug = authorSlug;
-            }
-            if (q) {
+            if (q)
                 options.q = q;
-            }
-            // --- End of Fix ---
             const result = await magazineService.listPosts(options);
             res.json({ success: true, ...result });
         }
@@ -38,6 +31,17 @@ export class MagazineController {
         try {
             const { slug } = req.params;
             const post = await magazineService.getPostBySlug(slug);
+            res.json({ success: true, data: post });
+        }
+        catch (err) {
+            next(err);
+        }
+    };
+    // NEW HANDLER
+    getPostById = async (req, res, next) => {
+        try {
+            const { id } = z.object({ id: z.string().uuid() }).parse(req.params);
+            const post = await magazineService.getPostById(id);
             res.json({ success: true, data: post });
         }
         catch (err) {
@@ -71,6 +75,7 @@ export class MagazineController {
             next(err);
         }
     };
+    // ... (rest of the controller remains the same)
     // AUTHORS
     listAuthors = async (_req, res, next) => {
         try {

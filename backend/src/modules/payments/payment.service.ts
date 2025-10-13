@@ -1,17 +1,6 @@
 // src/modules/payments/payment.service.ts
 // Payment orchestration utilities: mark paid/failed, refund, and handle gateway webhooks/returns.
-// Designed to work with your existing checkout + orders flows.
-//
-// Key integration points:
-// - checkout.service creates an order + a pending payment row (method='gateway'|'cod') and, for gateways,
-//   sets payments.authority to the provider's intent/order id (e.g., Stripe PI id, PayPal order id).
-// - This service updates that payment row and delegates order status transitions to order.service.
-//
-// Supported flows (out of the box):
-// - Manual marking (admin/internal): markPaid / markFailed / refund
-// - Stripe webhook handler (best-effort if Stripe SDK not present)
-// - PayPal webhook handler (best-effort; expects authority to match provider order id)
-// - Generic gateway return handler (for PSPs that redirect back with query/body)
+// Supports Stripe, PayPal, and Zarinpal.
 
 import { prisma } from "../../infrastructure/db/prismaClient.js";
 import { AppError } from "../../common/errors/AppError.js";
@@ -19,14 +8,11 @@ import { logger } from "../../config/logger.js";
 import { env } from "../../config/env.js";
 import { orderService } from "../orders/order.service.js";
 
-// Optional Stripe dynamic import (keeps build lightweight if not using Stripe)
 type StripeSDK = any;
 
 async function tryLoadStripe(): Promise<StripeSDK | null> {
   try {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const Stripe = require("stripe");
-    // If you have a pinned API version, you can pass it here
     const stripe = new Stripe(env.STRIPE_SECRET_KEY, { apiVersion: "2022-11-15" });
     return stripe;
   } catch (e) {
@@ -44,7 +30,6 @@ async function findPaymentByAuthorityOrOrder(opts: { authority?: string | null; 
     if (byAuth) return byAuth;
   }
   if (opts.orderId) {
-    // Fallback: pick the latest pending gateway payment for this order
     const byOrder = await prisma.payment.findFirst({
       where: { orderId: String(opts.orderId), method: "GATEWAY", status: "PENDING" },
       orderBy: { createdAt: "desc" },
@@ -56,7 +41,7 @@ async function findPaymentByAuthorityOrOrder(opts: { authority?: string | null; 
 }
 
 class PaymentService {
-  // ---------- Queries ----------
+  // ==================== Queries ====================
 
   async getById(paymentId: string) {
     const p = await prisma.payment.findUnique({ where: { id: paymentId } });
@@ -71,11 +56,10 @@ class PaymentService {
     });
   }
 
-  // ---------- Manual/admin flows ----------
+  // ==================== Manual/Admin Flows ====================
 
   async markPaid(args: { orderId: string; paymentId: string; transactionRef?: string | null; authority?: string | null }) {
     const { orderId, paymentId, transactionRef, authority } = args;
-    // Delegate to order service (updates payment to paid and sets order status)
     return orderService.markPaymentSucceeded({ orderId, paymentId, transactionRef: transactionRef ?? null, authority: authority ?? null });
   }
 
@@ -87,32 +71,63 @@ class PaymentService {
   async refund(args: { paymentId: string; reason?: string | null; amount?: number | null }) {
     const p = await prisma.payment.findUnique({
       where: { id: args.paymentId },
-      select: { id: true, status: true, orderId: true, method: true, amount: true, currencyCode: true },
+      select: {
+        id: true,
+        status: true,
+        orderId: true,
+        method: true,
+        amount: true,
+        currencyCode: true,
+        authority: true,
+        transactionRef: true,
+      },
     });
     if (!p) throw new AppError("پرداخت یافت نشد.", 404, "PAYMENT_NOT_FOUND");
     if (p.status !== "PAID") throw new AppError("بازپرداخت تنها برای پرداخت‌های موفق مجاز است.", 409, "BAD_STATE");
 
-    // NOTE: This does not call the PSP API; wire your adapter here for real refunds.
+    if (p.method === "GATEWAY" && p.transactionRef && env.PAYMENT_PROVIDER === "zarinpal") {
+      try {
+        const refundAmount = args.amount || p.amount;
+        const zarinpalRefund = await this.createZarinpalRefund({
+          sessionId: p.transactionRef,
+          amount: refundAmount,
+          description: args.reason || "Customer refund request",
+          method: "CARD",
+          reason: "CUSTOMER_REQUEST",
+        });
+
+        const updated = await prisma.payment.update({
+          where: { id: args.paymentId },
+          data: { status: "REFUNDED" },
+        });
+
+        logger.info(
+          {
+            paymentId: updated.id,
+            orderId: p.orderId,
+            amount: refundAmount,
+            zarinpalRefundId: zarinpalRefund.id,
+          },
+          "Zarinpal refund processed"
+        );
+
+        return { ...updated, zarinpalRefund };
+      } catch (error: any) {
+        logger.error({ err: error, paymentId: args.paymentId }, "Zarinpal refund failed; marking locally");
+      }
+    }
+
     const updated = await prisma.payment.update({
       where: { id: args.paymentId },
-      data: {
-        status: "REFUNDED",
-        // You could store refund reason in a separate table; keeping minimal here.
-      },
+      data: { status: "REFUNDED" },
     });
 
-    logger.info({ paymentId: updated.id, orderId: p.orderId, amount: p.amount, reason: args.reason }, "Payment marked as refunded");
+    logger.info({ paymentId: updated.id, orderId: p.orderId, amount: p.amount, reason: args.reason }, "Payment marked as refunded (local)");
     return updated;
   }
 
-  // ---------- Stripe webhook (best-effort) ----------
+  // ==================== Stripe Webhook ====================
 
-  /**
-   * Handle Stripe webhook. Provide the raw request body (string or Buffer) and headers.
-   * - Verifies signature if STRIPE_WEBHOOK_SECRET and Stripe SDK are available.
-   * - Expects metadata.orderId (and optionally authority==intent.id already stored).
-   * - Updates payment row and notifies order service.
-   */
   async handleStripeWebhook(opts: {
     rawBody: Buffer | string;
     headers: Record<string, any>;
@@ -138,7 +153,6 @@ class PaymentService {
     }
 
     if (!event) {
-      // Fallback parse (not safe for production if signature is required)
       try {
         event = typeof opts.rawBody === "string" ? JSON.parse(opts.rawBody) : JSON.parse(opts.rawBody.toString("utf8"));
         logger.warn("Stripe webhook handled without signature verification (dev mode).");
@@ -154,8 +168,6 @@ class PaymentService {
     const orderId: string | undefined = intent?.metadata?.orderId || obj?.metadata?.orderId;
     const authority: string | undefined = (intent?.id || obj?.id) as string | undefined;
     const latestCharge = (intent?.latest_charge || obj?.latest_charge) as string | undefined;
-    const amountReceived: number | undefined = intent?.amount_received ?? obj?.amount ?? obj?.amount_total;
-    const currencyCode: string | undefined = (intent?.currency || obj?.currency || "").toString().toUpperCase();
 
     if (!orderId && !authority) {
       logger.warn({ type }, "Stripe event missing orderId/authority; ignoring.");
@@ -193,16 +205,11 @@ class PaymentService {
       return { ok: true };
     }
 
-    // Ignore other event types
     return { ok: true };
   }
 
-  // ---------- PayPal webhook (best-effort) ----------
+  // ==================== PayPal Webhook ====================
 
-  /**
-   * Handle PayPal webhook events. Provide already-parsed JSON body and headers (for signature verification if added).
-   * - Expects resource.id (authority) and optionally resource.custom_id or resource.purchase_units[0].custom_id containing orderId.
-   */
   async handlePaypalWebhook(opts: {
     body: any;
     headers: Record<string, any>;
@@ -253,16 +260,12 @@ class PaymentService {
     return { ok: true };
   }
 
-  // ---------- Generic gateway return (redirect) ----------
+  // ==================== Generic Gateway Return ====================
 
-  /**
-   * For PSPs that redirect back to your site (e.g., local gateways),
-   * call this with the resolved values from their return query/body.
-   */
   async handleGenericGatewayReturn(args: {
     orderId?: string;
-    authority?: string | null;      // gateway transaction/authority id
-    transactionRef?: string | null; // bank/PSP ref
+    authority?: string | null;
+    transactionRef?: string | null;
     success: boolean;
     reason?: string | null;
   }): Promise<{ ok: boolean }> {
@@ -288,11 +291,8 @@ class PaymentService {
     return { ok: true };
   }
 
-  // ---------- COD helpers ----------
+  // ==================== COD Helpers ====================
 
-  /**
-   * Mark a COD payment as paid (e.g., upon delivery confirmation).
-   */
   async confirmCodPaid(orderId: string): Promise<any> {
     const p = await prisma.payment.findFirst({
       where: { orderId, method: "COD", status: "PENDING" },
@@ -301,6 +301,200 @@ class PaymentService {
     });
     if (!p) throw new AppError("پرداخت COD در انتظار یافت نشد.", 404, "PAYMENT_NOT_FOUND");
     return this.markPaid({ orderId, paymentId: p.id, transactionRef: "COD", authority: null });
+  }
+
+  // ==================== Zarinpal-Specific ====================
+
+  async handleZarinpalReturn(args: {
+    authority: string;
+    success: boolean;
+  }): Promise<{ ok: boolean; verified: boolean; refId?: string; orderId?: string }> {
+    const { authority, success } = args;
+
+    if (!success) {
+      const payment = await findPaymentByAuthorityOrOrder({ authority, orderId: null });
+      if (payment) {
+        await orderService.markPaymentFailed({
+          orderId: payment.orderId,
+          paymentId: payment.id,
+          reason: "user_cancelled_or_failed",
+          authority,
+          transactionRef: null,
+        });
+        return { ok: true, verified: false, orderId: payment.orderId };
+      }
+      throw new AppError("پرداخت مرتبط با این Authority یافت نشد.", 404, "PAYMENT_NOT_FOUND");
+    }
+
+    const payment = await findPaymentByAuthorityOrOrder({ authority, orderId: null });
+    if (!payment) {
+      throw new AppError("پرداخت مرتبط با این Authority یافت نشد.", 404, "PAYMENT_NOT_FOUND");
+    }
+
+    let zarinpalGateway: any = null;
+    try {
+      const zg = require("../../infrastructure/payment/zarinpal.gateway");
+      zarinpalGateway = zg?.zarinpalGateway ?? zg?.default ?? null;
+    } catch (e) {
+      logger.error("Zarinpal gateway not available for verification");
+      throw new AppError("درگاه پرداخت در دسترس نیست.", 503, "GATEWAY_UNAVAILABLE");
+    }
+
+    if (!zarinpalGateway) {
+      throw new AppError("درگاه پرداخت در دسترس نیست.", 503, "GATEWAY_UNAVAILABLE");
+    }
+
+    try {
+      const verifyResult = await zarinpalGateway.verifyPayment({
+        authority,
+        amount: payment.amount,
+      });
+
+      if (verifyResult.success) {
+        await orderService.markPaymentSucceeded({
+          orderId: payment.orderId,
+          paymentId: payment.id,
+          transactionRef: verifyResult.refId ?? null,
+          authority,
+        });
+        return {
+          ok: true,
+          verified: true,
+          refId: verifyResult.refId,
+          orderId: payment.orderId,
+        };
+      } else {
+        await orderService.markPaymentFailed({
+          orderId: payment.orderId,
+          paymentId: payment.id,
+          reason: verifyResult.message || "verification_failed",
+          authority,
+          transactionRef: null,
+        });
+        return {
+          ok: true,
+          verified: false,
+          orderId: payment.orderId,
+        };
+      }
+    } catch (error: any) {
+      logger.error({ err: error, authority }, "Zarinpal verification error");
+      await orderService.markPaymentFailed({
+        orderId: payment.orderId,
+        paymentId: payment.id,
+        reason: error?.message || "verification_error",
+        authority,
+        transactionRef: null,
+      });
+      throw error;
+    }
+  }
+
+  async inquireTransaction(authority: string): Promise<any> {
+    let zarinpalGateway: any = null;
+    try {
+      const zg = require("../../infrastructure/payment/zarinpal.gateway");
+      zarinpalGateway = zg?.zarinpalGateway ?? zg?.default ?? null;
+    } catch (e) {
+      throw new AppError("درگاه پرداخت در دسترس نیست.", 503, "GATEWAY_UNAVAILABLE");
+    }
+
+    if (!zarinpalGateway) {
+      throw new AppError("درگاه پرداخت در دسترس نیست.", 503, "GATEWAY_UNAVAILABLE");
+    }
+
+    return zarinpalGateway.inquireTransaction({ authority });
+  }
+
+  async getUnverifiedTransactions(): Promise<any> {
+    let zarinpalGateway: any = null;
+    try {
+      const zg = require("../../infrastructure/payment/zarinpal.gateway");
+      zarinpalGateway = zg?.zarinpalGateway ?? zg?.default ?? null;
+    } catch (e) {
+      throw new AppError("درگاه پرداخت در دسترس نیست.", 503, "GATEWAY_UNAVAILABLE");
+    }
+
+    if (!zarinpalGateway) {
+      throw new AppError("درگاه پرداخت در دسترس نیست.", 503, "GATEWAY_UNAVAILABLE");
+    }
+
+    return zarinpalGateway.getUnverifiedTransactions();
+  }
+
+  async reverseTransaction(authority: string): Promise<any> {
+    let zarinpalGateway: any = null;
+    try {
+      const zg = require("../../infrastructure/payment/zarinpal.gateway");
+      zarinpalGateway = zg?.zarinpalGateway ?? zg?.default ?? null;
+    } catch (e) {
+      throw new AppError("درگاه پرداخت در دسترس نیست.", 503, "GATEWAY_UNAVAILABLE");
+    }
+
+    if (!zarinpalGateway) {
+      throw new AppError("درگاه پرداخت در دسترس نیست.", 503, "GATEWAY_UNAVAILABLE");
+    }
+
+    return zarinpalGateway.reverseTransaction({ authority });
+  }
+
+  async calculateFee(args: { amount: number; currency?: "IRR" | "IRT" }): Promise<any> {
+    let zarinpalGateway: any = null;
+    try {
+      const zg = require("../../infrastructure/payment/zarinpal.gateway");
+      zarinpalGateway = zg?.zarinpalGateway ?? zg?.default ?? null;
+    } catch (e) {
+      throw new AppError("درگاه پرداخت در دسترس نیست.", 503, "GATEWAY_UNAVAILABLE");
+    }
+
+    if (!zarinpalGateway) {
+      throw new AppError("درگاه پرداخت در دسترس نیست.", 503, "GATEWAY_UNAVAILABLE");
+    }
+
+    return zarinpalGateway.calculateFee(args);
+  }
+
+  async listTransactions(args: {
+    terminalId: string;
+    filter?: "PAID" | "VERIFIED" | "TRASH" | "ACTIVE" | "REFUNDED";
+    offset?: number;
+    limit?: number;
+  }): Promise<any> {
+    let zarinpalGateway: any = null;
+    try {
+      const zg = require("../../infrastructure/payment/zarinpal.gateway");
+      zarinpalGateway = zg?.zarinpalGateway ?? zg?.default ?? null;
+    } catch (e) {
+      throw new AppError("درگاه پرداخت در دسترس نیست.", 503, "GATEWAY_UNAVAILABLE");
+    }
+
+    if (!zarinpalGateway) {
+      throw new AppError("درگاه پرداخت در دسترس نیست.", 503, "GATEWAY_UNAVAILABLE");
+    }
+
+    return zarinpalGateway.listTransactions(args);
+  }
+
+  async createZarinpalRefund(args: {
+    sessionId: string;
+    amount: number;
+    description: string;
+    method: "CARD" | "PAYA";
+    reason: "CUSTOMER_REQUEST" | "DUPLICATE_TRANSACTION" | "SUSPICIOUS_TRANSACTION" | "OTHER";
+  }): Promise<any> {
+    let zarinpalGateway: any = null;
+    try {
+      const zg = require("../../infrastructure/payment/zarinpal.gateway");
+      zarinpalGateway = zg?.zarinpalGateway ?? zg?.default ?? null;
+    } catch (e) {
+      throw new AppError("درگاه پرداخت در دسترس نیست.", 503, "GATEWAY_UNAVAILABLE");
+    }
+
+    if (!zarinpalGateway) {
+      throw new AppError("درگاه پرداخت در دسترس نیست.", 503, "GATEWAY_UNAVAILABLE");
+    }
+
+    return zarinpalGateway.createRefund(args);
   }
 }
 

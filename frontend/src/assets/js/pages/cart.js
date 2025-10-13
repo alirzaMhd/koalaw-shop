@@ -1,4 +1,4 @@
-// src/assets/js/cart.js
+// src/assets/js/pages/cart.js
 (function () {
   document.addEventListener("DOMContentLoaded", () => {
     // Only run on cart SPA
@@ -33,6 +33,7 @@
     }
 
     // Constants + storage keys
+    const API_BASE = "/api"; // Your backend API base URL
     const CART_KEY = "koalaw_cart";
     const STATE_KEY = "koalaw_cart_state";
     const ADDR_KEY = "koalaw_checkout_address";
@@ -43,6 +44,7 @@
     const EXPRESS_PRICE = 30000;
     const GIFT_WRAP_PRICE = 20000;
 
+    // Sample coupons (for frontend validation before API call)
     const coupons = {
       KOALAW10: {
         type: "percent",
@@ -82,6 +84,7 @@
         variant: "Shade 03",
       },
     ];
+
     const RECS = [
       {
         id: "r-1",
@@ -207,6 +210,7 @@
         sub: "به درگاه بانکی امن هدایت می‌شوید",
       },
     };
+
     function updateHero(route) {
       const meta = heroMap[route];
       if (!meta) return;
@@ -313,8 +317,8 @@
             <div class="flex gap-4 items-center">
               <div class="w-24 h-24 rounded-xl overflow-hidden bg-rose-50 flex-shrink-0">
                 <img src="${line.image}" alt="${
-            line.title
-          }" class="w-full h-full object-cover"/>
+                  line.title
+                }" class="w-full h-full object-cover"/>
               </div>
               <div class="flex-1 min-w-0">
                 <div class="flex items-start justify-between gap-4">
@@ -538,8 +542,8 @@
           d.innerHTML = `
             <div class="aspect-square rounded-lg overflow-hidden mb-2 bg-rose-50">
               <img src="${p.image}" alt="${
-            p.title
-          }" class="w-full h-full object-cover"/>
+                p.title
+              }" class="w-full h-full object-cover"/>
             </div>
             <div class="text-sm font-bold text-gray-800 truncate">${
               p.title
@@ -746,64 +750,150 @@
       const payBtn = document.getElementById("pay-now");
       let locking = false;
 
-      function finishOrder(status, payment) {
-        const totals = computeTotals(loadCart(), loadState());
-        const order = {
-          id: "KL-" + Date.now(),
-          at: new Date().toISOString(),
-          items: loadCart().map(({ id, title, price, qty, variant }) => ({
-            id,
-            title,
-            price,
-            qty,
-            variant,
-          })),
-          addr: loadAddress(),
-          note: loadState().note || "",
-          coupon: loadState().coupon || "",
-          shippingMethod: loadState().shippingMethod || "standard",
-          totals,
-          payment: { status, ...payment },
+      // ==================== ZARINPAL INTEGRATION ====================
+
+      /**
+       * Create order via backend API and handle Zarinpal payment
+       */
+      async function processCheckout(paymentMethod) {
+        const cart = loadCart();
+        const addr = loadAddress();
+        const state = loadState();
+
+        // TODO: Replace this with your actual backend cart ID
+        // For now, we'll use a dummy cart ID - you need to create a cart via your backend first
+        const cartId =
+          KUtils.getJSON("koalaw_backend_cart_id") || "dummy-cart-id";
+
+        const checkoutPayload = {
+          cartId: cartId,
+          address: {
+            firstName: addr.firstname,
+            lastName: addr.lastname,
+            phone: addr.phone,
+            postalCode: addr.postal || "",
+            province: addr.province,
+            city: addr.city,
+            addressLine1: addr.line1,
+            addressLine2: "",
+            country: "IR",
+          },
+          paymentMethod: paymentMethod, // "gateway" or "cod"
+          shippingMethod: state.shippingMethod || "standard",
+          couponCode: state.coupon || null,
+          giftWrap: state.gift || false,
+          note: state.note || null,
+          returnUrl: window.location.origin + "/payment-return.html",
+          cancelUrl: window.location.origin + "/cart",
         };
-        KUtils.setJSON(LAST_ORDER_KEY, order);
-        KUtils.setJSON(CART_KEY, []);
-        showToast("سفارش با موفقیت ثبت شد!", "check-circle");
-        navigate("cart");
+
+        try {
+          const response = await fetch(`${API_BASE}/checkout/order`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              // Add auth token if you have user authentication
+              // "Authorization": `Bearer ${KUtils.getItem("auth_token")}`,
+            },
+            body: JSON.stringify(checkoutPayload),
+          });
+
+          if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.message || "خطا در ثبت سفارش");
+          }
+
+          const result = await response.json();
+          const { data } = result;
+
+          // Save order info to localStorage
+          KUtils.setJSON(LAST_ORDER_KEY, {
+            orderId: data.orderId,
+            orderNumber: data.orderNumber,
+            status: data.status,
+            amounts: data.amounts,
+            payment: data.payment,
+          });
+
+          if (paymentMethod === "gateway") {
+            // Redirect to Zarinpal payment gateway
+            if (data.payment.approvalUrl) {
+              showToast("در حال انتقال به درگاه پرداخت...", "credit-card");
+
+              // Save payment info for verification after return
+              KUtils.setJSON("koalaw_pending_payment", {
+                orderId: data.orderId,
+                paymentId: data.payment.id,
+                authority: data.payment.authority,
+                amount: data.amounts.total,
+              });
+
+              // Redirect to Zarinpal
+              setTimeout(() => {
+                window.location.href = data.payment.approvalUrl;
+              }, 1000);
+            } else {
+              throw new Error("لینک پرداخت دریافت نشد");
+            }
+          } else if (paymentMethod === "cod") {
+            // COD payment - order is placed, show success
+            showToast("سفارش با موفقیت ثبت شد!", "check-circle");
+
+            // Clear cart
+            saveCart([]);
+
+            // Redirect to success page or order detail
+            setTimeout(() => {
+              window.location.href = `/order-success.html?orderId=${data.orderId}`;
+            }, 1500);
+          }
+
+          return data;
+        } catch (error) {
+          console.error("Checkout error:", error);
+          throw error;
+        }
       }
 
       payBtn &&
-        (payBtn.onclick = () => {
+        (payBtn.onclick = async () => {
           if (locking) return;
+
           const method =
             document.querySelector('input[name="pay-method"]:checked')?.value ||
             "gateway";
+
           state = loadState();
           state.payMethod = method;
           KUtils.setJSON(STATE_KEY, state);
-          if (method === "gateway") {
-            locking = true;
-            payBtn.dataset.orig = payBtn.innerHTML;
-            payBtn.innerHTML = `<span class="inline-flex items-center gap-2"><span class="w-4 h-4 rounded-full border-2 border-white/40 border-l-white animate-spin"></span>در حال انتقال به درگاه...</span>`;
-            payBtn.disabled = true;
-            payBtn.classList.add("opacity-80", "cursor-not-allowed");
 
-            // Simulate redirect + return
-            setTimeout(() => {
-              setTimeout(() => {
-                payBtn.innerHTML = payBtn.dataset.orig || "پرداخت و ثبت سفارش";
-                payBtn.disabled = false;
-                payBtn.classList.remove("opacity-80", "cursor-not-allowed");
-                locking = false;
-                finishOrder("paid", {
-                  method: "gateway",
-                  authority: "A" + Date.now().toString().slice(-8),
-                });
-              }, 1000);
-            }, 900);
-          } else {
-            finishOrder("cod", { method: "cod" });
+          locking = true;
+          payBtn.dataset.orig = payBtn.innerHTML;
+          payBtn.innerHTML = `<span class="inline-flex items-center gap-2"><span class="w-4 h-4 rounded-full border-2 border-white/40 border-l-white animate-spin"></span>${
+            method === "gateway"
+              ? "در حال انتقال به درگاه..."
+              : "در حال ثبت سفارش..."
+          }</span>`;
+          payBtn.disabled = true;
+          payBtn.classList.add("opacity-80", "cursor-not-allowed");
+
+          try {
+            await processCheckout(method);
+          } catch (error) {
+            // Reset button state on error
+            payBtn.innerHTML = payBtn.dataset.orig || "پرداخت و ثبت سفارش";
+            payBtn.disabled = false;
+            payBtn.classList.remove("opacity-80", "cursor-not-allowed");
+            locking = false;
+
+            // Show error toast
+            showToast(
+              error.message || "خطا در پردازش سفارش. لطفاً دوباره تلاش کنید.",
+              "alert-circle"
+            );
           }
         });
+
       KUtils.refreshIcons();
     }
 

@@ -12,16 +12,15 @@ import {
   pricingService,
   type QuoteOptions,
   type QuoteResult,
-  type ShippingMethod as QuoteShippingMethod, // alias to avoid Prisma enum confusion
+  type ShippingMethod as QuoteShippingMethod,
 } from "../pricing/pricing.service.js";
 import { taxService, type TaxContext } from "../pricing/tax.service.js";
 import { toLatinDigits, normalizeIranPhone } from "../../common/utils/validation.js";
 
-// Optional payment gateways (stripe/paypal)
 type GatewayPaymentInit = {
   id: string;
-  clientSecret?: string; // Stripe-like
-  approvalUrl?: string;  // PayPal-like
+  clientSecret?: string;
+  approvalUrl?: string;
   amount: number;
   currency: string;
 };
@@ -37,24 +36,42 @@ interface PaypalGateway {
     metadata?: Record<string, any>;
   }): Promise<GatewayPaymentInit>;
 }
+interface ZarinpalGateway {
+  createPaymentIntent(args: {
+    amount: number;
+    currency?: string;
+    metadata?: Record<string, any>;
+    mobile?: string;
+    email?: string;
+    description?: string;
+    returnUrl?: string;
+  }): Promise<{
+    id: string;
+    authority: string;
+    approvalUrl: string;
+    amount: number;
+    currency: string;
+  }>;
+}
 
-// Lazy imports
 let stripeGateway: StripeGateway | null = null;
 let paypalGateway: PaypalGateway | null = null;
+let zarinpalGateway: ZarinpalGateway | null = null;
+
 try {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const sg = require("../../infrastructure/payment/stripe.gateway");
   stripeGateway = sg?.stripeGateway ?? sg?.default ?? null;
 } catch {}
 try {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const pg = require("../../infrastructure/payment/paypal.gateway");
   paypalGateway = pg?.paypalGateway ?? pg?.default ?? null;
 } catch {}
+try {
+  const zg = require("../../infrastructure/payment/zarinpal.gateway");
+  zarinpalGateway = zg?.zarinpalGateway ?? zg?.default ?? null;
+} catch {}
 
-// ------------ Types ------------
-
-export type PaymentMethod = "gateway" | "cod"; // public API shape
+export type PaymentMethod = "gateway" | "cod";
 
 export interface CheckoutAddress {
   firstName: string;
@@ -65,19 +82,19 @@ export interface CheckoutAddress {
   city: string;
   addressLine1: string;
   addressLine2?: string | null | undefined;
-  country?: string | undefined; // default IR
+  country?: string | undefined;
 }
 
 export interface CheckoutOptions extends QuoteOptions {
   paymentMethod: PaymentMethod;
-  shippingMethod?: QuoteShippingMethod; // standard | express (public)
+  shippingMethod?: QuoteShippingMethod;
   note?: string | null;
 }
 
 export interface CheckoutResult {
   orderId: string;
   orderNumber: string;
-  status: "awaiting_payment" | "processing"; // public API shape
+  status: "awaiting_payment" | "processing";
   amounts: {
     subtotal: number;
     discount: number;
@@ -87,20 +104,17 @@ export interface CheckoutResult {
     currencyCode: string;
   };
   payment: {
-    id: string; // payments.id
+    id: string;
     method: PaymentMethod;
     status: "pending" | "paid" | "failed" | "refunded";
     amount: number;
     currencyCode: string;
-    // Gateway-specific fields
-    clientSecret?: string; // Stripe
-    approvalUrl?: string;  // PayPal
-    authority?: string | null; // generic external id/authority
+    clientSecret?: string;
+    approvalUrl?: string;
+    authority?: string | null;
   };
   quote: QuoteResult;
 }
-
-// ------------ Helpers ------------
 
 const COUNTRY_DEFAULT = String(env.TAX_COUNTRY_DEFAULT ?? "IR");
 const ORDER_PREFIX = String(env.ORDER_PREFIX ?? "KL");
@@ -134,7 +148,6 @@ function ensureAddress(a: CheckoutAddress): Required<CheckoutAddress> {
 }
 
 async function generateOrderNumber(): Promise<string> {
-  // Format: KL-YYYYMMDD-XXXXXX (random suffix)
   const d = new Date();
   const yyyy = d.getFullYear();
   const mm = String(d.getMonth() + 1).padStart(2, "0");
@@ -150,7 +163,6 @@ async function generateOrderNumber(): Promise<string> {
 }
 
 function toTaxCtx(addr: Required<CheckoutAddress>): TaxContext {
-  // postalCode must be string | null when present (no undefined)
   return {
     country: addr.country || null,
     province: addr.province,
@@ -158,8 +170,6 @@ function toTaxCtx(addr: Required<CheckoutAddress>): TaxContext {
     ...(addr.postalCode ? { postalCode: addr.postalCode } : { postalCode: null }),
   };
 }
-
-// ------------ Service ------------
 
 class CheckoutService {
   async prepareQuote(cartId: string, opts: QuoteOptions = {}): Promise<QuoteResult> {
@@ -176,7 +186,6 @@ class CheckoutService {
   }): Promise<CheckoutResult> {
     const { cartId, userId, address, options } = args;
 
-    // 1) Load cart items
     const cart = await prisma.cart.findUnique({ where: { id: cartId }, select: { id: true, status: true } });
     if (!cart) throw new AppError("سبد خرید یافت نشد.", 404, "CART_NOT_FOUND");
     if (cart.status !== "ACTIVE") throw new AppError("سبد خرید فعال نیست.", 400, "CART_INACTIVE");
@@ -198,53 +207,34 @@ class CheckoutService {
     });
     if (!items.length) throw new AppError("سبد خرید خالی است.", 400, "CART_EMPTY");
 
-    // 2) Compute quote (normalize fields to satisfy exactOptionalPropertyTypes)
     const quote = await pricingService.quoteCart(cartId, {
-      couponCode: options.couponCode ?? null, // never undefined
+      couponCode: options.couponCode ?? null,
       ...(options.shippingMethod !== undefined ? { shippingMethod: options.shippingMethod } : {}),
       ...(options.giftWrap !== undefined ? { giftWrap: options.giftWrap } : {}),
       ...(userId ? { userId } : {}),
     });
 
-    // 3) (Optional tax) - left commented out; toTaxCtx now returns postalCode as string|null
-    // const tax = await taxService.computeForLines(
-    //   {
-    //     lines: items.map((it) => ({ id: it.id, unitPrice: it.unitPrice, quantity: it.quantity })),
-    //     shippingAmount: quote.shipping,
-    //   },
-    //   toTaxCtx(ensureAddress(address))
-    // );
-
-    // 4) Normalize address
     const addr = ensureAddress(address);
-
-    // 5) Prepare order persistence data
     const orderNumber = await generateOrderNumber();
 
-    // Public API method (lowercase) and DB enum (uppercase)
-    const paymentMethod: PaymentMethod = options.paymentMethod; // "gateway" | "cod"
+    const paymentMethod: PaymentMethod = options.paymentMethod;
     const dbPaymentMethod: any = paymentMethod === "cod" ? "COD" : "GATEWAY";
 
-    // Public shipping method (lowercase) vs DB enum (uppercase)
     const shippingMethodLower: QuoteShippingMethod =
       options.shippingMethod === "express" ? "express" : "standard";
     const dbShippingMethod: any =
       shippingMethodLower === "express" ? "EXPRESS" : "STANDARD";
 
-    // Public vs DB status
     const publicStatus: CheckoutResult["status"] =
       paymentMethod === "cod" ? "processing" : "awaiting_payment";
     const dbStatus: any =
       paymentMethod === "cod" ? "PROCESSING" : "AWAITING_PAYMENT";
 
     const currency = quote.currencyCode;
-
     const couponCode = (options.couponCode || "").trim();
     const appliedCouponCode = couponCode ? couponCode.toUpperCase() : null;
 
-    // 6) Persist (transaction)
-    const result = await prisma.$transaction(async (tx: { order: { create: (arg0: { data: { orderNumber: string; userId: string | null; status: any; shippingMethod: any; paymentMethod: any; couponCode: string | null; giftWrap: boolean; note: string | null; subtotal: number; discountTotal: number; shippingTotal: number; giftWrapTotal: number; total: number; currencyCode: string; shippingFirstName: string; shippingLastName: string; shippingPhone: string; shippingPostalCode: string | null; shippingProvince: string; shippingCity: string; shippingAddressLine1: string; shippingAddressLine2: string | null; shippingCountry: string; placedAt: Date; }; }) => any; }; orderItem: { createMany: (arg0: { data: any; }) => any; }; payment: { create: (arg0: { data: { orderId: any; method: any; status: string; amount: number; currencyCode: string; authority: null; transactionRef: null; paidAt: null; }; }) => any; }; cart: { update: (arg0: { where: { id: string; }; data: { status: string; }; }) => any; }; }) => {
-      // Create order
+    const result = await prisma.$transaction(async (tx) => {
       const order = await tx.order.create({
         data: {
           orderNumber,
@@ -277,10 +267,9 @@ class CheckoutService {
         },
       });
 
-      // Copy order items from cart snapshot
       if (items.length) {
         await tx.orderItem.createMany({
-          data: items.map((it: { productId: any; variantId: any; title: any; variantName: any; unitPrice: number; quantity: number; currencyCode: any; imageUrl: any; }, idx: any) => ({
+          data: items.map((it, idx) => ({
             orderId: order.id,
             productId: it.productId || null,
             variantId: it.variantId || null,
@@ -296,7 +285,6 @@ class CheckoutService {
         });
       }
 
-      // Create pending payment record (DB enum values)
       const payment = await tx.payment.create({
         data: {
           orderId: order.id,
@@ -310,13 +298,11 @@ class CheckoutService {
         },
       });
 
-      // Mark cart as converted
       await tx.cart.update({ where: { id: cartId }, data: { status: "CONVERTED" } });
 
       return { order, payment };
     });
 
-    // 7) Initialize payment if needed
     let paymentAuthority: string | null = null;
     let clientSecret: string | undefined;
     let approvalUrl: string | undefined;
@@ -326,7 +312,7 @@ class CheckoutService {
 
       if (provider === "stripe") {
         if (!stripeGateway) {
-          logger.error("Stripe gateway not configured. Provide src/infrastructure/payment/stripe.gateway.ts");
+          logger.error("Stripe gateway not configured.");
           throw new AppError("پرداخت درگاه موقتاً در دسترس نیست.", 503, "PAYMENT_UNAVAILABLE");
         }
         const intent = await stripeGateway.createPaymentIntent({
@@ -338,7 +324,7 @@ class CheckoutService {
         paymentAuthority = intent.id;
       } else if (provider === "paypal") {
         if (!paypalGateway) {
-          logger.error("PayPal gateway not configured. Provide src/infrastructure/payment/paypal.gateway.ts");
+          logger.error("PayPal gateway not configured.");
           throw new AppError("پرداخت درگاه موقتاً در دسترس نیست.", 503, "PAYMENT_UNAVAILABLE");
         }
         const pp = await paypalGateway.createOrder({
@@ -350,11 +336,25 @@ class CheckoutService {
         });
         approvalUrl = pp.approvalUrl;
         paymentAuthority = pp.id;
+      } else if (provider === "zarinpal") {
+        if (!zarinpalGateway) {
+          logger.error("Zarinpal gateway not configured.");
+          throw new AppError("پرداخت درگاه موقتاً در دسترس نیست.", 503, "PAYMENT_UNAVAILABLE");
+        }
+        const zp = await zarinpalGateway.createPaymentIntent({
+          amount: result.order.total,
+          currency,
+          description: `پرداخت سفارش ${orderNumber}`,
+          returnUrl: args.returnUrl || `${env.APP_URL || ""}/payments/zarinpal/return`,
+          metadata: { orderId: result.order.id, orderNumber },
+          mobile: addr.phone,
+        });
+        approvalUrl = zp.approvalUrl;
+        paymentAuthority = zp.authority;
       } else {
         logger.warn({ provider }, "Unknown payment provider; skipping init.");
       }
 
-      // Persist authority (external id) if we have it
       if (paymentAuthority) {
         await prisma.payment.update({
           where: { id: result.payment.id },
@@ -363,13 +363,12 @@ class CheckoutService {
       }
     }
 
-    // 8) Emit event
     eventBus.emit("order.created", {
       orderId: result.order.id,
       orderNumber,
       userId: userId || null,
-      paymentMethod, // public
-      shippingMethod: shippingMethodLower, // public
+      paymentMethod,
+      shippingMethod: shippingMethodLower,
       totals: {
         subtotal: quote.subtotal,
         discount: quote.discount,
@@ -395,8 +394,8 @@ class CheckoutService {
       },
       payment: {
         id: result.payment.id,
-        method: paymentMethod, // public
-        status: "pending", // public
+        method: paymentMethod,
+        status: "pending",
         amount: quote.total,
         currencyCode: currency,
         ...(clientSecret ? { clientSecret } : {}),

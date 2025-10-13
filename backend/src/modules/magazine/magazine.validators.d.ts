@@ -83,7 +83,7 @@ export declare const createPostSchema: z.ZodObject<{
         slug: z.ZodOptional<z.ZodString>;
         excerpt: z.ZodOptional<z.ZodString>;
         content: z.ZodString;
-        heroImageUrl: z.ZodOptional<z.ZodString>;
+        heroImageUrl: z.ZodOptional<z.ZodEffects<z.ZodString, string, string>>;
         readTimeMinutes: z.ZodOptional<z.ZodNumber>;
         publishedAt: z.ZodOptional<z.ZodNullable<z.ZodDate>>;
         isPublished: z.ZodOptional<z.ZodBoolean>;
@@ -162,7 +162,7 @@ export declare const updatePostSchema: z.ZodObject<{
         slug: z.ZodOptional<z.ZodString>;
         excerpt: z.ZodOptional<z.ZodString>;
         content: z.ZodOptional<z.ZodString>;
-        heroImageUrl: z.ZodOptional<z.ZodString>;
+        heroImageUrl: z.ZodOptional<z.ZodEffects<z.ZodString, string, string>>;
         readTimeMinutes: z.ZodOptional<z.ZodNumber>;
         publishedAt: z.ZodOptional<z.ZodNullable<z.ZodDate>>;
         isPublished: z.ZodOptional<z.ZodBoolean>;
@@ -280,7 +280,7 @@ export declare const createAuthorSchema: z.ZodObject<{
         name: z.ZodString;
         slug: z.ZodOptional<z.ZodString>;
         bio: z.ZodOptional<z.ZodString>;
-        avatarUrl: z.ZodOptional<z.ZodString>;
+        avatarUrl: z.ZodOptional<z.ZodEffects<z.ZodString, string, string>>;
     }, "strip", z.ZodTypeAny, {
         name: string;
         slug?: string | undefined;
@@ -319,7 +319,7 @@ export declare const updateAuthorSchema: z.ZodObject<{
         name: z.ZodOptional<z.ZodString>;
         slug: z.ZodOptional<z.ZodString>;
         bio: z.ZodOptional<z.ZodString>;
-        avatarUrl: z.ZodOptional<z.ZodString>;
+        avatarUrl: z.ZodOptional<z.ZodEffects<z.ZodString, string, string>>;
     }, "strip", z.ZodTypeAny, {
         name?: string | undefined;
         slug?: string | undefined;

@@ -46,6 +46,9 @@ export function buildApiRouter() {
   api.use("/newsletter", newsletterRoutes);
   api.use("/admin", adminRoutes); // ADD THIS
   api.use("/upload", uploadRouter);
+  api.use("/checkout", checkoutRouter);
+  api.use("/payments", paymentRouter);
+  
   return api;
 }
 

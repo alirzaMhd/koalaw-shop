@@ -9,22 +9,24 @@ import { AppError } from "../../common/errors/AppError.js";
 import { pricingService, } from "../pricing/pricing.service.js";
 import { taxService } from "../pricing/tax.service.js";
 import { toLatinDigits, normalizeIranPhone } from "../../common/utils/validation.js";
-// Lazy imports
 let stripeGateway = null;
 let paypalGateway = null;
+let zarinpalGateway = null;
 try {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const sg = require("../../infrastructure/payment/stripe.gateway");
     stripeGateway = sg?.stripeGateway ?? sg?.default ?? null;
 }
 catch { }
 try {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const pg = require("../../infrastructure/payment/paypal.gateway");
     paypalGateway = pg?.paypalGateway ?? pg?.default ?? null;
 }
 catch { }
-// ------------ Helpers ------------
+try {
+    const zg = require("../../infrastructure/payment/zarinpal.gateway");
+    zarinpalGateway = zg?.zarinpalGateway ?? zg?.default ?? null;
+}
+catch { }
 const COUNTRY_DEFAULT = String(env.TAX_COUNTRY_DEFAULT ?? "IR");
 const ORDER_PREFIX = String(env.ORDER_PREFIX ?? "KL");
 function cleanPhone(p) {
@@ -54,7 +56,6 @@ function ensureAddress(a) {
     return addr;
 }
 async function generateOrderNumber() {
-    // Format: KL-YYYYMMDD-XXXXXX (random suffix)
     const d = new Date();
     const yyyy = d.getFullYear();
     const mm = String(d.getMonth() + 1).padStart(2, "0");
@@ -70,7 +71,6 @@ async function generateOrderNumber() {
     return `${base}-${Date.now().toString().slice(-6)}`;
 }
 function toTaxCtx(addr) {
-    // postalCode must be string | null when present (no undefined)
     return {
         country: addr.country || null,
         province: addr.province,
@@ -78,14 +78,12 @@ function toTaxCtx(addr) {
         ...(addr.postalCode ? { postalCode: addr.postalCode } : { postalCode: null }),
     };
 }
-// ------------ Service ------------
 class CheckoutService {
     async prepareQuote(cartId, opts = {}) {
         return pricingService.quoteCart(cartId, opts);
     }
     async createOrderFromCart(args) {
         const { cartId, userId, address, options } = args;
-        // 1) Load cart items
         const cart = await prisma.cart.findUnique({ where: { id: cartId }, select: { id: true, status: true } });
         if (!cart)
             throw new AppError("سبد خرید یافت نشد.", 404, "CART_NOT_FOUND");
@@ -108,40 +106,24 @@ class CheckoutService {
         });
         if (!items.length)
             throw new AppError("سبد خرید خالی است.", 400, "CART_EMPTY");
-        // 2) Compute quote (normalize fields to satisfy exactOptionalPropertyTypes)
         const quote = await pricingService.quoteCart(cartId, {
-            couponCode: options.couponCode ?? null, // never undefined
+            couponCode: options.couponCode ?? null,
             ...(options.shippingMethod !== undefined ? { shippingMethod: options.shippingMethod } : {}),
             ...(options.giftWrap !== undefined ? { giftWrap: options.giftWrap } : {}),
             ...(userId ? { userId } : {}),
         });
-        // 3) (Optional tax) - left commented out; toTaxCtx now returns postalCode as string|null
-        // const tax = await taxService.computeForLines(
-        //   {
-        //     lines: items.map((it) => ({ id: it.id, unitPrice: it.unitPrice, quantity: it.quantity })),
-        //     shippingAmount: quote.shipping,
-        //   },
-        //   toTaxCtx(ensureAddress(address))
-        // );
-        // 4) Normalize address
         const addr = ensureAddress(address);
-        // 5) Prepare order persistence data
         const orderNumber = await generateOrderNumber();
-        // Public API method (lowercase) and DB enum (uppercase)
-        const paymentMethod = options.paymentMethod; // "gateway" | "cod"
+        const paymentMethod = options.paymentMethod;
         const dbPaymentMethod = paymentMethod === "cod" ? "COD" : "GATEWAY";
-        // Public shipping method (lowercase) vs DB enum (uppercase)
         const shippingMethodLower = options.shippingMethod === "express" ? "express" : "standard";
         const dbShippingMethod = shippingMethodLower === "express" ? "EXPRESS" : "STANDARD";
-        // Public vs DB status
         const publicStatus = paymentMethod === "cod" ? "processing" : "awaiting_payment";
         const dbStatus = paymentMethod === "cod" ? "PROCESSING" : "AWAITING_PAYMENT";
         const currency = quote.currencyCode;
         const couponCode = (options.couponCode || "").trim();
         const appliedCouponCode = couponCode ? couponCode.toUpperCase() : null;
-        // 6) Persist (transaction)
         const result = await prisma.$transaction(async (tx) => {
-            // Create order
             const order = await tx.order.create({
                 data: {
                     orderNumber,
@@ -170,7 +152,6 @@ class CheckoutService {
                     placedAt: new Date(),
                 },
             });
-            // Copy order items from cart snapshot
             if (items.length) {
                 await tx.orderItem.createMany({
                     data: items.map((it, idx) => ({
@@ -188,7 +169,6 @@ class CheckoutService {
                     })),
                 });
             }
-            // Create pending payment record (DB enum values)
             const payment = await tx.payment.create({
                 data: {
                     orderId: order.id,
@@ -201,11 +181,9 @@ class CheckoutService {
                     paidAt: null,
                 },
             });
-            // Mark cart as converted
             await tx.cart.update({ where: { id: cartId }, data: { status: "CONVERTED" } });
             return { order, payment };
         });
-        // 7) Initialize payment if needed
         let paymentAuthority = null;
         let clientSecret;
         let approvalUrl;
@@ -213,7 +191,7 @@ class CheckoutService {
             const provider = (env.PAYMENT_PROVIDER || "stripe").toString().toLowerCase();
             if (provider === "stripe") {
                 if (!stripeGateway) {
-                    logger.error("Stripe gateway not configured. Provide src/infrastructure/payment/stripe.gateway.ts");
+                    logger.error("Stripe gateway not configured.");
                     throw new AppError("پرداخت درگاه موقتاً در دسترس نیست.", 503, "PAYMENT_UNAVAILABLE");
                 }
                 const intent = await stripeGateway.createPaymentIntent({
@@ -226,7 +204,7 @@ class CheckoutService {
             }
             else if (provider === "paypal") {
                 if (!paypalGateway) {
-                    logger.error("PayPal gateway not configured. Provide src/infrastructure/payment/paypal.gateway.ts");
+                    logger.error("PayPal gateway not configured.");
                     throw new AppError("پرداخت درگاه موقتاً در دسترس نیست.", 503, "PAYMENT_UNAVAILABLE");
                 }
                 const pp = await paypalGateway.createOrder({
@@ -239,10 +217,25 @@ class CheckoutService {
                 approvalUrl = pp.approvalUrl;
                 paymentAuthority = pp.id;
             }
+            else if (provider === "zarinpal") {
+                if (!zarinpalGateway) {
+                    logger.error("Zarinpal gateway not configured.");
+                    throw new AppError("پرداخت درگاه موقتاً در دسترس نیست.", 503, "PAYMENT_UNAVAILABLE");
+                }
+                const zp = await zarinpalGateway.createPaymentIntent({
+                    amount: result.order.total,
+                    currency,
+                    description: `پرداخت سفارش ${orderNumber}`,
+                    returnUrl: args.returnUrl || `${env.APP_URL || ""}/payments/zarinpal/return`,
+                    metadata: { orderId: result.order.id, orderNumber },
+                    mobile: addr.phone,
+                });
+                approvalUrl = zp.approvalUrl;
+                paymentAuthority = zp.authority;
+            }
             else {
                 logger.warn({ provider }, "Unknown payment provider; skipping init.");
             }
-            // Persist authority (external id) if we have it
             if (paymentAuthority) {
                 await prisma.payment.update({
                     where: { id: result.payment.id },
@@ -250,13 +243,12 @@ class CheckoutService {
                 });
             }
         }
-        // 8) Emit event
         eventBus.emit("order.created", {
             orderId: result.order.id,
             orderNumber,
             userId: userId || null,
-            paymentMethod, // public
-            shippingMethod: shippingMethodLower, // public
+            paymentMethod,
+            shippingMethod: shippingMethodLower,
             totals: {
                 subtotal: quote.subtotal,
                 discount: quote.discount,
@@ -281,8 +273,8 @@ class CheckoutService {
             },
             payment: {
                 id: result.payment.id,
-                method: paymentMethod, // public
-                status: "pending", // public
+                method: paymentMethod,
+                status: "pending",
                 amount: quote.total,
                 currencyCode: currency,
                 ...(clientSecret ? { clientSecret } : {}),

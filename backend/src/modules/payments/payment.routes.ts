@@ -8,25 +8,37 @@ import { AppError } from "../../common/errors/AppError.js";
 
 export const paymentRouter = Router();
 
-// Simple role guard (replace with a shared roleGuard if available)
 interface AuthenticatedRequest extends Request {
   user?: { id?: string; sub?: string; role?: string };
 }
+
 const requireAdmin = (req: AuthenticatedRequest, _res: Response, next: NextFunction) => {
   const role = (req.user?.role || "").toLowerCase();
   if (role === "admin" || role === "manager") return next();
   return next(new AppError("دسترسی غیرمجاز.", 403, "FORBIDDEN"));
 };
 
-// Webhooks (no auth; Stripe requires raw body)
+// ==================== Webhooks (No Auth) ====================
 paymentRouter.post("/stripe/webhook", express.raw({ type: "application/json" }), paymentController.stripeWebhook);
 paymentRouter.post("/paypal/webhook", paymentController.paypalWebhook);
 
-// Generic gateway return (support both GET and POST)
+// ==================== Generic Gateway Return ====================
 paymentRouter.get("/return", paymentController.gatewayReturn);
 paymentRouter.post("/return", paymentController.gatewayReturn);
 
-// Admin/internal endpoints
+// ==================== Zarinpal Return (Public) ====================
+paymentRouter.get("/zarinpal/return", paymentController.zarinpalReturn);
+paymentRouter.post("/zarinpal/return", paymentController.zarinpalReturn);
+
+// ==================== Admin/Internal Zarinpal Operations ====================
+paymentRouter.post("/zarinpal/inquire", authGuard, requireAdmin, paymentController.inquireTransaction);
+paymentRouter.get("/zarinpal/unverified", authGuard, requireAdmin, paymentController.getUnverifiedTransactions);
+paymentRouter.post("/zarinpal/reverse", authGuard, requireAdmin, paymentController.reverseTransaction);
+paymentRouter.post("/zarinpal/calculate-fee", authGuard, requireAdmin, paymentController.calculateFee);
+paymentRouter.get("/zarinpal/transactions", authGuard, requireAdmin, paymentController.listTransactions);
+paymentRouter.post("/zarinpal/refunds", authGuard, requireAdmin, paymentController.createZarinpalRefund);
+
+// ==================== Admin/Internal Endpoints ====================
 paymentRouter.get("/order/:orderId", authGuard, requireAdmin, paymentController.listForOrder);
 paymentRouter.post("/orders/:orderId/cod/confirm", authGuard, requireAdmin, paymentController.confirmCodPaid);
 
@@ -35,5 +47,4 @@ paymentRouter.post("/:id/mark-failed", authGuard, requireAdmin, paymentControlle
 paymentRouter.post("/:id/refund", authGuard, requireAdmin, paymentController.refund);
 paymentRouter.get("/:id", authGuard, requireAdmin, paymentController.getById);
 
-// Default export for router registration convenience
 export default paymentRouter;

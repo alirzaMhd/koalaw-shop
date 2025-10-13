@@ -94,6 +94,11 @@ const EnvSchema = z.object({
   QUEUE_EMAIL_CONCURRENCY: z.coerce.number().optional(),
 
   // Payments
+  ZARINPAL_MERCHANT_ID: z.string().optional(),
+  ZARINPAL_SANDBOX: z.string().optional(),
+  ZARINPAL_CALLBACK_URL: z.string().optional(),
+  ZARINPAL_ACCESS_TOKEN: z.string().optional(),
+
   PAYMENT_PROVIDER: z.string().optional(),
   STRIPE_SECRET_KEY: z.string().optional(),
   STRIPE_WEBHOOK_SECRET: z.string().optional(),

@@ -1,6 +1,6 @@
 // src/modules/payments/payment.controller.ts
 // Thin HTTP handlers for payments: fetch/list, admin transitions (paid/failed/refund),
-// and gateway webhooks/return handlers (Stripe/PayPal/generic).
+// and gateway webhooks/return handlers (Stripe/PayPal/Zarinpal).
 
 import type { Request, Response, NextFunction, RequestHandler } from "express";
 import { z } from "zod";
@@ -17,8 +17,6 @@ interface AuthenticatedRequest extends Request {
 interface RawBodyRequest extends Request {
   rawBody?: Buffer;
 }
-
-// ---------------- Validators ----------------
 
 const uuid = z.string().uuid({ message: "شناسه نامعتبر است." });
 
@@ -57,10 +55,7 @@ const returnQuerySchema = z
   })
   .strict();
 
-// ---------------- Controller ----------------
-
 class PaymentController {
-  // GET /payments/:id
   getById: RequestHandler = async (req, res, next) => {
     try {
       const { id } = await paymentIdParam.parseAsync(req.params);
@@ -72,7 +67,6 @@ class PaymentController {
     }
   };
 
-  // GET /payments/order/:orderId
   listForOrder: RequestHandler = async (req, res, next) => {
     try {
       const { orderId } = await orderIdParam.parseAsync(req.params);
@@ -84,7 +78,6 @@ class PaymentController {
     }
   };
 
-  // POST /payments/:id/mark-paid (admin/internal) — body: { orderId, transactionRef?, authority? }
   markPaid: RequestHandler = async (req, res, next) => {
     try {
       const { id } = await paymentIdParam.parseAsync(req.params);
@@ -103,7 +96,6 @@ class PaymentController {
     }
   };
 
-  // POST /payments/:id/mark-failed (admin/internal) — body: { orderId, reason?, transactionRef?, authority? }
   markFailed: RequestHandler = async (req, res, next) => {
     try {
       const { id } = await paymentIdParam.parseAsync(req.params);
@@ -123,7 +115,6 @@ class PaymentController {
     }
   };
 
-  // POST /payments/:id/refund (admin)
   refund: RequestHandler = async (req, res, next) => {
     try {
       const { id } = await paymentIdParam.parseAsync(req.params);
@@ -136,8 +127,6 @@ class PaymentController {
     }
   };
 
-  // POST /payments/stripe/webhook
-  // IMPORTANT: Route must be mounted with express.raw({ type: 'application/json' }) to preserve rawBody for signature verification.
   stripeWebhook: RequestHandler = async (req: RawBodyRequest, res, next) => {
     try {
       const rawBody = req.rawBody || (req as any).bodyRaw || (req as any).rawBody || (typeof req.body === "string" ? Buffer.from(req.body) : Buffer.from(JSON.stringify(req.body || {})));
@@ -149,8 +138,6 @@ class PaymentController {
     }
   };
 
-  // POST /payments/paypal/webhook
-  // Should generally use express.json() and verify PayPal signature via middleware if configured.
   paypalWebhook: RequestHandler = async (req, res, next) => {
     try {
       const body = req.body ?? {};
@@ -162,8 +149,6 @@ class PaymentController {
     }
   };
 
-  // GET/POST /payments/return (generic gateway return)
-  // Accepts query or body: { orderId?, authority?, transactionRef?, success, reason? }
   gatewayReturn: RequestHandler = async (req, res, next) => {
     try {
       const payload = Object.keys(req.query || {}).length ? req.query : req.body ?? {};
@@ -185,12 +170,117 @@ class PaymentController {
     }
   };
 
-  // POST /payments/orders/:orderId/cod/confirm (admin/internal)
   confirmCodPaid: RequestHandler = async (req, res, next) => {
     try {
       const { orderId } = await orderIdParam.parseAsync(req.params);
       const order = await paymentService.confirmCodPaid(orderId);
       return ok(res, { order }, 200);
+    } catch (err: any) {
+      if (err?.issues?.length) return next(new AppError(err.issues[0]?.message, 422, "VALIDATION_ERROR"));
+      next(err);
+    }
+  };
+
+  // ==================== Zarinpal-specific ====================
+
+  zarinpalReturn: RequestHandler = async (req, res, next) => {
+    try {
+      const Authority = (req.query.Authority || req.body.Authority) as string;
+      const Status = (req.query.Status || req.body.Status) as string;
+
+      if (!Authority) {
+        return next(new AppError("پارامتر Authority یافت نشد.", 400, "MISSING_AUTHORITY"));
+      }
+
+      const success = Status === "OK";
+
+      const result = await paymentService.handleZarinpalReturn({
+        authority: String(Authority),
+        success,
+      });
+
+      return ok(res, result, 200);
+    } catch (err: any) {
+      if (err?.issues?.length) return next(new AppError(err.issues[0]?.message, 422, "VALIDATION_ERROR"));
+      next(err);
+    }
+  };
+
+  inquireTransaction: RequestHandler = async (req, res, next) => {
+    try {
+      const { authority } = await z.object({ authority: z.string().min(1) }).parseAsync(req.body ?? {});
+      const result = await paymentService.inquireTransaction(authority);
+      return ok(res, result, 200);
+    } catch (err: any) {
+      if (err?.issues?.length) return next(new AppError(err.issues[0]?.message, 422, "VALIDATION_ERROR"));
+      next(err);
+    }
+  };
+
+  getUnverifiedTransactions: RequestHandler = async (req, res, next) => {
+    try {
+      const transactions = await paymentService.getUnverifiedTransactions();
+      return ok(res, { transactions }, 200);
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  reverseTransaction: RequestHandler = async (req, res, next) => {
+    try {
+      const { authority } = await z.object({ authority: z.string().min(1) }).parseAsync(req.body ?? {});
+      const result = await paymentService.reverseTransaction(authority);
+      return ok(res, result, 200);
+    } catch (err: any) {
+      if (err?.issues?.length) return next(new AppError(err.issues[0]?.message, 422, "VALIDATION_ERROR"));
+      next(err);
+    }
+  };
+
+  calculateFee: RequestHandler = async (req, res, next) => {
+    try {
+      const schema = z.object({
+        amount: z.coerce.number().int().min(10000),
+        currency: z.enum(["IRR", "IRT"]).optional(),
+      });
+      const body = await schema.parseAsync(req.body ?? {});
+      const result = await paymentService.calculateFee(body);
+      return ok(res, result, 200);
+    } catch (err: any) {
+      if (err?.issues?.length) return next(new AppError(err.issues[0]?.message, 422, "VALIDATION_ERROR"));
+      next(err);
+    }
+  };
+
+  listTransactions: RequestHandler = async (req, res, next) => {
+    try {
+      const schema = z.object({
+        terminalId: z.string().min(1),
+        filter: z.enum(["PAID", "VERIFIED", "TRASH", "ACTIVE", "REFUNDED"]).optional(),
+        offset: z.coerce.number().int().min(0).optional(),
+        limit: z.coerce.number().int().min(1).max(100).optional(),
+      });
+      const query = await schema.parseAsync(req.query);
+      const result = await paymentService.listTransactions(query);
+      return ok(res, result, 200);
+    } catch (err: any) {
+      if (err?.issues?.length) return next(new AppError(err.issues[0]?.message, 422, "VALIDATION_ERROR"));
+      next(err);
+    }
+  };
+
+  createZarinpalRefund: RequestHandler = async (req, res, next) => {
+    try {
+      const schema = z.object({
+        sessionId: z.string().min(1),
+        amount: z.coerce.number().int().min(20000),
+        description: z.string().min(1),
+        method: z.enum(["CARD", "PAYA"]),
+        reason: z.enum(["CUSTOMER_REQUEST", "DUPLICATE_TRANSACTION", "SUSPICIOUS_TRANSACTION", "OTHER"]),
+      });
+      const body = await schema.parseAsync(req.body ?? {});
+      const result = await paymentService.createZarinpalRefund(body);
+      return ok(res, result, 200);
     } catch (err: any) {
       if (err?.issues?.length) return next(new AppError(err.issues[0]?.message, 422, "VALIDATION_ERROR"));
       next(err);

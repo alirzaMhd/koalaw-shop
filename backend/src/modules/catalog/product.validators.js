@@ -4,14 +4,33 @@ import { z } from "zod";
 // Common schemas
 const currencyCodeSchema = z.enum(["IRR", "USD", "EUR"]).default("IRR");
 const positionSchema = z.number().int().min(0).optional();
-// Helper: URL that accepts empty string and converts to null
-const optionalUrlSchema = z.preprocess((val) => {
-    if (val === null || val === undefined)
-        return null;
-    if (typeof val === "string" && val.trim() === "")
-        return null;
-    return val;
-}, z.string().url("آدرس URL معتبر نیست").nullable().optional());
+// Helper: URL that accepts empty string, null, undefined and converts them to undefined
+// Only validates if the value is a non-empty string
+// Helper: URL that accepts both absolute URLs and relative paths
+const optionalUrlSchema = z
+    .string()
+    .transform((val) => {
+    if (!val || val.trim() === "")
+        return undefined;
+    return val.trim();
+})
+    .refine((val) => {
+    if (val === undefined)
+        return true;
+    // Allow relative paths that start with /
+    if (val.startsWith("/"))
+        return true;
+    // Allow absolute URLs
+    try {
+        new URL(val);
+        return true;
+    }
+    catch {
+        return false;
+    }
+}, { message: "آدرس URL یا مسیر تصویر معتبر نیست" })
+    .optional()
+    .nullable();
 const imageInputSchema = z.object({
     url: z.string().url("آدرس تصویر معتبر نیست"),
     alt: z.string().max(255, "متن جایگزین تصویر حداکثر ۲۵۵ کاراکتر").optional(),

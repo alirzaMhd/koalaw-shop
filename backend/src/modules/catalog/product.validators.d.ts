@@ -76,7 +76,7 @@ export declare const createProductInputSchema: z.ZodEffects<z.ZodObject<{
     isFeatured: z.ZodDefault<z.ZodBoolean>;
     isSpecialProduct: z.ZodDefault<z.ZodBoolean>;
     isActive: z.ZodDefault<z.ZodBoolean>;
-    heroImageUrl: z.ZodEffects<z.ZodOptional<z.ZodNullable<z.ZodString>>, string | null | undefined, unknown>;
+    heroImageUrl: z.ZodNullable<z.ZodOptional<z.ZodEffects<z.ZodEffects<z.ZodString, string | undefined, string>, string | undefined, string>>>;
     internalNotes: z.ZodOptional<z.ZodString>;
     images: z.ZodOptional<z.ZodArray<z.ZodObject<{
         url: z.ZodString;
@@ -177,7 +177,7 @@ export declare const createProductInputSchema: z.ZodEffects<z.ZodObject<{
     isFeatured?: boolean | undefined;
     isSpecialProduct?: boolean | undefined;
     isActive?: boolean | undefined;
-    heroImageUrl?: unknown;
+    heroImageUrl?: string | null | undefined;
     internalNotes?: string | undefined;
     images?: {
         url: string;
@@ -251,7 +251,7 @@ export declare const createProductInputSchema: z.ZodEffects<z.ZodObject<{
     isFeatured?: boolean | undefined;
     isSpecialProduct?: boolean | undefined;
     isActive?: boolean | undefined;
-    heroImageUrl?: unknown;
+    heroImageUrl?: string | null | undefined;
     internalNotes?: string | undefined;
     images?: {
         url: string;
@@ -290,7 +290,7 @@ export declare const updateProductInputSchema: z.ZodObject<{
     isFeatured: z.ZodOptional<z.ZodBoolean>;
     isSpecialProduct: z.ZodOptional<z.ZodBoolean>;
     isActive: z.ZodOptional<z.ZodBoolean>;
-    heroImageUrl: z.ZodEffects<z.ZodOptional<z.ZodNullable<z.ZodString>>, string | null | undefined, unknown>;
+    heroImageUrl: z.ZodNullable<z.ZodOptional<z.ZodEffects<z.ZodEffects<z.ZodString, string | undefined, string>, string | undefined, string>>>;
     internalNotes: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     images: z.ZodOptional<z.ZodArray<z.ZodObject<{
         url: z.ZodString;
@@ -391,7 +391,7 @@ export declare const updateProductInputSchema: z.ZodObject<{
     isFeatured?: boolean | undefined;
     isSpecialProduct?: boolean | undefined;
     isActive?: boolean | undefined;
-    heroImageUrl?: unknown;
+    heroImageUrl?: string | null | undefined;
     internalNotes?: string | null | undefined;
     images?: {
         url: string;

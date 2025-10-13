@@ -44,6 +44,7 @@ export declare class MagazineService {
         };
     }>;
     getPostBySlug(slug: string, includeUnpublished?: boolean): Promise<PostDTO>;
+    getPostById(id: string): Promise<PostDTO>;
     createPost(input: {
         authorId?: string | null;
         category: DerivedCategory;

@@ -54,33 +54,32 @@ declare class PaymentService {
         authority: string | null;
         transactionRef: string | null;
         paidAt: Date | null;
+    } | {
+        zarinpalRefund: any;
+        status: import("@prisma/client").$Enums.PaymentStatus;
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        orderId: string;
+        currencyCode: string;
+        method: import("@prisma/client").$Enums.PaymentMethod;
+        amount: number;
+        authority: string | null;
+        transactionRef: string | null;
+        paidAt: Date | null;
     }>;
-    /**
-     * Handle Stripe webhook. Provide the raw request body (string or Buffer) and headers.
-     * - Verifies signature if STRIPE_WEBHOOK_SECRET and Stripe SDK are available.
-     * - Expects metadata.orderId (and optionally authority==intent.id already stored).
-     * - Updates payment row and notifies order service.
-     */
     handleStripeWebhook(opts: {
         rawBody: Buffer | string;
         headers: Record<string, any>;
     }): Promise<{
         ok: boolean;
     }>;
-    /**
-     * Handle PayPal webhook events. Provide already-parsed JSON body and headers (for signature verification if added).
-     * - Expects resource.id (authority) and optionally resource.custom_id or resource.purchase_units[0].custom_id containing orderId.
-     */
     handlePaypalWebhook(opts: {
         body: any;
         headers: Record<string, any>;
     }): Promise<{
         ok: boolean;
     }>;
-    /**
-     * For PSPs that redirect back to your site (e.g., local gateways),
-     * call this with the resolved values from their return query/body.
-     */
     handleGenericGatewayReturn(args: {
         orderId?: string;
         authority?: string | null;
@@ -90,10 +89,36 @@ declare class PaymentService {
     }): Promise<{
         ok: boolean;
     }>;
-    /**
-     * Mark a COD payment as paid (e.g., upon delivery confirmation).
-     */
     confirmCodPaid(orderId: string): Promise<any>;
+    handleZarinpalReturn(args: {
+        authority: string;
+        success: boolean;
+    }): Promise<{
+        ok: boolean;
+        verified: boolean;
+        refId?: string;
+        orderId?: string;
+    }>;
+    inquireTransaction(authority: string): Promise<any>;
+    getUnverifiedTransactions(): Promise<any>;
+    reverseTransaction(authority: string): Promise<any>;
+    calculateFee(args: {
+        amount: number;
+        currency?: "IRR" | "IRT";
+    }): Promise<any>;
+    listTransactions(args: {
+        terminalId: string;
+        filter?: "PAID" | "VERIFIED" | "TRASH" | "ACTIVE" | "REFUNDED";
+        offset?: number;
+        limit?: number;
+    }): Promise<any>;
+    createZarinpalRefund(args: {
+        sessionId: string;
+        amount: number;
+        description: string;
+        method: "CARD" | "PAYA";
+        reason: "CUSTOMER_REQUEST" | "DUPLICATE_TRANSACTION" | "SUSPICIOUS_TRANSACTION" | "OTHER";
+    }): Promise<any>;
 }
 export declare const paymentService: PaymentService;
 export {};

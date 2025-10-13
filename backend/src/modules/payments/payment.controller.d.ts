@@ -9,6 +9,13 @@ declare class PaymentController {
     paypalWebhook: RequestHandler;
     gatewayReturn: RequestHandler;
     confirmCodPaid: RequestHandler;
+    zarinpalReturn: RequestHandler;
+    inquireTransaction: RequestHandler;
+    getUnverifiedTransactions: RequestHandler;
+    reverseTransaction: RequestHandler;
+    calculateFee: RequestHandler;
+    listTransactions: RequestHandler;
+    createZarinpalRefund: RequestHandler;
 }
 export declare const paymentController: PaymentController;
 export {};

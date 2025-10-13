@@ -67,6 +67,10 @@ declare const env: {
     SMTP_SECURE?: string | undefined;
     MAIL_FROM?: string | undefined;
     QUEUE_EMAIL_CONCURRENCY?: number | undefined;
+    ZARINPAL_MERCHANT_ID?: string | undefined;
+    ZARINPAL_SANDBOX?: string | undefined;
+    ZARINPAL_CALLBACK_URL?: string | undefined;
+    ZARINPAL_ACCESS_TOKEN?: string | undefined;
     PAYMENT_PROVIDER?: string | undefined;
     STRIPE_SECRET_KEY?: string | undefined;
     STRIPE_WEBHOOK_SECRET?: string | undefined;
