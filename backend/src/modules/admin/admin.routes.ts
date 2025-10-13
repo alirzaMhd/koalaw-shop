@@ -68,4 +68,10 @@ router.post("/color-themes", colorThemeController.create);
 router.put("/color-themes/:id", colorThemeController.update);
 router.delete("/color-themes/:id", colorThemeController.delete);
 
+// ========== CATEGORIES ==========
+router.get("/categories", adminController.listCategories);
+router.post("/categories", adminController.createCategory);
+router.put("/categories/:code", adminController.updateCategory);
+router.delete("/categories/:code", adminController.deleteCategory);
+
 export default router;

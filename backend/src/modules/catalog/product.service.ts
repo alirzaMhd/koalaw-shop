@@ -104,10 +104,10 @@ function pickCoreProductData(input: CreateProductInput | UpdateProductInput, bra
     ...(typeof input.isActive === "boolean" ? { isActive: input.isActive } : {}),
 
     // Fix heroImageUrl handling - accept null, undefined, or valid URL
-    ...(input.heroImageUrl !== undefined ? { 
-      heroImageUrl: input.heroImageUrl 
+    ...(input.heroImageUrl !== undefined ? {
+      heroImageUrl: input.heroImageUrl
     } : {}),
-    
+
     ...(input.internalNotes !== undefined ? { internalNotes: input.internalNotes || null } : {}),
   };
   return data;
@@ -131,7 +131,7 @@ const includeForDetail = {
   colorTheme: true,
   images: { orderBy: { position: "asc" as const } },
   variants: { orderBy: { position: "asc" as const } },
-  badges: { select: { id: true, title: true, icon: true} },
+  badges: { select: { id: true, title: true, icon: true } },
   reviews: {
     where: { status: "APPROVED" },
     orderBy: { createdAt: "desc" as const },
@@ -268,7 +268,12 @@ class ProductService {
 
     const coreData = { ...pickCoreProductData({ ...input, slug }, brandId) };
 
-    const result = await prisma.$transaction(async (tx: { product: { create: (arg0: { data: any; }) => any; }; productImage: { createMany: (arg0: { data: { productId: any; url: string; alt: string | null; position: number; }[]; }) => any; }; productVariant: { createMany: (arg0: { data: { productId: any; variantName: string; sku: string | null; price: number | null; currencyCode: "IRR" | "USD" | "EUR"; stock: number; colorName: string | null; colorHexCode: string | null; isActive: boolean; position: number; }[]; }) => any; }; }) => {
+    const result = await prisma.$transaction(async (tx: {
+      product: { create: (args: { data: any }) => any };
+      productImage: { createMany: (args: { data: { productId: string; url: string; alt: string | null; position: number }[] }) => any };
+      productVariant: { createMany: (args: { data: { productId: string; variantName: string; sku: string | null; price: number | null; currencyCode: "IRR" | "USD" | "EUR"; stock: number; colorName: string | null; colorHexCode: string | null; isActive: boolean; position: number }[] }) => any };
+      relatedProduct: { createMany: (args: { data: { productId: string; relatedProductId: string; position: number }[] }) => any };
+    }) => {
       const product = await tx.product.create({
         data: {
           ...coreData,
@@ -305,7 +310,20 @@ class ProductService {
           })),
         });
       }
-
+      // Related products (optional)
+      const relatedIdsRaw: string[] = Array.isArray((input as any).relatedProductIds)
+        ? (input as any).relatedProductIds
+        : [];
+      const relatedIds = Array.from(new Set(relatedIdsRaw.filter((rid) => rid && rid !== product.id)));
+      if (relatedIds.length) {
+        await tx.relatedProduct.createMany({
+          data: relatedIds.map((rid, idx) => ({
+            productId: product.id,
+            relatedProductId: rid,
+            position: idx,
+          })),
+        });
+      }
       return product.id;
     });
 
@@ -345,14 +363,21 @@ class ProductService {
 
     const coreData = { ...pickCoreProductData({ ...input, slug: slugUpdate }, brandId) };
 
-    await prisma.$transaction(async (tx: { product: { update: (arg0: { where: { id: string; }; data: any; }) => any; }; productImage: { deleteMany: (arg0: { where: { productId: string; }; }) => any; createMany: (arg0: { data: { productId: string; url: string; alt: string | null; position: number; }[]; }) => any; }; productVariant: { deleteMany: (arg0: { where: { productId: string; }; }) => any; createMany: (arg0: { data: { productId: string; variantName: string; sku: string | null; price: number | null; currencyCode: "IRR" | "USD" | "EUR"; stock: number; colorName: string | null; colorHexCode: string | null; isActive: boolean; position: number; }[]; }) => any; }; }) => {
-      await tx.product.update({ where: { id }, data: {
+    await prisma.$transaction(async (tx: {
+      product: { update: (args: { where: { id: string }; data: any }) => any };
+      productImage: { deleteMany: (args: { where: { productId: string } }) => any; createMany: (args: { data: { productId: string; url: string; alt: string | null; position: number }[] }) => any };
+      productVariant: { deleteMany: (args: { where: { productId: string } }) => any; createMany: (args: { data: { productId: string; variantName: string; sku: string | null; price: number | null; currencyCode: "IRR" | "USD" | "EUR"; stock: number; colorName: string | null; colorHexCode: string | null; isActive: boolean; position: number }[] }) => any };
+      relatedProduct: { deleteMany: (args: { where: { productId: string } }) => any; createMany: (args: { data: { productId: string; relatedProductId: string; position: number }[] }) => any };
+    }) => {
+      await tx.product.update({
+        where: { id }, data: {
           ...coreData,
           // If badgeIds is provided (even []), replace the set accordingly
           ...(Array.isArray((input as any).badgeIds)
             ? { badges: { set: (input as any).badgeIds.map((bid: string) => ({ id: bid })) } }
             : {}),
-        }, });
+        },
+      });
 
       if (Array.isArray(input.images)) {
         await tx.productImage.deleteMany({ where: { productId: id } });
@@ -383,6 +408,24 @@ class ProductService {
               colorHexCode: v.colorHexCode ?? null,
               isActive: typeof v.isActive === "boolean" ? v.isActive : true,
               position: typeof v.position === "number" ? v.position : idx,
+            })),
+          });
+        }
+      }
+      
+
+      // Related products (replace set if provided)
+      if (Array.isArray((input as any).relatedProductIds)) {
+        const relatedIds = Array.from(
+          new Set(((input as any).relatedProductIds as string[]).filter((rid) => rid && rid !== id))
+        );
+        await tx.relatedProduct.deleteMany({ where: { productId: id } });
+        if (relatedIds.length) {
+          await tx.relatedProduct.createMany({
+            data: relatedIds.map((rid, idx) => ({
+              productId: id,
+              relatedProductId: rid,
+              position: idx,
             })),
           });
         }
@@ -641,13 +684,19 @@ class ProductService {
       min: agg._min.price ?? 0,
       max: agg._max.price ?? 0,
     };
+    // Categories from settings (override defaults)
+    const catSetting = await prisma.siteSetting.findUnique({
+      where: { key: "categories_meta" },
+      select: { value: true },
+    });
+    const categories = Array.isArray(catSetting?.value) ? (catSetting!.value as any[]) : listCategories();
 
     return {
-      categories: listCategories(),
-      brands: brandOptions,
-      collections: collectionOptions,
-      priceRange,
-    };
+      categories,
+       brands: brandOptions,
+       collections: collectionOptions,
+       priceRange,
+     };
   }
 }
 

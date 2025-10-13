@@ -37,8 +37,23 @@ const optionalUrlSchema = z
   .optional()
   .nullable();
 
+// Accept both absolute URLs (http/https) and site-relative paths starting with "/"
+const absoluteOrRelativeUrlSchema = z
+  .string()
+  .min(1, "آدرس تصویر معتبر نیست")
+  .refine((val) => {
+    if (!val) return false;
+    if (val.startsWith("/")) return true; // allow relative paths
+    try {
+      new URL(val); // allow absolute URLs
+      return true;
+    } catch {
+      return false;
+    }
+  }, { message: "آدرس تصویر معتبر نیست" });
+
 const imageInputSchema = z.object({
-  url: z.string().url("آدرس تصویر معتبر نیست"),
+  url: absoluteOrRelativeUrlSchema,
   alt: z.string().max(255, "متن جایگزین تصویر حداکثر ۲۵۵ کاراکتر").optional(),
   position: positionSchema,
 });
@@ -124,6 +139,7 @@ export const createProductInputSchema = z.object({
   images: z.array(imageInputSchema).max(20, "حداکثر ۲۰ تصویر مجاز است").optional(),
   variants: z.array(variantInputSchema).max(50, "حداکثر ۵۰ واریانت مجاز است").optional(),
   badgeIds: z.array(z.string().uuid()).optional(),
+  relatedProductIds: z.array(z.string().uuid("شناسه محصول مرتبط نامعتبر است")).optional(),
 }).refine(
   (data) => data.brandId || data.brandSlug,
   { message: "شناسه یا اسلاگ برند الزامی است", path: ["brandId"] }
@@ -169,17 +185,18 @@ export const updateProductInputSchema = z.object({
   images: z.array(imageInputSchema).max(20, "حداکثر ۲۰ تصویر مجاز است").optional(),
   variants: z.array(variantInputSchema).max(50, "حداکثر ۵۰ واریانت مجاز است").optional(),
   badgeIds: z.array(z.string().uuid()).optional(),
+  relatedProductIds: z.array(z.string().uuid("شناسه محصول مرتبط نامعتبر است")).optional(),
 });
 
 // Image schemas
 export const addImageInputSchema = z.object({
-  url: z.string().url("آدرس تصویر معتبر نیست"),
+  url: absoluteOrRelativeUrlSchema,
   alt: z.string().max(255, "متن جایگزین تصویر حداکثر ۲۵۵ کاراکتر").optional(),
   position: positionSchema.default(0),
 });
 
 export const updateImageInputSchema = z.object({
-  url: z.string().url("آدرس تصویر معتبر نیست").optional(),
+  url: absoluteOrRelativeUrlSchema.optional(),
   alt: z.string().max(255, "متن جایگزین تصویر حداکثر ۲۵۵ کاراکتر").nullable().optional(),
   position: positionSchema,
 });

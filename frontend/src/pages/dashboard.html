@@ -1,19 +1,20 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow">
   <meta name="description" content="KOALAW Admin Panel">
   <title>KOALAW Admin Panel</title>
-  
+
   <link rel="icon" type="image/x-icon" href="/assets/static/favicon.ico" />
-  
+
   <!-- Styles -->
   <link rel="stylesheet" href="/assets/css/tailwind.css" />
   <link rel="stylesheet" href="/assets/css/main.css" />
   <link rel="stylesheet" href="/assets/css/admin.css" />
-  
+
   <!-- Feather Icons -->
   <script src="/assets/vendor/feather/feather.min.js"></script>
 </head>
@@ -33,62 +34,67 @@
         <i data-feather="home"></i>
         <span>داشبورد</span>
       </a>
-      
+
       <a href="#products" class="admin-nav-item" data-route="products">
         <i data-feather="package"></i>
         <span>محصولات</span>
       </a>
+
+      <a href="#categories" class="admin-nav-item" data-route="categories">
+        <i data-feather="layers"></i>
+        <span>دسته‌بندی‌ها</span>
+      </a>
       <!-- Add after the "کالکشن‌ها" link -->
-<a href="#colorThemes" class="admin-nav-item" data-route="colorThemes">
-  <i data-feather="droplet"></i>
-  <span>تم‌های رنگی</span>
-</a>
+      <a href="#colorThemes" class="admin-nav-item" data-route="colorThemes">
+        <i data-feather="droplet"></i>
+        <span>تم‌های رنگی</span>
+      </a>
       <a href="#orders" class="admin-nav-item" data-route="orders">
         <i data-feather="shopping-cart"></i>
         <span>سفارش‌ها</span>
       </a>
-      
+
       <a href="#users" class="admin-nav-item" data-route="users">
         <i data-feather="users"></i>
         <span>کاربران</span>
       </a>
-      
+
       <a href="#magazine" class="admin-nav-item" data-route="magazine">
         <i data-feather="book-open"></i>
         <span>مجله</span>
       </a>
-      
+
       <a href="#newsletter" class="admin-nav-item" data-route="newsletter">
         <i data-feather="mail"></i>
         <span>خبرنامه</span>
       </a>
-      
+
       <a href="#newsletterSubscribers" class="admin-nav-item" data-route="newsletterSubscribers">
         <i data-feather="user-check"></i>
         <span>مشترکین</span>
       </a>
-      
+
       <a href="#reviews" class="admin-nav-item" data-route="reviews">
         <i data-feather="star"></i>
         <span>نظرات</span>
         <span id="pending-reviews-badge" class="admin-badge-count hidden">0</span>
       </a>
-      
+
       <a href="#brands" class="admin-nav-item" data-route="brands">
         <i data-feather="award"></i>
         <span>برندها</span>
       </a>
-      
+
       <a href="#collections" class="admin-nav-item" data-route="collections">
         <i data-feather="grid"></i>
         <span>کالکشن‌ها</span>
       </a>
-      
+
       <a href="#badges" class="admin-nav-item" data-route="badges">
         <i data-feather="shield"></i>
         <span>نشان‌ها</span>
       </a>
-      
+
       <a href="#coupons" class="admin-nav-item" data-route="coupons">
         <i data-feather="tag"></i>
         <span>کوپن‌ها</span>
@@ -143,7 +149,7 @@
 
   <!-- Admin Script -->
   <script src="/assets/js/pages/admin.js"></script>
-  
+
   <!-- Initialize Icons -->
   <script>
     if (typeof feather !== "undefined") {
@@ -151,4 +157,5 @@
     }
   </script>
 </body>
+
 </html>
