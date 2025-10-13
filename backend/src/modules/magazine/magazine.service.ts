@@ -104,7 +104,7 @@ async function upsertTagsByNamesOrSlugs(values: string[] = []): Promise<any[]> {
     // If not found by slug, check if a tag with this name already exists
     const allTags = await magazineRepo.listTags();
     const existingByName = allTags.find(
-      t => t.name.toLowerCase() === name.toLowerCase()
+      (t: any) => t.name.toLowerCase() === name.toLowerCase()
     );
     
     if (existingByName) {
@@ -130,7 +130,7 @@ async function upsertTagsByNamesOrSlugs(values: string[] = []): Promise<any[]> {
         // If still not found by slug, try by name
         const retryTags = await magazineRepo.listTags();
         const retryByName = retryTags.find(
-          t => t.name.toLowerCase() === name.toLowerCase()
+          (t: any) => t.name.toLowerCase() === name.toLowerCase()
         );
         
         if (retryByName) {
