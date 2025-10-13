@@ -6,7 +6,6 @@
     user: null,
     stats: null,
     products: [],
-    categories: [],
     orders: [],
     users: [],
     brands: [],
@@ -422,32 +421,6 @@
         (data) => data.colorThemes || []
       );
     },
-    // Categories (from product filters)
-    getCategories() {
-      return this.fetch("/api/products/filters").then(
-        (data) => data.categories || []
-      );
-    },
-
-    // Categories (Admin)
-    getCategoriesAdmin() {
-      return this.fetch("/api/admin/categories");
-    },
-    createCategory(data) {
-      return this.fetch("/api/admin/categories", {
-        method: "POST",
-        body: JSON.stringify(data),
-      });
-    },
-    updateCategory(code, data) {
-      return this.fetch(`/api/admin/categories/${code}`, {
-        method: "PUT",
-        body: JSON.stringify(data),
-      });
-    },
-    deleteCategory(code) {
-      return this.fetch(`/api/admin/categories/${code}`, { method: "DELETE" });
-    },
   };
 
   // ========== SIDE PANEL SYSTEM ==========
@@ -498,62 +471,6 @@
 
   // ========== FORM GENERATORS ==========
   const forms = {
-    category(existingCode = null) {
-      const cat = existingCode ? (state.categories || []).find((c) => c.code === existingCode) : null;
-      const isEdit = !!existingCode;
-      const formHtml = `
-        <form id="category-form" class="admin-form">
-          <div class="admin-form-section">
-            <h3 class="admin-form-section-title">${isEdit ? "ویرایش دسته‌بندی" : "افزودن دسته‌بندی"}</h3>
-            <div class="admin-form-group">
-              <label class="admin-form-label required">کد (slug)</label>
-              <input type="text" name="code" class="admin-form-input" value="${cat?.code || ""}" ${isEdit ? "disabled" : ""} placeholder="skincare" required />
-              <small class="text-gray-500">فقط حروف کوچک انگلیسی، اعداد و خط تیره</small>
-            </div>
-            <div class="admin-form-group">
-              <label class="admin-form-label required">نام</label>
-              <input type="text" name="label" class="admin-form-input" value="${cat?.label || ""}" required />
-            </div>
-            <div class="admin-form-group">
-              <label class="admin-form-label required">آیکون (Feather)</label>
-              <input type="text" name="icon" class="admin-form-input" value="${cat?.icon || ""}" placeholder="layers" required />
-              <small class="text-gray-500">
-                نام آیکون Feather مثل: layers, shield, wind
-                <a href="https://feathericons.com/" target="_blank" class="text-rose-600">مشاهده لیست</a>
-              </small>
-            </div>
-          </div>
-          <div class="admin-form-actions">
-            <button type="button" class="admin-btn admin-btn-secondary" data-action="closePanel">انصراف</button>
-            <button type="submit" class="admin-btn admin-btn-primary">${isEdit ? "ذخیره تغییرات" : "افزودن دسته‌بندی"}</button>
-          </div>
-        </form>
-      `;
-      panel.open(formHtml, isEdit ? "ویرایش دسته‌بندی" : "افزودن دسته‌بندی");
-      document.getElementById("category-form")?.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const fd = new FormData(e.target);
-        const payload = {
-          code: (fd.get("code") || "").toString().trim(),
-          label: (fd.get("label") || "").toString().trim(),
-          icon: (fd.get("icon") || "").toString().trim(),
-        };
-        try {
-          if (isEdit) {
-            await api.updateCategory(existingCode, { label: payload.label, icon: payload.icon });
-            utils.showToast("دسته‌بندی با موفقیت ویرایش شد", "success");
-          } else {
-            await api.createCategory(payload);
-            utils.showToast("دسته‌بندی با موفقیت افزوده شد", "success");
-          }
-          panel.close();
-          handlers.categories();
-        } catch (err) {
-          utils.showToast("خطا: " + err.message, "error");
-        }
-      });
-      utils.refreshIcons();
-    },
     // Product Form
     async product(productId = null) {
       panel.showLoading();
@@ -2448,25 +2365,6 @@
             );
         }
       },
-      // Category actions
-      createCategory() {
-        forms.category();
-      },
-      editCategory(code) {
-        forms.category(code);
-      },
-      deleteCategory(code) {
-        if (confirm("آیا مطمئن هستید که می‌خواهید این دسته‌بندی را حذف کنید؟")) {
-          api
-            .deleteCategory(code)
-            .then(() => {
-              utils.showToast("دسته‌بندی حذف شد", "success");
-              handlers.categories();
-            })
-            .catch((error) => utils.showToast("خطا: " + error.message, "error"));
-        }
-      },
-
     },
   };
 
@@ -2940,22 +2838,6 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" id="badges-grid">
-          ${utils.showLoading()}
-        </div>
-      `;
-    },
-
-
-    categories() {
-      return `
-        <div class="mb-6 flex justify-between items-center">
-          <h2 class="text-xl font-bold">دسته‌بندی‌ها</h2>
-          <button data-action="createCategory" class="admin-btn admin-btn-primary">
-            <i data-feather="plus"></i>
-            <span>افزودن دسته‌بندی</span>
-          </button>
-        </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" id="categories-grid">
           ${utils.showLoading()}
         </div>
       `;
@@ -3636,49 +3518,6 @@
       }
     },
 
-    async categories() {
-      try {
-        const res = await api.getCategoriesAdmin();
-        const cats = res.categories || [];
-        state.categories = cats;
-        const grid = document.getElementById("categories-grid");
-        if (grid) {
-          if (!Array.isArray(cats) || cats.length === 0) {
-            grid.innerHTML = '<p class="col-span-full text-center py-8 text-gray-500">دسته‌بندی‌ای وجود ندارد</p>';
-          } else {
-            grid.innerHTML = cats
-              .map(
-                (c) => `
-                <div class="admin-card">
-                  <div class="admin-card-body flex items-center gap-4">
-                    <div class="w-12 h-12 rounded-lg bg-gray-100 flex items-center justify-center">
-                      <i data-feather="${c.icon}" class="w-6 h-6 text-rose-600"></i>
-                    </div>
-                    <div class="min-w-0">
-                      <div class="font-bold truncate">${c.label}</div>
-                      <div class="text-sm text-gray-500 truncate">${c.slug}</div>
-                    </div>
-                    <div class="flex gap-2 ms-auto">
-                      <button data-action="editCategory" data-id="${c.code}" class="admin-btn admin-btn-secondary">
-                        <i data-feather="edit-2" class="w-4 h-4"></i>
-                      </button>
-                      <button data-action="deleteCategory" data-id="${c.code}" class="admin-btn admin-btn-danger">
-                        <i data-feather="trash-2" class="w-4 h-4"></i>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              `
-              )
-              .join("");
-          }
-        }
-        utils.refreshIcons();
-      } catch (error) {
-        document.getElementById("app-content").innerHTML = utils.showError(error.message);
-      }
-    },
-
     async newsletterSubscribers() {
       try {
         const status =
@@ -3754,11 +3593,6 @@
         title: "مدیریت محصولات",
         view: views.products,
         handler: handlers.products,
-      },
-      categories: {
-        title: "دسته‌بندی‌ها",
-        view: views.categories,
-        handler: handlers.categories,
       },
       colorThemes: {
         title: "تم‌های رنگی",

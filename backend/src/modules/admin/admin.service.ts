@@ -2,8 +2,6 @@
 import { prisma } from "../../infrastructure/db/prismaClient.js";
 import { AppError } from "../../common/errors/AppError.js";
 import { logger } from "../../config/logger.js";
-import { listCategories as listDefaultCategories } from "../catalog/category.entity.js";
-const CATEGORY_META_KEY = "categories_meta";
 
 export const adminService = {
   // ========== DASHBOARD STATS ==========
@@ -615,56 +613,5 @@ export const adminService = {
         totalPages: Math.ceil(total / perPage),
       },
     };
-  },
-
-  // ========== CATEGORY MANAGEMENT ==========
-  async listCategories() {
-    const setting = await prisma.siteSetting.findUnique({
-      where: { key: CATEGORY_META_KEY },
-      select: { value: true },
-    });
-    const categories = Array.isArray(setting?.value) ? (setting!.value as any[]) : listDefaultCategories();
-    return categories;
-  },
-
-  async createCategory(data: { code: string; label: string; icon: string }) {
-    const current = await this.listCategories();
-    if (current.some((c: any) => c.code === data.code)) {
-      throw AppError.badRequest("کد دسته‌بندی تکراری است");
-    }
-    const next = [...current, { code: data.code, slug: data.code, label: data.label, icon: data.icon }];
-    await prisma.siteSetting.upsert({
-      where: { key: CATEGORY_META_KEY },
-      update: { value: next, description: "Category metadata (label/icon)" },
-      create: { key: CATEGORY_META_KEY, value: next, description: "Category metadata (label/icon)" },
-    });
-    return { code: data.code, slug: data.code, label: data.label, icon: data.icon };
-  },
-
-  async updateCategory(code: string, data: { label?: string; icon?: string }) {
-    const current = await this.listCategories();
-    const idx = current.findIndex((c: any) => c.code === code);
-    if (idx === -1) throw AppError.notFound("دسته‌بندی یافت نشد");
-    const updated = { ...current[idx], ...(data.label !== undefined ? { label: data.label } : {}), ...(data.icon !== undefined ? { icon: data.icon } : {}) };
-    const next = current.slice();
-    next[idx] = updated;
-    await prisma.siteSetting.upsert({
-      where: { key: CATEGORY_META_KEY },
-      update: { value: next },
-      create: { key: CATEGORY_META_KEY, value: next, description: "Category metadata (label/icon)" },
-    });
-    return updated;
-  },
-
-  async deleteCategory(code: string) {
-    const current = await this.listCategories();
-    const next = current.filter((c: any) => c.code !== code);
-    if (next.length === current.length) throw AppError.notFound("دسته‌بندی یافت نشد");
-    await prisma.siteSetting.upsert({
-      where: { key: CATEGORY_META_KEY },
-      update: { value: next },
-      create: { key: CATEGORY_META_KEY, value: next, description: "Category metadata (label/icon)" },
-    });
-    return { deleted: true };
   },
 };

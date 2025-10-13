@@ -58,20 +58,6 @@ const collectionUpdateSchema = z.object({
   name: z.string().min(1, "نام کالکشن الزامی است."),
 });
 
-// ========== CATEGORIES ==========
-const categoryCodeParamSchema = z.object({
-  code: z.string().min(1).regex(/^[a-z0-9-]+$/, "کد دسته‌بندی فقط حروف کوچک، اعداد و خط تیره"),
-});
-const categoryCreateSchema = z.object({
-  code: z.string().min(1).regex(/^[a-z0-9-]+$/, "کد دسته‌بندی فقط حروف کوچک، اعداد و خط تیره"),
-  label: z.string().min(1, "نام دسته‌بندی الزامی است"),
-  icon: z.string().min(1, "آیکون الزامی است"),
-});
-const categoryUpdateSchema = z.object({
-  label: z.string().min(1).optional(),
-  icon: z.string().min(1).optional(),
-});
-
 const couponCreateSchema = z.object({
   code: z.string().min(1, "کد کوپن الزامی است."),
   type: z.enum(["PERCENT", "AMOUNT", "FREE_SHIPPING"], {
@@ -93,50 +79,6 @@ export const adminController = {
       const stats = await adminService.getDashboardStats();
       return ok(res, stats, 200);
     } catch (err) {
-      next(err);
-    }
-  }) as RequestHandler,
-
-  // ========== CATEGORIES ==========
-  listCategories: (async (_req, res, next) => {
-    try {
-      const categories = await adminService.listCategories();
-      return ok(res, { categories }, 200);
-    } catch (err) {
-      next(err);
-    }
-  }) as RequestHandler,
-
-  createCategory: (async (req, res, next) => {
-    try {
-      const data = await categoryCreateSchema.parseAsync(req.body);
-      const category = await adminService.createCategory(data);
-      return ok(res, { category }, 201);
-    } catch (err: any) {
-      if (err?.issues?.length) return next(new AppError(err.issues[0].message, 422, "VALIDATION_ERROR"));
-      next(err);
-    }
-  }) as RequestHandler,
-
-  updateCategory: (async (req, res, next) => {
-    try {
-      const { code } = await categoryCodeParamSchema.parseAsync(req.params);
-      const data = await categoryUpdateSchema.parseAsync(req.body);
-      const category = await adminService.updateCategory(code, data);
-      return ok(res, { category }, 200);
-    } catch (err: any) {
-      if (err?.issues?.length) return next(new AppError(err.issues[0].message, 422, "VALIDATION_ERROR"));
-      next(err);
-    }
-  }) as RequestHandler,
-
-  deleteCategory: (async (req, res, next) => {
-    try {
-      const { code } = await categoryCodeParamSchema.parseAsync(req.params);
-      const result = await adminService.deleteCategory(code);
-      return ok(res, result, 200);
-    } catch (err: any) {
-      if (err?.issues?.length) return next(new AppError(err.issues[0].message, 422, "VALIDATION_ERROR"));
       next(err);
     }
   }) as RequestHandler,

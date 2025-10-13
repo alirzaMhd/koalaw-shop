@@ -684,15 +684,9 @@ class ProductService {
       min: agg._min.price ?? 0,
       max: agg._max.price ?? 0,
     };
-    // Categories from settings (override defaults)
-    const catSetting = await prisma.siteSetting.findUnique({
-      where: { key: "categories_meta" },
-      select: { value: true },
-    });
-    const categories = Array.isArray(catSetting?.value) ? (catSetting!.value as any[]) : listCategories();
-
+    
     return {
-      categories,
+      categories: listCategories(),
        brands: brandOptions,
        collections: collectionOptions,
        priceRange,
