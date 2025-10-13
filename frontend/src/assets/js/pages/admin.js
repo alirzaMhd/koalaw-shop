@@ -526,14 +526,14 @@
               <select name="brandId" class="admin-form-input" required>
                 <option value="">انتخاب کنید</option>
                 ${brands.brands
-                  .map(
-                    (b) => `
+            .map(
+              (b) => `
                   <option value="${b.id}" ${data.brandId === b.id ? "selected" : ""}>
                     ${b.name}
                   </option>
                 `
-                  )
-                  .join("")}
+            )
+            .join("")}
               </select>
             </div>
 
@@ -542,14 +542,14 @@
               <select name="collectionId" class="admin-form-input">
                 <option value="">هیچکدام</option>
                 ${collections.collections
-                  .map(
-                    (c) => `
+            .map(
+              (c) => `
                   <option value="${c.id}" ${data.collectionId === c.id ? "selected" : ""}>
                     ${c.name}
                   </option>
                 `
-                  )
-                  .join("")}
+            )
+            .join("")}
               </select>
             </div>
           </div>
@@ -560,14 +560,14 @@
               <select name="colorThemeId" class="admin-form-input">
                 <option value="">هیچکدام</option>
                 ${(colorThemes?.colorThemes || [])
-                  .map(
-                    (ct) => `
+            .map(
+              (ct) => `
                    <option value="${ct.id}" ${data.colorThemeId === ct.id ? "selected" : ""}>
                      ${ct.name}
                    </option>
                  `
-                  )
-                  .join("")}
+            )
+            .join("")}
               </select>
             </div>
 
@@ -588,8 +588,8 @@
             <label class="admin-form-label">نشان‌ها</label>
             <div class="space-y-2" id="badges-checklist">
               ${badges.badges
-                .map(
-                  (b) => `
+            .map(
+              (b) => `
                 <label class="flex items-center gap-2 cursor-pointer p-2 hover:bg-gray-50 rounded">
                   <input 
                     type="checkbox" 
@@ -602,8 +602,8 @@
                   <span>${b.title}</span>
                 </label>
               `
-                )
-                .join("")}
+            )
+            .join("")}
             </div>
           </div>
 
@@ -642,9 +642,8 @@
         <div class="admin-form-section">
           <h3 class="admin-form-section-title">تصویر محصول</h3>
 
-          ${
-            data.heroImageUrl
-              ? `
+          ${data.heroImageUrl
+            ? `
             <div class="admin-form-group">
               <label class="admin-form-label">تصویر فعلی</label>
               <div class="admin-image-preview">
@@ -652,7 +651,7 @@
               </div>
             </div>
           `
-              : ""
+            : ""
           }
 
           <div class="admin-form-group">
@@ -679,7 +678,18 @@
             <small class="text-gray-500">در صورت آپلود فایل، این فیلد نادیده گرفته می‌شود</small>
           </div>
         </div>
-
+ 
+        <div class="admin-form-section">
+          <h3 class="admin-form-section-title">واریانت‌ها</h3>
+          <div id="variants-list" class="space-y-3"></div>
+          <button type="button" class="admin-btn admin-btn-secondary" id="add-variant-btn">
+            <i data-feather="plus"></i>
+            افزودن واریانت
+          </button>
+          <small class="text-gray-500 block mt-2">
+            ترتیب نمایش بر اساس ترتیب لیست است.
+          </small>
+        </div>
         <div class="admin-form-section">
           <h3 class="admin-form-section-title">تنظیمات</h3>
 
@@ -736,6 +746,97 @@
         const newPreviewImg = document.getElementById("new-image-preview-img");
         const removePreviewBtn = document.getElementById("remove-preview-btn");
         const urlInput = document.getElementById("hero-image-url");
+        // ===== Variants UI =====
+        const variantsList = document.getElementById("variants-list");
+        const addVariantBtn = document.getElementById("add-variant-btn");
+        let variantRowUid = 0;
+
+        function addVariantRow(v = {}) {
+          const uid = ++variantRowUid;
+          const row = document.createElement("div");
+          row.className = "variant-row border rounded-lg p-3";
+          row.innerHTML = `
+          <div class="admin-form-row">
+            <div class="admin-form-group">
+              <label class="admin-form-label required">نام واریانت</label>
+              <input type="text" name="variantName" class="admin-form-input" value="${v.variantName || ""}" required />
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">SKU</label>
+              <input type="text" name="sku" class="admin-form-input" value="${v.sku || ""}" />
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">قیمت اختصاصی (تومان)</label>
+              <input type="number" name="price" class="admin-form-input" min="0" value="${typeof v.price === "number" ? v.price : ""}" />
+              <small class="text-gray-500">خالی = از قیمت محصول</small>
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">موجودی</label>
+              <input type="number" name="stock" class="admin-form-input" min="0" value="${typeof v.stock === "number" ? v.stock : 0}" />
+            </div>
+          </div>
+          <div class="admin-form-row">
+            <div class="admin-form-group">
+              <label class="admin-form-label">نام رنگ</label>
+              <input type="text" name="colorName" class="admin-form-input" value="${v.colorName || ""}" />
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">کد رنگ</label>
+              <div class="flex items-center gap-2">
+                <input type="color" class="variant-hex-picker" id="variant-hex-picker-${uid}" value="${v.colorHexCode || "#ffffff"}">
+                <input type="text" name="colorHexCode" class="admin-form-input variant-hex-input" placeholder="#RRGGBB" value="${v.colorHexCode || ""}" />
+              </div>
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">وضعیت</label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" name="isActive" class="w-4 h-4" ${v.isActive === false ? "" : "checked"} />
+                <span>فعال</span>
+              </label>
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">&nbsp;</label>
+              <button type="button" class="admin-btn admin-btn-danger w-full remove-variant-btn">
+                <i data-feather="trash-2"></i>
+                حذف واریانت
+              </button>
+            </div>
+          </div>
+        `;
+
+          // Sync color picker <-> text input
+          const hexPicker = row.querySelector(`#variant-hex-picker-${uid}`);
+          const hexInput = row.querySelector(".variant-hex-input");
+          hexPicker?.addEventListener("input", (e) => {
+            hexInput.value = e.target.value;
+          });
+          hexInput?.addEventListener("input", (e) => {
+            const val = e.target.value.trim();
+            if (/^#[0-9a-fA-F]{6}$/.test(val)) {
+              hexPicker.value = val;
+            }
+          });
+
+          // Remove row
+          row.querySelector(".remove-variant-btn")?.addEventListener("click", () => {
+            row.remove();
+          });
+
+          variantsList.appendChild(row);
+          utils.refreshIcons();
+        }
+
+        // Prefill existing variants on edit
+        if (isEdit && Array.isArray(data.variants) && data.variants.length) {
+          data.variants.forEach((v) => addVariantRow(v));
+        }
+
+        // Add empty row for convenience on create
+        if (!isEdit && variantsList && variantsList.children.length === 0) {
+          addVariantRow();
+        }
+
+        addVariantBtn?.addEventListener("click", () => addVariantRow());
 
         fileInput.addEventListener("change", (e) => {
           const file = e.target.files[0];
@@ -934,6 +1035,36 @@
                 heroImageUrl.trim() !== ""
               ) {
                 payload.heroImageUrl = heroImageUrl.trim();
+              }
+              // Collect variants
+              const variantRows = Array.from(document.querySelectorAll(".variant-row"));
+              const variantsPayload = [];
+              for (let i = 0; i < variantRows.length; i++) {
+                const row = variantRows[i];
+                const get = (sel) => row.querySelector(sel);
+                const variantName = get('input[name="variantName"]')?.value?.trim();
+                if (!variantName) continue; // skip incomplete rows
+                const sku = get('input[name="sku"]')?.value?.trim();
+                const priceStr = get('input[name="price"]')?.value;
+                const stockStr = get('input[name="stock"]')?.value;
+                const colorName = get('input[name="colorName"]')?.value?.trim();
+                const colorHexCode = get('input[name="colorHexCode"]')?.value?.trim();
+                const isActive = get('input[name="isActive"]')?.checked ?? true;
+
+                const v = {
+                  variantName,
+                  ...(sku ? { sku } : {}),
+                  ...(priceStr ? { price: parseInt(priceStr, 10) } : {}),
+                  ...(stockStr ? { stock: parseInt(stockStr, 10) } : { stock: 0 }),
+                  ...(colorName ? { colorName } : {}),
+                  ...(colorHexCode && /^#[0-9A-Fa-f]{6}$/.test(colorHexCode) ? { colorHexCode } : {}),
+                  isActive,
+                  position: i,
+                };
+                variantsPayload.push(v);
+              }
+              if (variantsPayload.length > 0) {
+                payload.variants = variantsPayload;
               }
 
               // Badges
@@ -1208,19 +1339,18 @@
             <label class="admin-form-label">نویسنده</label>
             <select name="authorId" class="admin-form-input">
               <option value="">هیچکدام</option>
-              ${
-                Array.isArray(authors)
-                  ? authors
-                      .map(
-                        (a) => `
+              ${Array.isArray(authors)
+            ? authors
+              .map(
+                (a) => `
                 <option value="${a.id}" ${data.authorId === a.id ? "selected" : ""}>
                   ${a.name}
                 </option>
               `
-                      )
-                      .join("")
-                  : ""
-              }
+              )
+              .join("")
+            : ""
+          }
             </select>
           </div>
 
@@ -1249,9 +1379,8 @@
         <div class="admin-form-section">
           <h3 class="admin-form-section-title">تصویر شاخص</h3>
 
-          ${
-            data.heroImageUrl
-              ? `
+          ${data.heroImageUrl
+            ? `
             <div class="admin-form-group">
               <label class="admin-form-label">تصویر فعلی</label>
               <div class="admin-image-preview">
@@ -1259,7 +1388,7 @@
               </div>
             </div>
           `
-              : ""
+            : ""
           }
 
           <div class="admin-form-group">
@@ -1310,13 +1439,12 @@
           <div class="admin-form-group">
             <label class="admin-form-label">برچسب‌ها (با کاما جدا کنید)</label>
             <input type="text" name="tags" class="admin-form-input" value="${data.tags?.map((t) => t.tag?.name || t.name).join(", ") || ""}" />
-            ${
-              Array.isArray(tags) && tags.length
-                ? `
+            ${Array.isArray(tags) && tags.length
+            ? `
               <small class="text-gray-500">برچسب‌های موجود: ${tags.map((t) => t.name).join(", ")}</small>
             `
-                : ""
-            }
+            : ""
+          }
           </div>
         </div>
 
@@ -1442,10 +1570,10 @@
               const tagsInput = formData.get("tags");
               const tagsArray = tagsInput
                 ? tagsInput
-                    .toString()
-                    .split(",")
-                    .map((t) => t.trim())
-                    .filter(Boolean)
+                  .toString()
+                  .split(",")
+                  .map((t) => t.trim())
+                  .filter(Boolean)
                 : [];
 
               const authorIdValue = formData.get("authorId");
@@ -2878,8 +3006,8 @@
         if (tbody) {
           tbody.innerHTML = data.colorThemes?.length
             ? data.colorThemes
-                .map(
-                  (theme) => `
+              .map(
+                (theme) => `
         <tr>
           <td>
             <span class="inline-block w-6 h-6 rounded-full border" style="background-color: ${theme.hexCode || "transparent"}"></span>
@@ -2899,8 +3027,8 @@
           </td>
         </tr>
       `
-                )
-                .join("")
+              )
+              .join("")
             : '<tr><td colspan="5" class="text-center py-8 text-gray-500">تم رنگی وجود ندارد</td></tr>';
         }
         utils.refreshIcons();
@@ -3025,12 +3153,12 @@
                   </div>
                   <div class="flex gap-1">
                     ${Array(5)
-                      .fill(0)
-                      .map(
-                        (_, i) =>
-                          `<i data-feather="star" class="w-4 h-4 ${i < review.rating ? "fill-current text-yellow-400" : "text-gray-300"}"></i>`
-                      )
-                      .join("")}
+                  .fill(0)
+                  .map(
+                    (_, i) =>
+                      `<i data-feather="star" class="w-4 h-4 ${i < review.rating ? "fill-current text-yellow-400" : "text-gray-300"}"></i>`
+                  )
+                  .join("")}
                   </div>
                 </div>
                 <p class="text-gray-700 mb-4">${review.body}</p>
@@ -3549,4 +3677,4 @@
     eventHandlers.init();
     router.init();
   });
-  })();
+})();
