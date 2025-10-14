@@ -1033,7 +1033,31 @@ main { padding-top: clamp(5rem, 10vw, 6rem); }
   transition: transform .25s ease; box-shadow: 0 -10px 30px rgba(227,154,180,.25);
 }
 .drawer.active .panel { transform: translateY(0); }
+/* Orders — filter buttons (responsive + non-shrinking with horizontal scroll) */
+.order-filter-buttons {
+  flex-wrap: nowrap;              /* keep buttons on one line */
+  overflow-x: auto;               /* enable horizontal scrollbar */
+  -webkit-overflow-scrolling: touch;
+  gap: 0.75rem;                   /* tighter spacing on small screens */
+  padding-bottom: 0.5rem;         /* space for scrollbar */
+}
 
+.order-filter-buttons .btn-filter-order {
+  flex: 0 0 auto;                 /* prevent flex-shrink (no squeezing) */
+  white-space: nowrap;            /* keep labels in one line */
+  font-size: clamp(0.85rem, 2.6vw, 0.95rem);  /* scale text down slightly */
+  padding: clamp(0.55rem, 2.2vw, 0.75rem) clamp(0.9rem, 3vw, 1.25rem); /* responsive padding */
+  min-height: 36px;               /* override global 44px for compactness */
+  line-height: 1.2;
+}
+
+@media (max-width: 480px) {
+  .order-filter-buttons { gap: 0.5rem; }
+  .order-filter-buttons .btn-filter-order {
+    font-size: clamp(0.8rem, 3.2vw, 0.9rem);
+    min-height: 34px;
+  }
+}
 section[id] { scroll-margin-top: 7rem; }
 @media (min-width: 768px) { section[id] { scroll-margin-top: 8.5rem; } }
 
