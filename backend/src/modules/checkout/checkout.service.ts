@@ -12,6 +12,7 @@ import {
   pricingService,
   type QuoteOptions,
   type QuoteResult,
+  type QuoteLine,
   type ShippingMethod as QuoteShippingMethod,
 } from "../pricing/pricing.service.js";
 import { taxService, type TaxContext } from "../pricing/tax.service.js";
@@ -58,18 +59,35 @@ let stripeGateway: StripeGateway | null = null;
 let paypalGateway: PaypalGateway | null = null;
 let zarinpalGateway: ZarinpalGateway | null = null;
 
-try {
-  const sg = require("../../infrastructure/payment/stripe.gateway");
-  stripeGateway = sg?.stripeGateway ?? sg?.default ?? null;
-} catch {}
-try {
-  const pg = require("../../infrastructure/payment/paypal.gateway");
-  paypalGateway = pg?.paypalGateway ?? pg?.default ?? null;
-} catch {}
-try {
-  const zg = require("../../infrastructure/payment/zarinpal.gateway");
-  zarinpalGateway = zg?.zarinpalGateway ?? zg?.default ?? null;
-} catch {}
+// Load gateways dynamically
+async function loadGateways() {
+  try {
+    const { stripeGateway: sg } = await import("../../infrastructure/payment/stripe.gateway.js");
+    stripeGateway = sg;
+    logger.info("Stripe gateway loaded");
+  } catch (e) {
+    logger.debug("Stripe gateway not available");
+  }
+
+  try {
+    const { paypalGateway: pg } = await import("../../infrastructure/payment/paypal.gateway.js");
+    paypalGateway = pg;
+    logger.info("PayPal gateway loaded");
+  } catch (e) {
+    logger.debug("PayPal gateway not available");
+  }
+
+  try {
+    const { zarinpalGateway: zg } = await import("../../infrastructure/payment/zarinpal.gateway.js");
+    zarinpalGateway = zg;
+    logger.info("Zarinpal gateway loaded");
+  } catch (e: any) {
+    logger.error({ err: e?.message }, "Zarinpal gateway failed to load - check ZARINPAL_MERCHANT_ID in .env");
+  }
+}
+
+// Initialize gateways on module load
+loadGateways().catch((e) => logger.error({ err: e }, "Failed to load payment gateways"));
 
 export type PaymentMethod = "gateway" | "cod";
 
@@ -171,6 +189,10 @@ function toTaxCtx(addr: Required<CheckoutAddress>): TaxContext {
   };
 }
 
+function isUUID(v: string): boolean {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(String(v));
+}
+
 class CheckoutService {
   async prepareQuote(cartId: string, opts: QuoteOptions = {}): Promise<QuoteResult> {
     return pricingService.quoteCart(cartId, opts);
@@ -182,11 +204,34 @@ class CheckoutService {
     address: CheckoutAddress;
     options: CheckoutOptions;
     returnUrl?: string | undefined;
-    cancelUrl?: string | undefined;
+    
+    lines?: Array<{
+      title: string;
+      unitPrice: number;
+      quantity: number;
+      productId?: string | null;
+      variantId?: string | null;
+      variantName?: string | null;
+      imageUrl?: string | null;
+      currencyCode?: string | undefined;
+    }>;
   }): Promise<CheckoutResult> {
     const { cartId, userId, address, options } = args;
 
-    const cart = await prisma.cart.findUnique({ where: { id: cartId }, select: { id: true, status: true } });
+    // Guard against non-UUID cart IDs to avoid Prisma P2023
+    if (!isUUID(cartId)) {
+      throw new AppError("Invalid cart ID.", 422, "VALIDATION_ERROR");
+    }
+
+    let cart;
+    try {
+      cart = await prisma.cart.findUnique({ where: { id: cartId }, select: { id: true, status: true } });
+    } catch (e: any) {
+      if (e?.code === "P2023") {
+        throw new AppError("Invalid cart ID.", 422, "VALIDATION_ERROR");
+      }
+      throw e;
+    }
     if (!cart) throw new AppError("سبد خرید یافت نشد.", 404, "CART_NOT_FOUND");
     if (cart.status !== "ACTIVE") throw new AppError("سبد خرید فعال نیست.", 400, "CART_INACTIVE");
 
@@ -206,13 +251,46 @@ class CheckoutService {
       },
     });
     if (!items.length) throw new AppError("سبد خرید خالی است.", 400, "CART_EMPTY");
-
-    const quote = await pricingService.quoteCart(cartId, {
-      couponCode: options.couponCode ?? null,
-      ...(options.shippingMethod !== undefined ? { shippingMethod: options.shippingMethod } : {}),
-      ...(options.giftWrap !== undefined ? { giftWrap: options.giftWrap } : {}),
-      ...(userId ? { userId } : {}),
-    });
+    const adHocLines = Array.isArray(args.lines)
+      ? args.lines.filter(
+          (l) =>
+            !!l &&
+            !isNaN(Number(l.unitPrice)) &&
+            Math.floor(Number(l.quantity || 0)) > 0 &&
+            String(l.title || "").trim().length > 0
+        )
+      : [];
+    // Use ad-hoc lines whenever provided (even if DB cart has items), otherwise fall back to DB cart
+    const useAdHoc = adHocLines.length > 0;
+    if (!items.length && !useAdHoc) {
+      throw new AppError("سبد خرید خالی است.", 400, "CART_EMPTY");
+    }
+    const quote: QuoteResult = useAdHoc
+      ? await pricingService.quoteLines(
+          adHocLines.map<QuoteLine>((l) => ({
+            title: l.title,
+            unitPrice: Math.floor(Number(l.unitPrice || 0)),
+            quantity: Math.max(1, Math.floor(Number(l.quantity || 1))),
+            lineTotal:
+              Math.floor(Number(l.unitPrice || 0)) *
+              Math.max(1, Math.floor(Number(l.quantity || 1))),
+            imageUrl: l.imageUrl ?? null,
+            variantName: l.variantName ?? null,
+            currencyCode: l.currencyCode,
+          })),
+          {
+            couponCode: options.couponCode ?? null,
+            ...(options.shippingMethod !== undefined ? { shippingMethod: options.shippingMethod } : {}),
+            ...(options.giftWrap !== undefined ? { giftWrap: options.giftWrap } : {}),
+            ...(userId ? { userId } : {}),
+          }
+        )
+      : await pricingService.quoteCart(cartId, {
+          couponCode: options.couponCode ?? null,
+          ...(options.shippingMethod !== undefined ? { shippingMethod: options.shippingMethod } : {}),
+          ...(options.giftWrap !== undefined ? { giftWrap: options.giftWrap } : {}),
+          ...(userId ? { userId } : {}),
+        });
 
     const addr = ensureAddress(address);
     const orderNumber = await generateOrderNumber();
@@ -267,9 +345,23 @@ class CheckoutService {
         },
       });
 
-      if (items.length) {
-        await tx.orderItem.createMany({
-          data: items.map((it, idx) => ({
+      const itemsForOrder = useAdHoc
+        ? adHocLines.map((l, idx) => ({
+            orderId: order.id,
+            productId: l.productId || null,
+            variantId: l.variantId || null,
+            title: l.title,
+            variantName: l.variantName || null,
+            unitPrice: Math.floor(Number(l.unitPrice || 0)),
+            quantity: Math.max(1, Math.floor(Number(l.quantity || 1))),
+            lineTotal:
+              Math.floor(Number(l.unitPrice || 0)) *
+              Math.max(1, Math.floor(Number(l.quantity || 1))),
+            currencyCode: l.currencyCode || currency,
+            imageUrl: l.imageUrl || null,
+            position: idx,
+          }))
+        : items.map((it, idx) => ({
             orderId: order.id,
             productId: it.productId || null,
             variantId: it.variantId || null,
@@ -281,9 +373,11 @@ class CheckoutService {
             currencyCode: it.currencyCode || currency,
             imageUrl: it.imageUrl || null,
             position: idx,
-          })),
-        });
+          }));
+      if (!itemsForOrder.length) {
+        throw new AppError("سبد خرید خالی است.", 400, "CART_EMPTY");
       }
+      await tx.orderItem.createMany({ data: itemsForOrder });
 
       const payment = await tx.payment.create({
         data: {
@@ -298,8 +392,9 @@ class CheckoutService {
         },
       });
 
-      await tx.cart.update({ where: { id: cartId }, data: { status: "CONVERTED" } });
-
+      if (!useAdHoc) {
+        await tx.cart.update({ where: { id: cartId }, data: { status: "CONVERTED" } });
+      }
       return { order, payment };
     });
 

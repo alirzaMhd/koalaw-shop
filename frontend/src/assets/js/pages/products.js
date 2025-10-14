@@ -129,7 +129,7 @@
         if (typeof KUtils?.setJSON === "function")
           return KUtils.setJSON(key, val);
         localStorage.setItem(key, JSON.stringify(val));
-      } catch {}
+      } catch { }
     };
 
     const loadCart = () => {
@@ -182,6 +182,70 @@
 
     // ----------- Helpers -----------
     const API_BASE = "/api/products";
+    const API_ROOT = "/api";
+    const CARTS_API = `${API_ROOT}/carts`;
+    const UUID_RE =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    const isUUID = (v) => UUID_RE.test(String(v || ""));
+    const uuidv4 = () =>
+      "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+        const r = (crypto?.getRandomValues?.(new Uint8Array(1))[0] ?? Math.floor(Math.random() * 256)) & 15;
+        const v = c === "x" ? r : (r & 0x3) | 0x8;
+        return v.toString(16);
+      });
+    async function getOrCreateBackendCartId() {
+      // Check if user is authenticated
+      if (isAuthenticated && currentUser) {
+        // Use authenticated user cart endpoint
+        try {
+          const resp = await fetch(`${CARTS_API}/me`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+            credentials: "include", // Include auth cookies
+          });
+
+          if (resp.ok) {
+            const json = await resp.json();
+            const id = json?.data?.cart?.id;
+            if (isUUID(id)) {
+              KUtils?.setJSON?.("koalaw_backend_cart_id", id);
+              return id;
+            }
+          }
+        } catch (e) {
+          console.warn(
+            "Failed to get authenticated cart, falling back to anonymous:",
+            e
+          );
+        }
+      }
+
+      // Anonymous cart flow (for guests or if authenticated cart fails)
+      let backendCartId = KUtils?.getJSON?.("koalaw_backend_cart_id");
+      if (backendCartId && isUUID(backendCartId)) return backendCartId;
+
+      let anonymousId = KUtils?.getJSON?.("koalaw_anonymous_id");
+      if (!anonymousId || !isUUID(anonymousId)) {
+        anonymousId = uuidv4();
+        KUtils?.setJSON?.("koalaw_anonymous_id", anonymousId);
+      }
+
+      const resp = await fetch(`${CARTS_API}/anonymous`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ anonymousId }),
+      });
+
+      if (!resp.ok) throw new Error("Failed to create/get backend cart");
+      const json = await resp.json();
+      const id = json?.data?.cart?.id;
+      if (!isUUID(id)) throw new Error("Invalid backend cart id");
+      KUtils?.setJSON?.("koalaw_backend_cart_id", id);
+      return id;
+    }
     const REVIEWS_API = "/api/reviews"; // NEW
 
     const toFa = (n) => {
@@ -570,8 +634,7 @@
             .fill(0)
             .map(
               (_, i) =>
-                `<i data-feather="star" class="w-4 h-4 ${
-                  i < currentRating ? "fill-current" : ""
+                `<i data-feather="star" class="w-4 h-4 ${i < currentRating ? "fill-current" : ""
                 }"></i>`
             )
             .join("");
@@ -907,8 +970,9 @@
       renderPrice();
 
       // Add to cart
+      // Add to cart
       if (addBtn) {
-        addBtn.addEventListener("click", () => {
+        addBtn.addEventListener("click", async () => {
           if (availableStock <= 0) {
             showToast("این محصول ناموجود است", "x-circle");
             return;
@@ -957,6 +1021,11 @@
 
           if (idx > -1) {
             cart[idx].qty = totalQty;
+            cart[idx].productId = cart[idx].productId || p.id;
+            cart[idx].variantId =
+              cart[idx].variantId || selectedVariantId || null;
+            cart[idx].currencyCode =
+              cart[idx].currencyCode || p.currencyCode || "IRR";
           } else {
             cart.push({
               id: lineId,
@@ -966,12 +1035,94 @@
               qty: quantity,
               image: imageUrl,
               variant: vObj?.variantName || "",
+              productId: p.id,
+              variantId: selectedVariantId || null,
+              currencyCode: p.currencyCode || "IRR",
             });
           }
 
           saveCart(cart);
           updateNavCartCount();
           showToast("به سبد اضافه شد", "check-circle");
+
+          // Sync to backend cart with comprehensive error handling
+          try {
+            console.log("[ADD TO CART] Starting backend sync...");
+            console.log("[ADD TO CART] Product ID:", p.id);
+            console.log(
+              "[ADD TO CART] Selected Variant ID:",
+              selectedVariantId
+            );
+            console.log("[ADD TO CART] Quantity:", quantity);
+
+            // Validate product ID is UUID
+            if (!isUUID(p.id)) {
+              console.error(
+                "[ADD TO CART] Product ID is not a valid UUID:",
+                p.id
+              );
+              throw new Error("Invalid product ID format");
+            }
+
+            const cartId = await getOrCreateBackendCartId();
+            console.log("[ADD TO CART] Backend Cart ID:", cartId);
+
+            const payload = {
+              productId: p.id,
+              variantId:
+                selectedVariantId && isUUID(selectedVariantId)
+                  ? selectedVariantId
+                  : null,
+              quantity: quantity,
+            };
+
+            console.log(
+              "[ADD TO CART] Payload:",
+              JSON.stringify(payload, null, 2)
+            );
+
+            const response = await fetch(`${CARTS_API}/${cartId}/items`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+              },
+              body: JSON.stringify(payload),
+            });
+
+            console.log("[ADD TO CART] Response status:", response.status);
+
+            if (!response.ok) {
+              const errorText = await response.text();
+              console.error("[ADD TO CART] Backend error response:", errorText);
+
+              let errorJson;
+              try {
+                errorJson = JSON.parse(errorText);
+              } catch {
+                errorJson = { message: errorText };
+              }
+
+              throw new Error(
+                errorJson?.message || `Backend sync failed: ${response.status}`
+              );
+            }
+
+            const result = await response.json();
+            console.log("[ADD TO CART] Success! Backend response:", result);
+          } catch (e) {
+            console.error("[ADD TO CART] Backend sync failed:", e);
+            console.error("[ADD TO CART] Error details:", {
+              message: e.message,
+              stack: e.stack,
+            });
+
+            // Show error toast but don't prevent local cart update
+            showToast(
+              `افزوده شد (همگام‌سازی با سرور ناموفق: ${e.message})`,
+              "alert-triangle"
+            );
+          }
 
           addBtn.classList.add("opacity-90");
           setTimeout(() => addBtn.classList.remove("opacity-90"), 200);

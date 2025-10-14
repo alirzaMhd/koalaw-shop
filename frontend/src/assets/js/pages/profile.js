@@ -42,24 +42,64 @@
 
     // Load orders
     async function loadOrders(status = "all") {
+      console.log("[ORDERS] Loading orders with status:", status);
+
       try {
         const url =
           status === "all"
-            ? "/api/profile/orders"
-            : `/api/profile/orders?status=${status}`;
+            ? "/api/orders/me"
+            : `/api/orders/me?status=${status}`;
+
+        console.log("[ORDERS] Fetching from:", url);
+
         const response = await fetch(url, {
           method: "GET",
           credentials: "include",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
         });
 
-        if (response.ok) {
-          const result = await response.json();
-          ordersData = result.data.orders;
-          updateOrdersUI(ordersData);
+        console.log("[ORDERS] Response status:", response.status);
+
+        if (response.status === 401) {
+          console.error("[ORDERS] Unauthorized - redirecting to login");
+          window.location.href = "/login?redirect=/profile";
+          return;
         }
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error("[ORDERS] Error response:", errorText);
+          throw new Error(`HTTP ${response.status}: ${errorText}`);
+        }
+
+        const result = await response.json();
+        console.log("[ORDERS] API response:", result);
+
+        // The backend returns { success, data: { items, meta } }
+        ordersData = result?.data?.items || [];
+        console.log("[ORDERS] Parsed orders data:", ordersData);
+
+        updateOrdersUI(ordersData);
       } catch (err) {
-        console.error("Failed to load orders:", err);
+        console.error("[ORDERS] Failed to load orders:", err);
+        // Show error state in UI
+        const ordersContainer = document.querySelector(
+          "#orders .profile-card .space-y-4"
+        );
+        if (ordersContainer) {
+          ordersContainer.innerHTML = `
+        <div class="text-center py-8 text-red-500">
+          <i data-feather="alert-circle" class="w-12 h-12 mx-auto mb-4"></i>
+          <p>خطا در بارگذاری سفارش‌ها</p>
+          <p class="text-sm mt-2">${err.message}</p>
+          <button onclick="location.reload()" class="btn-primary mt-4">تلاش مجدد</button>
+        </div>
+      `;
+          KUtils.refreshIcons();
+        }
       }
     }
 
@@ -108,7 +148,8 @@
         const persianDate = new Intl.DateTimeFormat("fa-IR", {
           year: "numeric",
           month: "long",
-        }).format(date);
+          day: "numeric",
+        }).format(new Date(order.placedAt || order.createdAt));
         memberSince.textContent = `عضو از: ${persianDate}`;
       }
 
@@ -206,9 +247,16 @@
 
     // Update orders UI
     function updateOrdersUI(orders) {
+      console.log("[ORDERS UI] Updating UI with orders:", orders);
+      console.log("[ORDERS UI] Orders count:", orders?.length || 0);
+
       // Update recent orders in dashboard
       const recentOrdersContainer = document.querySelector(
         "#dashboard .profile-card .space-y-4"
+      );
+      console.log(
+        "[ORDERS UI] Recent orders container found:",
+        !!recentOrdersContainer
       );
       if (recentOrdersContainer) {
         recentOrdersContainer.innerHTML = "";
@@ -234,8 +282,11 @@
       const ordersContainer = document.querySelector(
         "#orders .profile-card .space-y-4"
       );
+      console.log("[ORDERS UI] Orders container found:", !!ordersContainer);
+      console.log("[ORDERS UI] Container element:", ordersContainer);
       if (ordersContainer) {
         ordersContainer.innerHTML = "";
+        console.log("[ORDERS UI] Rendering", orders.length, "orders");
         if (orders.length === 0) {
           ordersContainer.innerHTML = `
             <div class="text-center py-8 text-gray-500">
@@ -324,8 +375,8 @@
         <p class="text-gray-600 leading-relaxed mb-2">${fullAddress}</p>
         <p class="text-sm text-gray-500 mb-2">${locationText}</p>
         <p class="text-sm text-gray-500">${address.firstName} ${
-        address.lastName
-      } - ${address.phone}</p>
+          address.lastName
+        } - ${address.phone}</p>
       `;
 
       return div;
@@ -333,97 +384,155 @@
 
     // Create order card element
     function createOrderCard(order, isCompact) {
+      console.log(
+        "[CREATE ORDER CARD] Order data:",
+        JSON.stringify(order, null, 2)
+      );
       const div = document.createElement("div");
       div.className = "order-card";
 
-      const persianDate = new Intl.DateTimeFormat("fa-IR", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      }).format(new Date(order.createdAt));
-
+      // Handle date safely
+      let persianDate = "تاریخ نامشخص";
+      try {
+        const dateValue = order.placedAt || order.createdAt;
+        if (dateValue) {
+          const dateObj = new Date(dateValue);
+          if (!isNaN(dateObj.getTime())) {
+            persianDate = new Intl.DateTimeFormat("fa-IR", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            }).format(dateObj);
+          } else {
+            console.warn("[ORDER CARD] Invalid date value:", dateValue);
+          }
+        } else {
+          console.warn("[ORDER CARD] No date field found in order:", order);
+        }
+      } catch (err) {
+        console.error(
+          "[ORDER CARD] Date formatting error:",
+          err,
+          "Order:",
+          order
+        );
+      }
       const statusClass = getStatusClass(order.status);
 
       if (isCompact) {
         div.innerHTML = `
-          <div class="flex justify-between items-start mb-3">
-            <div>
-              <h4 class="font-semibold text-gray-800">${order.orderNumber}</h4>
-              <p class="text-sm text-gray-600">${persianDate}</p>
-            </div>
-            <span class="status-badge ${statusClass}">${
-          order.statusLabel
-        }</span>
-          </div>
-          <div class="flex items-center gap-3 mb-3">
-            <img src="${
-              order.items[0]?.imageUrl || "/assets/images/product.png"
-            }" alt="محصول" class="w-12 h-12 rounded-lg object-cover" />
-            <div>
-              <p class="font-medium">${order.items[0]?.title || "محصول"} ${
-          order.itemCount > 1 ? `+ ${order.itemCount - 1} محصول دیگر` : ""
-        }</p>
-              <p class="text-sm text-gray-600">${order.total.toLocaleString(
-                "fa-IR"
-              )} تومان</p>
-            </div>
-          </div>
-          <div class="flex justify-between items-center">
-            <button class="btn-secondary text-sm">مشاهده جزئیات</button>
-            <button class="btn-primary text-sm">خرید مجدد</button>
-          </div>
-        `;
+    <div class="flex justify-between items-start mb-3">
+      <div>
+        <h4 class="font-semibold text-gray-800">${order.orderNumber}</h4>
+        <p class="text-sm text-gray-600">${persianDate}</p>
+      </div>
+      <span class="status-badge ${statusClass}">${order.statusLabel}</span>
+    </div>
+    <div class="flex items-center gap-3 mb-3">
+      ${
+        order.firstItem
+          ? `
+        <img src="${order.firstItem.imageUrl || "/assets/images/product.png"}" alt="محصول" class="w-12 h-12 rounded-lg object-cover" />
+        <div>
+          <p class="font-medium">${order.firstItem.title}${
+            order.itemsCount > 1 ? ` + ${order.itemsCount - 1} محصول دیگر` : ""
+          }</p>
+          <p class="text-sm text-gray-600">${order.total.toLocaleString("fa-IR")} تومان</p>
+        </div>
+      `
+          : `
+        <div>
+          <p class="font-medium">${order.itemsCount} محصول</p>
+          <p class="text-sm text-gray-600">${order.total.toLocaleString("fa-IR")} تومان</p>
+        </div>
+      `
+      }
+    </div>
+    <div class="flex justify-between items-center">
+      <button class="btn-secondary text-sm">مشاهده جزئیات</button>
+      <button class="btn-primary text-sm">خرید مجدد</button>
+    </div>
+  `;
       } else {
-        const itemsHTML = order.items
-          .map(
-            (item) => `
-          <div class="flex items-center gap-4 mb-3">
-            <img src="${item.imageUrl}" alt="${
-              item.title
-            }" class="w-16 h-16 rounded-lg object-cover" />
-            <div class="flex-1">
-              <h5 class="font-medium">${item.title}${
-              item.variantName ? ` - ${item.variantName}` : ""
-            }</h5>
-              <p class="text-sm text-gray-600">تعداد: ${item.quantity.toLocaleString(
-                "fa-IR"
-              )}</p>
-              <p class="text-sm font-semibold text-primary">${item.lineTotal.toLocaleString(
-                "fa-IR"
-              )} تومان</p>
-            </div>
-          </div>
-        `
-          )
-          .join("");
+        // Full view - check if we have items array
+        let itemsHTML = "";
+
+        if (
+          order.items &&
+          Array.isArray(order.items) &&
+          order.items.length > 0
+        ) {
+          // Full items array available
+          itemsHTML = order.items
+            .map(
+              (item) => `
+      <div class="flex items-center gap-4 mb-3">
+        <img src="${item.imageUrl || "/assets/images/product.png"}" alt="${
+          item.title
+        }" class="w-16 h-16 rounded-lg object-cover" />
+        <div class="flex-1">
+          <h5 class="font-medium">${item.title}${
+            item.variantName ? ` - ${item.variantName}` : ""
+          }</h5>
+          <p class="text-sm text-gray-600">تعداد: ${item.quantity.toLocaleString(
+            "fa-IR"
+          )}</p>
+          <p class="text-sm font-semibold text-primary">${item.lineTotal.toLocaleString(
+            "fa-IR"
+          )} تومان</p>
+        </div>
+      </div>
+    `
+            )
+            .join("");
+        } else if (order.firstItem) {
+          // Only firstItem available (summary view)
+          itemsHTML = `
+      <div class="flex items-center gap-4 mb-3">
+        <img src="${order.firstItem.imageUrl || "/assets/images/product.png"}" alt="${
+          order.firstItem.title
+        }" class="w-16 h-16 rounded-lg object-cover" />
+        <div class="flex-1">
+          <h5 class="font-medium">${order.firstItem.title}</h5>
+          <p class="text-sm text-gray-600">${order.itemsCount || 1} محصول</p>
+        </div>
+      </div>
+      ${order.itemsCount > 1 ? `<p class="text-sm text-gray-500 mb-3">+ ${order.itemsCount - 1} محصول دیگر</p>` : ""}
+    `;
+        } else {
+          // No items data
+          itemsHTML = `
+      <div class="text-gray-500 mb-3">
+        <p>${order.itemsCount || 0} محصول</p>
+      </div>
+    `;
+        }
 
         div.innerHTML = `
-          <div class="flex justify-between items-start mb-4">
-            <div>
-              <h4 class="font-semibold text-gray-800 text-lg">${
-                order.orderNumber
-              }</h4>
-              <p class="text-gray-600">سفارش داده شده در ${persianDate}</p>
-            </div>
-            <span class="status-badge ${statusClass}">${
-          order.statusLabel
-        }</span>
-          </div>
-          <div class="border-t pt-4">
-            ${itemsHTML}
-          </div>
-          <div class="border-t pt-4 flex justify-between items-center">
-            <div>
-              <p class="text-lg font-bold">مجموع: ${order.total.toLocaleString(
-                "fa-IR"
-              )} تومان</p>
-            </div>
-            <div class="flex gap-2">
-              <button class="btn-secondary">مشاهده جزئیات</button>
-              <button class="btn-primary">خرید مجدد</button>
-            </div>
-          </div>
-        `;
+    <div class="flex justify-between items-start mb-4">
+      <div>
+        <h4 class="font-semibold text-gray-800 text-lg">${
+          order.orderNumber
+        }</h4>
+        <p class="text-gray-600">سفارش داده شده در ${persianDate}</p>
+      </div>
+      <span class="status-badge ${statusClass}">${order.statusLabel}</span>
+    </div>
+    <div class="border-t pt-4">
+      ${itemsHTML}
+    </div>
+    <div class="border-t pt-4 flex justify-between items-center">
+      <div>
+        <p class="text-lg font-bold">مجموع: ${order.total.toLocaleString(
+          "fa-IR"
+        )} تومان</p>
+      </div>
+      <div class="flex gap-2">
+        <button class="btn-secondary">مشاهده جزئیات</button>
+        <button class="btn-primary">خرید مجدد</button>
+      </div>
+    </div>
+  `;
       }
 
       return div;
@@ -643,6 +752,301 @@
         }
       }
     });
+    // Order action buttons (View Details & Reorder)
+    document.addEventListener("click", async (e) => {
+      const target = e.target instanceof Element ? e.target : null;
+      if (!target) return;
+
+      // View Details button
+      const detailsBtn = target.closest(".order-card .btn-secondary");
+      if (detailsBtn) {
+        const orderCard = detailsBtn.closest(".order-card");
+        const orderNumber = orderCard?.querySelector("h4")?.textContent?.trim();
+
+        if (orderNumber) {
+          const order = ordersData.find((o) => o.orderNumber === orderNumber);
+          if (order?.id) {
+            // Option 1: Navigate to order detail page (if you have one)
+            // window.location.href = `/order-detail?id=${order.id}`;
+
+            // Option 2: Fetch full order details and show modal
+            try {
+              const response = await fetch(`/api/orders/me/${order.id}`, {
+                credentials: "include",
+                headers: { Accept: "application/json" },
+              });
+
+              if (response.ok) {
+                const result = await response.json();
+                const fullOrder = result.data.order;
+                showOrderDetailsModal(fullOrder);
+              } else {
+                alert("❌ خطا در بارگذاری جزئیات سفارش");
+              }
+            } catch (err) {
+              console.error("Failed to fetch order details:", err);
+              alert("❌ خطا در بارگذاری جزئیات سفارش");
+            }
+          }
+        }
+        return;
+      }
+
+      // Reorder button
+      const reorderBtn = target.closest(".order-card .btn-primary");
+      if (reorderBtn) {
+        const orderCard = reorderBtn.closest(".order-card");
+        const orderNumber = orderCard?.querySelector("h4")?.textContent?.trim();
+
+        if (orderNumber) {
+          const order = ordersData.find((o) => o.orderNumber === orderNumber);
+          if (order?.id) {
+            if (
+              !confirm(
+                "آیا می‌خواهید محصولات این سفارش را دوباره به سبد اضافه کنید؟"
+              )
+            ) {
+              return;
+            }
+
+            try {
+              const response = await fetch(`/api/orders/${order.id}/reorder`, {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                  "Content-Type": "application/json",
+                  Accept: "application/json",
+                },
+              });
+
+              const payload = await response.json().catch(() => ({}));
+
+              if (!response.ok) {
+                const code = payload?.error?.code || payload?.code;
+                if (code === "NO_REORDERABLE_ITEMS") {
+                  alert(
+                    "این سفارش شامل اقلامی است که امکان خرید مجدد خودکار ندارند."
+                  );
+                } else {
+                  alert(
+                    "❌ خطا: " +
+                      (payload?.error?.message ||
+                        payload?.message ||
+                        "خطا در افزودن به سبد")
+                  );
+                }
+                return;
+              }
+
+              const newCartId = payload?.data?.cartId;
+              if (newCartId) {
+                // Persist backend cart id
+                KUtils?.setJSON?.("koalaw_backend_cart_id", newCartId);
+
+                // Fetch backend cart and mirror it into local storage for UI
+                const cartRes = await fetch(`/api/carts/${newCartId}`, {
+                  credentials: "include",
+                  headers: { Accept: "application/json" },
+                });
+                if (cartRes.ok) {
+                  const cartJson = await cartRes.json();
+                  const items = cartJson?.data?.cart?.items || [];
+
+                  const uiItems = items.map((it) => ({
+                    id: it.id, // use backend line id as UI id
+                    title: it.title,
+                    price: it.unitPrice,
+                    qty: it.quantity,
+                    image: it.imageUrl || "/assets/images/product.png",
+                    variant: it.variantName || "",
+                    // keep identifiers for later sync
+                    productId: it.productId,
+                    variantId: it.variantId || null,
+                    currencyCode: it.currencyCode || "IRR",
+                  }));
+
+                  KUtils?.setJSON?.("koalaw_cart", uiItems);
+
+                  // Update header badge if present
+                  const navCnt = document.getElementById("nav-cart-count");
+                  if (navCnt) {
+                    const totalQty = uiItems.reduce(
+                      (a, c) => a + (c.qty || 0),
+                      0
+                    );
+                    navCnt.textContent =
+                      typeof KUtils?.toFa === "function"
+                        ? KUtils.toFa(totalQty)
+                        : String(totalQty);
+                  }
+                }
+
+                alert("✅ محصولات به سبد خرید اضافه شدند!");
+                window.location.href = "/cart#/";
+              } else {
+                alert("❌ پاسخ معتبر از سرور دریافت نشد.");
+              }
+            } catch (err) {
+              console.error("Failed to reorder:", err);
+              alert("❌ خطا در افزودن به سبد خرید");
+            }
+          }
+        }
+        return;
+      }
+    });
+
+    function showOrderDetailsModal(order) {
+      // Overlay
+      const modal = document.createElement("div");
+      modal.className =
+        "fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-2 sm:p-4";
+      modal.style.backdropFilter = "blur(4px)";
+
+      // Container (full-screen on mobile, dialog on >= sm)
+      const container = document.createElement("div");
+      container.className =
+        "relative bg-white w-full h-full sm:w-[92vw] sm:max-w-2xl sm:h-auto sm:max-h-[90vh] rounded-none sm:rounded-2xl overflow-hidden flex flex-col shadow-xl";
+
+      // Header (sticky)
+      const statusLabels = {
+        draft: "پیش‌نویس",
+        awaiting_payment: "در انتظار پرداخت",
+        paid: "پرداخت شده",
+        processing: "در حال پردازش",
+        shipped: "ارسال شده",
+        delivered: "تحویل داده شده",
+        cancelled: "لغو شده",
+        returned: "مرجوع شده",
+      };
+
+      const header = `
+    <div class="sticky top-0 z-10 bg-white border-b px-4 py-3 sm:px-6 sm:py-4 flex items-center justify-between">
+      <h3 class="text-lg sm:text-2xl font-bold truncate">جزئیات سفارش ${order.orderNumber}</h3>
+      <button type="button" class="close-modal p-2 -m-2 text-gray-500 hover:text-gray-700 focus:outline-none">
+        <i data-feather="x"></i>
+      </button>
+    </div>
+  `;
+
+      // Body (scrollable)
+      const itemsHTML = (order.items || [])
+        .map(
+          (item) => `
+    <div class="flex gap-3 sm:gap-4 border-b pb-3 mb-3">
+      <img src="${item.imageUrl || "/assets/images/product.png"}" alt="${item.title}" class="w-14 h-14 sm:w-16 sm:h-16 rounded-lg object-cover flex-shrink-0" />
+      <div class="flex-1 min-w-0">
+        <h5 class="font-semibold break-words">${item.title}${item.variantName ? ` - ${item.variantName}` : ""}</h5>
+        <div class="mt-1 text-xs sm:text-sm text-gray-600 flex items-center gap-3 flex-wrap">
+          <span>تعداد: ${item.quantity.toLocaleString("fa-IR")}</span>
+          <span class="text-primary font-semibold">مبلغ: ${item.lineTotal.toLocaleString("fa-IR")} تومان</span>
+        </div>
+      </div>
+    </div>
+  `
+        )
+        .join("");
+
+      const body = `
+    <div class="flex-1 overflow-y-auto px-4 py-4 sm:p-6 space-y-6">
+      <div>
+        <span class="status-badge ${getStatusClass(order.status)}">${statusLabels[order.status] || order.status}</span>
+      </div>
+
+      <div>
+        <h4 class="font-bold mb-3">محصولات</h4>
+        ${itemsHTML || `<div class="text-sm text-gray-500">محصولی برای نمایش وجود ندارد.</div>`}
+      </div>
+
+      <div class="space-y-2 border-t pt-4">
+        <div class="flex justify-between text-sm sm:text-base">
+          <span>مجموع محصولات:</span>
+          <span>${(order.subtotal ?? order.total ?? 0).toLocaleString("fa-IR")} تومان</span>
+        </div>
+        ${
+          order.discountTotal > 0
+            ? `
+          <div class="flex justify-between text-green-600 text-sm sm:text-base">
+            <span>تخفیف:</span>
+            <span>- ${order.discountTotal.toLocaleString("fa-IR")} تومان</span>
+          </div>
+        `
+            : ""
+        }
+        <div class="flex justify-between text-sm sm:text-base">
+          <span>هزینه ارسال:</span>
+          <span>${order.shippingTotal > 0 ? order.shippingTotal.toLocaleString("fa-IR") + " تومان" : "رایگان"}</span>
+        </div>
+        ${
+          order.giftWrapTotal > 0
+            ? `
+          <div class="flex justify-between text-sm sm:text-base">
+            <span>بسته‌بندی هدیه:</span>
+            <span>${order.giftWrapTotal.toLocaleString("fa-IR")} تومان</span>
+          </div>
+        `
+            : ""
+        }
+        <div class="flex justify-between font-bold text-base sm:text-lg border-t pt-2">
+          <span>مجموع نهایی:</span>
+          <span>${(order.total ?? 0).toLocaleString("fa-IR")} تومان</span>
+        </div>
+      </div>
+
+      <div class="border-t pt-4">
+        <h4 class="font-bold mb-2">آدرس تحویل</h4>
+        <p class="text-sm text-gray-600 leading-relaxed break-words">
+          ${[order.shippingFirstName, order.shippingLastName].filter(Boolean).join(" ")}<br/>
+          ${[order.shippingProvince, order.shippingCity].filter(Boolean).join("، ")}<br/>
+          ${order.shippingAddressLine1 || ""}${order.shippingAddressLine2 ? "<br/>" + order.shippingAddressLine2 : ""}<br/>
+          ${order.shippingPostalCode ? "کد پستی: " + order.shippingPostalCode : ""}<br/>
+          ${order.shippingPhone ? "تلفن: " + order.shippingPhone : ""}
+        </p>
+      </div>
+
+      ${
+        order.note
+          ? `
+        <div class="border-t pt-4">
+          <h4 class="font-bold mb-2">یادداشت</h4>
+          <p class="text-sm text-gray-600 break-words">${order.note}</p>
+        </div>
+      `
+          : ""
+      }
+    </div>
+  `;
+
+      container.innerHTML = header + body;
+      modal.appendChild(container);
+      document.body.appendChild(modal);
+
+      // Lock background scroll
+      const prevOverflow = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+
+      // Wire up close actions
+      const closeBtn = modal.querySelector(".close-modal");
+      const close = () => {
+        document.body.style.overflow = prevOverflow || "";
+        modal.remove();
+      };
+      closeBtn?.addEventListener("click", close);
+      modal.addEventListener("click", (e) => {
+        if (e.target === modal) close();
+      });
+      document.addEventListener("keydown", function onKey(e) {
+        if (e.key === "Escape") {
+          document.removeEventListener("keydown", onKey);
+          close();
+        }
+      });
+
+      // Focus for accessibility
+      setTimeout(() => closeBtn?.focus(), 0);
+
+      KUtils.refreshIcons();
+    }
 
     // Profile image upload functionality
     const profileImageBtn = document.getElementById("profile-image-button");

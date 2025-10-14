@@ -333,8 +333,8 @@ class PaymentService {
 
     let zarinpalGateway: any = null;
     try {
-      const zg = require("../../infrastructure/payment/zarinpal.gateway");
-      zarinpalGateway = zg?.zarinpalGateway ?? zg?.default ?? null;
+      const { zarinpalGateway: zg } = await import("../../infrastructure/payment/zarinpal.gateway.js");
+      zarinpalGateway = zg;
     } catch (e) {
       logger.error("Zarinpal gateway not available for verification");
       throw new AppError("درگاه پرداخت در دسترس نیست.", 503, "GATEWAY_UNAVAILABLE");

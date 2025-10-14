@@ -401,12 +401,39 @@
         })
       );
       itemsWrap?.querySelectorAll(".remove").forEach((btn) =>
-        btn.addEventListener("click", () => {
-          const id = btn.closest("[data-id]").dataset.id;
-          const newCart = cart.filter((x) => x.id !== id);
+        btn.addEventListener("click", async () => {
+          const row = btn.closest("[data-id]");
+          const lineId = row.dataset.id;
+          const item = cart.find((x) => x.id === lineId);
+
+          const newCart = cart.filter((x) => x.id !== lineId);
           saveCart(newCart);
           showToast("آیتم حذف شد", "trash-2");
           renderCart();
+
+          // Sync with backend
+          if (item && item.productId && isUUID(item.productId)) {
+            try {
+              const cartId = await getOrCreateBackendCartId();
+              // Find the backend cart item by productId/variantId
+              const cartResp = await fetch(`${CARTS_API}/${cartId}`, {
+                credentials: "include",
+              });
+              if (cartResp.ok) {
+                const cartData = await cartResp.json();
+                const backendItem = cartData?.data?.cart?.items?.find(
+                  (i) =>
+                    i.productId === item.productId &&
+                    (i.variantId || null) === (item.variantId || null)
+                );
+                if (backendItem?.id) {
+                  await syncDeleteItemFromBackend(cartId, backendItem.id);
+                }
+              }
+            } catch (e) {
+              console.warn("[CART] Failed to sync delete with backend:", e);
+            }
+          }
         })
       );
 
@@ -521,11 +548,19 @@
       // Clear
       const clearBtn = document.getElementById("cart-clear");
       clearBtn &&
-        (clearBtn.onclick = () => {
+        (clearBtn.onclick = async () => {
           if (!cart.length) return;
           if (confirm("آیا از پاک کردن سبد خرید مطمئن هستید؟")) {
             saveCart([]);
             renderCart();
+
+            // Sync with backend
+            try {
+              const cartId = await getOrCreateBackendCartId();
+              await syncClearBackendCart(cartId);
+            } catch (e) {
+              console.warn("[CART] Failed to clear backend cart:", e);
+            }
           }
         });
 
@@ -753,18 +788,122 @@
       // ==================== ZARINPAL INTEGRATION ====================
 
       /**
+       * Sync local cart (if it contains real product IDs) to backend cart
+       */
+      const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}$/i;
+      const isUUID = (v) => UUID_RE.test(String(v || ""));
+      async function syncLocalCartToBackend(backendCartId) {
+        const local = loadCart();
+        const syncable = local.filter((it) => isUUID(it.productId));
+        if (!syncable.length) return;
+        // Clear backend cart first to avoid duplicates
+        await fetch(`${API_BASE}/carts/${backendCartId}/clear`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+        }).catch(() => {});
+        for (const it of syncable) {
+          try {
+            await fetch(`${API_BASE}/carts/${backendCartId}/items`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                productId: it.productId,
+                variantId: it.variantId || null,
+                quantity: Number(it.qty || it.quantity || 1),
+              }),
+            });
+          } catch (e) {
+            console.warn("Failed to sync item to backend cart:", e);
+          }
+        }
+      }
+
+      /**
        * Create order via backend API and handle Zarinpal payment
        */
+
       async function processCheckout(paymentMethod) {
         const cart = loadCart();
         const addr = loadAddress();
         const state = loadState();
 
-        // TODO: Replace this with your actual backend cart ID
-        // For now, we'll use a dummy cart ID - you need to create a cart via your backend first
-        const cartId =
-          KUtils.getJSON("koalaw_backend_cart_id") || "dummy-cart-id";
+        // Ensure a real backend cart exists and use its UUID
+        async function getOrCreateBackendCartId() {
+          const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+          const isUUID = (v) => UUID_RE.test(String(v || ""));
+          const uuidv4 = () =>
+            "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+              const r = (crypto?.getRandomValues?.(new Uint8Array(1))[0] ?? Math.floor(Math.random() * 256)) & 15;
+              const v = c === "x" ? r : (r & 0x3) | 0x8;
+              return v.toString(16);
+            });
 
+          let backendCartId = KUtils.getJSON("koalaw_backend_cart_id");
+          if (backendCartId && isUUID(backendCartId)) return backendCartId;
+
+          let anonymousId = KUtils.getJSON("koalaw_anonymous_id");
+          if (!anonymousId || !isUUID(anonymousId)) {
+            anonymousId = uuidv4();
+            KUtils.setJSON("koalaw_anonymous_id", anonymousId);
+          }
+
+          const resp = await fetch(`${API_BASE}/carts/anonymous`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ anonymousId }),
+          });
+          if (!resp.ok) {
+            const e = await resp.json().catch(() => ({}));
+            throw new Error(e?.message || "Failed to initialize cart");
+          }
+          const json = await resp.json();
+          const id = json?.data?.cart?.id;
+          if (!isUUID(id)) throw new Error("Failed to get valid cart id");
+          KUtils.setJSON("koalaw_backend_cart_id", id);
+          return id;
+        }
+
+        async function syncDeleteItemFromBackend(cartId, itemId) {
+          try {
+            await fetch(`${CARTS_API}/${cartId}/items/${itemId}`, {
+              method: "DELETE",
+              headers: { "Content-Type": "application/json" },
+              credentials: "include",
+            });
+            console.log("[CART] Item deleted from backend:", itemId);
+          } catch (e) {
+            console.warn("[CART] Failed to delete item from backend:", e);
+          }
+        }
+
+        async function syncClearBackendCart(cartId) {
+          try {
+            await fetch(`${CARTS_API}/${cartId}/clear`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              credentials: "include",
+            });
+            console.log("[CART] Backend cart cleared");
+          } catch (e) {
+            console.warn("[CART] Failed to clear backend cart:", e);
+          }
+        }
+
+        async function markCartAsConverted(cartId) {
+          try {
+            await fetch(`${CARTS_API}/${cartId}/status`, {
+              method: "PATCH",
+              headers: { "Content-Type": "application/json" },
+              credentials: "include",
+            });
+            console.log("[CART] Cart marked as converted");
+          } catch (e) {
+            console.warn("[CART] Failed to mark cart as converted:", e);
+          }
+        }
+
+        const cartId = await getOrCreateBackendCartId();
+        await syncLocalCartToBackend(cartId);
         const checkoutPayload = {
           cartId: cartId,
           address: {
@@ -783,8 +922,23 @@
           couponCode: state.coupon || null,
           giftWrap: state.gift || false,
           note: state.note || null,
-          returnUrl: window.location.origin + "/payment-return.html",
+          returnUrl: window.location.origin + "/payment-return",
           cancelUrl: window.location.origin + "/cart",
+          // Send ad-hoc lines so backend can create order even if server cart is empty
+          lines: cart.map((it) => ({
+            title: String(it.title || "").trim(),
+            unitPrice: Number(it.price || 0),
+            quantity: Number(it.qty || 1),
+            imageUrl: it.image || undefined,
+            currencyCode: it.currencyCode || "IRR",
+            productId: it.productId && isUUID(it.productId) ? it.productId : undefined,
+            variantId: it.variantId && isUUID(it.variantId) ? it.variantId : undefined,
+            variantName: it.variant || undefined,
+          })),
+          // Compatibility aliases (controller will normalize to `lines`)
+
+          items: undefined,
+          cart: undefined,
         };
 
         try {
@@ -792,9 +946,9 @@
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              // Add auth token if you have user authentication
-              // "Authorization": `Bearer ${KUtils.getItem("auth_token")}`,
+              Accept: "application/json",
             },
+            credentials: "include", // ← Send auth cookies
             body: JSON.stringify(checkoutPayload),
           });
 
@@ -826,6 +980,7 @@
                 paymentId: data.payment.id,
                 authority: data.payment.authority,
                 amount: data.amounts.total,
+                cartId: checkoutPayload.cartId,
               });
 
               // Redirect to Zarinpal
@@ -839,8 +994,15 @@
             // COD payment - order is placed, show success
             showToast("سفارش با موفقیت ثبت شد!", "check-circle");
 
-            // Clear cart
+            // Clear local cart
             saveCart([]);
+
+            // Mark backend cart as converted
+            try {
+              await syncClearBackendCart(checkoutPayload.cartId);
+            } catch (e) {
+              console.warn("Failed to clear backend cart:", e);
+            }
 
             // Redirect to success page or order detail
             setTimeout(() => {
