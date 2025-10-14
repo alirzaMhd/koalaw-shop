@@ -149,7 +149,7 @@
           year: "numeric",
           month: "long",
           day: "numeric",
-        }).format(new Date(order.placedAt || order.createdAt));
+        }).format(date);
         memberSince.textContent = `عضو از: ${persianDate}`;
       }
 
@@ -189,8 +189,46 @@
       const phoneInput = document.getElementById("phone");
       if (phoneInput) phoneInput.value = profile.phone || "";
 
+      // Birth date - convert Gregorian to Shamsi for display
       const birthDateInput = document.getElementById("birthDate");
-      if (birthDateInput) birthDateInput.value = profile.birthDate || "";
+
+      // Create hidden Gregorian field immediately
+      let hiddenInput = document.getElementById("birthDateGregorian");
+      if (!hiddenInput) {
+        hiddenInput = document.createElement("input");
+        hiddenInput.type = "hidden";
+        hiddenInput.id = "birthDateGregorian";
+        hiddenInput.name = "birthDateGregorian";
+        const formGroup = birthDateInput?.parentNode;
+        if (formGroup) {
+          formGroup.appendChild(hiddenInput);
+        }
+      }
+
+      if (birthDateInput && profile.birthDate) {
+        try {
+          if (typeof persianDate !== "undefined") {
+            const gregorianDate = new Date(profile.birthDate);
+            const pDate = new persianDate(gregorianDate);
+            birthDateInput.value = pDate.format("YYYY/MM/DD");
+
+            // Store Gregorian value in YYYY-MM-DD format
+            hiddenInput.value = profile.birthDate.split("T")[0]; // Ensure YYYY-MM-DD format
+          } else {
+            // Fallback if persian-date library not loaded
+            birthDateInput.value = profile.birthDate.split("T")[0];
+            hiddenInput.value = profile.birthDate.split("T")[0];
+          }
+        } catch (err) {
+          console.error("Error converting birth date:", err);
+          const fallbackDate = profile.birthDate.split("T")[0];
+          birthDateInput.value = fallbackDate;
+          hiddenInput.value = fallbackDate;
+        }
+      } else if (hiddenInput) {
+        // Clear hidden field if no birthDate
+        hiddenInput.value = "";
+      }
 
       // Gender dropdown
       const genderMap = {
@@ -752,6 +790,7 @@
         }
       }
     });
+
     // Order action buttons (View Details & Reorder)
     document.addEventListener("click", async (e) => {
       const target = e.target instanceof Element ? e.target : null;
@@ -1140,18 +1179,28 @@
     }
 
     // Save profile changes
+    // Save profile changes
     const profileForm = document.getElementById("profile-form");
     if (profileForm) {
       profileForm.addEventListener("submit", async (e) => {
         e.preventDefault();
 
+        const birthDateGregorian =
+          document.getElementById("birthDateGregorian")?.value;
+        console.log(
+          "[PROFILE SUBMIT] Birth date (Gregorian):",
+          birthDateGregorian
+        );
+
         const formData = {
           firstName: document.getElementById("firstName")?.value,
           lastName: document.getElementById("lastName")?.value,
           phone: document.getElementById("phone")?.value,
-          birthDate: document.getElementById("birthDate")?.value,
+          birthDate: birthDateGregorian || null,
           gender: document.getElementById("genderValue")?.value?.toUpperCase(),
         };
+
+        console.log("[PROFILE SUBMIT] Form data:", formData);
 
         try {
           const response = await fetch("/api/profile", {
@@ -1168,6 +1217,7 @@
             alert("✅ تغییرات با موفقیت ذخیره شد!");
           } else {
             const error = await response.json();
+            console.error("[PROFILE SUBMIT] Error response:", error);
             alert("❌ خطا: " + (error.error?.message || "خطایی رخ داد"));
           }
         } catch (err) {
@@ -1349,6 +1399,88 @@
         if (e.key === "Escape" && genderWrap.classList.contains("is-open"))
           close();
       });
+    }
+
+    // Initialize Persian Datepicker for birth date
+    // Initialize Persian Datepicker for birth date
+    const birthDateInput = document.getElementById("birthDate");
+    if (birthDateInput && typeof $ !== "undefined" && $.fn.persianDatepicker) {
+      // Ensure hidden field exists before initializing datepicker
+      let hiddenInput = document.getElementById("birthDateGregorian");
+      if (!hiddenInput) {
+        hiddenInput = document.createElement("input");
+        hiddenInput.type = "hidden";
+        hiddenInput.id = "birthDateGregorian";
+        hiddenInput.name = "birthDateGregorian";
+        birthDateInput.parentNode.appendChild(hiddenInput);
+      }
+
+      // Helper function to convert Persian/Farsi digits to Latin
+      function toEnglishDigits(str) {
+        const persianDigits = [
+          "۰",
+          "۱",
+          "۲",
+          "۳",
+          "۴",
+          "۵",
+          "۶",
+          "۷",
+          "۸",
+          "۹",
+        ];
+        const arabicDigits = ["٠", "١", "٢", "٣", "٤", "٥", "٦", "٧", "٨", "٩"];
+
+        for (let i = 0; i < 10; i++) {
+          str = str.replace(new RegExp(persianDigits[i], "g"), i.toString());
+          str = str.replace(new RegExp(arabicDigits[i], "g"), i.toString());
+        }
+        return str;
+      }
+
+      $(birthDateInput).persianDatepicker({
+        initialValue: false,
+        format: "YYYY/MM/DD",
+        autoClose: true,
+        calendar: {
+          persian: {
+            locale: "fa",
+            showHint: true,
+            leapYearMode: "algorithmic",
+          },
+        },
+        maxDate: new persianDate(),
+        observer: true,
+        onSelect: function (unix) {
+          console.log("[DATEPICKER] Date selected:", unix);
+
+          // Convert to Gregorian YYYY-MM-DD format
+          const pDate = new persianDate(unix);
+          let gregorianDate = pDate
+            .toCalendar("gregorian")
+            .format("YYYY-MM-DD");
+
+          // Convert Persian/Farsi digits to Latin digits
+          gregorianDate = toEnglishDigits(gregorianDate);
+
+          console.log(
+            "[DATEPICKER] Gregorian date (Latin digits):",
+            gregorianDate
+          );
+
+          // Update hidden field
+          const hiddenInput = document.getElementById("birthDateGregorian");
+          if (hiddenInput) {
+            hiddenInput.value = gregorianDate;
+            console.log(
+              "[DATEPICKER] Updated hidden field:",
+              hiddenInput.value
+            );
+          }
+        },
+      });
+
+      console.log("[DATEPICKER] Initialized successfully");
     }
   });
 })();

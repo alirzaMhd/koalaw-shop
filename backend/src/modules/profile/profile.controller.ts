@@ -97,11 +97,13 @@ class ProfileController {
       if (!userId) throw new AppError("احراز هویت انجام نشد.", 401, "UNAUTHORIZED");
 
       const parsed = await updateProfileSchema.parseAsync(req.body);
-      // Normalize nullable fields (convert null -> undefined) so they match service signature
+      // Normalize nullable fields (convert null/empty string -> undefined) so they match service signature
       const sanitized = {
         ...parsed,
         phone: (parsed as any).phone ?? undefined,
-        birthDate: (parsed as any).birthDate ?? undefined,
+        birthDate: (parsed as any).birthDate === "" || (parsed as any).birthDate === null
+          ? undefined
+          : (parsed as any).birthDate,
       };
       const profile = await profileService.updateProfile(String(userId), sanitized);
       return ok(res, { profile }, 200);

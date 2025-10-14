@@ -193,7 +193,17 @@ export const profileService = {
     if (data.lastName !== undefined) updateData.lastName = data.lastName;
     if (data.phone !== undefined) updateData.phone = data.phone || null;
     if (data.birthDate !== undefined) {
-      updateData.birthDate = data.birthDate ? new Date(data.birthDate) : null;
+      // Handle empty string, null, or undefined
+      if (!data.birthDate || data.birthDate.trim() === "") {
+        updateData.birthDate = null;
+      } else {
+        const parsedDate = new Date(data.birthDate);
+        // Validate the date is valid
+        if (isNaN(parsedDate.getTime())) {
+          throw new AppError("تاریخ تولد نامعتبر است.", 422, "INVALID_DATE");
+        }
+        updateData.birthDate = parsedDate;
+      }
     }
     if (data.gender !== undefined) updateData.gender = data.gender;
 
