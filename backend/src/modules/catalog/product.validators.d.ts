@@ -79,7 +79,7 @@ export declare const createProductInputSchema: z.ZodEffects<z.ZodObject<{
     heroImageUrl: z.ZodNullable<z.ZodOptional<z.ZodEffects<z.ZodEffects<z.ZodString, string | undefined, string>, string | undefined, string>>>;
     internalNotes: z.ZodOptional<z.ZodString>;
     images: z.ZodOptional<z.ZodArray<z.ZodObject<{
-        url: z.ZodString;
+        url: z.ZodEffects<z.ZodString, string, string>;
         alt: z.ZodOptional<z.ZodString>;
         position: z.ZodOptional<z.ZodNumber>;
     }, "strip", z.ZodTypeAny, {
@@ -122,6 +122,8 @@ export declare const createProductInputSchema: z.ZodEffects<z.ZodObject<{
         colorName?: string | undefined;
         colorHexCode?: string | undefined;
     }>, "many">>;
+    badgeIds: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+    relatedProductIds: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 }, "strip", z.ZodTypeAny, {
     currencyCode: "IRR" | "USD" | "EUR";
     title: string;
@@ -159,6 +161,8 @@ export declare const createProductInputSchema: z.ZodEffects<z.ZodObject<{
         colorHexCode?: string | undefined;
     }[] | undefined;
     brandSlug?: string | undefined;
+    badgeIds?: string[] | undefined;
+    relatedProductIds?: string[] | undefined;
 }, {
     title: string;
     category: string;
@@ -196,6 +200,8 @@ export declare const createProductInputSchema: z.ZodEffects<z.ZodObject<{
         colorHexCode?: string | undefined;
     }[] | undefined;
     brandSlug?: string | undefined;
+    badgeIds?: string[] | undefined;
+    relatedProductIds?: string[] | undefined;
 }>, {
     currencyCode: "IRR" | "USD" | "EUR";
     title: string;
@@ -233,6 +239,8 @@ export declare const createProductInputSchema: z.ZodEffects<z.ZodObject<{
         colorHexCode?: string | undefined;
     }[] | undefined;
     brandSlug?: string | undefined;
+    badgeIds?: string[] | undefined;
+    relatedProductIds?: string[] | undefined;
 }, {
     title: string;
     category: string;
@@ -270,6 +278,8 @@ export declare const createProductInputSchema: z.ZodEffects<z.ZodObject<{
         colorHexCode?: string | undefined;
     }[] | undefined;
     brandSlug?: string | undefined;
+    badgeIds?: string[] | undefined;
+    relatedProductIds?: string[] | undefined;
 }>;
 export declare const updateProductInputSchema: z.ZodObject<{
     brandId: z.ZodOptional<z.ZodString>;
@@ -293,7 +303,7 @@ export declare const updateProductInputSchema: z.ZodObject<{
     heroImageUrl: z.ZodNullable<z.ZodOptional<z.ZodEffects<z.ZodEffects<z.ZodString, string | undefined, string>, string | undefined, string>>>;
     internalNotes: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     images: z.ZodOptional<z.ZodArray<z.ZodObject<{
-        url: z.ZodString;
+        url: z.ZodEffects<z.ZodString, string, string>;
         alt: z.ZodOptional<z.ZodString>;
         position: z.ZodOptional<z.ZodNumber>;
     }, "strip", z.ZodTypeAny, {
@@ -336,6 +346,8 @@ export declare const updateProductInputSchema: z.ZodObject<{
         colorName?: string | undefined;
         colorHexCode?: string | undefined;
     }>, "many">>;
+    badgeIds: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+    relatedProductIds: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 }, "strip", z.ZodTypeAny, {
     currencyCode?: "IRR" | "USD" | "EUR" | undefined;
     title?: string | undefined;
@@ -373,6 +385,8 @@ export declare const updateProductInputSchema: z.ZodObject<{
         colorHexCode?: string | undefined;
     }[] | undefined;
     brandSlug?: string | undefined;
+    badgeIds?: string[] | undefined;
+    relatedProductIds?: string[] | undefined;
 }, {
     currencyCode?: "IRR" | "USD" | "EUR" | undefined;
     title?: string | undefined;
@@ -410,9 +424,11 @@ export declare const updateProductInputSchema: z.ZodObject<{
         colorHexCode?: string | undefined;
     }[] | undefined;
     brandSlug?: string | undefined;
+    badgeIds?: string[] | undefined;
+    relatedProductIds?: string[] | undefined;
 }>;
 export declare const addImageInputSchema: z.ZodObject<{
-    url: z.ZodString;
+    url: z.ZodEffects<z.ZodString, string, string>;
     alt: z.ZodOptional<z.ZodString>;
     position: z.ZodDefault<z.ZodOptional<z.ZodNumber>>;
 }, "strip", z.ZodTypeAny, {
@@ -425,7 +441,7 @@ export declare const addImageInputSchema: z.ZodObject<{
     alt?: string | undefined;
 }>;
 export declare const updateImageInputSchema: z.ZodObject<{
-    url: z.ZodOptional<z.ZodString>;
+    url: z.ZodOptional<z.ZodEffects<z.ZodString, string, string>>;
     alt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     position: z.ZodOptional<z.ZodNumber>;
 }, "strip", z.ZodTypeAny, {
@@ -592,6 +608,8 @@ export declare const validateProductInput: {
             colorHexCode?: string | undefined;
         }[] | undefined;
         brandSlug?: string | undefined;
+        badgeIds?: string[] | undefined;
+        relatedProductIds?: string[] | undefined;
     };
     update: (data: unknown) => {
         currencyCode?: "IRR" | "USD" | "EUR" | undefined;
@@ -630,6 +648,8 @@ export declare const validateProductInput: {
             colorHexCode?: string | undefined;
         }[] | undefined;
         brandSlug?: string | undefined;
+        badgeIds?: string[] | undefined;
+        relatedProductIds?: string[] | undefined;
     };
     addImage: (data: unknown) => {
         position: number;

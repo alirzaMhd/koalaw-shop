@@ -215,7 +215,12 @@ class ProductService {
         const coreData = { ...pickCoreProductData({ ...input, slug }, brandId) };
         const result = await prisma.$transaction(async (tx) => {
             const product = await tx.product.create({
-                data: coreData,
+                data: {
+                    ...coreData,
+                    ...(Array.isArray(input.badgeIds) && input.badgeIds.length
+                        ? { badges: { connect: input.badgeIds.map((id) => ({ id })) } }
+                        : {}),
+                },
             });
             if (Array.isArray(input.images) && input.images.length) {
                 await tx.productImage.createMany({
@@ -240,6 +245,20 @@ class ProductService {
                         colorHexCode: v.colorHexCode ?? null,
                         isActive: typeof v.isActive === "boolean" ? v.isActive : true,
                         position: typeof v.position === "number" ? v.position : idx,
+                    })),
+                });
+            }
+            // Related products (optional)
+            const relatedIdsRaw = Array.isArray(input.relatedProductIds)
+                ? input.relatedProductIds
+                : [];
+            const relatedIds = Array.from(new Set(relatedIdsRaw.filter((rid) => rid && rid !== product.id)));
+            if (relatedIds.length) {
+                await tx.relatedProduct.createMany({
+                    data: relatedIds.map((rid, idx) => ({
+                        productId: product.id,
+                        relatedProductId: rid,
+                        position: idx,
                     })),
                 });
             }
@@ -274,7 +293,15 @@ class ProductService {
         }
         const coreData = { ...pickCoreProductData({ ...input, slug: slugUpdate }, brandId) };
         await prisma.$transaction(async (tx) => {
-            await tx.product.update({ where: { id }, data: coreData });
+            await tx.product.update({
+                where: { id }, data: {
+                    ...coreData,
+                    // If badgeIds is provided (even []), replace the set accordingly
+                    ...(Array.isArray(input.badgeIds)
+                        ? { badges: { set: input.badgeIds.map((bid) => ({ id: bid })) } }
+                        : {}),
+                },
+            });
             if (Array.isArray(input.images)) {
                 await tx.productImage.deleteMany({ where: { productId: id } });
                 if (input.images.length) {
@@ -303,6 +330,20 @@ class ProductService {
                             colorHexCode: v.colorHexCode ?? null,
                             isActive: typeof v.isActive === "boolean" ? v.isActive : true,
                             position: typeof v.position === "number" ? v.position : idx,
+                        })),
+                    });
+                }
+            }
+            // Related products (replace set if provided)
+            if (Array.isArray(input.relatedProductIds)) {
+                const relatedIds = Array.from(new Set(input.relatedProductIds.filter((rid) => rid && rid !== id)));
+                await tx.relatedProduct.deleteMany({ where: { productId: id } });
+                if (relatedIds.length) {
+                    await tx.relatedProduct.createMany({
+                        data: relatedIds.map((rid, idx) => ({
+                            productId: id,
+                            relatedProductId: rid,
+                            position: idx,
                         })),
                     });
                 }

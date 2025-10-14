@@ -22,5 +22,8 @@ export declare const adminController: {
     createCoupon: RequestHandler;
     updateCoupon: RequestHandler;
     deleteCoupon: RequestHandler;
+    getUser: RequestHandler;
+    deleteUser: RequestHandler;
+    listNewsletterSubscribers: RequestHandler;
 };
 //# sourceMappingURL=admin.controller.d.ts.map

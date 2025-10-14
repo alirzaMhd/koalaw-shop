@@ -440,5 +440,49 @@ export declare const adminService: {
     deleteCoupon(id: string): Promise<{
         deleted: boolean;
     }>;
+    getUser(userId: string): Promise<{
+        id: string;
+        phone: string | null;
+        email: string;
+        firstName: string | null;
+        lastName: string | null;
+        birthDate: Date | null;
+        gender: import("@prisma/client").$Enums.Gender;
+        customerTier: import("@prisma/client").$Enums.CustomerTier;
+        phoneVerifiedAt: Date | null;
+        createdAt: Date;
+        updatedAt: Date;
+        role: import("@prisma/client").$Enums.UserRole;
+        emailVerifiedAt: Date | null;
+        profileImageUrl: string | null;
+        _count: {
+            orders: number;
+            productReviews: number;
+            addresses: number;
+        };
+    }>;
+    deleteUser(userId: string): Promise<{
+        deleted: boolean;
+    }>;
+    listNewsletterSubscribers(query: {
+        page?: number;
+        perPage?: number;
+        status?: string;
+    }): Promise<{
+        subscribers: {
+            id: string;
+            email: string;
+            createdAt: Date;
+            source: string | null;
+            consent: boolean;
+            unsubscribedAt: Date | null;
+        }[];
+        meta: {
+            page: number;
+            perPage: number;
+            total: number;
+            totalPages: number;
+        };
+    }>;
 };
 //# sourceMappingURL=admin.service.d.ts.map
