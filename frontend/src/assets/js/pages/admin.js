@@ -220,6 +220,10 @@
       return this.fetch(`/api/admin/products/${id}`, { method: "DELETE" });
     },
 
+    getById(id) {
+      return this.fetch(`/api/orders/${id}`);
+    },
+
     // Orders
     getOrders(params = {}) {
       const query = new URLSearchParams(params).toString();
@@ -505,10 +509,11 @@
 
   // ========== FORM GENERATORS ==========
   const forms = {
-
     // Magazine Author Form
     magazineAuthor(authorId = null) {
-      const author = authorId ? (state.authors || []).find((a) => a.id === authorId) : null;
+      const author = authorId
+        ? (state.authors || []).find((a) => a.id === authorId)
+        : null;
       const isEdit = !!authorId;
       const formHtml = `
         <form id="magazine-author-form" class="admin-form">
@@ -525,8 +530,7 @@
             </div>
             <div class="admin-form-group">
               <label class="admin-form-label">آواتار</label>
-              ${
-        author?.avatarUrl
+              ${author?.avatarUrl
           ? `
                 <div class="mb-3">
                   <img src="${author.avatarUrl}" alt="${author.name || ""}" class="w-16 h-16 rounded object-cover border" />
@@ -534,7 +538,7 @@
                 </div>
               `
           : ""
-      }
+        }
               <input type="file" id="author-avatar-file" class="admin-form-input" accept="image/*" />
               <small class="text-gray-500">فرمت‌های مجاز: JPG, PNG, WebP, GIF (حداکثر 5MB)</small>
               <div id="author-avatar-preview" class="mt-3 hidden">
@@ -552,7 +556,10 @@
           </div>
         </form>
       `;
-      panel.open(formHtml, isEdit ? "ویرایش نویسنده مجله" : "افزودن نویسنده مجله");
+      panel.open(
+        formHtml,
+        isEdit ? "ویرایش نویسنده مجله" : "افزودن نویسنده مجله"
+      );
       // Preview selected avatar
       const avatarInput = document.getElementById("author-avatar-file");
       const previewWrap = document.getElementById("author-avatar-preview");
@@ -569,9 +576,18 @@
           previewWrap?.classList.add("hidden");
           return;
         }
-        const validTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp", "image/gif"];
+        const validTypes = [
+          "image/jpeg",
+          "image/jpg",
+          "image/png",
+          "image/webp",
+          "image/gif",
+        ];
         if (!validTypes.includes(file.type)) {
-          utils.showToast("فقط فایل‌های تصویری (JPG, PNG, WebP, GIF) مجاز هستند.", "error");
+          utils.showToast(
+            "فقط فایل‌های تصویری (JPG, PNG, WebP, GIF) مجاز هستند.",
+            "error"
+          );
           avatarInput.value = "";
           previewWrap?.classList.add("hidden");
           return;
@@ -583,56 +599,61 @@
         };
         reader.readAsDataURL(file);
       });
-      document.getElementById("magazine-author-form")?.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const fd = new FormData(e.target);
-        const payload = {
-          name: String(fd.get("name") || "").trim(),
-          slug: (fd.get("slug") || "").toString().trim() || undefined,
-          bio: (fd.get("bio") || "").toString().trim() || undefined,
-        };
+      document
+        .getElementById("magazine-author-form")
+        ?.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const fd = new FormData(e.target);
+          const payload = {
+            name: String(fd.get("name") || "").trim(),
+            slug: (fd.get("slug") || "").toString().trim() || undefined,
+            bio: (fd.get("bio") || "").toString().trim() || undefined,
+          };
 
-        // If a new file is selected, upload and set avatarUrl
-        const fileInput = document.getElementById("author-avatar-file");
-        const file = fileInput?.files?.[0];
-        if (file) {
-          const uploadFd = new FormData();
-          uploadFd.append("image", file);
+          // If a new file is selected, upload and set avatarUrl
+          const fileInput = document.getElementById("author-avatar-file");
+          const file = fileInput?.files?.[0];
+          if (file) {
+            const uploadFd = new FormData();
+            uploadFd.append("image", file);
+            try {
+              const res = await fetch("/api/upload/product-image", {
+                method: "POST",
+                credentials: "include",
+                body: uploadFd,
+              });
+              if (!res.ok) {
+                const err = await res.json().catch(() => ({}));
+                throw new Error(err.message || `HTTP ${res.status}`);
+              }
+              const json = await res.json();
+              const imageUrl = json?.data?.imageUrl || json?.imageUrl;
+              if (imageUrl) {
+                payload.avatarUrl = imageUrl;
+              }
+            } catch (err) {
+              utils.showToast(
+                "خطا در آپلود تصویر: " + (err.message || err),
+                "error"
+              );
+              return; // stop submit on upload failure
+            }
+          }
+
           try {
-            const res = await fetch("/api/upload/product-image", {
-              method: "POST",
-              credentials: "include",
-              body: uploadFd,
-            });
-            if (!res.ok) {
-              const err = await res.json().catch(() => ({}));
-              throw new Error(err.message || `HTTP ${res.status}`);
+            if (isEdit) {
+              await api.updateMagazineAuthor(authorId, payload);
+              utils.showToast("نویسنده ویرایش شد", "success");
+            } else {
+              await api.createMagazineAuthor(payload);
+              utils.showToast("نویسنده افزوده شد", "success");
             }
-            const json = await res.json();
-            const imageUrl = json?.data?.imageUrl || json?.imageUrl;
-            if (imageUrl) {
-              payload.avatarUrl = imageUrl;
-            }
+            panel.close();
+            handlers.magazineAuthors();
           } catch (err) {
-            utils.showToast("خطا در آپلود تصویر: " + (err.message || err), "error");
-            return; // stop submit on upload failure
+            utils.showToast("خطا: " + err.message, "error");
           }
-        }
-
-        try {
-          if (isEdit) {
-            await api.updateMagazineAuthor(authorId, payload);
-            utils.showToast("نویسنده ویرایش شد", "success");
-          } else {
-            await api.createMagazineAuthor(payload);
-            utils.showToast("نویسنده افزوده شد", "success");
-          }
-          panel.close();
-          handlers.magazineAuthors();
-        } catch (err) {
-          utils.showToast("خطا: " + err.message, "error");
-        }
-      });
+        });
     },
 
     // Magazine Tag Form
@@ -660,27 +681,29 @@
         </form>
       `;
       panel.open(formHtml, isEdit ? "ویرایش برچسب مجله" : "افزودن برچسب مجله");
-      document.getElementById("magazine-tag-form")?.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const fd = new FormData(e.target);
-        const payload = {
-          name: String(fd.get("name") || "").trim(),
-          slug: (fd.get("slug") || "").toString().trim() || undefined,
-        };
-        try {
-          if (isEdit) {
-            await api.updateMagazineTag(tagId, payload);
-            utils.showToast("برچسب ویرایش شد", "success");
-          } else {
-            await api.createMagazineTag(payload);
-            utils.showToast("برچسب افزوده شد", "success");
+      document
+        .getElementById("magazine-tag-form")
+        ?.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const fd = new FormData(e.target);
+          const payload = {
+            name: String(fd.get("name") || "").trim(),
+            slug: (fd.get("slug") || "").toString().trim() || undefined,
+          };
+          try {
+            if (isEdit) {
+              await api.updateMagazineTag(tagId, payload);
+              utils.showToast("برچسب ویرایش شد", "success");
+            } else {
+              await api.createMagazineTag(payload);
+              utils.showToast("برچسب افزوده شد", "success");
+            }
+            panel.close();
+            handlers.magazineTags();
+          } catch (err) {
+            utils.showToast("خطا: " + err.message, "error");
           }
-          panel.close();
-          handlers.magazineTags();
-        } catch (err) {
-          utils.showToast("خطا: " + err.message, "error");
-        }
-      });
+        });
     },
     // Product Form
     async product(productId = null) {
@@ -741,14 +764,14 @@
               <select name="brandId" class="admin-form-input" required>
                 <option value="">انتخاب کنید</option>
                 ${brands.brands
-                  .map(
-                    (b) => `
+            .map(
+              (b) => `
                   <option value="${b.id}" ${data.brandId === b.id ? "selected" : ""}>
                     ${b.name}
                   </option>
                 `
-                  )
-                  .join("")}
+            )
+            .join("")}
               </select>
             </div>
 
@@ -757,14 +780,14 @@
               <select name="collectionId" class="admin-form-input">
                 <option value="">هیچکدام</option>
                 ${collections.collections
-                  .map(
-                    (c) => `
+            .map(
+              (c) => `
                   <option value="${c.id}" ${data.collectionId === c.id ? "selected" : ""}>
                     ${c.name}
                   </option>
                 `
-                  )
-                  .join("")}
+            )
+            .join("")}
               </select>
             </div>
           </div>
@@ -775,14 +798,14 @@
               <select name="colorThemeId" class="admin-form-input">
                 <option value="">هیچکدام</option>
                 ${(colorThemes?.colorThemes || [])
-                  .map(
-                    (ct) => `
+            .map(
+              (ct) => `
                    <option value="${ct.id}" ${data.colorThemeId === ct.id ? "selected" : ""}>
                      ${ct.name}
                    </option>
                  `
-                  )
-                  .join("")}
+            )
+            .join("")}
               </select>
             </div>
 
@@ -803,8 +826,8 @@
             <label class="admin-form-label">نشان‌ها</label>
             <div class="space-y-2" id="badges-checklist">
               ${badges.badges
-                .map(
-                  (b) => `
+            .map(
+              (b) => `
                 <label class="flex items-center gap-2 cursor-pointer p-2 hover:bg-gray-50 rounded">
                   <input 
                     type="checkbox" 
@@ -817,8 +840,8 @@
                   <span>${b.title}</span>
                 </label>
               `
-                )
-                .join("")}
+            )
+            .join("")}
             </div>
           </div>
 
@@ -899,14 +922,14 @@
             <label class="admin-form-label">انتخاب محصولات مرتبط</label>
             <select name="relatedProductIds" id="related-products-select" class="admin-form-input" multiple size="8">
               ${(allProducts?.products || [])
-                .filter((p) => !data.id || p.id !== data.id)
-                .map(
-                  (p) => `
+            .filter((p) => !data.id || p.id !== data.id)
+            .map(
+              (p) => `
                 <option value="${p.id}" ${existingRelatedIds.includes(p.id) ? "selected" : ""}>
                   ${p.title}
                 </option>`
-                )
-                .join("")}
+            )
+            .join("")}
             </select>
             <small class="text-gray-500">برای انتخاب چند مورد، کلید Ctrl/⌘ را نگه دارید.</small>
           </div>
@@ -972,7 +995,9 @@
 
         // Prefill existing images (edit mode)
         if (isEdit && Array.isArray(data.images) && data.images.length) {
-          const sorted = data.images.slice().sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
+          const sorted = data.images
+            .slice()
+            .sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
           gallery = sorted.map((img) => ({ url: img.url, alt: img.alt || "" }));
           const idx = gallery.findIndex((g) => g.url === data.heroImageUrl);
           heroIndex = idx >= 0 ? idx : 0;
@@ -984,12 +1009,14 @@
         function renderGallery() {
           if (!galleryList) return;
           if (!gallery.length) {
-            galleryList.innerHTML = '<div class="text-center text-gray-500 col-span-full py-6">تصویری اضافه نشده است</div>';
+            galleryList.innerHTML =
+              '<div class="text-center text-gray-500 col-span-full py-6">تصویری اضافه نشده است</div>';
             utils.refreshIcons();
             return;
           }
           galleryList.innerHTML = gallery
-            .map((img, idx) => `
+            .map(
+              (img, idx) => `
               <div class="border rounded-lg p-2 flex flex-col gap-2" data-idx="${idx}">
                 <img src="${img.url}" alt="${img.alt || ""}" class="w-full h-28 object-cover rounded" />
                 <label class="flex items-center gap-2">
@@ -1009,7 +1036,8 @@
                   </button>
                 </div>
               </div>
-            `)
+            `
+            )
             .join("");
           utils.refreshIcons();
         }
@@ -1020,9 +1048,17 @@
           if (file.size > 5 * 1024 * 1024) {
             throw new Error("حجم فایل نباید بیشتر از 5 مگابایت باشد.");
           }
-          const validTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp", "image/gif"];
+          const validTypes = [
+            "image/jpeg",
+            "image/jpg",
+            "image/png",
+            "image/webp",
+            "image/gif",
+          ];
           if (!validTypes.includes(file.type)) {
-            throw new Error("فقط فایل‌های تصویری (JPG, PNG, WebP, GIF) مجاز هستند.");
+            throw new Error(
+              "فقط فایل‌های تصویری (JPG, PNG, WebP, GIF) مجاز هستند."
+            );
           }
           const fd = new FormData();
           fd.append("image", file);
@@ -1049,7 +1085,8 @@
               utils.showToast(err.message, "error");
             }
           }
-          if (gallery.length && (heroIndex == null || heroIndex < 0)) heroIndex = 0;
+          if (gallery.length && (heroIndex == null || heroIndex < 0))
+            heroIndex = 0;
           renderGallery();
           galleryInput.value = "";
         });
@@ -1058,7 +1095,10 @@
           const url = (galleryUrlInput?.value || "").trim();
           if (!url) return;
           if (!(url.startsWith("/") || url.startsWith("http"))) {
-            utils.showToast("آدرس URL تصویر باید با / یا http شروع شود.", "error");
+            utils.showToast(
+              "آدرس URL تصویر باید با / یا http شروع شود.",
+              "error"
+            );
             return;
           }
           gallery.push({ url, alt: "" });
@@ -1174,9 +1214,11 @@
           });
 
           // Remove row
-          row.querySelector(".remove-variant-btn")?.addEventListener("click", () => {
-            row.remove();
-          });
+          row
+            .querySelector(".remove-variant-btn")
+            ?.addEventListener("click", () => {
+              row.remove();
+            });
 
           variantsList.appendChild(row);
           utils.refreshIcons();
@@ -1207,7 +1249,6 @@
             utils.refreshIcons();
 
             try {
-              
               const heroImageUrl = gallery[heroIndex]?.url || null;
               const formData = new FormData(e.target);
 
@@ -1280,7 +1321,9 @@
                 formData.get("isSpecialProduct") === "on";
 
               // Related products
-              const relatedSelect = document.getElementById("related-products-select");
+              const relatedSelect = document.getElementById(
+                "related-products-select"
+              );
               if (relatedSelect) {
                 const selectedIds = Array.from(relatedSelect.selectedOptions)
                   .map((o) => o.value)
@@ -1300,27 +1343,37 @@
                 payload.heroImageUrl = heroImageUrl;
               }
               // Collect variants
-              const variantRows = Array.from(document.querySelectorAll(".variant-row"));
+              const variantRows = Array.from(
+                document.querySelectorAll(".variant-row")
+              );
               const variantsPayload = [];
               for (let i = 0; i < variantRows.length; i++) {
                 const row = variantRows[i];
                 const get = (sel) => row.querySelector(sel);
-                const variantName = get('input[name="variantName"]')?.value?.trim();
+                const variantName = get(
+                  'input[name="variantName"]'
+                )?.value?.trim();
                 if (!variantName) continue; // skip incomplete rows
                 const sku = get('input[name="sku"]')?.value?.trim();
                 const priceStr = get('input[name="price"]')?.value;
                 const stockStr = get('input[name="stock"]')?.value;
                 const colorName = get('input[name="colorName"]')?.value?.trim();
-                const colorHexCode = get('input[name="colorHexCode"]')?.value?.trim();
+                const colorHexCode = get(
+                  'input[name="colorHexCode"]'
+                )?.value?.trim();
                 const isActive = get('input[name="isActive"]')?.checked ?? true;
 
                 const v = {
                   variantName,
                   ...(sku ? { sku } : {}),
                   ...(priceStr ? { price: parseInt(priceStr, 10) } : {}),
-                  ...(stockStr ? { stock: parseInt(stockStr, 10) } : { stock: 0 }),
+                  ...(stockStr
+                    ? { stock: parseInt(stockStr, 10) }
+                    : { stock: 0 }),
                   ...(colorName ? { colorName } : {}),
-                  ...(colorHexCode && /^#[0-9A-Fa-f]{6}$/.test(colorHexCode) ? { colorHexCode } : {}),
+                  ...(colorHexCode && /^#[0-9A-Fa-f]{6}$/.test(colorHexCode)
+                    ? { colorHexCode }
+                    : {}),
                   isActive,
                   position: i,
                 };
@@ -1550,7 +1603,329 @@
         panel.open(utils.showError(error.message), "خطا");
       }
     },
+    // Order Detail Panel
+    async orderDetail(orderId) {
+      panel.showLoading();
 
+      try {
+        const response = await api.getById(orderId);
+        const order = response.order || response;
+        console.log(order);
+        const statusOptions = [
+          { value: "DRAFT", label: "پیش‌نویس" },
+          { value: "AWAITING_PAYMENT", label: "در انتظار پرداخت" },
+          { value: "PAID", label: "پرداخت شده" },
+          { value: "PROCESSING", label: "در حال پردازش" },
+          { value: "SHIPPED", label: "ارسال شده" },
+          { value: "DELIVERED", label: "تحویل شده" },
+          { value: "CANCELLED", label: "لغو شده" },
+          { value: "RETURNED", label: "مرجوع شده" },
+        ];
+
+        const shippingMethodLabels = {
+          standard: "عادی",
+          express: "فوری",
+        };
+
+        const paymentMethodLabels = {
+          gateway: "درگاه پرداخت",
+          cod: "پرداخت در محل",
+        };
+
+        const genderLabels = {
+          MALE: "مرد",
+          FEMALE: "زن",
+          UNDISCLOSED: "نامشخص",
+        };
+
+        const itemsHtml = (order.items || [])
+          .map(
+            (item) => `
+      <div class="flex gap-4 p-3 border rounded-lg">
+        <img src="${item.imageUrl || "/assets/images/product.png"}" alt="${item.title}" class="w-16 h-16 rounded object-cover" />
+        <div class="flex-1">
+          <h5 class="font-semibold">${item.title}</h5>
+          ${item.variantName ? `<p class="text-sm text-gray-600">${item.variantName}</p>` : ""}
+          <p class="text-sm text-gray-600">تعداد: ${utils.toFa(item.quantity)} × ${utils.toIRR(item.unitPrice)}</p>
+          <p class="text-sm font-semibold text-primary">${utils.toIRR(item.lineTotal)}</p>
+        </div>
+      </div>
+    `
+          )
+          .join("");
+
+        const paymentsHtml = (order.payments || [])
+          .map(
+            (payment) => `
+      <div class="p-3 border rounded-lg">
+        <div class="flex justify-between items-start mb-2">
+          <span class="font-semibold">${paymentMethodLabels[payment.method] || payment.method}</span>
+          <span class="admin-badge-${payment.status === "PAID" ? "success" : payment.status === "FAILED" ? "danger" : "warning"}">
+            ${payment.status === "PAID" ? "پرداخت شده" : payment.status === "FAILED" ? "ناموفق" : "در انتظار"}
+          </span>
+        </div>
+        <p class="text-sm text-gray-600">مبلغ: ${utils.toIRR(payment.amount)}</p>
+        ${payment.transactionRef ? `<p class="text-sm text-gray-600">شناسه تراکنش: ${payment.transactionRef}</p>` : ""}
+        ${payment.authority ? `<p class="text-sm text-gray-600">Authority: ${payment.authority}</p>` : ""}
+        <p class="text-sm text-gray-500">تاریخ: ${utils.formatDateTime(payment.createdAt)}</p>
+      </div>
+    `
+          )
+          .join("");
+
+        const formHtml = `
+      <form id="order-detail-form" class="admin-form">
+        <div class="admin-form-section">
+          <h3 class="admin-form-section-title">اطلاعات سفارش</h3>
+
+          <div class="admin-form-group">
+            <label class="admin-form-label">شماره سفارش</label>
+            <input type="text" class="admin-form-input" value="${order.orderNumber}" disabled />
+          </div>
+
+          <div class="admin-form-row">
+            <div class="admin-form-group">
+              <label class="admin-form-label">تاریخ ثبت</label>
+              <input type="text" class="admin-form-input" value="${utils.formatDateTime(order.createdAt)}" disabled />
+            </div>
+
+            <div class="admin-form-group">
+              <label class="admin-form-label">تاریخ تحویل</label>
+              <input type="text" class="admin-form-input" value="${order.placedAt ? utils.formatDateTime(order.placedAt) : "-"}" disabled />
+            </div>
+          </div>
+
+          <div class="admin-form-group">
+            <label class="admin-form-label">وضعیت سفارش</label>
+            <select name="status" class="admin-form-input">
+              ${statusOptions
+            .map(
+              (opt) => `
+                <option value="${opt.value}" ${order.status === opt.value ? "selected" : ""}>
+                  ${opt.label}
+                </option>
+              `
+            )
+            .join("")}
+            </select>
+          </div>
+
+          <div class="admin-form-row">
+            <div class="admin-form-group">
+              <label class="admin-form-label">روش ارسال</label>
+              <input type="text" class="admin-form-input" value="${shippingMethodLabels[order.shippingMethod] || order.shippingMethod || "-"}" disabled />
+            </div>
+
+            <div class="admin-form-group">
+              <label class="admin-form-label">روش پرداخت</label>
+              <input type="text" class="admin-form-input" value="${paymentMethodLabels[order.paymentMethod] || order.paymentMethod || "-"}" disabled />
+            </div>
+          </div>
+        </div>
+
+        <div class="admin-form-section">
+          <h3 class="admin-form-section-title">اطلاعات مشتری</h3>
+
+          <div class="admin-form-group">
+            <label class="admin-form-label">ایمیل</label>
+            <input type="text" class="admin-form-input" value="${order.email || "-"}" disabled />
+          </div>
+
+          <div class="admin-form-row">
+            <div class="admin-form-group">
+              <label class="admin-form-label">تاریخ تولد</label>
+              <input type="text" class="admin-form-input" value="${order.birthDate ? utils.formatDate(order.birthDate) : "-"}" disabled />
+            </div>
+
+            <div class="admin-form-group">
+              <label class="admin-form-label">جنسیت</label>
+              <input type="text" class="admin-form-input" value="${genderLabels[order.gender] || "-"}" disabled />
+            </div>
+          </div>
+
+          <div class="admin-form-group">
+            <label class="admin-form-label">سطح مشتری</label>
+            <input type="text" class="admin-form-input" value="${order.customerTier || "-"}" disabled />
+          </div>
+        </div>
+
+        <div class="admin-form-section">
+          <h3 class="admin-form-section-title">آدرس ارسال</h3>
+
+          <div class="admin-form-row">
+            <div class="admin-form-group">
+              <label class="admin-form-label">نام</label>
+              <input type="text" class="admin-form-input" value="${order.shippingFirstName || "-"}" disabled />
+            </div>
+
+            <div class="admin-form-group">
+              <label class="admin-form-label">نام خانوادگی</label>
+              <input type="text" class="admin-form-input" value="${order.shippingLastName || "-"}" disabled />
+            </div>
+          </div>
+
+          <div class="admin-form-row">
+            <div class="admin-form-group">
+              <label class="admin-form-label">استان</label>
+              <input type="text" class="admin-form-input" value="${order.shippingProvince || "-"}" disabled />
+            </div>
+
+            <div class="admin-form-group">
+              <label class="admin-form-label">شهر</label>
+              <input type="text" class="admin-form-input" value="${order.shippingCity || "-"}" disabled />
+            </div>
+          </div>
+
+          <div class="admin-form-group">
+            <label class="admin-form-label">آدرس</label>
+            <textarea class="admin-form-input" rows="2" disabled>${order.shippingAddressLine1 || "-"}</textarea>
+          </div>
+
+          ${order.shippingAddressLine2
+            ? `
+          <div class="admin-form-group">
+            <label class="admin-form-label">جزئیات آدرس</label>
+            <textarea class="admin-form-input" rows="2" disabled>${order.shippingAddressLine2}</textarea>
+          </div>
+          `
+            : ""
+          }
+
+          <div class="admin-form-row">
+            <div class="admin-form-group">
+              <label class="admin-form-label">تلفن</label>
+              <input type="text" class="admin-form-input" value="${order.shippingPhone || "-"}" disabled />
+            </div>
+
+            <div class="admin-form-group">
+              <label class="admin-form-label">کد پستی</label>
+              <input type="text" class="admin-form-input" value="${order.shippingPostalCode || "-"}" disabled />
+            </div>
+          </div>
+        </div>
+
+        <div class="admin-form-section">
+          <h3 class="admin-form-section-title">محصولات</h3>
+          <div class="space-y-3">
+            ${itemsHtml || '<p class="text-gray-500 text-center py-4">محصولی وجود ندارد</p>'}
+          </div>
+        </div>
+
+        ${order.payments && order.payments.length
+            ? `
+        <div class="admin-form-section">
+          <h3 class="admin-form-section-title">پرداخت‌ها</h3>
+          <div class="space-y-3">
+            ${paymentsHtml}
+          </div>
+        </div>
+        `
+            : ""
+          }
+
+        <div class="admin-form-section">
+          <h3 class="admin-form-section-title">مالی</h3>
+
+          <div class="space-y-2">
+            <div class="flex justify-between">
+              <span>جمع محصولات:</span>
+              <span class="font-semibold">${utils.toIRR(order.subtotal)}</span>
+            </div>
+
+            ${order.discountTotal > 0
+            ? `
+            <div class="flex justify-between text-green-600">
+              <span>تخفیف:</span>
+              <span class="font-semibold">- ${utils.toIRR(order.discountTotal)}</span>
+            </div>
+            `
+            : ""
+          }
+
+            <div class="flex justify-between">
+              <span>هزینه ارسال:</span>
+              <span class="font-semibold">${order.shippingTotal > 0 ? utils.toIRR(order.shippingTotal) : "رایگان"}</span>
+            </div>
+
+            ${order.giftWrapTotal > 0
+            ? `
+            <div class="flex justify-between">
+              <span>بسته‌بندی هدیه:</span>
+              <span class="font-semibold">${utils.toIRR(order.giftWrapTotal)}</span>
+            </div>
+            `
+            : ""
+          }
+
+            <div class="flex justify-between pt-2 border-t text-lg">
+              <span class="font-bold">مجموع:</span>
+              <span class="font-bold text-primary">${utils.toIRR(order.total)}</span>
+            </div>
+          </div>
+
+          ${order.giftWrap
+            ? `
+          <div class="mt-4 p-3 bg-pink-50 rounded-lg">
+            <p class="text-sm font-semibold text-pink-800">🎁 بسته‌بندی هدیه فعال است</p>
+          </div>
+          `
+            : ""
+          }
+        </div>
+
+        ${order.note
+            ? `
+        <div class="admin-form-section">
+          <h3 class="admin-form-section-title">یادداشت مشتری</h3>
+          <div class="p-4 bg-gray-50 rounded-lg">
+            <p class="text-gray-700">${order.note}</p>
+          </div>
+        </div>
+        `
+            : ""
+          }
+
+        <div class="admin-form-actions">
+          <button type="button" class="admin-btn admin-btn-secondary" data-action="closePanel">
+            بستن
+          </button>
+          <button type="submit" class="admin-btn admin-btn-primary">
+            بروزرسانی وضعیت
+          </button>
+        </div>
+      </form>
+    `;
+
+        panel.open(formHtml, `جزئیات سفارش ${order.orderNumber}`);
+
+        // Handle status update
+        document
+          .getElementById("order-detail-form")
+          ?.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const newStatus = formData.get("status");
+
+            if (newStatus === order.status) {
+              utils.showToast("وضعیت تغییری نکرده است", "info");
+              return;
+            }
+
+            try {
+              await api.updateOrderStatus(orderId, newStatus);
+              utils.showToast("وضعیت سفارش بروزرسانی شد", "success");
+              panel.close();
+              handlers.orders();
+            } catch (error) {
+              utils.showToast("خطا: " + error.message, "error");
+            }
+          });
+
+        utils.refreshIcons();
+      } catch (error) {
+        panel.open(utils.showError(error.message), "خطا");
+      }
+    },
     // Magazine Form
     async magazine(postId = null) {
       panel.showLoading();
@@ -1566,7 +1941,7 @@
               onlyPublished: false,
             }),
           ]);
- 
+
         const authors = authorsResponse?.data || authorsResponse || [];
         const tags = tagsResponse?.data || tagsResponse || [];
         const allPosts =
@@ -1693,17 +2068,17 @@
             <label class="admin-form-label">انتخاب مقالات مرتبط</label>
             <select name="relatedPostIds" id="related-posts-select" class="admin-form-input" multiple size="8">
               ${Array.isArray(allPosts)
-                ? allPosts
-                    .filter((p) => !data.id || p.id !== data.id)
-                    .map(
-                      (p) => `
+            ? allPosts
+              .filter((p) => !data.id || p.id !== data.id)
+              .map(
+                (p) => `
                 <option value="${p.id}" ${existingRelatedIds.includes(p.id) ? "selected" : ""}>
                   ${p.title}
                 </option>`
-                    )
-                    .join("")
-                : ""
-              }
+              )
+              .join("")
+            : ""
+          }
             </select>
             <small class="text-gray-500">برای انتخاب چند مورد، کلید Ctrl/⌘ را نگه دارید.</small>
           </div>
@@ -1909,7 +2284,9 @@
               }
 
               // Related posts
-              const relatedSelect = document.getElementById("related-posts-select");
+              const relatedSelect = document.getElementById(
+                "related-posts-select"
+              );
               if (relatedSelect) {
                 const selectedIds = Array.from(relatedSelect.selectedOptions)
                   .map((o) => o.value)
@@ -2433,7 +2810,7 @@
 
       // Order actions
       viewOrder(id) {
-        utils.showToast("مشاهده جزئیات سفارش: " + id, "info");
+        forms.orderDetail(id);
       },
 
       // User actions
@@ -2501,7 +2878,9 @@
               utils.showToast("نویسنده حذف شد", "success");
               handlers.magazineAuthors();
             })
-            .catch((error) => utils.showToast("خطا: " + error.message, "error"));
+            .catch((error) =>
+              utils.showToast("خطا: " + error.message, "error")
+            );
         }
       },
       // Magazine Tags
@@ -2519,7 +2898,9 @@
               utils.showToast("برچسب حذف شد", "success");
               handlers.magazineTags();
             })
-            .catch((error) => utils.showToast("خطا: " + error.message, "error"));
+            .catch((error) =>
+              utils.showToast("خطا: " + error.message, "error")
+            );
         }
       },
 
