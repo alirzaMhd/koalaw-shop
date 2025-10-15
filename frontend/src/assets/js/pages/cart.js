@@ -62,6 +62,81 @@
         return v.toString(16);
       });
 
+    // Add after the constants section (around line 30):
+
+    // Check if user is authenticated
+    async function isAuthenticated() {
+      try {
+        const resp = await fetch(`${API_BASE}/profile`, {
+          credentials: "include",
+        });
+        return resp.ok;
+      } catch (e) {
+        return false;
+      }
+    }
+
+    // Fetch user profile data
+    async function fetchUserProfile() {
+      try {
+        const resp = await fetch(`${API_BASE}/profile`, {
+          credentials: "include",
+        });
+        if (!resp.ok) return null;
+        const data = await resp.json();
+        return data?.data?.profile || null;
+      } catch (e) {
+        console.warn("[CART] Failed to fetch profile:", e);
+        return null;
+      }
+    }
+
+    // Fetch user addresses
+    async function fetchUserAddresses() {
+      try {
+        const resp = await fetch(`${API_BASE}/profile/addresses`, {
+          credentials: "include",
+        });
+        if (!resp.ok) return [];
+        const data = await resp.json();
+        return data?.data?.addresses || [];
+      } catch (e) {
+        console.warn("[CART] Failed to fetch addresses:", e);
+        return [];
+      }
+    }
+
+    // Select address from saved addresses
+    function selectSavedAddress(address) {
+      const addr = {
+        firstname: address.firstName || "",
+        lastname: address.lastName || "",
+        phone: address.phone || "",
+        postal: address.postalCode || "",
+        province: address.province || "",
+        city: address.city || "",
+        line1: address.addressLine1 || "",
+      };
+      saveAddress(addr);
+
+      // Update form fields
+      [
+        "firstname",
+        "lastname",
+        "phone",
+        "postal",
+        "province",
+        "city",
+        "line1",
+      ].forEach((k) => {
+        const el = document.getElementById("addr-" + k);
+        if (el) el.value = addr[k];
+      });
+
+      renderAddress();
+      showToast("آدرس انتخاب شد", "map-pin");
+    }
+
     // Get or create backend cart ID
     async function getOrCreateBackendCartId() {
       let backendCartId = KUtils.getJSON("koalaw_backend_cart_id");
@@ -695,7 +770,9 @@
         });
     }
 
-    function renderAddress() {
+    // Replace the entire renderAddress() function (around line 450):
+
+    async function renderAddress() {
       const cart = loadCart();
       if (!cart.length) {
         showToast("ابتدا محصولی به سبد اضافه کنید", "alert-triangle");
@@ -705,6 +782,91 @@
 
       let state = loadState();
       let addr = loadAddress();
+
+      // Check if user is authenticated and fetch their data
+      const isAuth = await isAuthenticated();
+      let savedAddresses = [];
+
+      if (isAuth) {
+        const addresses = await fetchUserAddresses();
+        savedAddresses = addresses || [];
+
+        // If current addr is empty, pre-fill from saved addresses
+        const isEmpty = !addr.firstname && !addr.lastname && !addr.phone;
+
+        if (isEmpty && savedAddresses.length > 0) {
+          // Find default address or use latest
+          const defaultAddr =
+            savedAddresses.find((a) => a.isDefault) || savedAddresses[0];
+
+          if (defaultAddr) {
+            addr = {
+              firstname: defaultAddr.firstName || "",
+              lastname: defaultAddr.lastName || "",
+              phone: defaultAddr.phone || "",
+              postal: defaultAddr.postalCode || "",
+              province: defaultAddr.province || "",
+              city: defaultAddr.city || "",
+              line1: defaultAddr.addressLine1 || "",
+            };
+            saveAddress(addr);
+          }
+        }
+      }
+
+      // Render saved addresses section
+      const savedAddressesContainer = document.getElementById(
+        "saved-addresses-container"
+      );
+      if (savedAddressesContainer) {
+        if (isAuth && savedAddresses.length > 0) {
+          savedAddressesContainer.classList.remove("hidden");
+          const addressesList = document.getElementById("saved-addresses-list");
+          addressesList.innerHTML = "";
+
+          savedAddresses.forEach((address) => {
+            const div = document.createElement("div");
+            div.className = "saved-address-card";
+            div.innerHTML = `
+          <div class="flex items-start justify-between gap-3">
+            <div class="flex-1">
+              ${address.isDefault ? '<span class="inline-block px-2 py-1 bg-rose-100 text-rose-700 text-xs rounded-full mb-2">پیش‌فرض</span>' : ""}
+              ${address.label ? `<p class="font-bold text-gray-800 mb-1">${address.label}</p>` : ""}
+              <p class="text-sm text-gray-700 mb-1">${address.firstName} ${address.lastName}</p>
+              <p class="text-sm text-gray-600 mb-1">${address.phone}</p>
+              <p class="text-sm text-gray-600">${address.province}، ${address.city}</p>
+              <p class="text-sm text-gray-600">${address.addressLine1}</p>
+              ${address.postalCode ? `<p class="text-xs text-gray-500 mt-1">کد پستی: ${toFa(address.postalCode)}</p>` : ""}
+            </div>
+            <button class="btn-secondary text-sm select-address-btn" data-address-id="${address.id}">
+              <i data-feather="check"></i>
+              انتخاب
+            </button>
+          </div>
+        `;
+            addressesList.appendChild(div);
+          });
+
+          KUtils.refreshIcons();
+
+          // Add click handlers for select buttons
+          addressesList
+            .querySelectorAll(".select-address-btn")
+            .forEach((btn) => {
+              btn.addEventListener("click", () => {
+                const addressId = btn.dataset.addressId;
+                const selectedAddr = savedAddresses.find(
+                  (a) => a.id === addressId
+                );
+                if (selectedAddr) {
+                  selectSavedAddress(selectedAddr);
+                }
+              });
+            });
+        } else {
+          savedAddressesContainer.classList.add("hidden");
+        }
+      }
 
       // Prefill + inputs
       const fields = [

@@ -1,769 +1,568 @@
 <!doctype html>
 <html lang="fa" dir="rtl">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <meta name="color-scheme" content="light only" />
-    <meta name="supported-color-schemes" content="light only" />
-    <meta name="theme-color" content="#faf8f3" />
-    <title>KOALAW | سبد خرید</title>
-    <link rel="icon" type="image/x-icon" href="/assets/static/favicon.ico" />
-    <link rel="stylesheet" href="/assets/css/tailwind.css" />
-    <link href="/assets/vendor/aos/aos.css" rel="stylesheet" />
-    <script src="/assets/vendor/aos/aos.js"></script>
-    <script src="/assets/vendor/feather/feather.min.js"></script>
-    <script src="/assets/vendor/gsap/gsap.min.js"></script>
-    <link rel="stylesheet" href="/assets/css/main.css" />
-  </head>
 
-  <body>
-    <!-- Custom cursor -->
-    <div class="cursor">
-      <div class="cursor-eyes"></div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="color-scheme" content="light only" />
+  <meta name="supported-color-schemes" content="light only" />
+  <meta name="theme-color" content="#faf8f3" />
+  <title>KOALAW | سبد خرید</title>
+  <link rel="icon" type="image/x-icon" href="/assets/static/favicon.ico" />
+  <link rel="stylesheet" href="/assets/css/tailwind.css" />
+  <link href="/assets/vendor/aos/aos.css" rel="stylesheet" />
+  <script src="/assets/vendor/aos/aos.js"></script>
+  <script src="/assets/vendor/feather/feather.min.js"></script>
+  <script src="/assets/vendor/gsap/gsap.min.js"></script>
+  <link rel="stylesheet" href="/assets/css/main.css" />
+</head>
+
+<body>
+  <!-- Custom cursor -->
+  <div class="cursor">
+    <div class="cursor-eyes"></div>
+  </div>
+  <div class="cursor-face"></div>
+  <div class="cursor-follower"></div>
+
+  <nav class="fixed w-full z-50 transition-all duration-300" id="navbar">
+    <div class="container mx-auto px-6 py-5">
+      <div class="flex items-center justify-between" dir="ltr">
+        <a href="/"
+          class="text-3xl font-serif font-bold text-gray-800 tracking-wider z-50 flex items-center gap-x-1">K<img
+            src="/assets/images/koala.png" alt="Koala logo" class="w-8 h-7 inline-block -mt-1" />ALAW</a>
+        <div class="hidden lg:flex items-center gap-x-10 flex-row-reverse">
+          <a href="/shop" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">فروشگاه</a><a
+            href="/shop?category=collections"
+            class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">کالکشن ها</a><a
+            href="/shop?category=brands"
+            class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">برندها</a><a href="/magazine"
+            class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">مجله</a><a href="/about"
+            class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">درباره ما</a>
+        </div>
+        <div class="flex items-center gap-x-6">
+          <button id="search-button"
+            class="text-gray-700 hover:text-gray-900 transition-all duration-300 hover:scale-110">
+            <i data-feather="search" class="w-5 h-5"></i></button><button id="profile-button" type="button"
+            class="text-gray-700 hover:text-gray-900 transition-all duration-300 hover:scale-110">
+            <i data-feather="user" class="w-5 h-5"></i></button><a href="/cart" id="nav-cart"
+            class="text-gray-700 hover:text-gray-900 relative transition-all duration-300 hover:scale-110"
+            aria-label="سبد خرید">
+            <i data-feather="shopping-bag" class="w-5 h-5"></i>
+            <span id="nav-cart-count"
+              class="absolute -top-2 -right-2 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center pulse-animation">۰</span>
+          </a><button id="mobile-menu-button" class="hamburger-button lg:hidden">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
     </div>
-    <div class="cursor-face"></div>
-    <div class="cursor-follower"></div>
+  </nav>
 
-    <nav class="fixed w-full z-50 transition-all duration-300" id="navbar">
-      <div class="container mx-auto px-6 py-5">
-        <div class="flex items-center justify-between" dir="ltr">
-          <a
-            href="/"
-            class="text-3xl font-serif font-bold text-gray-800 tracking-wider z-50 flex items-center gap-x-1"
-            >K<img
-              src="/assets/images/koala.png"
-              alt="Koala logo"
-              class="w-8 h-7 inline-block -mt-1"
-            />ALAW</a
-          >
-          <div class="hidden lg:flex items-center gap-x-10 flex-row-reverse">
-            <a
-              href="/shop"
-              class="nav-link text-gray-700 hover:text-gray-900 transition duration-300"
-              >فروشگاه</a
-            ><a
-              href="/shop?category=collections"
-              class="nav-link text-gray-700 hover:text-gray-900 transition duration-300"
-              >کالکشن ها</a
-            ><a
-              href="/shop?category=brands"
-              class="nav-link text-gray-700 hover:text-gray-900 transition duration-300"
-              >برندها</a
-            ><a
-              href="/magazine"
-              class="nav-link text-gray-700 hover:text-gray-900 transition duration-300"
-              >مجله</a
-            ><a
-              href="/about"
-              class="nav-link text-gray-700 hover:text-gray-900 transition duration-300"
-              >درباره ما</a
-            >
+  <!-- Mobile Menu -->
+  <div id="mobile-menu">
+    <a href="/shop" class="nav-link">فروشگاه</a><a href="/shop?category=collections" class="nav-link">کالکشن ها</a><a
+      href="/shop?category=brands" class="nav-link">برندها</a><a href="/magazine" class="nav-link">مجله</a><a
+      href="/about" class="nav-link">درباره ما</a>
+  </div>
+  <div id="mobile-menu-overlay" class="mobile-menu-overlay"></div>
+
+  <!-- Hero -->
+  <section class="profile-hero pt-24 pb-16 relative" id="hero-section">
+    <div class="container mx-auto px-6 relative z-10">
+      <div class="text-center text-white" data-aos="fade-up">
+        <div class="inline-flex items-center gap-3 bg-white/20 backdrop-blur-sm rounded-full px-6 py-2 mb-6">
+          <i id="hero-icon" data-feather="shopping-bag" class="w-5 h-5"></i>
+          <span id="hero-badge" class="font-medium">سبد خرید</span>
+        </div>
+        <h1 id="hero-title" class="text-4xl lg:text-5xl font-serif font-bold mb-3">
+          سفارش خود را نهایی کنید
+        </h1>
+        <p id="hero-subtitle" class="text-lg text-white/90 max-w-2xl mx-auto">
+          بررسی اقلام سبد، اعمال کد تخفیف و ادامه به پرداخت
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Checkout steps -->
+  <section class="pb-4">
+    <div class="container mx-auto px-6">
+      <div class="profile-card">
+        <div class="checkout-steps" role="list" aria-label="مراحل خرید">
+          <a href="/cart" class="step" id="step-cart" role="listitem">
+            <span class="step-dot"><span class="step-index">۱</span></span>
+            <span class="step-label">سبد خرید</span>
+          </a>
+          <span class="step-line"></span>
+          <a href="#/address" class="step" id="step-address" role="listitem">
+            <span class="step-dot"><span class="step-index">۲</span></span>
+            <span class="step-label">آدرس و ارسال</span>
+          </a>
+          <span class="step-line"></span>
+          <a href="#/payment" class="step" id="step-payment" role="listitem">
+            <span class="step-dot"><span class="step-index">۳</span></span>
+            <span class="step-label">پرداخت</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Views -->
+  <main class="py-12">
+    <div class="container mx-auto px-6">
+      <!-- Cart View -->
+      <section id="view-cart" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Left -->
+        <div class="lg:col-span-2 space-y-6" data-aos="fade-up">
+          <!-- Free shipping progress -->
+          <div class="profile-card">
+            <div class="flex items-center justify-between gap-3 flex-wrap mb-3">
+              <div class="flex items-center gap-2 text-gray-800">
+                <i data-feather="truck"></i>
+                <p id="cart-progress-text" class="font-semibold">
+                  برای ارسال رایگان، هنوز ۰ تومان مانده است.
+                </p>
+              </div>
+              <span id="cart-ship-badge" class="text-xs px-3 py-1 rounded-full badge-warn">فعال‌سازی ارسال رایگان</span>
+            </div>
+            <div class="progress-rail">
+              <div id="cart-progress-bar" class="progress-fill"></div>
+            </div>
           </div>
-          <div class="flex items-center gap-x-6">
-            <button
-              id="search-button"
-              class="text-gray-700 hover:text-gray-900 transition-all duration-300 hover:scale-110"
-            >
-              <i data-feather="search" class="w-5 h-5"></i></button
-            ><button
-              id="profile-button"
-              type="button"
-              class="text-gray-700 hover:text-gray-900 transition-all duration-300 hover:scale-110"
-            >
-              <i data-feather="user" class="w-5 h-5"></i></button
-            ><a
-              href="/cart"
-              id="nav-cart"
-              class="text-gray-700 hover:text-gray-900 relative transition-all duration-300 hover:scale-110"
-              aria-label="سبد خرید"
-            >
-              <i data-feather="shopping-bag" class="w-5 h-5"></i>
-              <span
-                id="nav-cart-count"
-                class="absolute -top-2 -right-2 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center pulse-animation"
-                >۰</span
-              > </a
-            ><button id="mobile-menu-button" class="hamburger-button lg:hidden">
-              <span></span><span></span><span></span>
+
+          <!-- Items -->
+          <div id="cart-items" class="space-y-4"></div>
+
+          <!-- Empty -->
+          <div id="cart-empty" class="hidden">
+            <div class="profile-card text-center">
+              <div
+                class="mx-auto w-16 h-16 rounded-2xl bg-white/70 text-rose-600 flex items-center justify-center mb-4">
+                <i data-feather="shopping-bag"></i>
+              </div>
+              <h3 class="text-lg font-bold text-gray-800 mb-2">
+                سبد خرید شما خالی است
+              </h3>
+              <p class="text-gray-600 mb-6">
+                به نظر می‌رسد هنوز محصولی اضافه نکرده‌اید.
+              </p>
+              <a href="/shop" class="btn-primary">
+                <i data-feather="arrow-right"></i>
+                شروع خرید
+              </a>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="flex flex-col sm:flex-row gap-3 justify-between">
+            <a href="/shop" class="btn-secondary">
+              <i data-feather="arrow-right"></i>
+              ادامه خرید
+            </a>
+            <button id="cart-clear" class="btn-secondary text-rose-700 border-rose-300">
+              <i data-feather="trash-2"></i>
+              پاک کردن سبد
+            </button>
+          </div>
+
+          <!-- Recommendations (Desktop only under items) -->
+          <div class="profile-card hidden lg:block" data-aos="fade-up" data-aos-delay="50">
+            <h3 class="font-bold text-gray-800 mb-4">
+              شاید این‌ها را هم بپسندید
+            </h3>
+            <div id="cart-recommendations-desktop" class="grid grid-cols-3 xl:grid-cols-4 gap-4"></div>
+          </div>
+        </div>
+
+        <!-- Right Summary -->
+        <aside class="space-y-6" data-aos="fade-up" data-aos-delay="100">
+          <div class="profile-card">
+            <h3 class="text-xl font-bold text-gray-800 mb-5">خلاصه سفارش</h3>
+
+            <!-- Coupon -->
+            <div class="mb-4">
+              <label class="block font-semibold mb-2 text-gray-800">کد تخفیف</label>
+              <div class="flex gap-2">
+                <input id="cart-coupon-code" dir="ltr" type="text" placeholder="مثلا: KOALAW10"
+                  class="form-input flex-1" />
+                <button id="cart-apply-coupon" class="btn-primary">
+                  اعمال
+                </button>
+              </div>
+              <p id="cart-coupon-msg" class="text-sm text-gray-500 mt-2"></p>
+            </div>
+
+            <!-- Options -->
+            <div class="space-y-4 border-t pt-4">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="font-semibold text-gray-800">بسته‌بندی هدیه</p>
+                  <p class="text-xs text-gray-500">
+                    جعبه شیک + کارت دست‌نویس
+                  </p>
+                </div>
+                <label class="toggle-switch">
+                  <input id="cart-gift-wrap" type="checkbox" />
+                  <span class="switch"></span>
+                </label>
+              </div>
+              <div class="text-xs text-gray-500">
+                هزینه‌ها: بسته‌بندی +۲۰,۰۰۰
+              </div>
+            </div>
+
+            <!-- Notes -->
+            <div class="mt-4">
+              <label class="block font-semibold mb-2 text-gray-800">یادداشت سفارش (اختیاری)</label>
+              <textarea id="cart-note" rows="3" class="form-input"
+                placeholder="اگر نکته‌ای هست اینجا بنویسید..."></textarea>
+            </div>
+
+            <!-- Totals -->
+            <div class="mt-6 space-y-3 text-sm">
+              <div class="flex items-center justify-between">
+                <span class="text-gray-600">جمع جزء</span>
+                <span id="cart-subtotal" class="font-bold text-gray-800">۰ تومان</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-gray-600">تخفیف</span>
+                <span id="cart-discount" class="font-bold text-rose-700">۰ تومان</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-gray-600">هزینه ارسال</span>
+                <span id="cart-shipping" class="font-bold text-gray-800">۰ تومان</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-gray-600">بسته‌بندی هدیه</span>
+                <span id="cart-gift" class="font-bold text-gray-800">۰ تومان</span>
+              </div>
+              <div class="border-t pt-3 flex items-center justify-between text-base">
+                <span class="font-extrabold text-gray-900">مبلغ قابل پرداخت</span>
+                <span id="cart-grand" class="font-extrabold text-gray-900">۰ تومان</span>
+              </div>
+            </div>
+
+            <button id="cart-checkout-btn" class="w-full mt-6 btn-primary">
+              ادامه به مرحله بعد (آدرس و ارسال)
+            </button>
+            <p class="text-xs text-gray-500 mt-3">
+              با ادامه، شرایط و قوانین را می‌پذیرید.
+            </p>
+          </div>
+
+          <!-- Recommendations (Mobile & Tablet in sidebar) -->
+          <div class="profile-card lg:hidden">
+            <h3 class="font-bold text-gray-800 mb-4">
+              شاید این‌ها را هم بپسندید
+            </h3>
+            <div id="cart-recommendations" class="grid grid-cols-2 gap-3"></div>
+          </div>
+        </aside>
+      </section>
+
+      <!-- Address View -->
+      <section id="view-address" class="grid grid-cols-1 lg:grid-cols-3 gap-8 hidden">
+        <!-- Left -->
+        <div class="lg:col-span-2 space-y-6" data-aos="fade-up">
+          <!-- Saved Addresses (for authenticated users) -->
+          <div id="saved-addresses-container" class="profile-card hidden">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-xl font-bold text-gray-800">آدرس‌های ذخیره شده</h3>
+              <a href="/profile#addresses" class="text-sm text-rose-600 hover:text-rose-700 flex items-center gap-1">
+                <i data-feather="settings" class="w-4 h-4"></i>
+                مدیریت آدرس‌ها
+              </a>
+            </div>
+            <div id="saved-addresses-list" class="space-y-3"></div>
+          </div>
+          <div class="profile-card">
+            <h3 class="text-xl font-bold text-gray-800 mb-5">
+              اطلاعات گیرنده
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="form-label">نام</label>
+                <input id="addr-firstname" type="text" class="form-input" placeholder="مانند: سارا" />
+              </div>
+              <div>
+                <label class="form-label">نام خانوادگی</label>
+                <input id="addr-lastname" type="text" class="form-input" placeholder="مانند: محمدی" />
+              </div>
+              <div>
+                <label class="form-label">شماره موبایل</label>
+                <input id="addr-phone" type="tel" dir="ltr" class="form-input" placeholder="09xxxxxxxxx" />
+              </div>
+              <div>
+                <label class="form-label">کد پستی</label>
+                <input id="addr-postal" type="text" dir="ltr" maxlength="10" class="form-input"
+                  placeholder="xxxxxxxxxx" />
+              </div>
+              <div>
+                <label class="form-label">استان</label>
+                <input id="addr-province" type="text" class="form-input" placeholder="استان" />
+              </div>
+              <div>
+                <label class="form-label">شهر</label>
+                <input id="addr-city" type="text" class="form-input" placeholder="شهر" />
+              </div>
+            </div>
+            <div class="mt-4">
+              <label class="form-label">نشانی کامل</label>
+              <textarea id="addr-line1" rows="3" class="form-input" placeholder="آدرس دقیق تحویل"></textarea>
+            </div>
+          </div>
+
+          <div class="profile-card">
+            <h3 class="text-xl font-bold text-gray-800 mb-5">روش ارسال</h3>
+            <div class="space-y-3" id="addr-ship-methods">
+              <label
+                class="flex items-center justify-between gap-4 p-3 rounded-2xl border border-gray-200 hover:border-primary transition">
+                <div class="flex items-center gap-3">
+                  <input type="radio" name="addr-ship" id="addr-ship-standard" value="standard"
+                    class="accent-rose-500" />
+                  <div>
+                    <p class="font-semibold text-gray-800">استاندارد</p>
+                    <p class="text-xs text-gray-500">تحویل ۲-۴ روز کاری</p>
+                  </div>
+                </div>
+                <span id="addr-price-standard" class="font-bold text-gray-800">۴۵,۰۰۰ تومان</span>
+              </label>
+
+              <label
+                class="flex items-center justify-between gap-4 p-3 rounded-2xl border border-gray-200 hover:border-primary transition">
+                <div class="flex items-center gap-3">
+                  <input type="radio" name="addr-ship" id="addr-ship-express" value="express" class="accent-rose-500" />
+                  <div>
+                    <p class="font-semibold text-gray-800">اکسپرس</p>
+                    <p class="text-xs text-gray-500">
+                      تحویل سریع‌تر در شهرهای منتخب
+                    </p>
+                  </div>
+                </div>
+                <span id="addr-price-express" class="font-bold text-gray-800">۷۵,۰۰۰ تومان</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="flex gap-3">
+            <a href="/cart" class="btn-secondary">
+              <i data-feather="arrow-right"></i>
+              بازگشت به سبد
+            </a>
+            <button id="addr-to-payment" class="btn-primary">
+              ادامه به پرداخت
+              <i data-feather="arrow-left"></i>
             </button>
           </div>
         </div>
-      </div>
-    </nav>
 
-    <!-- Mobile Menu -->
-    <div id="mobile-menu">
-      <a href="/shop" class="nav-link">فروشگاه</a
-      ><a href="/shop?category=collections" class="nav-link">کالکشن ها</a
-      ><a href="/shop?category=brands" class="nav-link">برندها</a
-      ><a href="/magazine" class="nav-link">مجله</a
-      ><a href="/about" class="nav-link">درباره ما</a>
-    </div>
-    <div id="mobile-menu-overlay" class="mobile-menu-overlay"></div>
-
-    <!-- Hero -->
-    <section class="profile-hero pt-24 pb-16 relative" id="hero-section">
-      <div class="container mx-auto px-6 relative z-10">
-        <div class="text-center text-white" data-aos="fade-up">
-          <div
-            class="inline-flex items-center gap-3 bg-white/20 backdrop-blur-sm rounded-full px-6 py-2 mb-6"
-          >
-            <i id="hero-icon" data-feather="shopping-bag" class="w-5 h-5"></i>
-            <span id="hero-badge" class="font-medium">سبد خرید</span>
-          </div>
-          <h1
-            id="hero-title"
-            class="text-4xl lg:text-5xl font-serif font-bold mb-3"
-          >
-            سفارش خود را نهایی کنید
-          </h1>
-          <p id="hero-subtitle" class="text-lg text-white/90 max-w-2xl mx-auto">
-            بررسی اقلام سبد، اعمال کد تخفیف و ادامه به پرداخت
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Checkout steps -->
-    <section class="pb-4">
-      <div class="container mx-auto px-6">
-        <div class="profile-card">
-          <div class="checkout-steps" role="list" aria-label="مراحل خرید">
-            <a href="/cart" class="step" id="step-cart" role="listitem">
-              <span class="step-dot"><span class="step-index">۱</span></span>
-              <span class="step-label">سبد خرید</span>
-            </a>
-            <span class="step-line"></span>
-            <a href="#/address" class="step" id="step-address" role="listitem">
-              <span class="step-dot"><span class="step-index">۲</span></span>
-              <span class="step-label">آدرس و ارسال</span>
-            </a>
-            <span class="step-line"></span>
-            <a href="#/payment" class="step" id="step-payment" role="listitem">
-              <span class="step-dot"><span class="step-index">۳</span></span>
-              <span class="step-label">پرداخت</span>
-            </a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Views -->
-    <main class="py-12">
-      <div class="container mx-auto px-6">
-        <!-- Cart View -->
-        <section id="view-cart" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <!-- Left -->
-          <div class="lg:col-span-2 space-y-6" data-aos="fade-up">
-            <!-- Free shipping progress -->
-            <div class="profile-card">
-              <div
-                class="flex items-center justify-between gap-3 flex-wrap mb-3"
-              >
-                <div class="flex items-center gap-2 text-gray-800">
-                  <i data-feather="truck"></i>
-                  <p id="cart-progress-text" class="font-semibold">
-                    برای ارسال رایگان، هنوز ۰ تومان مانده است.
-                  </p>
-                </div>
-                <span
-                  id="cart-ship-badge"
-                  class="text-xs px-3 py-1 rounded-full badge-warn"
-                  >فعال‌سازی ارسال رایگان</span
-                >
+        <!-- Summary -->
+        <aside class="space-y-6" data-aos="fade-up" data-aos-delay="100">
+          <div class="profile-card">
+            <h3 class="text-xl font-bold text-gray-800 mb-5">خلاصه سفارش</h3>
+            <div class="mt-2 space-y-3 text-sm">
+              <div class="flex items-center justify-between">
+                <span class="text-gray-600">جمع جزء</span>
+                <span id="addr-subtotal" class="font-bold text-gray-800">۰ تومان</span>
               </div>
-              <div class="progress-rail">
-                <div id="cart-progress-bar" class="progress-fill"></div>
+              <div class="flex items-center justify-between">
+                <span class="text-gray-600">تخفیف</span>
+                <span id="addr-discount" class="font-bold text-rose-700">۰ تومان</span>
               </div>
-            </div>
-
-            <!-- Items -->
-            <div id="cart-items" class="space-y-4"></div>
-
-            <!-- Empty -->
-            <div id="cart-empty" class="hidden">
-              <div class="profile-card text-center">
-                <div
-                  class="mx-auto w-16 h-16 rounded-2xl bg-white/70 text-rose-600 flex items-center justify-center mb-4"
-                >
-                  <i data-feather="shopping-bag"></i>
-                </div>
-                <h3 class="text-lg font-bold text-gray-800 mb-2">
-                  سبد خرید شما خالی است
-                </h3>
-                <p class="text-gray-600 mb-6">
-                  به نظر می‌رسد هنوز محصولی اضافه نکرده‌اید.
-                </p>
-                <a href="/shop" class="btn-primary">
-                  <i data-feather="arrow-right"></i>
-                  شروع خرید
-                </a>
+              <div class="flex items-center justify-between">
+                <span class="text-gray-600">هزینه ارسال</span>
+                <span id="addr-shipping" class="font-bold text-gray-800">۰ تومان</span>
               </div>
-            </div>
-
-            <!-- Actions -->
-            <div class="flex flex-col sm:flex-row gap-3 justify-between">
-              <a href="/shop" class="btn-secondary">
-                <i data-feather="arrow-right"></i>
-                ادامه خرید
-              </a>
-              <button
-                id="cart-clear"
-                class="btn-secondary text-rose-700 border-rose-300"
-              >
-                <i data-feather="trash-2"></i>
-                پاک کردن سبد
-              </button>
-            </div>
-
-            <!-- Recommendations (Desktop only under items) -->
-            <div
-              class="profile-card hidden lg:block"
-              data-aos="fade-up"
-              data-aos-delay="50"
-            >
-              <h3 class="font-bold text-gray-800 mb-4">
-                شاید این‌ها را هم بپسندید
-              </h3>
-              <div
-                id="cart-recommendations-desktop"
-                class="grid grid-cols-3 xl:grid-cols-4 gap-4"
-              ></div>
+              <div class="border-t pt-3 flex items-center justify-between text-base">
+                <span class="font-extrabold text-gray-900">مبلغ قابل پرداخت</span>
+                <span id="addr-grand" class="font-extrabold text-gray-900">۰ تومان</span>
+              </div>
             </div>
           </div>
 
-          <!-- Right Summary -->
-          <aside class="space-y-6" data-aos="fade-up" data-aos-delay="100">
-            <div class="profile-card">
-              <h3 class="text-xl font-bold text-gray-800 mb-5">خلاصه سفارش</h3>
+          <div class="profile-card">
+            <h4 class="font-bold text-gray-800 mb-3">ارسال به:</h4>
+            <p id="addr-ship-to" class="text-sm text-gray-600 leading-7">—</p>
+          </div>
+        </aside>
+      </section>
 
-              <!-- Coupon -->
-              <div class="mb-4">
-                <label class="block font-semibold mb-2 text-gray-800"
-                  >کد تخفیف</label
-                >
-                <div class="flex gap-2">
-                  <input
-                    id="cart-coupon-code"
-                    dir="ltr"
-                    type="text"
-                    placeholder="مثلا: KOALAW10"
-                    class="form-input flex-1"
-                  />
-                  <button id="cart-apply-coupon" class="btn-primary">
-                    اعمال
-                  </button>
-                </div>
-                <p id="cart-coupon-msg" class="text-sm text-gray-500 mt-2"></p>
-              </div>
-
-              <!-- Options -->
-              <div class="space-y-4 border-t pt-4">
-                <div class="flex items-center justify-between">
+      <!-- Payment View -->
+      <section id="view-payment" class="grid grid-cols-1 lg:grid-cols-3 gap-8 hidden">
+        <!-- Left -->
+        <div class="lg:col-span-2 space-y-6" data-aos="fade-up">
+          <div class="profile-card">
+            <h3 class="text-xl font-bold text-gray-800 mb-5">روش پرداخت</h3>
+            <div class="space-y-3" id="pay-methods">
+              <label
+                class="flex items-center justify-between gap-4 p-3 rounded-2xl border border-gray-200 hover:border-primary transition">
+                <div class="flex items-center gap-3">
+                  <input type="radio" name="pay-method" value="gateway" class="accent-rose-500" checked />
                   <div>
-                    <p class="font-semibold text-gray-800">بسته‌بندی هدیه</p>
+                    <p class="font-semibold text-gray-800">درگاه پرداخت</p>
                     <p class="text-xs text-gray-500">
-                      جعبه شیک + کارت دست‌نویس
+                      انتقال به درگاه بانکی امن
                     </p>
                   </div>
-                  <label class="toggle-switch">
-                    <input id="cart-gift-wrap" type="checkbox" />
-                    <span class="switch"></span>
-                  </label>
                 </div>
-                <div class="text-xs text-gray-500">
-                  هزینه‌ها: بسته‌بندی +۲۰,۰۰۰
-                </div>
-              </div>
+                <i data-feather="shield"></i>
+              </label>
 
-              <!-- Notes -->
-              <div class="mt-4">
-                <label class="block font-semibold mb-2 text-gray-800"
-                  >یادداشت سفارش (اختیاری)</label
-                >
-                <textarea
-                  id="cart-note"
-                  rows="3"
-                  class="form-input"
-                  placeholder="اگر نکته‌ای هست اینجا بنویسید..."
-                ></textarea>
-              </div>
-
-              <!-- Totals -->
-              <div class="mt-6 space-y-3 text-sm">
-                <div class="flex items-center justify-between">
-                  <span class="text-gray-600">جمع جزء</span>
-                  <span id="cart-subtotal" class="font-bold text-gray-800"
-                    >۰ تومان</span
-                  >
-                </div>
-                <div class="flex items-center justify-between">
-                  <span class="text-gray-600">تخفیف</span>
-                  <span id="cart-discount" class="font-bold text-rose-700"
-                    >۰ تومان</span
-                  >
-                </div>
-                <div class="flex items-center justify-between">
-                  <span class="text-gray-600">هزینه ارسال</span>
-                  <span id="cart-shipping" class="font-bold text-gray-800"
-                    >۰ تومان</span
-                  >
-                </div>
-                <div class="flex items-center justify-between">
-                  <span class="text-gray-600">بسته‌بندی هدیه</span>
-                  <span id="cart-gift" class="font-bold text-gray-800"
-                    >۰ تومان</span
-                  >
-                </div>
-                <div
-                  class="border-t pt-3 flex items-center justify-between text-base"
-                >
-                  <span class="font-extrabold text-gray-900"
-                    >مبلغ قابل پرداخت</span
-                  >
-                  <span id="cart-grand" class="font-extrabold text-gray-900"
-                    >۰ تومان</span
-                  >
-                </div>
-              </div>
-
-              <button id="cart-checkout-btn" class="w-full mt-6 btn-primary">
-                ادامه به مرحله بعد (آدرس و ارسال)
-              </button>
-              <p class="text-xs text-gray-500 mt-3">
-                با ادامه، شرایط و قوانین را می‌پذیرید.
-              </p>
-            </div>
-
-            <!-- Recommendations (Mobile & Tablet in sidebar) -->
-            <div class="profile-card lg:hidden">
-              <h3 class="font-bold text-gray-800 mb-4">
-                شاید این‌ها را هم بپسندید
-              </h3>
-              <div
-                id="cart-recommendations"
-                class="grid grid-cols-2 gap-3"
-              ></div>
-            </div>
-          </aside>
-        </section>
-
-        <!-- Address View -->
-        <section
-          id="view-address"
-          class="grid grid-cols-1 lg:grid-cols-3 gap-8 hidden"
-        >
-          <!-- Left -->
-          <div class="lg:col-span-2 space-y-6" data-aos="fade-up">
-            <div class="profile-card">
-              <h3 class="text-xl font-bold text-gray-800 mb-5">
-                اطلاعات گیرنده
-              </h3>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label class="form-label">نام</label>
-                  <input
-                    id="addr-firstname"
-                    type="text"
-                    class="form-input"
-                    placeholder="مانند: سارا"
-                  />
-                </div>
-                <div>
-                  <label class="form-label">نام خانوادگی</label>
-                  <input
-                    id="addr-lastname"
-                    type="text"
-                    class="form-input"
-                    placeholder="مانند: محمدی"
-                  />
-                </div>
-                <div>
-                  <label class="form-label">شماره موبایل</label>
-                  <input
-                    id="addr-phone"
-                    type="tel"
-                    dir="ltr"
-                    class="form-input"
-                    placeholder="09xxxxxxxxx"
-                  />
-                </div>
-                <div>
-                  <label class="form-label">کد پستی</label>
-                  <input
-                    id="addr-postal"
-                    type="text"
-                    dir="ltr"
-                    maxlength="10"
-                    class="form-input"
-                    placeholder="xxxxxxxxxx"
-                  />
-                </div>
-                <div>
-                  <label class="form-label">استان</label>
-                  <input
-                    id="addr-province"
-                    type="text"
-                    class="form-input"
-                    placeholder="استان"
-                  />
-                </div>
-                <div>
-                  <label class="form-label">شهر</label>
-                  <input
-                    id="addr-city"
-                    type="text"
-                    class="form-input"
-                    placeholder="شهر"
-                  />
-                </div>
-              </div>
-              <div class="mt-4">
-                <label class="form-label">نشانی کامل</label>
-                <textarea
-                  id="addr-line1"
-                  rows="3"
-                  class="form-input"
-                  placeholder="آدرس دقیق تحویل"
-                ></textarea>
-              </div>
-            </div>
-
-            <div class="profile-card">
-              <h3 class="text-xl font-bold text-gray-800 mb-5">روش ارسال</h3>
-              <div class="space-y-3" id="addr-ship-methods">
-                <label
-                  class="flex items-center justify-between gap-4 p-3 rounded-2xl border border-gray-200 hover:border-primary transition"
-                >
-                  <div class="flex items-center gap-3">
-                    <input
-                      type="radio"
-                      name="addr-ship"
-                      id="addr-ship-standard"
-                      value="standard"
-                      class="accent-rose-500"
-                    />
-                    <div>
-                      <p class="font-semibold text-gray-800">استاندارد</p>
-                      <p class="text-xs text-gray-500">تحویل ۲-۴ روز کاری</p>
-                    </div>
+              <label
+                class="flex items-center justify-between gap-4 p-3 rounded-2xl border border-gray-200 hover:border-primary transition">
+                <div class="flex items-center gap-3">
+                  <input type="radio" name="pay-method" value="cod" class="accent-rose-500" />
+                  <div>
+                    <p class="font-semibold text-gray-800">پرداخت در محل</p>
+                    <p class="text-xs text-gray-500">
+                      پرداخت هنگام تحویل سفارش
+                    </p>
                   </div>
-                  <span id="addr-price-standard" class="font-bold text-gray-800"
-                    >۴۵,۰۰۰ تومان</span
-                  >
-                </label>
-
-                <label
-                  class="flex items-center justify-between gap-4 p-3 rounded-2xl border border-gray-200 hover:border-primary transition"
-                >
-                  <div class="flex items-center gap-3">
-                    <input
-                      type="radio"
-                      name="addr-ship"
-                      id="addr-ship-express"
-                      value="express"
-                      class="accent-rose-500"
-                    />
-                    <div>
-                      <p class="font-semibold text-gray-800">اکسپرس</p>
-                      <p class="text-xs text-gray-500">
-                        تحویل سریع‌تر در شهرهای منتخب
-                      </p>
-                    </div>
-                  </div>
-                  <span id="addr-price-express" class="font-bold text-gray-800"
-                    >۷۵,۰۰۰ تومان</span
-                  >
-                </label>
-              </div>
-            </div>
-
-            <div class="flex gap-3">
-              <a href="/cart" class="btn-secondary">
-                <i data-feather="arrow-right"></i>
-                بازگشت به سبد
-              </a>
-              <button id="addr-to-payment" class="btn-primary">
-                ادامه به پرداخت
-                <i data-feather="arrow-left"></i>
-              </button>
+                </div>
+                <i data-feather="truck"></i>
+              </label>
             </div>
           </div>
 
-          <!-- Summary -->
-          <aside class="space-y-6" data-aos="fade-up" data-aos-delay="100">
-            <div class="profile-card">
-              <h3 class="text-xl font-bold text-gray-800 mb-5">خلاصه سفارش</h3>
-              <div class="mt-2 space-y-3 text-sm">
-                <div class="flex items-center justify-between">
-                  <span class="text-gray-600">جمع جزء</span>
-                  <span id="addr-subtotal" class="font-bold text-gray-800"
-                    >۰ تومان</span
-                  >
-                </div>
-                <div class="flex items-center justify-between">
-                  <span class="text-gray-600">تخفیف</span>
-                  <span id="addr-discount" class="font-bold text-rose-700"
-                    >۰ تومان</span
-                  >
-                </div>
-                <div class="flex items-center justify-between">
-                  <span class="text-gray-600">هزینه ارسال</span>
-                  <span id="addr-shipping" class="font-bold text-gray-800"
-                    >۰ تومان</span
-                  >
-                </div>
-                <div
-                  class="border-t pt-3 flex items-center justify-between text-base"
-                >
-                  <span class="font-extrabold text-gray-900"
-                    >مبلغ قابل پرداخت</span
-                  >
-                  <span id="addr-grand" class="font-extrabold text-gray-900"
-                    >۰ تومان</span
-                  >
-                </div>
+          <!-- Card form removed -->
+
+          <div class="flex gap-3">
+            <a href="#/address" class="btn-secondary">
+              <i data-feather="arrow-right"></i>
+              بازگشت به آدرس
+            </a>
+            <button id="pay-now" class="btn-primary">
+              پرداخت و ثبت سفارش
+              <i data-feather="check-circle"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Summary -->
+        <aside class="space-y-6" data-aos="fade-up" data-aos-delay="100">
+          <div class="profile-card">
+            <h3 class="text-xl font-bold text-gray-800 mb-5">خلاصه سفارش</h3>
+            <div class="mt-2 space-y-3 text-sm">
+              <div class="flex items-center justify-between">
+                <span class="text-gray-600">جمع جزء</span>
+                <span id="pay-subtotal" class="font-bold text-gray-800">۰ تومان</span>
               </div>
-            </div>
-
-            <div class="profile-card">
-              <h4 class="font-bold text-gray-800 mb-3">ارسال به:</h4>
-              <p id="addr-ship-to" class="text-sm text-gray-600 leading-7">—</p>
-            </div>
-          </aside>
-        </section>
-
-        <!-- Payment View -->
-        <section
-          id="view-payment"
-          class="grid grid-cols-1 lg:grid-cols-3 gap-8 hidden"
-        >
-          <!-- Left -->
-          <div class="lg:col-span-2 space-y-6" data-aos="fade-up">
-            <div class="profile-card">
-              <h3 class="text-xl font-bold text-gray-800 mb-5">روش پرداخت</h3>
-              <div class="space-y-3" id="pay-methods">
-                <label
-                  class="flex items-center justify-between gap-4 p-3 rounded-2xl border border-gray-200 hover:border-primary transition"
-                >
-                  <div class="flex items-center gap-3">
-                    <input
-                      type="radio"
-                      name="pay-method"
-                      value="gateway"
-                      class="accent-rose-500"
-                      checked
-                    />
-                    <div>
-                      <p class="font-semibold text-gray-800">درگاه پرداخت</p>
-                      <p class="text-xs text-gray-500">
-                        انتقال به درگاه بانکی امن
-                      </p>
-                    </div>
-                  </div>
-                  <i data-feather="shield"></i>
-                </label>
-
-                <label
-                  class="flex items-center justify-between gap-4 p-3 rounded-2xl border border-gray-200 hover:border-primary transition"
-                >
-                  <div class="flex items-center gap-3">
-                    <input
-                      type="radio"
-                      name="pay-method"
-                      value="cod"
-                      class="accent-rose-500"
-                    />
-                    <div>
-                      <p class="font-semibold text-gray-800">پرداخت در محل</p>
-                      <p class="text-xs text-gray-500">
-                        پرداخت هنگام تحویل سفارش
-                      </p>
-                    </div>
-                  </div>
-                  <i data-feather="truck"></i>
-                </label>
+              <div class="flex items-center justify-between">
+                <span class="text-gray-600">تخفیف</span>
+                <span id="pay-discount" class="font-bold text-rose-700">۰ تومان</span>
               </div>
-            </div>
-
-            <!-- Card form removed -->
-
-            <div class="flex gap-3">
-              <a href="#/address" class="btn-secondary">
-                <i data-feather="arrow-right"></i>
-                بازگشت به آدرس
-              </a>
-              <button id="pay-now" class="btn-primary">
-                پرداخت و ثبت سفارش
-                <i data-feather="check-circle"></i>
-              </button>
+              <div class="flex items-center justify-between">
+                <span class="text-gray-600">هزینه ارسال</span>
+                <span id="pay-shipping" class="font-bold text-gray-800">۰ تومان</span>
+              </div>
+              <div class="border-t pt-3 flex items-center justify-between text-base">
+                <span class="font-extrabold text-gray-900">مبلغ قابل پرداخت</span>
+                <span id="pay-grand" class="font-extrabold text-gray-900">۰ تومان</span>
+              </div>
             </div>
           </div>
 
-          <!-- Summary -->
-          <aside class="space-y-6" data-aos="fade-up" data-aos-delay="100">
-            <div class="profile-card">
-              <h3 class="text-xl font-bold text-gray-800 mb-5">خلاصه سفارش</h3>
-              <div class="mt-2 space-y-3 text-sm">
-                <div class="flex items-center justify-between">
-                  <span class="text-gray-600">جمع جزء</span>
-                  <span id="pay-subtotal" class="font-bold text-gray-800"
-                    >۰ تومان</span
-                  >
-                </div>
-                <div class="flex items-center justify-between">
-                  <span class="text-gray-600">تخفیف</span>
-                  <span id="pay-discount" class="font-bold text-rose-700"
-                    >۰ تومان</span
-                  >
-                </div>
-                <div class="flex items-center justify-between">
-                  <span class="text-gray-600">هزینه ارسال</span>
-                  <span id="pay-shipping" class="font-bold text-gray-800"
-                    >۰ تومان</span
-                  >
-                </div>
-                <div
-                  class="border-t pt-3 flex items-center justify-between text-base"
-                >
-                  <span class="font-extrabold text-gray-900"
-                    >مبلغ قابل پرداخت</span
-                  >
-                  <span id="pay-grand" class="font-extrabold text-gray-900"
-                    >۰ تومان</span
-                  >
-                </div>
-              </div>
-            </div>
+          <div class="profile-card">
+            <h4 class="font-bold text-gray-800 mb-3">ارسال به:</h4>
+            <p id="pay-ship-to" class="text-sm text-gray-600 leading-7">—</p>
+          </div>
+        </aside>
+      </section>
+    </div>
+  </main>
 
-            <div class="profile-card">
-              <h4 class="font-bold text-gray-800 mb-3">ارسال به:</h4>
-              <p id="pay-ship-to" class="text-sm text-gray-600 leading-7">—</p>
+  <!-- Footer -->
+  <footer id="about" class="bg-gradient-to-b from-gray-900 to-black text-white py-20">
+    <div class="container mx-auto px-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-12">
+        <div class="lg:col-span-2">
+          <h3 class="text-3xl font-serif font-bold mb-6">KOALAW</h3>
+          <p class="text-gray-400 mb-6 leading-relaxed">
+            ارتقای زیبایی از طریق تجمل آگاهانه. هر محصول جشنی از بهترین مواد
+            طبیعی و علم نوآورانه است.
+          </p>
+          <div class="space-y-3 mb-8">
+            <div class="flex items-start gap-2 text-gray-300">
+              <i data-feather="map-pin" class="w-5 h-5 flex-shrink-0 mt-0.5"></i>
+              <address class="not-italic leading-relaxed">
+                همدان، شهرک آیت‌الله مدنی
+              </address>
             </div>
-          </aside>
-        </section>
+            <div class="rounded-xl overflow-hidden ring-1 ring-white/10 max-w-sm">
+              <iframe title="نقشه ایران، همدان، شهرک آیت‌الله مدنی"
+                src="https://www.google.com/maps?q=ایران+همدان+شهرک+آیت+الله+مدنی&output=embed" width="100%"
+                height="160" style="border: 0; filter: grayscale(20%)" allowfullscreen loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+          </div>
+          <div class="flex gap-3">
+            <a href="https://instagram.com/koalaw.shop" target="_blank" rel="noopener"
+              class="bg-gray-800 p-3 rounded-full hover:bg-gray-700 transition-all duration-300 transform hover:scale-110"><i
+                data-feather="instagram" class="w-5 h-5"></i></a>
+          </div>
+        </div>
+        <div id="footer-links" class="lg:col-span-3 grid grid-cols-2 md:grid-cols-3 gap-8"></div>
       </div>
-    </main>
-
-    <!-- Footer -->
-    <footer
-      id="about"
-      class="bg-gradient-to-b from-gray-900 to-black text-white py-20"
-    >
-      <div class="container mx-auto px-6">
-        <div
-          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-12"
-        >
-          <div class="lg:col-span-2">
-            <h3 class="text-3xl font-serif font-bold mb-6">KOALAW</h3>
-            <p class="text-gray-400 mb-6 leading-relaxed">
-              ارتقای زیبایی از طریق تجمل آگاهانه. هر محصول جشنی از بهترین مواد
-              طبیعی و علم نوآورانه است.
+      <div class="border-t border-gray-800 pt-8">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+          <div class="flex flex-col md:flex-row items-center mb-4 md:mb-0">
+            <p class="text-gray-400 text-sm mb-2 md:mb-0 md:ml-6">
+              © ۲۰۲۵ D.AI — تمام حقوق محفوظ است.
             </p>
-            <div class="space-y-3 mb-8">
-              <div class="flex items-start gap-2 text-gray-300">
-                <i
-                  data-feather="map-pin"
-                  class="w-5 h-5 flex-shrink-0 mt-0.5"
-                ></i>
-                <address class="not-italic leading-relaxed">
-                  همدان، شهرک آیت‌الله مدنی
-                </address>
-              </div>
-              <div
-                class="rounded-xl overflow-hidden ring-1 ring-white/10 max-w-sm"
-              >
-                <iframe
-                  title="نقشه ایران، همدان، شهرک آیت‌الله مدنی"
-                  src="https://www.google.com/maps?q=ایران+همدان+شهرک+آیت+الله+مدنی&output=embed"
-                  width="100%"
-                  height="160"
-                  style="border: 0; filter: grayscale(20%)"
-                  allowfullscreen
-                  loading="lazy"
-                  referrerpolicy="no-referrer-when-downgrade"
-                ></iframe>
-              </div>
-            </div>
-            <div class="flex gap-3">
-              <a
-                href="https://instagram.com/koalaw.shop"
-                target="_blank"
-                rel="noopener"
-                class="bg-gray-800 p-3 rounded-full hover:bg-gray-700 transition-all duration-300 transform hover:scale-110"
-                ><i data-feather="instagram" class="w-5 h-5"></i
-              ></a>
+            <div class="flex items-center gap-x-6 md:gap-x-8 text-sm flex-wrap">
+              <a href="/tos" class="text-gray-400 hover:text-white transition duration-300">سیاست حفظ حریم خصوصی</a>
+              <!-- شرایط خدمات و سیاست کوکی حذف شدند -->
             </div>
           </div>
-          <div
-            id="footer-links"
-            class="lg:col-span-3 grid grid-cols-2 md:grid-cols-3 gap-8"
-          ></div>
-        </div>
-        <div class="border-t border-gray-800 pt-8">
-          <div class="flex flex-col md:flex-row justify-between items-center">
-            <div class="flex flex-col md:flex-row items-center mb-4 md:mb-0">
-              <p class="text-gray-400 text-sm mb-2 md:mb-0 md:ml-6">
-                © ۲۰۲۵ D.AI — تمام حقوق محفوظ است.
-              </p>
-              <div
-                class="flex items-center gap-x-6 md:gap-x-8 text-sm flex-wrap"
-              >
-                <a
-                  href="/tos"
-                  class="text-gray-400 hover:text-white transition duration-300"
-                  >سیاست حفظ حریم خصوصی</a
-                >
-                <!-- شرایط خدمات و سیاست کوکی حذف شدند -->
-              </div>
-            </div>
-            <div class="flex items-center gap-x-4">
-              <span class="text-gray-400 text-sm ml-2">پرداخت امن:</span>
-              <a referrerpolicy='origin' target='_blank' href='https://trustseal.enamad.ir/?id=657686&Code=sZDr0tl8qRUK6ezQADBirvTJL8liU2qS'><img referrerpolicy='origin' src='https://trustseal.enamad.ir/logo.aspx?id=657686&Code=sZDr0tl8qRUK6ezQADBirvTJL8liU2qS' alt='' style='cursor:pointer' code='sZDr0tl8qRUK6ezQADBirvTJL8liU2qS'></a>
-            </div>
+          <div class="flex items-center gap-x-4">
+            <span class="text-gray-400 text-sm ml-2">پرداخت امن:</span>
+            <a referrerpolicy='origin' target='_blank'
+              href='https://trustseal.enamad.ir/?id=657686&Code=sZDr0tl8qRUK6ezQADBirvTJL8liU2qS'><img
+                referrerpolicy='origin'
+                src='https://trustseal.enamad.ir/logo.aspx?id=657686&Code=sZDr0tl8qRUK6ezQADBirvTJL8liU2qS' alt=''
+                style='cursor:pointer' code='sZDr0tl8qRUK6ezQADBirvTJL8liU2qS'></a>
           </div>
         </div>
       </div>
-    </footer>
+    </div>
+  </footer>
 
-    <!-- Search Overlay -->
-    <div id="search-overlay" class="search-overlay">
-      <div class="search-container">
-        <button id="close-search-button" class="close-search-button">
-          <i data-feather="x" class="w-8 h-8"></i>
+  <!-- Search Overlay -->
+  <div id="search-overlay" class="search-overlay">
+    <div class="search-container">
+      <button id="close-search-button" class="close-search-button">
+        <i data-feather="x" class="w-8 h-8"></i>
+      </button>
+      <form class="search-form" onsubmit="event.preventDefault()">
+        <input type="search" id="search-input" placeholder="جستجو برای محصولات، برندها و..." class="search-input" />
+        <button type="submit" class="search-submit-button">
+          <i data-feather="search"></i>
         </button>
-        <form class="search-form" onsubmit="event.preventDefault()">
-          <input
-            type="search"
-            id="search-input"
-            placeholder="جستجو برای محصولات، برندها و..."
-            class="search-input"
-          />
-          <button type="submit" class="search-submit-button">
-            <i data-feather="search"></i>
-          </button>
-        </form>
-        <div class="search-suggestions">
-          <p>پیشنهادات:</p>
-          <a href="/shop?query=serum">سرم پوست</a>
-          <a href="/shop?query=matte">رژ لب مات</a>
-          <a href="/shop?query=perfume">عطر</a>
-          <a href="/shop?query=foundation">کرم پودر</a>
-        </div>
+      </form>
+      <div class="search-suggestions">
+        <p>پیشنهادات:</p>
+        <a href="/shop?query=serum">سرم پوست</a>
+        <a href="/shop?query=matte">رژ لب مات</a>
+        <a href="/shop?query=perfume">عطر</a>
+        <a href="/shop?query=foundation">کرم پودر</a>
       </div>
     </div>
+  </div>
 
-    <!-- Toast -->
-    <div id="toast" class="toast">
-      <i data-feather="check-circle"></i>
-      <span id="toast-text">انجام شد</span>
-    </div>
-    <script src="/assets/js/utils.js"></script>
-    <script src="/assets/js/main.js"></script>
-    <script src="/assets/js/components/navbar.js"></script>
-    <script src="/assets/js/components/search.js"></script>
-    <script src="/assets/js/components/animations.js"></script>
-    <script src="/assets/js/components/cursor.js"></script>
-    <script src="/assets/js/pages/cart.js"></script>
-  </body>
+  <!-- Toast -->
+  <div id="toast" class="toast">
+    <i data-feather="check-circle"></i>
+    <span id="toast-text">انجام شد</span>
+  </div>
+  <script src="/assets/js/utils.js"></script>
+  <script src="/assets/js/main.js"></script>
+  <script src="/assets/js/components/navbar.js"></script>
+  <script src="/assets/js/components/search.js"></script>
+  <script src="/assets/js/components/animations.js"></script>
+  <script src="/assets/js/components/cursor.js"></script>
+  <script src="/assets/js/pages/cart.js"></script>
+</body>
+
 </html>

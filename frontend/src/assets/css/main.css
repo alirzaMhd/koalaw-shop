@@ -1282,3 +1282,20 @@ section[id] { scroll-margin-top: 7rem; }
     text-align: right;
   }
 }
+.saved-address-card {
+  padding: 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 1rem;
+  background: white;
+  transition: all 0.3s ease;
+}
+
+.saved-address-card:hover {
+  border-color: #fda4af;
+  box-shadow: 0 4px 12px rgba(251, 113, 133, 0.1);
+}
+
+.select-address-btn {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
