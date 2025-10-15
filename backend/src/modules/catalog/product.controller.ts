@@ -93,6 +93,15 @@ class ProductController {
     }
   };
 
+  suggestions: RequestHandler = async (_req, res, next) => {
+    try {
+      const items = await productService.getTopSelling(4);
+      return ok(res, { suggestions: items }, 200);
+    } catch (err: any) {
+      next(err);
+    }
+  };
+
   // GET /products/:id
   getById: RequestHandler = async (req, res, next) => {
     try {

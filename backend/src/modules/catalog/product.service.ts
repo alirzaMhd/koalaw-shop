@@ -692,6 +692,31 @@ class ProductService {
        priceRange,
      };
   }
+  // Add after the getFilterOptions method, before the closing bracket of the class
+
+// Get top selling products for search suggestions
+async getTopSelling(limit: number = 4) {
+  const products = await prisma.product.findMany({
+    where: { isActive: true },
+    orderBy: [
+      { isBestseller: 'desc' },
+      { ratingCount: 'desc' },
+      { ratingAvg: 'desc' }
+    ],
+    take: limit,
+    select: {
+      id: true,
+      slug: true,
+      title: true,
+    }
+  });
+  
+  return products.map(p => ({
+    title: p.title,
+    slug: p.slug,
+    url: `/shop?search=${encodeURIComponent(p.title)}`
+  }));
+}
 }
 
 export const productService = new ProductService();

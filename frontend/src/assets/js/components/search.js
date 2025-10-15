@@ -19,6 +19,29 @@
     let debounceTimer = null;
     let controller = null;
 
+    // Load suggestions from backend
+    async function loadSuggestions() {
+      if (!suggestions) return;
+      try {
+        const resp = await fetch("/api/products/suggestions");
+        if (!resp.ok) throw new Error("Failed to load suggestions");
+        const data = await resp.json();
+
+        if (data.success && data.data?.suggestions?.length) {
+          const links = data.data.suggestions
+            .map(
+              (item) =>
+                `<a href="${escapeHTML(item.url)}">${escapeHTML(item.title)}</a>`
+            )
+            .join("");
+          suggestions.innerHTML = `<p>پیشنهادات:</p>${links}`;
+        }
+      } catch (e) {
+        console.error("Failed to load search suggestions:", e);
+        // Keep default suggestions on error
+      }
+    }
+
     function openSearch() {
       if (!overlay) return;
       overlay.classList.add("is-active");
@@ -105,7 +128,6 @@
           const brand = escapeHTML(p.brandName || "");
           const price = formatPriceRial(p.price);
 
-          // We don't know your product detail route; send users to /shop with the query
           const href = `/shop?search=${encodeURIComponent(title)}`;
 
           return `
@@ -127,7 +149,6 @@
         .join("");
 
       results.innerHTML = html;
-      // Feather icons might need refresh after dynamic HTML
       if (window.feather && typeof window.feather.replace === "function") {
         window.feather.replace();
       }
@@ -169,6 +190,9 @@
       if (debounceTimer) clearTimeout(debounceTimer);
       debounceTimer = setTimeout(() => search(q), 300);
     };
+
+    // Load suggestions on page load
+    loadSuggestions();
 
     // Open/close overlay
     btn &&
