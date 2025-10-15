@@ -313,7 +313,7 @@ class CheckoutService {
     const couponCode = (options.couponCode || "").trim();
     const appliedCouponCode = couponCode ? couponCode.toUpperCase() : null;
 
-    const result = await prisma.$transaction(async (tx) => {
+    const result = await prisma.$transaction(async (tx: typeof prisma) => {
       const order = await tx.order.create({
         data: {
           orderNumber,
@@ -362,7 +362,7 @@ class CheckoutService {
             imageUrl: l.imageUrl || null,
             position: idx,
           }))
-        : items.map((it, idx) => ({
+        : items.map((it: typeof items[number], idx: number) => ({
             orderId: order.id,
             productId: it.productId || null,
             variantId: it.variantId || null,

@@ -419,188 +419,188 @@ class OrderService {
   }
 
   // Reorder: put ONLY the items from the specific order into the user's cart
-async createCartFromOrder(orderId: string, userId?: string | null): Promise<{ cartId: string; itemsAdded: number }> {
-  const order = await prisma.order.findUnique({
-    where: { id: orderId },
-    include: { items: true },
-  });
-  if (!order) throw new AppError("سفارش یافت نشد.", 404, "ORDER_NOT_FOUND");
-
-  // Use user's active cart if exists; otherwise create one
-  let cart = null as any;
-  if (userId) {
-    cart = await prisma.cart.findFirst({ where: { userId, status: "ACTIVE" } });
-  }
-  if (!cart) {
-    cart = await prisma.cart.create({ data: { userId: userId || null, status: "ACTIVE" } });
-  }
-
-  if (!order.items.length) {
-    // Nothing to add; clear anyway to enforce "only from this order"
-    await prisma.cartItem.deleteMany({ where: { cartId: cart.id } });
-    return { cartId: cart.id, itemsAdded: 0 };
-  }
-
-  // Helper normalizer
-  const norm = (s?: string | null) =>
-    (s || "")
-      .toString()
-      .trim()
-      .replace(/\s+/g, " ")
-      .replace(/ي/g, "ی")
-      .replace(/ك/g, "ک")
-      .toLowerCase();
-
-  const urlPath = (u?: string | null) => {
-    if (!u) return null;
-    try {
-      const parsed = new URL(u, "http://dummy.local");
-      return parsed.pathname + (parsed.search || "");
-    } catch {
-      return u.startsWith("/") ? u : `/${u}`;
-    }
-  };
-
-  const pickKeyword = (title: string) => {
-    const tokens = norm(title)
-      .split(/\s+/)
-      .filter((t) => t.length >= 3)
-      .sort((a, b) => b.length - a.length);
-    return tokens[0] || norm(title).slice(0, 24);
-  };
-
-  async function resolveProductForItem(it: {
-    title: string;
-    variantName?: string | null;
-    unitPrice: number;
-    imageUrl?: string | null;
-  }): Promise<{ productId: string; variantId: string | null } | null> {
-    const titleN = norm(it.title);
-    const variantN = norm(it.variantName);
-
-    // Exact title + variant (no isActive filter to allow archived reorder)
-    if (titleN) {
-      const vExact = await prisma.productVariant.findFirst({
-        where: {
-          ...(it.variantName ? { variantName: { equals: it.variantName, mode: "insensitive" } } : {}),
-          product: { title: { equals: it.title, mode: "insensitive" } },
-        },
-        select: { id: true, productId: true },
-      });
-      if (vExact) return { productId: vExact.productId, variantId: vExact.id };
-
-      const pExact = await prisma.product.findFirst({
-        where: { title: { equals: it.title, mode: "insensitive" } },
-        select: { id: true, variants: { select: { id: true, variantName: true } } },
-      });
-      if (pExact) {
-        let vId: string | null = null;
-        if (variantN && pExact.variants.length) {
-          const v = pExact.variants.find((vv) => norm(vv.variantName) === variantN);
-          vId = v ? v.id : null;
-        }
-        return { productId: pExact.id, variantId: vId };
-      }
-
-      // Contains (looser)
-      const keyword = pickKeyword(it.title);
-      const pContains = await prisma.product.findFirst({
-        where: { title: { contains: keyword, mode: "insensitive" } },
-        select: { id: true, variants: { select: { id: true, variantName: true } } },
-      });
-      if (pContains) {
-        let vId: string | null = null;
-        if (variantN && pContains.variants.length) {
-          const v = pContains.variants.find((vv) => norm(vv.variantName) === variantN);
-          vId = v ? v.id : null;
-        }
-        return { productId: pContains.id, variantId: vId };
-      }
-    }
-
-    // Image path match
-    const path = urlPath(it.imageUrl);
-    if (path) {
-      const pByHero = await prisma.product.findFirst({
-        where: { OR: [{ heroImageUrl: { equals: path } }, { heroImageUrl: { endsWith: path } }] },
-        select: { id: true },
-      });
-      if (pByHero) return { productId: pByHero.id, variantId: null };
-
-      const img = await prisma.productImage.findFirst({
-        where: { OR: [{ url: { equals: path } }, { url: { endsWith: path } }] },
-        select: { productId: true },
-      });
-      if (img) return { productId: img.productId, variantId: null };
-    }
-
-    // Price-based fallbacks (IRR/IRT)
-    const candidates = [
-      Math.floor(it.unitPrice),
-      Math.floor(it.unitPrice * 10),
-      Math.floor(it.unitPrice / 10),
-    ].filter((v, i, arr) => Number.isFinite(v) && v > 0 && arr.indexOf(v) === i);
-
-    for (const amt of candidates) {
-      const vByPrice = await prisma.productVariant.findFirst({
-        where: { price: amt, product: {} },
-        select: { id: true, productId: true },
-      });
-      if (vByPrice) return { productId: vByPrice.productId, variantId: vByPrice.id };
-    }
-    for (const amt of candidates) {
-      const pByPrice = await prisma.product.findFirst({
-        where: { price: amt },
-        select: { id: true },
-      });
-      if (pByPrice) return { productId: pByPrice.id, variantId: null };
-    }
-
-    return null;
-  }
-
-  // Resolve items; prefer existing refs
-  const prepared = await Promise.all(
-    order.items.map(async (it) => {
-      if (it.productId) {
-        return { it, productId: it.productId as string, variantId: (it.variantId as string) || null };
-      }
-      const resolved = await resolveProductForItem({
-        title: it.title,
-        variantName: it.variantName ?? null,
-        unitPrice: it.unitPrice,
-        imageUrl: it.imageUrl ?? null,
-      });
-      return resolved ? { it, ...resolved } : null;
-    })
-  );
-
-  const valid = prepared.filter(Boolean) as Array<{ it: any; productId: string; variantId: string | null }>;
-  if (!valid.length) {
-    throw new AppError("این سفارش شامل محصولات قابل خرید مجدد نیست.", 400, "NO_REORDERABLE_ITEMS");
-  }
-
-  // IMPORTANT: Replace existing cart contents with ONLY these items
-  await prisma.$transaction(async (tx) => {
-    await tx.cartItem.deleteMany({ where: { cartId: cart.id } });
-    await tx.cartItem.createMany({
-      data: valid.map(({ it, productId, variantId }) => ({
-        cartId: cart.id,
-        productId,
-        variantId,
-        title: it.title,
-        variantName: it.variantName ?? null,
-        unitPrice: it.unitPrice,
-        quantity: it.quantity,
-        lineTotal: it.unitPrice * it.quantity,
-        currencyCode: it.currencyCode ?? order.currencyCode,
-        imageUrl: it.imageUrl ?? null,
-      })),
+  async createCartFromOrder(orderId: string, userId?: string | null): Promise<{ cartId: string; itemsAdded: number }> {
+    const order = await prisma.order.findUnique({
+      where: { id: orderId },
+      include: { items: true },
     });
-  });
+    if (!order) throw new AppError("سفارش یافت نشد.", 404, "ORDER_NOT_FOUND");
 
-  return { cartId: cart.id, itemsAdded: valid.length };
-}
+    // Use user's active cart if exists; otherwise create one
+    let cart = null as any;
+    if (userId) {
+      cart = await prisma.cart.findFirst({ where: { userId, status: "ACTIVE" } });
+    }
+    if (!cart) {
+      cart = await prisma.cart.create({ data: { userId: userId || null, status: "ACTIVE" } });
+    }
+
+    if (!order.items.length) {
+      // Nothing to add; clear anyway to enforce "only from this order"
+      await prisma.cartItem.deleteMany({ where: { cartId: cart.id } });
+      return { cartId: cart.id, itemsAdded: 0 };
+    }
+
+    // Helper normalizer
+    const norm = (s?: string | null) =>
+      (s || "")
+        .toString()
+        .trim()
+        .replace(/\s+/g, " ")
+        .replace(/ي/g, "ی")
+        .replace(/ك/g, "ک")
+        .toLowerCase();
+
+    const urlPath = (u?: string | null) => {
+      if (!u) return null;
+      try {
+        const parsed = new URL(u, "http://dummy.local");
+        return parsed.pathname + (parsed.search || "");
+      } catch {
+        return u.startsWith("/") ? u : `/${u}`;
+      }
+    };
+
+    const pickKeyword = (title: string) => {
+      const tokens = norm(title)
+        .split(/\s+/)
+        .filter((t) => t.length >= 3)
+        .sort((a, b) => b.length - a.length);
+      return tokens[0] || norm(title).slice(0, 24);
+    };
+
+    async function resolveProductForItem(it: {
+      title: string;
+      variantName?: string | null;
+      unitPrice: number;
+      imageUrl?: string | null;
+    }): Promise<{ productId: string; variantId: string | null } | null> {
+      const titleN = norm(it.title);
+      const variantN = norm(it.variantName);
+
+      // Exact title + variant (no isActive filter to allow archived reorder)
+      if (titleN) {
+        const vExact = await prisma.productVariant.findFirst({
+          where: {
+            ...(it.variantName ? { variantName: { equals: it.variantName, mode: "insensitive" } } : {}),
+            product: { title: { equals: it.title, mode: "insensitive" } },
+          },
+          select: { id: true, productId: true },
+        });
+        if (vExact) return { productId: vExact.productId, variantId: vExact.id };
+
+        const pExact = await prisma.product.findFirst({
+          where: { title: { equals: it.title, mode: "insensitive" } },
+          select: { id: true, variants: { select: { id: true, variantName: true } } },
+        });
+        if (pExact) {
+          let vId: string | null = null;
+          if (variantN && pExact.variants.length) {
+            const v = pExact.variants.find((vv: { id: string; variantName: string }) => norm(vv.variantName) === variantN);
+            vId = v ? v.id : null;
+          }
+          return { productId: pExact.id, variantId: vId };
+        }
+
+        // Contains (looser)
+        const keyword = pickKeyword(it.title);
+        const pContains = await prisma.product.findFirst({
+          where: { title: { contains: keyword, mode: "insensitive" } },
+          select: { id: true, variants: { select: { id: true, variantName: true } } },
+        });
+        if (pContains) {
+          let vId: string | null = null;
+          if (variantN && pContains.variants.length) {
+            const v = pContains.variants.find((vv: { id: string; variantName: string }) => norm(vv.variantName) === variantN);
+            vId = v ? v.id : null;
+          }
+          return { productId: pContains.id, variantId: vId };
+        }
+      }
+
+      // Image path match
+      const path = urlPath(it.imageUrl);
+      if (path) {
+        const pByHero = await prisma.product.findFirst({
+          where: { OR: [{ heroImageUrl: { equals: path } }, { heroImageUrl: { endsWith: path } }] },
+          select: { id: true },
+        });
+        if (pByHero) return { productId: pByHero.id, variantId: null };
+
+        const img = await prisma.productImage.findFirst({
+          where: { OR: [{ url: { equals: path } }, { url: { endsWith: path } }] },
+          select: { productId: true },
+        });
+        if (img) return { productId: img.productId, variantId: null };
+      }
+
+      // Price-based fallbacks (IRR/IRT)
+      const candidates = [
+        Math.floor(it.unitPrice),
+        Math.floor(it.unitPrice * 10),
+        Math.floor(it.unitPrice / 10),
+      ].filter((v, i, arr) => Number.isFinite(v) && v > 0 && arr.indexOf(v) === i);
+
+      for (const amt of candidates) {
+        const vByPrice = await prisma.productVariant.findFirst({
+          where: { price: amt, product: {} },
+          select: { id: true, productId: true },
+        });
+        if (vByPrice) return { productId: vByPrice.productId, variantId: vByPrice.id };
+      }
+      for (const amt of candidates) {
+        const pByPrice = await prisma.product.findFirst({
+          where: { price: amt },
+          select: { id: true },
+        });
+        if (pByPrice) return { productId: pByPrice.id, variantId: null };
+      }
+
+      return null;
+    }
+
+    // Resolve items; prefer existing refs
+    const prepared = await Promise.all(
+      order.items.map(async (it: any) => {
+        if (it.productId) {
+          return { it, productId: it.productId as string, variantId: (it.variantId as string) || null };
+        }
+        const resolved = await resolveProductForItem({
+          title: it.title,
+          variantName: it.variantName ?? null,
+          unitPrice: it.unitPrice,
+          imageUrl: it.imageUrl ?? null,
+        });
+        return resolved ? { it, ...resolved } : null;
+      })
+    );
+
+    const valid = prepared.filter(Boolean) as Array<{ it: any; productId: string; variantId: string | null }>;
+    if (!valid.length) {
+      throw new AppError("این سفارش شامل محصولات قابل خرید مجدد نیست.", 400, "NO_REORDERABLE_ITEMS");
+    }
+
+    // IMPORTANT: Replace existing cart contents with ONLY these items
+    await prisma.$transaction(async (tx: any) => {
+      await tx.cartItem.deleteMany({ where: { cartId: cart.id } });
+      await tx.cartItem.createMany({
+        data: valid.map(({ it, productId, variantId }) => ({
+          cartId: cart.id,
+          productId,
+          variantId,
+          title: it.title,
+          variantName: it.variantName ?? null,
+          unitPrice: it.unitPrice,
+          quantity: it.quantity,
+          lineTotal: it.unitPrice * it.quantity,
+          currencyCode: it.currencyCode ?? order.currencyCode,
+          imageUrl: it.imageUrl ?? null,
+        })),
+      });
+    });
+
+    return { cartId: cart.id, itemsAdded: valid.length };
+  }
 }
 
 export const orderService = new OrderService();
