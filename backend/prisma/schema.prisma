@@ -73,8 +73,8 @@ model Product {
   id               String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   brandId          String           @map("brand_id") @db.Uuid
   colorThemeId     String?          @map("color_theme_id") @db.Uuid
-  collectionId     String?          @map("collection_id") @db.Uuid
-  category         ProductCategory
+  collectionId     String?          @map("collection_id") @db.Uuid  
+  categoryId       String?          @map("category_id") @db.Uuid
   title            String
   subtitle         String?
   slug             String           @unique
@@ -101,12 +101,25 @@ model Product {
   variants         ProductVariant[]
   brand            Brand            @relation(fields: [brandId], references: [id])
   collection       Collection?      @relation(fields: [collectionId], references: [id])
+  dbCategory       Category?        @relation("DbCategoryToProduct", fields: [categoryId], references: [id])
   colorTheme       ColorTheme?      @relation(fields: [colorThemeId], references: [id])
   relatedOut       RelatedProduct[] @relation("ProductRelations")
   relatedIn        RelatedProduct[] @relation("ProductRelationsInverse")
   badges           Badge[]          @relation("BadgeToProduct")
 
   @@map("products")
+}
+model Category {
+  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  value        String    @unique @db.VarChar(64)     // canonical code/slug (e.g., skincare, makeup)
+  label        String    @db.VarChar(150)            // display label (e.g., مراقبت از پوست)
+  icon         String    @default("grid") @db.VarChar(50)
+  heroImageUrl String?   @map("hero_image_url")      // optional hero image URL
+  createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  products     Product[] @relation("DbCategoryToProduct")
+
+  @@map("categories")
 }
 
 model ProductImage {
@@ -449,16 +462,6 @@ enum UserRole {
   STAFF    @map("staff")
 
   @@map("user_role_enum")
-}
-
-enum ProductCategory {
-  SKINCARE  @map("skincare")
-  MAKEUP    @map("makeup")
-  FRAGRANCE @map("fragrance")
-  HAIRCARE  @map("haircare")
-  BODY_BATH @map("body-bath")
-
-  @@map("product_category_enum")
 }
 
 enum OrderStatus {

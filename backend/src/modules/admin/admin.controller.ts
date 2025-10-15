@@ -72,6 +72,44 @@ const couponCreateSchema = z.object({
   endsAt: z.string().datetime().optional().transform(val => val ? new Date(val) : undefined),
 });
 
+// ========== CATEGORY (DB-backed) VALIDATORS ==========
+// Helpers: optional slug and optional URL with trimming
+const optionalSlugSchema = z
+  .preprocess((val) => (typeof val === "string" ? val.trim() : undefined), z.string().optional())
+  .transform((v) =>
+    v
+      ? v
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-+|-+$/g, "")
+      : undefined
+  )
+  .refine((v) => v === undefined || /^[a-z0-9-]+$/.test(v), {
+    message: "فقط حروف کوچک، اعداد و خط تیره مجاز است.",
+  });
+
+const optionalUrlSchema = z
+  .preprocess((val) => (typeof val === "string" ? val.trim() : undefined), z.string().optional())
+  .refine(
+    (v) => v === undefined || v === "" || v.startsWith("/") || /^https?:\/\//i.test(v),
+    { message: "آدرس تصویر باید نسبی (شروع با /) یا URL معتبر باشد." }
+  )
+  .transform((v) => (v === "" ? undefined : v));
+
+const categoryCreateSchema = z.object({
+  value: optionalSlugSchema, // optional; will be derived from label on service if absent
+  label: z.string().min(1, "عنوان/برچسب الزامی است."),
+  icon: z.string().min(1).max(50).optional(), // feather icon name (e.g., shield)
+  heroImageUrl: optionalUrlSchema,
+});
+
+const categoryUpdateSchema = z.object({
+  value: optionalSlugSchema,
+  label: z.string().min(1).optional(),
+  icon: z.string().min(1).max(50).optional(),
+  heroImageUrl: optionalUrlSchema,
+});
+
 export const adminController = {
   // ========== DASHBOARD ==========
   getDashboard: (async (_req, res, next) => {
@@ -404,6 +442,55 @@ export const adminController = {
       const result = await adminService.listNewsletterSubscribers(query);
       return ok(res, result, 200);
     } catch (err) {
+      next(err);
+    }
+  }) as RequestHandler,
+  // ========== CATEGORIES (DB-backed) ==========
+  listCategories: (async (_req, res, next) => {
+    try {
+      const categories = await adminService.listCategories();
+      return ok(res, { categories }, 200);
+    } catch (err) {
+      next(err);
+    }
+  }) as RequestHandler,
+
+  createCategory: (async (req, res, next) => {
+    try {
+      const data = await categoryCreateSchema.parseAsync(req.body);
+      const category = await adminService.createCategory(data as any);
+      return ok(res, { category }, 201);
+    } catch (err: any) {
+      if (err?.issues?.length) {
+        return next(new AppError(err.issues[0].message, 422, "VALIDATION_ERROR"));
+      }
+      next(err);
+    }
+  }) as RequestHandler,
+
+  updateCategory: (async (req, res, next) => {
+    try {
+      const { id } = await idParamSchema.parseAsync(req.params);
+      const data = await categoryUpdateSchema.parseAsync(req.body);
+      const category = await adminService.updateCategory(id, data as any);
+      return ok(res, { category }, 200);
+    } catch (err: any) {
+      if (err?.issues?.length) {
+        return next(new AppError(err.issues[0].message, 422, "VALIDATION_ERROR"));
+      }
+      next(err);
+    }
+  }) as RequestHandler,
+
+  deleteCategory: (async (req, res, next) => {
+    try {
+      const { id } = await idParamSchema.parseAsync(req.params);
+      const result = await adminService.deleteCategory(id);
+      return ok(res, result, 200);
+    } catch (err: any) {
+      if (err?.issues?.length) {
+        return next(new AppError(err.issues[0].message, 422, "VALIDATION_ERROR"));
+      }
       next(err);
     }
   }) as RequestHandler,

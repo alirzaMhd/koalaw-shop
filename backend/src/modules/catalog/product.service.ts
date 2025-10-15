@@ -81,7 +81,7 @@ function pickCoreProductData(input: CreateProductInput | UpdateProductInput, bra
     ...(brandId ? { brandId } : {}),
     ...(input.colorThemeId !== undefined ? { colorThemeId: input.colorThemeId || null } : {}),
     ...(input.collectionId !== undefined ? { collectionId: input.collectionId || null } : {}),
-
+    ...((input as any).categoryId !== undefined ? { categoryId: (input as any).categoryId || null } : {}),
     // Scalars
     ...(input.category ? { category: input.category } : {}),
     ...(input.title ? { title: input.title } : {}),
@@ -116,6 +116,7 @@ function pickCoreProductData(input: CreateProductInput | UpdateProductInput, bra
 function includeForList(opts?: { includeImages?: boolean; includeVariants?: boolean }) {
   return {
     brand: true,
+    dbCategory: true,
     colorTheme: true,
     images: opts?.includeImages
       ? { orderBy: { position: "asc" as const } }
@@ -128,6 +129,7 @@ function includeForList(opts?: { includeImages?: boolean; includeVariants?: bool
 
 const includeForDetail = {
   brand: true,
+  dbCategory: true,
   colorTheme: true,
   images: { orderBy: { position: "asc" as const } },
   variants: { orderBy: { position: "asc" as const } },
@@ -634,6 +636,27 @@ class ProductService {
   // ---------------- Filters for sidebar (NEW) ----------------
 
   async getFilterOptions() {
+    // DB-backed categories with counts (optional hero image)
+    const dbCatCounts = await prisma.product.groupBy({
+      by: ["categoryId"],
+      where: { isActive: true, categoryId: { not: null } },
+      _count: { _all: true },
+    });
+    const dbCatCountMap = new Map<string, number>();
+    for (const c of dbCatCounts) {
+      if (c.categoryId) dbCatCountMap.set(c.categoryId, c._count._all);
+    }
+    const dbCategoriesRaw = await prisma.category.findMany({
+      select: { id: true, value: true, label: true, heroImageUrl: true },
+      orderBy: { label: "asc" },
+    });
+    const dbCategories = dbCategoriesRaw.map((c) => ({
+      id: c.id,
+      value: c.value,            // canonical slug/code
+      label: c.label,            // fa display
+      heroImageUrl: c.heroImageUrl,
+      count: dbCatCountMap.get(c.id) ?? 0,
+    }));
     const brandCounts = await prisma.product.groupBy({
       by: ["brandId"],
       where: { isActive: true },
@@ -687,6 +710,7 @@ class ProductService {
 
     return {
       categories: listCategories(),
+      dbCategories,
       brands: brandOptions,
       collections: collectionOptions,
       priceRange,

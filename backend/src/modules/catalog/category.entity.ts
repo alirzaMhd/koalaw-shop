@@ -39,11 +39,20 @@ export const CATEGORY_FEATHER_ICONS: Record<ProductCategory, string> = {
   "body-bath": "droplet",
 };
 
+export const CATEGORY_HERO_IMAGES: Record<ProductCategory, string> = {
+  skincare: "/assets/images/products/skin.png",
+  makeup: "/assets/images/products/cosmetic.png",
+  fragrance: "/assets/images/products/perfume.png",
+  haircare: "/assets/images/products/hair.png",
+  "body-bath": "/assets/images/products/body.png",
+};
+
 export interface Category {
   code: ProductCategory; // canonical code matching DB enum
   slug: ProductCategory; // same as code; kept for clarity in URLs
   label: string; // localized label
   icon: string; // feather icon name
+  heroImageUrl?: string;
 }
 
 /**
@@ -55,6 +64,7 @@ export function listCategories(): Category[] {
     slug: code,
     label: CATEGORY_LABELS_FA[code],
     icon: CATEGORY_FEATHER_ICONS[code],
+    heroImageUrl: CATEGORY_HERO_IMAGES[code],
   }));
 }
 
@@ -82,6 +92,31 @@ export function parseCategory(input?: string | null): ProductCategory | null {
   if (!input) return null;
   const normalized = String(input).trim().toLowerCase().replace(/[\s_]+/g, "-");
   return isProductCategory(normalized) ? (normalized as ProductCategory) : null;
+}
+
+/**
+ * Normalize an arbitrary category value/slug (from DB or URL) to our canonical hyphenated slug.
+ * If it's not one of the known static categories, returns the normalized slug string (not typed).
+ */
+export function toCategorySlug(value: string): string {
+  return String(value || "").trim().toLowerCase().replace(/[\s_]+/g, "-");
+}
+
+/**
+ * Returns a Farsi label for a given category value/slug.
+ * Falls back to the raw slug if it's not a known static category.
+ */
+export function getCategoryLabel(value: string): string {
+  const slug = toCategorySlug(value);
+  return (CATEGORY_LABELS_FA as any)[slug] ?? slug;
+}
+
+// Optional: DB-backed category type for convenience
+export interface DbCategory {
+  id: string;
+  value: string;        // canonical slug (e.g., "skincare" or custom)
+  label: string;        // display label (fa)
+  heroImageUrl?: string | null;
 }
 
 /**

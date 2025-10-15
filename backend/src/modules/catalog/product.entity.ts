@@ -2,8 +2,11 @@
 // Domain types and helpers for products, variants, images, brand, and color theme.
 // Aligned with your SQL migration while keeping camelCase in the domain layer.
 
-import type { ProductCategory as DomainProductCategory } from "./category.entity.js";
-
+import {
+  CATEGORY_LABELS_FA,
+  CATEGORY_FEATHER_ICONS,
+  type ProductCategory as DomainProductCategory,
+} from "./category.entity.js";
 // ---------- Primitive/refs ----------
 
 export type CurrencyCode = string; // DB default: 'IRR' (char(3)); keep flexible
@@ -12,6 +15,13 @@ export interface BrandRef {
   id: string;
   name: string;
   slug: string;
+}
+export interface DbCategoryRef {
+  id: string;
+  value: string;            // canonical code/slug (e.g., "skincare")
+  label: string;            // localized label (e.g., "مراقبت از پوست")
+  heroImageUrl?: string | null;
+  icon?: string | null;
 }
 export interface ColorChip {
   hex: string;
@@ -78,6 +88,7 @@ export interface ProductReview {
 export interface Product {
   id: string;
   brand: BrandRef;
+  dbCategory?: DbCategoryRef | null;
   colorTheme?: ColorThemeRef | null;
 
   category: DomainProductCategory;
@@ -124,6 +135,10 @@ export interface ProductCardDto {
   title: string;
   brand: { id: string; name: string; slug: string };
   category: DomainProductCategory;
+  categoryValue?: string;
+  categoryLabel?: string;
+  categoryHeroImageUrl?: string | null;
+  categoryIcon?: string | null;
   price: number;
   compareAtPrice?: number | null;
   currencyCode: CurrencyCode;
@@ -179,6 +194,16 @@ export function mapDbBrandToRef(row: any): BrandRef {
     id: src.id,
     name: src.name,
     slug: src.slug,
+  };
+}
+export function mapDbCategoryToRef(row: any): DbCategoryRef {
+  const src = row?.dbCategory ?? row;
+  return {
+    id: src.id,
+    value: src.value,
+    label: src.label,
+    heroImageUrl: src.heroImageUrl ?? src.hero_image_url ?? null,
+    icon: src.icon ?? null,
   };
 }
 
@@ -257,7 +282,18 @@ export function mapDbProductToEntity(row: any): Product {
         name: row.brandName ?? row.brand_name,
         slug: row.brandSlug ?? row.brand_slug,
       });
-
+  // Optional DB category relation (NEW)
+  const dbCategory: DbCategoryRef | null =
+    row.dbCategory
+      ? mapDbCategoryToRef(row.dbCategory)
+      : row.categoryId || row.category_id
+      ? mapDbCategoryToRef({
+          id: row.categoryId ?? row.category_id,
+          value: row.categoryValue ?? row.category_value ?? undefined,
+          label: row.categoryLabel ?? row.category_label ?? undefined,
+          heroImageUrl: row.categoryHeroImageUrl ?? row.category_hero_image_url ?? null,
+        })
+      : null;
   const colorTheme =
     row.colorTheme
       ? mapDbColorThemeToRef(row.colorTheme)
@@ -289,6 +325,7 @@ export function mapDbProductToEntity(row: any): Product {
   return {
     id: row.id,
     brand,
+    dbCategory,
     colorTheme,
 
     category: row.category as DomainProductCategory,
@@ -337,6 +374,18 @@ export function effectiveVariantPrice(p: Product, v?: ProductVariant | null): nu
   return typeof v?.price === "number" && v.price! > 0 ? v.price! : p.price;
 }
 
+function fallbackCategoryLabel(cat: unknown): string | undefined {
+  if (!cat) return undefined;
+  const slug = String(cat).trim().toLowerCase().replace(/_/g, "-");
+  return (CATEGORY_LABELS_FA as any)[slug];
+}
+
+function fallbackCategoryIcon(cat: unknown): string | undefined {
+  if (!cat) return undefined;
+  const slug = String(cat).trim().toLowerCase().replace(/_/g, "-");
+  return (CATEGORY_FEATHER_ICONS as any)[slug];
+}
+
 export function toProductCardDto(p: Product): ProductCardDto {
   const chips: ColorChip[] = Array.from(
     new Map(
@@ -349,12 +398,20 @@ export function toProductCardDto(p: Product): ProductCardDto {
     ).values()
   );
 
+  const categoryValue = p.dbCategory?.value ?? (p.category as unknown as string);
+  const categoryLabel = p.dbCategory?.label ?? fallbackCategoryLabel(p.category);
+  const categoryHeroImageUrl = p.dbCategory?.heroImageUrl ?? null;
+  const categoryIcon = p.dbCategory?.icon ?? fallbackCategoryIcon(p.category) ?? null;
   return {
     id: p.id,
     slug: p.slug,
     title: p.title,
     brand: { ...p.brand },
     category: p.category,
+    categoryValue,
+    categoryLabel,
+    categoryHeroImageUrl,
+    categoryIcon,
     price: p.price,
     compareAtPrice: p.compareAtPrice ?? null,
     currencyCode: p.currencyCode,

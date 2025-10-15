@@ -470,51 +470,94 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ========== FETCH CATEGORIES FOR HOMEPAGE ==========
-  const categoryContainer = document.querySelector(
-    ".category-scroll-container .flex"
-  );
-  if (categoryContainer) {
-    async function fetchCategories() {
-      try {
-        const response = await fetch("/api/products/filters", {
-          cache: "no-store",
-        });
-
-        if (!response.ok) {
-          console.error("Failed to fetch categories:", response.status);
-          return;
-        }
-
+   const categoryContainer = document.querySelector(
+     ".category-scroll-container .flex"
+   );
+   if (categoryContainer) {
+     async function fetchCategories() {
+       try {
+         const response = await fetch("/api/products/filters", {
+           cache: "no-store",
+         });
+ 
+         if (!response.ok) {
+           console.error("Failed to fetch categories:", response.status);
+           return;
+         }
+ 
         const json = await response.json();
-        const categories = json?.data?.categories || [];
+        const data = json?.data || {};
 
-        if (categories.length > 0) {
-          renderCategoryCards(categories);
-        } else {
-          console.warn("No categories found, using fallback");
-          // Use fallback categories
-          const fallbackCategories = [
-            { category: "SKINCARE", count: 0 },
-            { category: "MAKEUP", count: 0 },
-            { category: "FRAGRANCE", count: 0 },
-            { category: "HAIRCARE", count: 0 },
-            { category: "BODY_BATH", count: 0 },
-          ];
-          renderCategoryCards(fallbackCategories);
+        // Helper: pick newest 5 (by createdAt/updatedAt if available)
+        const pickNewestFive = (arr) =>
+          arr
+            .slice()
+            .sort((a, b) => {
+              const ta = new Date(a.createdAt || a.updatedAt || 0).getTime();
+              const tb = new Date(b.createdAt || b.updatedAt || 0).getTime();
+              return tb - ta;
+            })
+            .slice(0, 5);
+
+        // Prefer DB categories with hero images + labels; fallback to static categories
+        const dbCategories = Array.isArray(data.dbCategories)
+          ? pickNewestFive(data.dbCategories)
+          : [];
+        let categories;
+        if (dbCategories.length) {
+          // Normalize for renderer (from DB) - use icon, label, heroImageUrl directly from DB
+          categories = dbCategories.map((c) => ({
+            key: String(c.value || "").toUpperCase().replace(/-/g, "_"),
+            slug: String(c.value || "").toLowerCase(),
+            label: c.label || c.value,
+            icon: c.icon || "grid",
+            heroImageUrl: c.heroImageUrl || "",
+            count: c.count || 0,
+            fromDb: true,
+          }));
+         } else {
+          const staticCats = Array.isArray(data.categories)
+            ? data.categories
+            : [];
+          categories = staticCats.slice(0, 5).map((c) => ({
+            key: String(c.code || c.category || "")
+              .toUpperCase()
+              .replace(/-/g, "_"),
+            slug: String(c.slug || c.code || "").toLowerCase(),
+            label: c.label || c.name || c.code,
+            heroImageUrl: c.heroImageUrl || "",
+            count: c.count || c._count?.products || 0,
+            fromDb: false,
+          }));
         }
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-        // Render fallback on error
-        const fallbackCategories = [
-          { category: "SKINCARE", count: 0 },
-          { category: "MAKEUP", count: 0 },
-          { category: "FRAGRANCE", count: 0 },
-          { category: "HAIRCARE", count: 0 },
-          { category: "BODY_BATH", count: 0 },
-        ];
-        renderCategoryCards(fallbackCategories);
-      }
-    }
+ 
+         if (categories.length > 0) {
+           renderCategoryCards(categories);
+         } else {
+           console.warn("No categories found, using fallback");
+           // Use fallback categories
+           const fallbackCategories = [
+             { category: "SKINCARE", count: 0 },
+             { category: "MAKEUP", count: 0 },
+             { category: "FRAGRANCE", count: 0 },
+             { category: "HAIRCARE", count: 0 },
+             { category: "BODY_BATH", count: 0 },
+           ];
+           renderCategoryCards(fallbackCategories);
+         }
+       } catch (error) {
+         console.error("Error fetching categories:", error);
+         // Render fallback on error
+         const fallbackCategories = [
+           { category: "SKINCARE", count: 0 },
+           { category: "MAKEUP", count: 0 },
+           { category: "FRAGRANCE", count: 0 },
+           { category: "HAIRCARE", count: 0 },
+           { category: "BODY_BATH", count: 0 },
+         ];
+         renderCategoryCards(fallbackCategories);
+       }
+     }
 
     function renderCategoryCards(categories) {
       // Static image mapping for each category
@@ -526,31 +569,34 @@ document.addEventListener("DOMContentLoaded", () => {
         BODY_BATH: "/assets/images/products/body.png",
       };
 
-      // Icon mapping
-      const categoryIcons = {
-        SKINCARE: "shield",
-        MAKEUP: "pen-tool",
-        FRAGRANCE: "wind",
-        HAIRCARE: "git-branch",
-        BODY_BATH: "droplet",
-      };
-
-      // Persian labels
-      const categoryLabels = {
-        SKINCARE: "مراقبت از پوست",
-        MAKEUP: "آرایش",
-        FRAGRANCE: "عطر",
-        HAIRCARE: "مراقبت از مو",
-        BODY_BATH: "بدن و حمام",
-      };
-
-      // Slug mapping (for URLs)
-      const categorySlugs = {
-        SKINCARE: "skincare",
-        MAKEUP: "makeup",
-        FRAGRANCE: "fragrance",
-        HAIRCARE: "haircare",
-        BODY_BATH: "body-bath",
+      // Helper to normalize either DB-backed normalized objects or static objects
+      const norm = (c) => {
+        // DB-backed normalized (from fetchCategories above)
+        if (c.fromDb) {
+          return {
+            key: c.key,
+            slug: c.slug,
+            label: c.label,
+            icon: c.icon || "grid",
+            hero: c.heroImageUrl || categoryImages[c.key] || categoryImages.SKINCARE,
+            count: c.count || 0,
+          };
+        }
+        // Static fallback
+        const key = String(c.category || c.name || c.id || "")
+          .toUpperCase()
+          .replace(/-/g, "_");
+        const slug = String(c.slug || c.category || "")
+          .toLowerCase()
+          .replace(/_/g, "-");
+        return {
+          key,
+          slug,
+          label: c.name || key,
+          icon: "grid",
+          hero: categoryImages[key] || categoryImages.SKINCARE,
+          count: c.count || c._count?.products || 0,
+        };
       };
 
       // Clear existing content
@@ -558,15 +604,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Render each category card
       categories.forEach((category, index) => {
-        const categoryKey = category.category || category.name || category.id;
-        const image =
-          categoryImages[categoryKey] || "/assets/images/products/product.png";
-        const icon = categoryIcons[categoryKey] || "gift";
-        const label =
-          categoryLabels[categoryKey] || category.name || categoryKey;
-        const slug =
-          categorySlugs[categoryKey] || categoryKey.replace("_", "-");
-        const count = category.count || category._count?.products || 0;
+        const n = norm(category);
+        const image = n.hero || "/assets/images/products/product.png";
+        const icon = n.icon || "grid";
+        const label = n.label;
+        const slug = n.slug;
+        const count = n.count;
 
         const card = document.createElement("a");
         card.href = `/shop?category=${slug}`;

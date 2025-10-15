@@ -23,13 +23,7 @@
     const API_FILTERS = `${API}/filters`;
     const PER_PAGE = 12;
 
-    const CATEGORY_SLUGS = [
-      "skincare",
-      "makeup",
-      "fragrance",
-      "haircare",
-      "body-bath",
-    ];
+    const CATEGORY_SLUGS = [];
     const CATEGORY_SET = new Set(CATEGORY_SLUGS);
 
     // ---------- State ----------
@@ -208,11 +202,7 @@
 
     // ---------- URL -> initial filters ----------
     function normalizeCategorySlug(s) {
-      const t = String(s || "")
-        .trim()
-        .toLowerCase()
-        .replace(/[\s_]+/g, "-");
-      return CATEGORY_SET.has(t) ? t : null;
+      return String(s || "").trim().toLowerCase().replace(/[\s_]+/g, "-");
     }
     function parseCategoriesFromUrl(sp) {
       const raw = sp.getAll("category");
@@ -319,7 +309,47 @@ async function loadFilters() {
     const res = await fetch(API_FILTERS, { cache: "no-store" });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const { data } = await res.json();
-
+    // ========== CATEGORIES (DB-backed labels; keep HTML; update labels only) ==========
+    // ========== CATEGORIES (DB-backed rendering) ==========
+    try {
+      const dbCats = Array.isArray(data?.dbCategories) ? data.dbCategories : [];
+      // Find the first filter accordion content (دسته‌بندی)
+      const catRoot =
+        document.querySelectorAll(".filter-accordion")[0]?.querySelector(
+          ".filter-accordion-content"
+        ) || null;
+      if (catRoot && dbCats.length) {
+        // Render DB categories, keep any previously selected filters
+        const selectedSlugs = Array.isArray(filters.categories)
+          ? filters.categories.map((s) => normalizeCategorySlug(s))
+          : [];
+        catRoot.innerHTML = dbCats
+          .map((c) => {
+            const slug = String(c.value || "").toLowerCase();
+            const checked = selectedSlugs.includes(slug) ? "checked" : "";
+            const count =
+              typeof c.count === "number" && c.count > 0
+                ? ` (${toFa(c.count)})`
+                : "";
+            return `
+              <label class="cute-checkbox">
+                <input type="checkbox" name="category" value="${slug}" ${checked} />
+                <span class="checkmark">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                      viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                      stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </span>
+                <label>${escapeHtml(c.label || slug)}${count}</label>
+              </label>
+            `;
+          })
+          .join("");
+      }
+    } catch (e) {
+      console.warn("DB categories render skipped:", e);
+    }
     // ========== BRANDS ==========
     const brandRoot = document.getElementById("brand-filter-list");
     if (brandRoot && Array.isArray(data?.brands)) {

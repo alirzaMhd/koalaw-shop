@@ -288,7 +288,7 @@
           })[m]
       );
     const categoryLabel = (cat) => {
-      const category = cat.toLowerCase();
+      const category = String(cat || "").toLowerCase();
       const map = {
         skincare: "مراقبت از پوست",
         makeup: "آرایش",
@@ -298,17 +298,22 @@
       };
       return map[category] || category || "";
     };
-    const categoryIcon = (cat) => {
-      const category = cat.toLowerCase();
+    const categoryIconFallback = (cat) => {
+      const category = String(cat || "").toLowerCase();
       const map = {
         skincare: "shield",
-        makeup: "star",
-        fragrance: "droplet",
+        makeup: "pen-tool",
+        fragrance: "wind",
         haircare: "git-branch",
         "body-bath": "droplet",
       };
-      return map[category] || "tag";
+      return map[category] || "grid";
     };
+    const toCategorySlug = (v) =>
+      +String(v || "")
+        .trim()
+        .toLowerCase()
+        .replace(/[_\s]+/g, "-");
     const parseSlugFromUrl = () => {
       const url = new URL(window.location.href);
       const qSlug = url.searchParams.get("slug");
@@ -740,8 +745,32 @@
       } catch {}
 
       // Category + Title
-      if (productCategoryEl)
-        productCategoryEl.textContent = categoryLabel(p.category);
+      if (productCategoryEl) {
+        const catLabel = p.categoryLabel || categoryLabel(p.category || p.categoryValue || "");
+        productCategoryEl.textContent = catLabel;
+        // Update the category icon beside the label using DB icon if provided
+        const wrap = productCategoryEl.parentElement;
+        if (wrap) {
+          const iconEl = wrap.querySelector('i[data-feather], svg.feather');
+          const slug = toCategorySlug(p.categoryValue || p.category || "");
+          const iconName = p.categoryIcon || categoryIconFallback(slug);
+          // If it's already an <i>, update attribute; if it's an svg, replace with <i> and re-render icons
+          let iTag = wrap.querySelector('i[data-feather]');
+          if (!iTag) {
+            // replace any existing svg with a new <i>
+            if (iconEl && iconEl.tagName && iconEl.tagName.toLowerCase() === "svg") {
+              iconEl.remove();
+            }
+            const i = document.createElement("i");
+            i.setAttribute("data-feather", iconName);
+            i.className = "w-4 h-4";
+            wrap.insertBefore(i, wrap.firstChild);
+          } else {
+            iTag.setAttribute("data-feather", iconName);
+          }
+          KUtils?.refreshIcons?.();
+        }
+      }
       if (productTitleEl) productTitleEl.textContent = p.title || "";
 
       // Breadcrumb
@@ -751,8 +780,10 @@
         if (last) last.textContent = p.title || "";
         const catLink = breadcrumb.querySelector('a[href^="/shop/"]');
         if (catLink) {
-          catLink.href = `/shop?category=${p.category}`;
-          catLink.textContent = categoryLabel(p.category);
+          const slug = toCategorySlug(p.categoryValue || p.category || "");
+          const catLabel = p.categoryLabel || categoryLabel(p.category || p.categoryValue || "");
+          catLink.href = `/shop?category=${slug}`;
+          catLink.textContent = catLabel;
         }
       }
 
@@ -841,6 +872,7 @@
       const hero =
         p.heroImageUrl ||
         (images[0] && images[0].url) ||
+        p.categoryHeroImageUrl || // NEW: fallback to category hero image from DB
         "/assets/images/product.png";
       mainImg.src = hero;
       mainImg.alt = p.title || "محصول";
@@ -1250,15 +1282,15 @@
         relatedSection.classList.remove("hidden");
 
         items.forEach((item, idx) => {
-          const categoryClass = `category-${(item.category || "default")
-            .toLowerCase()
-            .replace(/\s+/g, "-")}`;
+          const slug = toCategorySlug(item.categoryValue || item.category || "default");
+          const categoryClass = `category-${slug}`;
           const ratingText = Number(item.ratingAvg || 0)
             .toFixed(1)
             .replace(".", "٫");
           const href = `/product/${encodeURIComponent(item.slug)}`;
           const hero = item.heroImageUrl || "/assets/images/product.png";
-
+          const label = item.categoryLabel || categoryLabel(item.categoryValue || item.category || "");
+          const icon = item.categoryIcon || categoryIconFallback(slug);
           const card = document.createElement("a");
           card.href = href;
           card.className = `w-3/4 sm:w-1/2 md:w-1/3 lg:w-auto flex-shrink-0 snap-start product-card-v3 ${categoryClass}`;
@@ -1279,10 +1311,8 @@
             </div>
             <div class="card-content">
               <div class="card-category">
-                <i data-feather="${categoryIcon(
-                  item.category
-                )}" class="w-3 h-3"></i>
-                <span>${escapeHtml(categoryLabel(item.category))}</span>
+                <i data-feather="${icon}" class="w-3 h-3"></i>
+                <span>${escapeHtml(label)}</span>
               </div>
               <h3 class="card-title">${escapeHtml(item.title)}</h3>
               <div class="card-rating">

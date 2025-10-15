@@ -143,6 +143,7 @@ export const adminService = {
         orderBy: { createdAt: "desc" },
         include: {
           brand: true,
+          dbCategory: true,
           variants: true,
           images: { orderBy: { position: "asc" }, take: 1 },
         },
@@ -429,6 +430,75 @@ export const adminService = {
       data: { collectionId: null },
     });
     await prisma.collection.delete({ where: { id } });
+    return { deleted: true };
+  },
+
+  // ========== CATEGORY (DB-backed) MANAGEMENT ==========
+  async listCategories() {
+    return prisma.category.findMany({
+      orderBy: { label: "asc" },
+      include: { _count: { select: { products: true } } },
+    });
+  },
+
+  async createCategory(data: { value?: string; label: string; heroImageUrl?: string }) {
+    // Normalize value: from explicit value or slugified label
+    const raw = (data.value || data.label || "").toString().trim();
+    if (!raw) throw AppError.badRequest("مقدار یا عنوان دسته‌بندی الزامی است");
+    const value = raw
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+    if (!value) throw AppError.badRequest("مقدار دسته‌بندی نامعتبر است");
+
+    const exists = await prisma.category.findUnique({ where: { value } });
+    if (exists) throw AppError.badRequest("دسته‌بندی با این مقدار موجود است");
+
+    return prisma.category.create({
+      data: {
+        value,
+        label: data.label,
+        icon: (data as any).icon || "grid",
+        heroImageUrl: data.heroImageUrl || null,
+      },
+    });
+   },
+
+  async updateCategory(
+    id: string,
+    data: { value?: string; label?: string; heroImageUrl?: string; icon?: string }
+  ) {
+    let update: any = {};
+    if (typeof data.label === "string") update.label = data.label;
+    if (typeof data.heroImageUrl !== "undefined") {
+      update.heroImageUrl = data.heroImageUrl || null;
+    }
+    if (typeof data.icon === "string" && data.icon.trim()) {
+      update.icon = data.icon.trim();
+    }
+    if (typeof data.value === "string" && data.value.trim()) {
+      const value = data.value
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "");
+      if (!value) throw AppError.badRequest("مقدار دسته‌بندی نامعتبر است");
+      const exists = await prisma.category.findUnique({ where: { value } });
+      if (exists && exists.id !== id) {
+        throw AppError.badRequest("دسته‌بندی با این مقدار موجود است");
+      }
+      update.value = value;
+    }
+    return prisma.category.update({ where: { id }, data: update });
+  },
+
+  async deleteCategory(id: string) {
+    const inUse = await prisma.product.count({ where: { categoryId: id } });
+    if (inUse > 0) {
+      throw AppError.badRequest(
+        `این دسته‌بندی به ${inUse} محصول اختصاص داده شده است. ابتدا دسته محصولات را تغییر دهید.`
+      );
+    }
+    await prisma.category.delete({ where: { id } });
     return { deleted: true };
   },
 

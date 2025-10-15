@@ -108,6 +108,7 @@ export const createProductInputSchema = z.object({
   // Relations
   colorThemeId: z.string().uuid("شناسه تم رنگ معتبر نیست").optional(),
   collectionId: z.string().uuid("شناسه کالکشن معتبر نیست").optional(),
+  categoryId: z.string().uuid("شناسه دسته‌بندی معتبر نیست").optional(),
   
   // Core fields
   category: z.string().min(1, "دسته‌بندی الزامی است").max(50),
@@ -154,6 +155,7 @@ export const updateProductInputSchema = z.object({
   // Relations
   colorThemeId: z.string().uuid("شناسه تم رنگ معتبر نیست").optional(),
   collectionId: z.string().uuid("شناسه کالکشن معتبر نیست").optional(),
+  categoryId: z.string().uuid("شناسه دسته‌بندی معتبر نیست").optional(),
   
   // Core fields
   category: z.string().min(1).max(50).optional(),

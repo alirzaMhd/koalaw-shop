@@ -93,6 +93,16 @@ class ProductController {
     }
   };
 
+  // GET /products/categories (returns only categories; useful for DB-backed categories UI)
+  categories: RequestHandler = async (_req, res, next) => {
+    try {
+      const result = await productService.getFilterOptions();
+      return ok(res, { categories: result.categories }, 200);
+    } catch (err: any) {
+      next(err);
+    }
+  };
+
   suggestions: RequestHandler = async (_req, res, next) => {
     try {
       const items = await productService.getTopSelling(4);

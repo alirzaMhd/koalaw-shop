@@ -18,6 +18,7 @@
     colorThemes: [],
     badges: [],
     newsletterSubscribers: [],
+    categories: [],
   };
 
   // ========== UTILITY FUNCTIONS ==========
@@ -97,6 +98,38 @@
       return colors[role] || "secondary";
     },
 
+    // ========== CATEGORY HELPERS (DB-backed + fallback) ==========
+    categorySlug(val) {
+      return String(val || "").trim().toLowerCase().replace(/[_\s]+/g, "-");
+    },
+    getCategoryLabel(val) {
+      const slug = this.categorySlug(val);
+      const fromState = (state.categories || []).find(
+        (c) => String(c.value || "").toLowerCase() === slug
+      );
+      if (fromState) return fromState.label || fromState.value;
+      const fallback = {
+        skincare: "مراقبت از پوست",
+        makeup: "آرایش",
+        fragrance: "عطر",
+        haircare: "مراقبت از مو",
+        "body-bath": "بدن و حمام",
+      };
+      return fallback[slug] || slug || "-";
+    },
+    categoryOptionsHtml(selectedSlug) {
+      const opts = (state.categories || []).map(
+        (c) =>
+          `<option value="${c.id}" data-slug="${c.value}" ${
+            (String(selectedSlug || "").toLowerCase() ===
+            String(c.value || "").toLowerCase())
+              ? "selected"
+              : ""
+          }>${c.label}</option>`
+      );
+      return ['<option value="">هیچکدام</option>', ...opts].join("");
+    },
+
     showLoading() {
       return `
         <div class="text-center py-12">
@@ -155,6 +188,38 @@
       }, 3000);
 
       feather.replace();
+    },
+
+    // Unified image uploader (used by product/magazine/category/author)
+    async uploadImage(file) {
+      if (!file) throw new Error("فایلی انتخاب نشده است.");
+      if (file.size > 5 * 1024 * 1024) {
+        throw new Error("حجم فایل نباید بیشتر از 5 مگابایت باشد.");
+      }
+      const validTypes = [
+        "image/jpeg",
+        "image/jpg",
+        "image/png",
+        "image/webp",
+        "image/gif",
+      ];
+      if (!validTypes.includes(file.type)) {
+        throw new Error("فقط فایل‌های تصویری (JPG, PNG, WebP, GIF) مجاز هستند.");
+      }
+      const fd = new FormData();
+      fd.append("image", file);
+      const res = await fetch("/api/upload/product-image", {
+        method: "POST",
+        credentials: "include",
+        body: fd,
+      });
+      if (!res.ok) {
+        let err = {};
+        try { err = await res.json(); } catch {}
+        throw new Error(err.message || "خطا در آپلود تصویر");
+      }
+      const json = await res.json();
+      return json?.data?.imageUrl || json?.imageUrl;
     },
   };
 
@@ -459,6 +524,26 @@
         (data) => data.colorThemes || []
       );
     },
+
+    // ========== CATEGORIES (DB-backed) ==========
+    getCategories() {
+      return this.fetch("/api/admin/categories");
+    },
+    createCategory(data) {
+      return this.fetch("/api/admin/categories", {
+        method: "POST",
+        body: JSON.stringify(data),
+      });
+    },
+    updateCategory(id, data) {
+      return this.fetch(`/api/admin/categories/${id}`, {
+        method: "PUT",
+        body: JSON.stringify(data),
+      });
+    },
+    deleteCategory(id) {
+      return this.fetch(`/api/admin/categories/${id}`, { method: "DELETE" });
+    },
   };
 
   // ========== SIDE PANEL SYSTEM ==========
@@ -614,29 +699,12 @@
           const fileInput = document.getElementById("author-avatar-file");
           const file = fileInput?.files?.[0];
           if (file) {
-            const uploadFd = new FormData();
-            uploadFd.append("image", file);
             try {
-              const res = await fetch("/api/upload/product-image", {
-                method: "POST",
-                credentials: "include",
-                body: uploadFd,
-              });
-              if (!res.ok) {
-                const err = await res.json().catch(() => ({}));
-                throw new Error(err.message || `HTTP ${res.status}`);
-              }
-              const json = await res.json();
-              const imageUrl = json?.data?.imageUrl || json?.imageUrl;
-              if (imageUrl) {
-                payload.avatarUrl = imageUrl;
-              }
+              const imageUrl = await utils.uploadImage(file);
+              if (imageUrl) payload.avatarUrl = imageUrl;
             } catch (err) {
-              utils.showToast(
-                "خطا در آپلود تصویر: " + (err.message || err),
-                "error"
-              );
-              return; // stop submit on upload failure
+              utils.showToast("خطا در آپلود تصویر: " + (err.message || err), "error");
+              return;
             }
           }
 
@@ -710,14 +778,23 @@
       panel.showLoading();
 
       try {
-        const [brands, collections, colorThemes, badges, allProducts] =
-          await Promise.all([
-            api.getBrands(),
-            api.getCollections(),
-            api.getColorThemesAdmin(),
-            api.getBadges(),
-            api.getProducts({ page: 1, perPage: 200 }),
-          ]);
+        const [
+          brands,
+          collections,
+          colorThemes,
+          badges,
+          allProducts,
+          categoriesRes,
+        ] = await Promise.all([
+          api.getBrands(),
+          api.getCollections(),
+          api.getColorThemesAdmin(),
+          api.getBadges(),
+          api.getProducts({ page: 1, perPage: 200 }),
+          api.getCategories(),
+        ]);
+        const categories = categoriesRes?.categories || categoriesRes || [];
+        state.categories = categories;
 
         let product = null;
         if (productId) {
@@ -820,6 +897,22 @@
                 <option value="BODY_BATH" ${data.category === "BODY_BATH" ? "selected" : ""}>بدن و حمام</option>
               </select>
             </div>
+
+          <div class="admin-form-group">
+            <label class="admin-form-label">دسته‌بندی (از DB - اختیاری)</label>
+            <select name="categoryId" class="admin-form-input">
+              <option value="">هیچکدام</option>
+              ${categories
+                .map(
+                  (c) => `
+                <option value="${c.id}" ${
+                  data.categoryId === c.id || data.dbCategory?.id === c.id ? "selected" : ""
+                }>${c.label} (${c.value})</option>`
+                )
+                .join("")}
+            </select>
+            <small class="text-gray-500">در صورت انتخاب، این مقدار به عنوان دسته‌بندی جدید ثبت می‌شود.</small>
+
           </div>
 
           <div class="admin-form-group">
@@ -1044,36 +1137,7 @@
 
         renderGallery();
 
-        async function uploadImageFile(file) {
-          if (file.size > 5 * 1024 * 1024) {
-            throw new Error("حجم فایل نباید بیشتر از 5 مگابایت باشد.");
-          }
-          const validTypes = [
-            "image/jpeg",
-            "image/jpg",
-            "image/png",
-            "image/webp",
-            "image/gif",
-          ];
-          if (!validTypes.includes(file.type)) {
-            throw new Error(
-              "فقط فایل‌های تصویری (JPG, PNG, WebP, GIF) مجاز هستند."
-            );
-          }
-          const fd = new FormData();
-          fd.append("image", file);
-          const res = await fetch("/api/upload/product-image", {
-            method: "POST",
-            credentials: "include",
-            body: fd,
-          });
-          if (!res.ok) {
-            const err = await res.json().catch(() => ({}));
-            throw new Error(err.message || "خطا در آپلود تصویر");
-          }
-          const json = await res.json();
-          return json.data?.imageUrl || json.imageUrl;
-        }
+        const uploadImageFile = (file) => utils.uploadImage(file);
 
         galleryInput?.addEventListener("change", async (e) => {
           const files = Array.from(e.target.files || []);
@@ -1298,6 +1362,7 @@
               const internalNotes = getStringValue("internalNotes");
               const collectionId = getStringValue("collectionId");
               const colorThemeId = getStringValue("colorThemeId");
+              const categoryId = getStringValue("categoryId");
 
               if (subtitle) payload.subtitle = subtitle;
               if (slug) payload.slug = slug;
@@ -1307,6 +1372,9 @@
               if (internalNotes) payload.internalNotes = internalNotes;
               if (collectionId) payload.collectionId = collectionId;
               if (colorThemeId) payload.colorThemeId = colorThemeId;
+              if (typeof categoryId !== "undefined") {
+                payload.categoryId = categoryId || null;
+              }
 
               const compareAtPrice = getNumberValue("compareAtPrice");
               if (compareAtPrice !== undefined && compareAtPrice > 0) {
@@ -1424,7 +1492,228 @@
         );
       }
     },
+    category(categoryId = null) {
+      const cat = categoryId ? (state.categories || []).find((c) => c.id === categoryId) : null;
+      const isEdit = !!categoryId;
+      const formHtml = `
+        <form id="category-form" class="admin-form">
+          <div class="admin-form-section">
+            <h3 class="admin-form-section-title">${isEdit ? "ویرایش دسته‌بندی" : "افزودن دسته‌بندی"}</h3>
+            <div class="admin-form-group">
+              <label class="admin-form-label required">مقدار (slug)</label>
+              <input type="text" name="value" class="admin-form-input" value="${cat?.value || ""}" placeholder="مثال: skincare (در صورت خالی، از عنوان ساخته می‌شود)" />
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label required">عنوان/برچسب</label>
+              <input type="text" name="label" class="admin-form-input" value="${cat?.label || ""}" required />
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">آیکون (Feather)</label>
+              <div class="flex items-center gap-3">
+                <i id="cat-icon-preview" data-feather="${cat?.icon || "grid"}" class="w-6 h-6 text-rose-600"></i>
+                <input type="text" name="icon" class="admin-form-input" value="${cat?.icon || "grid"}" placeholder="shield, pen-tool, wind ..." />
+              </div>
+              <small class="text-gray-500">نام آیکون Feather را وارد کنید. لیست: feathericons.com</small>
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">تصویر قهرمان (Hero)</label>
+              <!-- EXACTLY like product images: upload multiple, add URL, manage gallery and pick hero -->
+              <div class="admin-form-group">
+                <label class="admin-form-label">آپلود تصاویر</label>
+                <input type="file" id="cat-gallery-files-input" class="admin-form-input" accept="image/*" multiple />
+                <small class="text-gray-500">می‌توانید چند تصویر انتخاب کنید. فرمت‌های مجاز: JPG, PNG, WebP, GIF (حداکثر 5MB)</small>
+              </div>
 
+              <div class="admin-form-divider">
+                <span>یا</span>
+              </div>
+
+              <div class="admin-form-group">
+                <label class="admin-form-label">افزودن با آدرس URL</label>
+                <div class="flex items-center gap-2">
+                  <input type="url" id="cat-gallery-url-input" class="admin-form-input flex-1" placeholder="https://example.com/image.jpg" />
+                  <button type="button" id="cat-add-gallery-url-btn" class="admin-btn admin-btn-secondary">
+                    <i data-feather="plus"></i>
+                    افزودن
+                  </button>
+                </div>
+              </div>
+
+              <div id="cat-gallery-list" class="grid grid-cols-2 md:grid-cols-3 gap-3 mt-3"></div>
+
+              <div class="admin-form-divider">
+                <span>یا</span>
+              </div>
+
+              <div class="admin-form-group">
+                <label class="admin-form-label">آدرس URL مستقیم (اختیاری)</label>
+                <input type="url" name="heroImageUrl" class="admin-form-input" value="${cat?.heroImageUrl || ""}" placeholder="اگر این فیلد پر شود، بر انتخاب گالری اولویت خواهد داشت" />
+              </div>
+            </div>
+          </div>
+          <div class="admin-form-actions">
+            <button type="button" class="admin-btn admin-btn-secondary" data-action="closePanel">انصراف</button>
+            <button type="submit" class="admin-btn admin-btn-primary">${isEdit ? "ذخیره تغییرات" : "افزودن دسته‌بندی"}</button>
+          </div>
+        </form>
+      `;
+      panel.open(formHtml, isEdit ? "ویرایش دسته‌بندی" : "افزودن دسته‌بندی");
+      utils.refreshIcons();
+      // icon live preview
+      const iconInput = document.querySelector('input[name="icon"]');
+      const iconPreview = document.getElementById("cat-icon-preview");
+      iconInput?.addEventListener("input", () => {
+        const val = (iconInput.value || "").trim() || "grid";
+        iconPreview?.setAttribute("data-feather", val);
+        utils.refreshIcons();
+      });
+
+      // ===== Category gallery (EXACTLY like product images flow) =====
+      const catGalleryInput = document.getElementById("cat-gallery-files-input");
+      const catGalleryUrlInput = document.getElementById("cat-gallery-url-input");
+      const catAddGalleryUrlBtn = document.getElementById("cat-add-gallery-url-btn");
+      const catGalleryList = document.getElementById("cat-gallery-list");
+
+      let catGallery = []; // [{ url, alt }]
+      let catHeroIndex = 0;
+
+      // Prefill if category has a hero image
+      if (cat?.heroImageUrl) {
+        catGallery = [{ url: cat.heroImageUrl, alt: "" }];
+        catHeroIndex = 0;
+      }
+
+      function catRenderGallery() {
+        if (!catGalleryList) return;
+        if (!catGallery.length) {
+          catGalleryList.innerHTML =
+            '<div class="text-center text-gray-500 col-span-full py-6">تصویری اضافه نشده است</div>';
+          utils.refreshIcons();
+          return;
+        }
+        catGalleryList.innerHTML = catGallery
+          .map(
+            (img, idx) => `
+            <div class="border rounded-lg p-2 flex flex-col gap-2" data-idx="${idx}">
+              <img src="${img.url}" alt="${img.alt || ""}" class="w-full h-28 object-cover rounded" />
+              <label class="flex items-center gap-2">
+                <input type="radio" name="catHeroImage" value="${idx}" ${catHeroIndex === idx ? "checked" : ""} />
+                <span class="text-sm">تصویر شاخص</span>
+              </label>
+              <input type="text" class="admin-form-input" data-role="alt" data-idx="${idx}" placeholder="متن جایگزین" value="${img.alt || ""}" />
+              <div class="flex gap-2">
+                <button type="button" class="admin-btn admin-btn-secondary flex-1" data-action="catMoveUp" data-idx="${idx}" ${idx === 0 ? "disabled" : ""}>
+                  <i data-feather="arrow-up"></i>
+                </button>
+                <button type="button" class="admin-btn admin-btn-secondary flex-1" data-action="catMoveDown" data-idx="${idx}" ${idx === catGallery.length - 1 ? "disabled" : ""}>
+                  <i data-feather="arrow-down"></i>
+                </button>
+                <button type="button" class="admin-btn admin-btn-danger" data-action="catRemoveGallery" data-idx="${idx}">
+                  <i data-feather="trash-2"></i>
+                </button>
+              </div>
+            </div>
+          `
+          )
+          .join("");
+        utils.refreshIcons();
+      }
+      catRenderGallery();
+
+      // Upload multiple files (use same method as product)
+      catGalleryInput?.addEventListener("change", async (e) => {
+        const files = Array.from(e.target.files || []);
+        for (const file of files) {
+          try {
+            const url = await utils.uploadImage(file);
+            catGallery.push({ url, alt: "" });
+          } catch (err) {
+            utils.showToast(err.message, "error");
+          }
+        }
+        if (catGallery.length && (catHeroIndex == null || catHeroIndex < 0)) catHeroIndex = 0;
+        catRenderGallery();
+        catGalleryInput.value = "";
+      });
+
+      // Add by URL
+      catAddGalleryUrlBtn?.addEventListener("click", () => {
+        const url = (catGalleryUrlInput?.value || "").trim();
+        if (!url) return;
+        if (!(url.startsWith("/") || url.startsWith("http"))) {
+          utils.showToast("آدرس URL تصویر باید با / یا http شروع شود.", "error");
+          return;
+        }
+        catGallery.push({ url, alt: "" });
+        if (catGallery.length === 1) catHeroIndex = 0;
+        catGalleryUrlInput.value = "";
+        catRenderGallery();
+      });
+
+      // Gallery interactions (hero select, alt edit, move/remove)
+      catGalleryList?.addEventListener("change", (e) => {
+        if (e.target.name === "catHeroImage") {
+          catHeroIndex = parseInt(e.target.value, 10);
+        }
+      });
+      catGalleryList?.addEventListener("input", (e) => {
+        const inp = e.target.closest('input[data-role="alt"]');
+        if (inp) {
+          const idx = parseInt(inp.dataset.idx, 10);
+          if (!isNaN(idx) && catGallery[idx]) catGallery[idx].alt = inp.value;
+        }
+      });
+      catGalleryList?.addEventListener("click", (e) => {
+        const btn = e.target.closest("[data-action]");
+        if (!btn) return;
+        const idx = parseInt(btn.dataset.idx, 10);
+        const action = btn.dataset.action;
+        if (Number.isNaN(idx)) return;
+        if (action === "catRemoveGallery") {
+          catGallery.splice(idx, 1);
+          if (catHeroIndex === idx) catHeroIndex = Math.max(0, catGallery.length - 1);
+          if (catHeroIndex > idx) catHeroIndex -= 1;
+          catRenderGallery();
+        } else if (action === "catMoveUp" && idx > 0) {
+          [catGallery[idx - 1], catGallery[idx]] = [catGallery[idx], catGallery[idx - 1]];
+          if (catHeroIndex === idx) catHeroIndex = idx - 1;
+          else if (catHeroIndex === idx - 1) catHeroIndex = idx;
+          catRenderGallery();
+        } else if (action === "catMoveDown" && idx < catGallery.length - 1) {
+          [catGallery[idx + 1], catGallery[idx]] = [catGallery[idx], catGallery[idx + 1]];
+          if (catHeroIndex === idx) catHeroIndex = idx + 1;
+          else if (catHeroIndex === idx + 1) catHeroIndex = idx;
+          catRenderGallery();
+        }
+      });
+      document.getElementById("category-form")?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const fd = new FormData(e.target);
+        const payload = {
+          value: String(fd.get("value") || "").trim() || undefined,
+          label: String(fd.get("label") || "").trim(),
+          icon: String(fd.get("icon") || "grid").trim() || "grid",
+          // Prefer manual URL if provided; otherwise use selected hero from gallery
+          heroImageUrl:
+            String(fd.get("heroImageUrl") || "").trim() ||
+            (catGallery[catHeroIndex]?.url || "").trim() ||
+            undefined,
+        };
+        try {
+          if (isEdit) {
+            await api.updateCategory(categoryId, payload);
+            utils.showToast("دسته‌بندی ویرایش شد", "success");
+          } else {
+            await api.createCategory(payload);
+            utils.showToast("دسته‌بندی افزوده شد", "success");
+          }
+          panel.close();
+          handlers.categories();
+        } catch (err) {
+          utils.showToast("خطا: " + err.message, "error");
+        }
+      });
+    },
     // Add this new form method inside the `forms` object
     colorTheme(themeId = null) {
       const theme = themeId
@@ -2193,34 +2482,13 @@
 
               if (imageFile && imageFile.size > 0) {
                 console.log("Uploading magazine hero image...");
-                const uploadFormData = new FormData();
-                uploadFormData.append("image", imageFile);
-
                 try {
-                  const uploadResponse = await fetch(
-                    "/api/upload/product-image",
-                    {
-                      method: "POST",
-                      credentials: "include",
-                      body: uploadFormData,
-                    }
-                  );
-
-                  if (!uploadResponse.ok) {
-                    const errorData = await uploadResponse
-                      .json()
-                      .catch(() => ({}));
-                    throw new Error(errorData.message || "خطا در آپلود تصویر");
-                  }
-
-                  const uploadResult = await uploadResponse.json();
-                  heroImageUrl =
-                    uploadResult.data?.imageUrl || uploadResult.imageUrl;
+                  heroImageUrl = await utils.uploadImage(imageFile);
                   console.log("Hero image uploaded:", heroImageUrl);
                 } catch (uploadError) {
                   throw new Error("خطا در آپلود تصویر: " + uploadError.message);
                 }
-              } else {
+               } else {
                 const urlValue = formData.get("heroImageUrl");
                 if (urlValue && typeof urlValue === "string") {
                   const trimmedUrl = urlValue.trim();
@@ -2774,6 +3042,26 @@
           handler.call(this, id, target);
         }
       });
+      // Inline product category update (DB-backed)
+      document.addEventListener("change", (e) => {
+        const select = e.target.closest(".product-category-select");
+        if (!select) return;
+        const productId = select.dataset.id;
+        const newCategoryId = select.value || null;
+        const labelSpan = select.parentElement?.querySelector("span");
+        select.disabled = true;
+        api
+          .updateProduct(productId, { categoryId: newCategoryId })
+          .then(() => {
+            utils.showToast("دسته‌بندی بروزرسانی شد", "success");
+            if (labelSpan) {
+              const found = (state.categories || []).find((c) => c.id === newCategoryId);
+              labelSpan.textContent = found ? found.label : "-";
+            }
+          })
+          .catch((err) => utils.showToast("خطا: " + err.message, "error"))
+          .finally(() => (select.disabled = false));
+      });
     },
 
     actions: {
@@ -3034,11 +3322,61 @@
             );
         }
       },
+      // Categories actions
+      createCategory() {
+        forms.category();
+      },
+      editCategory(id) {
+        forms.category(id);
+      },
+      deleteCategory(id) {
+        if (confirm("آیا مطمئن هستید که می‌خواهید این دسته‌بندی را حذف کنید؟")) {
+          api
+            .deleteCategory(id)
+            .then(() => {
+              utils.showToast("دسته‌بندی حذف شد", "success");
+              handlers.categories();
+            })
+            .catch((error) => utils.showToast("خطا: " + error.message, "error"));
+        }
+      },
     },
   };
 
   // ========== VIEW RENDERERS ==========
   const views = {
+    categories() {
+      return `
+        <div class="mb-6 flex justify-between items-center">
+          <h2 class="text-xl font-bold">مدیریت دسته‌بندی‌ها</h2>
+          <button data-action="createCategory" class="admin-btn admin-btn-primary">
+            <i data-feather="plus"></i>
+            <span>افزودن دسته‌بندی</span>
+          </button>
+        </div>
+        <div class="admin-card">
+          <div class="admin-card-body">
+            <div class="admin-table-container">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>تصویر</th>
+                    <th>آیکون</th>
+                    <th>مقدار</th>
+                    <th>برچسب</th>
+                    <th>تعداد محصولات</th>
+                    <th>عملیات</th>
+                  </tr>
+                </thead>
+                <tbody id="categories-tbody">
+                  <tr><td colspan="5">${utils.showLoading()}</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      `;
+    },
     magazineAuthors() {
       return `
         <div class="mb-6 flex justify-between items-center">
@@ -3610,6 +3948,43 @@
 
   // ========== ROUTE HANDLERS ==========
   const handlers = {
+    async categories() {
+      try {
+        const res = await api.getCategories();
+        const categories = res?.categories || res || [];
+        state.categories = categories;
+        const tbody = document.getElementById("categories-tbody");
+        if (tbody) {
+          tbody.innerHTML = categories.length
+            ? categories
+                .map(
+                  (c) => `
+              <tr>
+                <td>${c.heroImageUrl ? `<img src="${c.heroImageUrl}" class="w-12 h-12 rounded object-cover border" />` : "-"}</td>
+                <td><i data-feather="${c.icon || "grid"}" class="w-4 h-4"></i></td>
+                <td><code>${c.value}</code></td>
+                <td>${c.label}</td>
+                <td>${utils.toFa(c._count?.products || 0)}</td>
+                <td>
+                  <div class="flex gap-2">
+                    <button data-action="editCategory" data-id="${c.id}" class="admin-btn admin-btn-secondary">
+                      <i data-feather="edit-2" class="w-4 h-4"></i>
+                    </button>
+                    <button data-action="deleteCategory" data-id="${c.id}" class="admin-btn admin-btn-danger">
+                      <i data-feather="trash-2" class="w-4 h-4"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>`
+                )
+                .join("")
+            : '<tr><td colspan="5" class="text-center py-8 text-gray-500">دسته‌ای وجود ندارد</td></tr>';
+        }
+        utils.refreshIcons();
+      } catch (err) {
+        document.getElementById("app-content").innerHTML = utils.showError(err.message);
+      }
+    },
     async dashboard() {
       try {
         const data = await api.getDashboard();
@@ -3723,6 +4098,12 @@
 
     async products() {
       try {
+        if (!state.categories || !state.categories.length) {
+          try {
+            const catRes = await api.getCategories();
+            state.categories = catRes?.categories || catRes || [];
+          } catch {}
+        }
         const data = await api.getProducts({ page: 1, perPage: 20 });
         state.products = data.products;
 
@@ -3743,7 +4124,14 @@
                 </td>
                 <td>${product.title}</td>
                 <td>${product.brand?.name || "-"}</td>
-                <td>${product.category}</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <span class="hidden sm:inline">${utils.getCategoryLabel(product.dbCategory?.value || product.category)}</span>
+                    <select class="admin-form-input product-category-select text-xs" data-id="${product.id}">
+                      ${utils.categoryOptionsHtml(product.dbCategory?.value || utils.categorySlug(product.category))}
+                    </select>
+                  </div>
+                </td>
                 <td>${utils.toIRR(product.price)}</td>
                 <td>
                   <span class="admin-badge-${product.isActive ? "success" : "danger"}">
@@ -4393,6 +4781,11 @@
         title: "مدیریت محصولات",
         view: views.products,
         handler: handlers.products,
+      },
+      categories: {
+        title: "مدیریت دسته‌بندی‌ها",
+        view: views.categories,
+        handler: handlers.categories,
       },
       colorThemes: {
         title: "تم‌های رنگی",
