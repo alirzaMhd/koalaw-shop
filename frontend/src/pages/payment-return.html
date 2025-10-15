@@ -1,96 +1,141 @@
 <!doctype html>
 <html lang="fa" dir="rtl">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <meta name="color-scheme" content="light only" />
-    <meta name="supported-color-schemes" content="light only" />
-    <meta name="theme-color" content="#faf8f3" />
-    <title>KOALAW | نتیجه پرداخت</title>
-    <link rel="icon" type="image/x-icon" href="/assets/static/favicon.ico" />
-    <link rel="stylesheet" href="/assets/css/tailwind.css" />
-    <link href="/assets/vendor/aos/aos.css" rel="stylesheet" />
-    <script src="/assets/vendor/aos/aos.js"></script>
-    <script src="/assets/vendor/feather/feather.min.js"></script>
-    <script src="/assets/vendor/gsap/gsap.min.js"></script>
-    <script src="/assets/vendor/gsap/ScrollTrigger.min.js"></script>
-    <link rel="stylesheet" href="/assets/css/main.css" />
-  </head>
 
-  <body class="bg-gradient-to-b from-rose-50 to-white">
-    <div class="min-h-screen flex items-center justify-center p-6">
-      <div class="profile-card max-w-md w-full text-center">
-        <!-- Loading State -->
-        <div id="loading-state">
-          <div class="mx-auto w-16 h-16 rounded-full border-4 border-rose-200 border-t-rose-600 animate-spin mb-4"></div>
-          <h3 class="text-lg font-bold text-gray-800 mb-2">
-            در حال بررسی پرداخت...
-          </h3>
-          <p class="text-gray-600">لطفاً صبر کنید</p>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="color-scheme" content="light only" />
+  <meta name="supported-color-schemes" content="light only" />
+  <meta name="theme-color" content="#faf8f3" />
+  <title>نتیجه پرداخت | KOALAW</title>
+  <link rel="icon" type="image/x-icon" href="/assets/static/favicon.ico" />
+  <link rel="stylesheet" href="/assets/css/tailwind.css" />
+  <link href="/assets/vendor/aos/aos.css" rel="stylesheet" />
+  <script src="/assets/vendor/aos/aos.js"></script>
+  <script src="/assets/vendor/feather/feather.min.js"></script>
+  <script src="/assets/vendor/gsap/gsap.min.js"></script>
+  <script src="/assets/vendor/gsap/ScrollTrigger.min.js"></script>
+  <link rel="stylesheet" href="/assets/css/main.css" />
+  <link rel="stylesheet" href="/assets/css/payment-return.css" />
+</head>
+
+<body>
+  <!-- Custom Cursor -->
+  <div class="cursor">
+    <div class="cursor-eyes"></div>
+  </div>
+  <div class="cursor-face"></div>
+  <div class="cursor-follower"></div>
+
+  <!-- Main -->
+  <main class="min-h-screen w-full flex items-center justify-center p-4 relative overflow-hidden"
+    style="background: linear-gradient(to bottom, #faf8f3, #fff7fb)">
+    <div class="cloud-animation"></div>
+    <div class="particle-overlay"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-black/10 via-black/5 to-transparent z-0"></div>
+
+    <div
+      class="relative z-10 w-full max-w-md bg-white/70 backdrop-blur-xl rounded-3xl shadow-2xl shadow-rose-200/50 p-8 md:p-12 text-center space-y-6"
+      data-aos="fade-up" data-aos-duration="700">
+      <!-- Logo -->
+      <a href="/"
+        class="text-3xl font-serif font-bold text-gray-800 tracking-wider z-50 flex items-center justify-center gap-x-1"
+        dir="ltr">K<img src="/assets/images/koala.png" alt="Koala logo" class="w-8 h-7 inline-block -mt-1" />ALAW</a>
+
+      <!-- Loading State -->
+      <div id="loading-state">
+        <div class="flex justify-center mb-6">
+          <svg class="w-16 h-16 animate-spin text-pink-500" viewBox="0 0 24 24" fill="none">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+          </svg>
+        </div>
+        <h1 class="text-2xl font-bold text-deep-brown mb-3">در حال بررسی پرداخت...</h1>
+        <p class="text-gray-600">لطفاً صبر کنید</p>
+      </div>
+
+      <!-- Success State -->
+      <div id="success-state" class="hidden space-y-6">
+        <div class="payment-icon-wrapper payment-success">
+          <div class="payment-icon-glow"></div>
+          <div class="payment-icon-circle">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="payment-icon-svg">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </div>
         </div>
 
-        <!-- Success State -->
-        <div id="success-state" class="hidden">
-          <div class="mx-auto w-16 h-16 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center mb-4">
-            <i data-feather="check-circle" class="w-10 h-10"></i>
+        <h1 class="text-2xl font-bold text-deep-brown">پرداخت موفق بود!</h1>
+        <p class="text-gray-600">سفارش شما با موفقیت ثبت شد.</p>
+
+        <div class="bg-cream/50 border-2 border-rose-200/50 rounded-2xl p-6 space-y-4 text-right">
+          <div class="flex justify-between items-center pb-3 border-b border-rose-200/30">
+            <span class="text-gray-600">شماره سفارش:</span>
+            <span id="order-number" class="font-bold text-deep-brown text-lg">-</span>
           </div>
-          <h3 class="text-lg font-bold text-gray-800 mb-2">
-            پرداخت موفق بود!
-          </h3>
-          <p class="text-gray-600 mb-4">
-            سفارش شما با موفقیت ثبت شد.
-          </p>
-          <div class="bg-gray-50 rounded-xl p-4 mb-6 text-right">
-            <div class="flex justify-between mb-2">
-              <span class="text-gray-600">شماره سفارش:</span>
-              <span id="order-number" class="font-bold text-gray-800">-</span>
-            </div>
-            <div class="flex justify-between mb-2">
-              <span class="text-gray-600">کد رهگیری:</span>
-              <span id="ref-id" class="font-mono text-sm text-gray-800">-</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="text-gray-600">مبلغ:</span>
-              <span id="amount" class="font-bold text-gray-800">-</span>
-            </div>
+          <div class="flex justify-between items-center pb-3 border-b border-rose-200/30">
+            <span class="text-gray-600">کد رهگیری:</span>
+            <span id="ref-id" class="font-mono text-sm text-deep-brown font-semibold">-</span>
           </div>
-          <a href="/" class="btn-primary w-full">
-            <i data-feather="home"></i>
-            بازگشت به صفحه اصلی
+          <div class="flex justify-between items-center">
+            <span class="text-gray-600">مبلغ پرداختی:</span>
+            <span id="amount" class="font-bold text-pink-600 text-lg">-</span>
+          </div>
+        </div>
+
+        <a href="/shop"
+          class="w-full px-8 py-4 bg-pink-500 text-white rounded-full font-semibold text-lg hover:shadow-2xl hover:shadow-pink-500/40 hover:bg-pink-600 transition-all duration-300 transform hover:-translate-y-1 inline-flex items-center justify-center gap-2">
+          <i data-feather="shopping-cart" class="w-5 h-5"></i>
+          <span>بازگشت به فروشگاه</span>
+        </a>
+      </div>
+
+      <!-- Error State -->
+      <div id="error-state" class="hidden space-y-6">
+        <div class="payment-icon-wrapper payment-error">
+          <div class="payment-icon-glow"></div>
+          <div class="payment-icon-circle">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="payment-icon-svg">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </div>
+        </div>
+
+        <h1 class="text-2xl font-bold text-deep-brown">پرداخت ناموفق</h1>
+        <p id="error-message" class="text-gray-600">متأسفانه پرداخت شما انجام نشد.</p>
+
+        <div class="space-y-3">
+          <a href="/cart"
+            class="w-full px-8 py-4 bg-pink-500 text-white rounded-full font-semibold text-lg hover:shadow-2xl hover:shadow-pink-500/40 hover:bg-pink-600 transition-all duration-300 transform hover:-translate-y-1 inline-flex items-center justify-center gap-2">
+            <i data-feather="shopping-cart" class="w-5 h-5"></i>
+            <span>بازگشت به سبد خرید</span>
           </a>
-        </div>
-
-        <!-- Error State -->
-        <div id="error-state" class="hidden">
-          <div class="mx-auto w-16 h-16 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center mb-4">
-            <i data-feather="x-circle" class="w-10 h-10"></i>
-          </div>
-          <h3 class="text-lg font-bold text-gray-800 mb-2">
-            پرداخت ناموفق
-          </h3>
-          <p id="error-message" class="text-gray-600 mb-6">
-            متأسفانه پرداخت شما انجام نشد.
-          </p>
-          <div class="flex gap-3">
-            <a href="/cart" class="btn-primary flex-1">
-              بازگشت به سبد خرید
-            </a>
-            <button id="retry-btn" class="btn-secondary flex-1">
-              تلاش مجدد
-            </button>
-          </div>
+          <button id="retry-btn"
+            class="w-full px-8 py-4 bg-white/80 border-2 border-pink-300 text-pink-600 rounded-full font-semibold text-lg hover:bg-pink-50 hover:border-pink-400 transition-all duration-300 transform hover:-translate-y-1 inline-flex items-center justify-center gap-2">
+            <i data-feather="refresh-cw" class="w-5 h-5"></i>
+            <span>تلاش مجدد</span>
+          </button>
         </div>
       </div>
-    </div>
 
-    <script src="/assets/js/utils.js"></script>
-    <script src="/assets/js/main.js"></script>
-    <script src="/assets/js/components/navbar.js"></script>
-    <script src="/assets/js/components/search.js"></script>
-    <script src="/assets/js/components/animations.js"></script>
-    <script src="/assets/js/components/cursor.js"></script>
-    <script src="/assets/js/pages/payment-return.js"></script>
-    <script>
-    </script>
-  </body>
+      <!-- Back -->
+      <div>
+        <a href="/"
+          class="inline-flex items-center gap-2 text-deep-brown font-semibold hover:text-primary transition-colors duration-300 group">
+          <i data-feather="arrow-right" class="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1"></i>
+          <span>بازگشت به صفحه اصلی</span>
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <script src="/assets/js/utils.js"></script>
+  <script src="/assets/js/main.js"></script>
+  <script src="/assets/js/components/search.js"></script>
+  <script src="/assets/js/components/animations.js"></script>
+  <script src="/assets/js/components/cursor.js"></script>
+  <script src="/assets/js/pages/payment-return.js"></script>
+</body>
+
 </html>
