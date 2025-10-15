@@ -45,15 +45,115 @@
     const GIFT_WRAP_PRICE = 20000;
 
     // Sample coupons (for frontend validation before API call)
-    const coupons = {
-    };
+    const coupons = {};
 
-    const SAMPLE_ITEMS = [
-    ];
+    const SAMPLE_ITEMS = [];
+    // UUID validation helper
+    const UUID_RE =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    const isUUID = (v) => UUID_RE.test(String(v || ""));
 
-    const RECS = [
-    ];
+    const uuidv4 = () =>
+      "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+        const r =
+          (crypto?.getRandomValues?.(new Uint8Array(1))[0] ??
+            Math.floor(Math.random() * 256)) & 15;
+        const v = c === "x" ? r : (r & 0x3) | 0x8;
+        return v.toString(16);
+      });
 
+    // Get or create backend cart ID
+    async function getOrCreateBackendCartId() {
+      let backendCartId = KUtils.getJSON("koalaw_backend_cart_id");
+      if (backendCartId && isUUID(backendCartId)) return backendCartId;
+
+      let anonymousId = KUtils.getJSON("koalaw_anonymous_id");
+      if (!anonymousId || !isUUID(anonymousId)) {
+        anonymousId = uuidv4();
+        KUtils.setJSON("koalaw_anonymous_id", anonymousId);
+      }
+
+      const resp = await fetch(`${API_BASE}/carts/anonymous`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ anonymousId }),
+      });
+      if (!resp.ok) {
+        const e = await resp.json().catch(() => ({}));
+        throw new Error(e?.message || "Failed to initialize cart");
+      }
+      const json = await resp.json();
+      const id = json?.data?.cart?.id;
+      if (!isUUID(id)) throw new Error("Failed to get valid cart id");
+      KUtils.setJSON("koalaw_backend_cart_id", id);
+      return id;
+    }
+
+    async function syncDeleteItemFromBackend(cartId, itemId) {
+      try {
+        await fetch(`${API_BASE}/carts/${cartId}/items/${itemId}`, {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+        });
+      } catch (e) {
+        console.warn("[CART] Failed to delete item from backend:", e);
+      }
+    }
+
+    async function syncClearBackendCart(cartId) {
+      try {
+        await fetch(`${API_BASE}/carts/${cartId}/clear`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+        });
+      } catch (e) {
+        console.warn("[CART] Failed to clear backend cart:", e);
+      }
+    }
+
+    // Fetch related products from cart items
+    async function fetchRelatedProducts(cart) {
+      if (!cart.length) return [];
+
+      const relatedMap = new Map();
+      const cartProductIds = new Set(
+        cart.map((item) => item.productId).filter(Boolean)
+      );
+
+      for (const item of cart) {
+        if (!item.productId || !isUUID(item.productId)) continue;
+
+        try {
+          const resp = await fetch(`${API_BASE}/products/${item.productId}`);
+          if (!resp.ok) continue;
+
+          const data = await resp.json();
+          const related = data?.data?.product?.related || [];
+
+          related.forEach((rel) => {
+            if (!cartProductIds.has(rel.id) && !relatedMap.has(rel.id)) {
+              relatedMap.set(rel.id, {
+                id: rel.id,
+                productId: rel.id,
+                title: rel.title,
+                price: rel.price,
+                image: rel.heroImageUrl || "/assets/images/product.png",
+                slug: rel.slug,
+                variant: "",
+                variantId: null,
+                currencyCode: rel.currencyCode || "IRR",
+              });
+            }
+          });
+        } catch (e) {
+          console.warn("[CART] Failed to fetch related products:", e);
+        }
+      }
+
+      return Array.from(relatedMap.values()).slice(0, 8);
+    }
     // Helpers
     const toIRR = KUtils.toIRR;
     const toFa = KUtils.toFa;
@@ -507,49 +607,80 @@
         });
 
       // Recs
-      const recWraps = document.querySelectorAll(
-        "#cart-recommendations, #cart-recommendations-desktop"
-      );
-      recWraps.forEach((recWrap) => {
-        recWrap.innerHTML = "";
-        RECS.forEach((p) => {
-          const d = document.createElement("button");
-          d.className =
-            "text-right p-3 rounded-xl border hover:border-rose-300 bg-white transition";
-          d.innerHTML = `
-            <div class="aspect-square rounded-lg overflow-hidden mb-2 bg-rose-50">
-              <img src="${p.image}" alt="${
-                p.title
-              }" class="w-full h-full object-cover"/>
-            </div>
-            <div class="text-sm font-bold text-gray-800 truncate">${
-              p.title
-            }</div>
-            <div class="text-xs text-gray-600 mt-1">${toIRR(p.price)}</div>
-            <div class="mt-2 inline-flex items-center gap-1 text-rose-700 text-xs">
-              <i data-feather="plus-circle"></i> افزودن
-            </div>`;
-          d.addEventListener("click", () => {
-            const c = loadCart();
-            const i = c.findIndex((x) => x.id === p.id);
-            if (i > -1) c[i].qty += 1;
-            else
-              c.push({
-                id: p.id,
-                title: p.title,
-                price: p.price,
-                qty: 1,
-                image: p.image,
-                variant: "",
-              });
-            saveCart(c);
-            showToast("به سبد اضافه شد", "check-circle");
-            renderCart();
+      // Fetch and render related products
+      fetchRelatedProducts(cart).then((recommendations) => {
+        const recWraps = document.querySelectorAll(
+          "#cart-recommendations, #cart-recommendations-desktop"
+        );
+
+        if (recommendations.length === 0) {
+          recWraps.forEach((wrap) => {
+            const container = wrap.closest(".profile-card");
+            if (container) container.style.display = "none";
           });
-          recWrap.appendChild(d);
-        });
+        } else {
+          recWraps.forEach((recWrap) => {
+            const container = recWrap.closest(".profile-card");
+            if (container) container.style.display = "block";
+
+            recWrap.innerHTML = "";
+            recommendations.forEach((p) => {
+              const d = document.createElement("button");
+              d.className =
+                "text-right p-3 rounded-xl border hover:border-rose-300 bg-white transition";
+              d.innerHTML = `
+          <div class="aspect-square rounded-lg overflow-hidden mb-2 bg-rose-50">
+            <img src="${p.image}" alt="${p.title}" class="w-full h-full object-cover"/>
+          </div>
+          <div class="text-sm font-bold text-gray-800 truncate">${p.title}</div>
+          <div class="text-xs text-gray-600 mt-1">${toIRR(p.price)}</div>
+          <div class="mt-2 inline-flex items-center gap-1 text-rose-700 text-xs">
+            <i data-feather="plus-circle"></i> افزودن
+          </div>`;
+              d.addEventListener("click", async () => {
+                const c = loadCart();
+                const i = c.findIndex((x) => x.productId === p.productId);
+                if (i > -1) {
+                  c[i].qty += 1;
+                } else {
+                  c.push({
+                    id: p.id,
+                    productId: p.productId,
+                    variantId: p.variantId,
+                    title: p.title,
+                    price: p.price,
+                    qty: 1,
+                    image: p.image,
+                    variant: p.variant || "",
+                    currencyCode: p.currencyCode || "IRR",
+                  });
+                }
+                saveCart(c);
+                showToast("به سبد اضافه شد", "check-circle");
+
+                try {
+                  const cartId = await getOrCreateBackendCartId();
+                  await fetch(`${API_BASE}/carts/${cartId}/items`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      productId: p.productId,
+                      variantId: p.variantId || null,
+                      quantity: 1,
+                    }),
+                  });
+                } catch (e) {
+                  console.warn("Failed to sync with backend:", e);
+                }
+
+                renderCart();
+              });
+              recWrap.appendChild(d);
+            });
+          });
+        }
+        KUtils.refreshIcons();
       });
-      KUtils.refreshIcons();
 
       // Checkout button
       const goAddr = document.getElementById("cart-checkout-btn");
@@ -732,7 +863,8 @@
       /**
        * Sync local cart (if it contains real product IDs) to backend cart
        */
-      const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}$/i;
+      const UUID_RE =
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}$/i;
       const isUUID = (v) => UUID_RE.test(String(v || ""));
       async function syncLocalCartToBackend(backendCartId) {
         const local = loadCart();
@@ -770,67 +902,6 @@
         const state = loadState();
 
         // Ensure a real backend cart exists and use its UUID
-        async function getOrCreateBackendCartId() {
-          const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-          const isUUID = (v) => UUID_RE.test(String(v || ""));
-          const uuidv4 = () =>
-            "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
-              const r = (crypto?.getRandomValues?.(new Uint8Array(1))[0] ?? Math.floor(Math.random() * 256)) & 15;
-              const v = c === "x" ? r : (r & 0x3) | 0x8;
-              return v.toString(16);
-            });
-
-          let backendCartId = KUtils.getJSON("koalaw_backend_cart_id");
-          if (backendCartId && isUUID(backendCartId)) return backendCartId;
-
-          let anonymousId = KUtils.getJSON("koalaw_anonymous_id");
-          if (!anonymousId || !isUUID(anonymousId)) {
-            anonymousId = uuidv4();
-            KUtils.setJSON("koalaw_anonymous_id", anonymousId);
-          }
-
-          const resp = await fetch(`${API_BASE}/carts/anonymous`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ anonymousId }),
-          });
-          if (!resp.ok) {
-            const e = await resp.json().catch(() => ({}));
-            throw new Error(e?.message || "Failed to initialize cart");
-          }
-          const json = await resp.json();
-          const id = json?.data?.cart?.id;
-          if (!isUUID(id)) throw new Error("Failed to get valid cart id");
-          KUtils.setJSON("koalaw_backend_cart_id", id);
-          return id;
-        }
-
-        async function syncDeleteItemFromBackend(cartId, itemId) {
-          try {
-            await fetch(`${CARTS_API}/${cartId}/items/${itemId}`, {
-              method: "DELETE",
-              headers: { "Content-Type": "application/json" },
-              credentials: "include",
-            });
-            console.log("[CART] Item deleted from backend:", itemId);
-          } catch (e) {
-            console.warn("[CART] Failed to delete item from backend:", e);
-          }
-        }
-
-        async function syncClearBackendCart(cartId) {
-          try {
-            await fetch(`${CARTS_API}/${cartId}/clear`, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              credentials: "include",
-            });
-            console.log("[CART] Backend cart cleared");
-          } catch (e) {
-            console.warn("[CART] Failed to clear backend cart:", e);
-          }
-        }
-
         async function markCartAsConverted(cartId) {
           try {
             await fetch(`${CARTS_API}/${cartId}/status`, {
@@ -873,8 +944,10 @@
             quantity: Number(it.qty || 1),
             imageUrl: it.image || undefined,
             currencyCode: it.currencyCode || "IRR",
-            productId: it.productId && isUUID(it.productId) ? it.productId : undefined,
-            variantId: it.variantId && isUUID(it.variantId) ? it.variantId : undefined,
+            productId:
+              it.productId && isUUID(it.productId) ? it.productId : undefined,
+            variantId:
+              it.variantId && isUUID(it.variantId) ? it.variantId : undefined,
             variantName: it.variant || undefined,
           })),
           // Compatibility aliases (controller will normalize to `lines`)
@@ -945,8 +1018,6 @@
             } catch (e) {
               console.warn("Failed to clear backend cart:", e);
             }
-
-
           }
 
           return data;
