@@ -46,70 +46,12 @@
 
     // Sample coupons (for frontend validation before API call)
     const coupons = {
-      KOALAW10: {
-        type: "percent",
-        value: 10,
-        min: 0,
-        msg: "کد ۱۰٪ تخفیف اعمال شد.",
-      },
-      WELCOME15: {
-        type: "percent",
-        value: 15,
-        min: 400000,
-        msg: "۱۵٪ تخفیف خوش‌آمدگویی اعمال شد.",
-      },
-      FREESHIP: {
-        type: "shipping",
-        value: BASE_SHIPPING,
-        min: 0,
-        msg: "ارسال رایگان فعال شد.",
-      },
     };
 
     const SAMPLE_ITEMS = [
-      {
-        id: "p-100",
-        title: "اکسیر درخشش طلایی",
-        price: 480000,
-        qty: 1,
-        image: "/assets/images/product.png",
-        variant: "30ml",
-      },
-      {
-        id: "p-200",
-        title: "رژ لب بوسه مخملی",
-        price: 320000,
-        qty: 2,
-        image: "/assets/images/cosmetic.png",
-        variant: "Shade 03",
-      },
     ];
 
     const RECS = [
-      {
-        id: "r-1",
-        title: "سرم هیالورونیک",
-        price: 290000,
-        image: "/assets/images/skin.png",
-      },
-      {
-        id: "r-2",
-        title: "عطر راز نیمه‌شب",
-        price: 780000,
-        image: "/assets/images/perfume.png",
-      },
-      {
-        id: "r-3",
-        title: "ماسک مو تغذیه‌کننده",
-        price: 350000,
-        image: "/assets/images/hair.png",
-      },
-      {
-        id: "r-4",
-        title: "رژ گونه لطیف",
-        price: 260000,
-        image: "/assets/images/cosmetic.png",
-      },
     ];
 
     // Helpers
@@ -1004,10 +946,7 @@
               console.warn("Failed to clear backend cart:", e);
             }
 
-            // Redirect to success page or order detail
-            setTimeout(() => {
-              window.location.href = `/order-success.html?orderId=${data.orderId}`;
-            }, 1500);
+
           }
 
           return data;
