@@ -412,7 +412,7 @@ class ProductService {
           });
         }
       }
-      
+
 
       // Related products (replace set if provided)
       if (Array.isArray((input as any).relatedProductIds)) {
@@ -684,39 +684,39 @@ class ProductService {
       min: agg._min.price ?? 0,
       max: agg._max.price ?? 0,
     };
-    
+
     return {
       categories: listCategories(),
-       brands: brandOptions,
-       collections: collectionOptions,
-       priceRange,
-     };
+      brands: brandOptions,
+      collections: collectionOptions,
+      priceRange,
+    };
   }
   // Add after the getFilterOptions method, before the closing bracket of the class
 
-// Get top selling products for search suggestions
-async getTopSelling(limit: number = 4) {
-  const products = await prisma.product.findMany({
-    where: { isActive: true },
-    orderBy: [
-      { isBestseller: 'desc' },
-      { ratingCount: 'desc' },
-      { ratingAvg: 'desc' }
-    ],
-    take: limit,
-    select: {
-      id: true,
-      slug: true,
-      title: true,
-    }
-  });
-  
-  return products.map(p => ({
-    title: p.title,
-    slug: p.slug,
-    url: `/shop?search=${encodeURIComponent(p.title)}`
-  }));
-}
+  // Get top selling products for search suggestions
+  async getTopSelling(limit: number = 4) {
+    const products = await prisma.product.findMany({
+      where: { isActive: true },
+      orderBy: [
+        { isBestseller: 'desc' },
+        { ratingCount: 'desc' },
+        { ratingAvg: 'desc' }
+      ],
+      take: limit,
+      select: {
+        id: true,
+        slug: true,
+        title: true,
+      }
+    });
+
+    return products.map((p: { id: string; slug: string; title: string }) => ({
+      title: p.title,
+      slug: p.slug,
+      url: `/shop?search=${encodeURIComponent(p.title)}`
+    }));
+  }
 }
 
 export const productService = new ProductService();

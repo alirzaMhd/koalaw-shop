@@ -204,6 +204,7 @@ class CheckoutService {
     address: CheckoutAddress;
     options: CheckoutOptions;
     returnUrl?: string | undefined;
+    cancelUrl?: string | undefined;
     
     lines?: Array<{
       title: string;

@@ -274,6 +274,8 @@ class ZarinpalGateway {
         message?: string;
         errors?: any[];
         data?: {
+          code?: number;           // ← ADD THIS
+          message?: string;
           authority?: string;
           fee?: number;
           fee_type?: string;
@@ -348,6 +350,8 @@ if (code !== 100 || !data?.authority) {
         message?: string;
         errors?: any[];
         data?: {
+          code?: number;           // ← ADD THIS
+          message?: string;        // ← ADD THIS
           card_pan?: string;
           card_hash?: string;
           ref_id?: number;

@@ -146,7 +146,7 @@ class CheckoutController {
         const raw = req.body as any;
         const rawArr = raw?.lines || raw?.items || raw?.clientCart || raw?.cart;
         if (Array.isArray(rawArr)) {
-          lines = normalizeClientLines(rawArr);
+          lines = normalizeClientLines(rawArr) as typeof lines;
         }
       }
       const userId = (req.user?.id || req.user?.sub) as string | undefined;
