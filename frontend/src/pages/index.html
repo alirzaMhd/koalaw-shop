@@ -1,636 +1,447 @@
 <!doctype html>
 <html lang="fa" dir="rtl">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <meta name="enamad" content="26248959" />
-    <meta name="color-scheme" content="light only" />
-    <meta name="supported-color-schemes" content="light only" />
-    <meta name="theme-color" content="#faf8f3" />
-    <title>KOALAW | لوازم آرایش کوالا</title>
-    <link rel="icon" type="image/x-icon" href="/assets/static/favicon.ico" />
-    <link rel="stylesheet" href="/assets/css/tailwind.css" />
-    <link href="/assets/vendor/aos/aos.css" rel="stylesheet" />
-    <script src="/assets/vendor/aos/aos.js"></script>
-    <script src="/assets/vendor/feather/feather.min.js"></script>
-    <script src="/assets/vendor/gsap/gsap.min.js"></script>
-    <script src="/assets/vendor/gsap/ScrollTrigger.min.js"></script>
-    <link rel="stylesheet" href="/assets/css/main.css" />
-  </head>
 
-  <body>
-    <div class="loader" id="loader">
-      <div class="koala-loader">
-        <div class="koala-loader-body">
-          <div class="liquid-bg"></div>
-          <div class="liquid"></div>
-          <div class="koala-loader-eyes"></div>
-          <div class="koala-loader-nose"></div>
-        </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="enamad" content="26248959" />
+  <meta name="color-scheme" content="light only" />
+  <meta name="supported-color-schemes" content="light only" />
+  <meta name="theme-color" content="#faf8f3" />
+  <title>KOALAW | لوازم آرایش کوالا</title>
+  <link rel="icon" type="image/x-icon" href="/assets/static/favicon.ico" />
+  <link rel="stylesheet" href="/assets/css/tailwind.css" />
+  <link href="/assets/vendor/aos/aos.css" rel="stylesheet" />
+  <script src="/assets/vendor/aos/aos.js"></script>
+  <script src="/assets/vendor/feather/feather.min.js"></script>
+  <script src="/assets/vendor/gsap/gsap.min.js"></script>
+  <script src="/assets/vendor/gsap/ScrollTrigger.min.js"></script>
+  <link rel="stylesheet" href="/assets/css/main.css" />
+</head>
+
+<body>
+  <div class="loader" id="loader">
+    <div class="koala-loader">
+      <div class="koala-loader-body">
+        <div class="liquid-bg"></div>
+        <div class="liquid"></div>
+        <div class="koala-loader-eyes"></div>
+        <div class="koala-loader-nose"></div>
       </div>
     </div>
-    <div class="cursor">
-      <div class="cursor-eyes"></div>
-    </div>
-    <div class="cursor-face"></div>
-    <div class="cursor-follower"></div>
-    <div
-      id="vanta-bg"
-      style="
+  </div>
+  <div class="cursor">
+    <div class="cursor-eyes"></div>
+  </div>
+  <div class="cursor-face"></div>
+  <div class="cursor-follower"></div>
+  <div id="vanta-bg" style="
         position: fixed;
         width: 100%;
         height: 100%;
         z-index: -1;
         background: linear-gradient(to bottom, #faf8f3, #fff7fb);
-      "
-    ></div>
+      "></div>
 
-    <nav class="fixed w-full z-50 transition-all duration-300" id="navbar">
-      <div class="container mx-auto px-6 py-5">
-        <div class="flex items-center justify-between" dir="ltr">
-          <a
-            href="/"
-            class="text-3xl font-serif font-bold text-gray-800 tracking-wider z-50 flex items-center gap-x-1"
-            >K<img
-              src="/assets/images/koala.png"
-              alt="Koala logo"
-              class="w-8 h-7 inline-block -mt-1"
-            />ALAW</a
-          >
-          <div class="hidden lg:flex items-center gap-x-10 flex-row-reverse">
-            <a
-              href="/shop"
-              class="nav-link text-gray-700 hover:text-gray-900 transition duration-300"
-              >فروشگاه</a
-            ><a
-              href="/shop?category=collections"
-              class="nav-link text-gray-700 hover:text-gray-900 transition duration-300"
-              >کالکشن ها</a
-            ><a
-              href="/shop?category=brands"
-              class="nav-link text-gray-700 hover:text-gray-900 transition duration-300"
-              >برندها</a
-            ><a
-              href="/magazine"
-              class="nav-link text-gray-700 hover:text-gray-900 transition duration-300"
-              >مجله</a
-            ><a
-              href="/about"
-              class="nav-link text-gray-700 hover:text-gray-900 transition duration-300"
-              >درباره ما</a
-            >
-          </div>
-          <div class="flex items-center gap-x-6">
-            <button
-              id="search-button"
-              class="text-gray-700 hover:text-gray-900 transition-all duration-300 hover:scale-110"
-            >
-              <i data-feather="search" class="w-5 h-5"></i></button
-            ><button
-              id="profile-button"
-              type="button"
-              class="text-gray-700 hover:text-gray-900 transition-all duration-300 hover:scale-110"
-            >
-              <i data-feather="user" class="w-5 h-5"></i></button
-            ><a
-              href="/cart"
-              id="nav-cart"
-              class="text-gray-700 hover:text-gray-900 relative transition-all duration-300 hover:scale-110"
-              aria-label="سبد خرید"
-            >
-              <i data-feather="shopping-bag" class="w-5 h-5"></i>
-              <span
-                id="nav-cart-count"
-                class="absolute -top-2 -right-2 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center pulse-animation"
-                >۰</span
-              > </a
-            ><button id="mobile-menu-button" class="hamburger-button lg:hidden">
-              <span></span><span></span><span></span>
-            </button>
-          </div>
+  <nav class="fixed w-full z-50 transition-all duration-300" id="navbar">
+    <div class="container mx-auto px-6 py-5">
+      <div class="flex items-center justify-between" dir="ltr">
+        <a href="/"
+          class="text-3xl font-serif font-bold text-gray-800 tracking-wider z-50 flex items-center gap-x-1">K<img
+            src="/assets/images/koala.png" alt="Koala logo" class="w-8 h-7 inline-block -mt-1" />ALAW</a>
+        <div class="hidden lg:flex items-center gap-x-10 flex-row-reverse">
+          <a href="/shop" class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">فروشگاه</a><a
+            href="/shop?category=collections"
+            class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">کالکشن ها</a><a
+            href="/shop?category=brands"
+            class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">برندها</a><a href="/magazine"
+            class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">مجله</a><a href="/about"
+            class="nav-link text-gray-700 hover:text-gray-900 transition duration-300">درباره ما</a>
+        </div>
+        <div class="flex items-center gap-x-6">
+          <button id="search-button"
+            class="text-gray-700 hover:text-gray-900 transition-all duration-300 hover:scale-110">
+            <i data-feather="search" class="w-5 h-5"></i></button><button id="profile-button" type="button"
+            class="text-gray-700 hover:text-gray-900 transition-all duration-300 hover:scale-110">
+            <i data-feather="user" class="w-5 h-5"></i></button><a href="/cart" id="nav-cart"
+            class="text-gray-700 hover:text-gray-900 relative transition-all duration-300 hover:scale-110"
+            aria-label="سبد خرید">
+            <i data-feather="shopping-bag" class="w-5 h-5"></i>
+            <span id="nav-cart-count"
+              class="absolute -top-2 -right-2 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center pulse-animation">۰</span>
+          </a><button id="mobile-menu-button" class="hamburger-button lg:hidden">
+            <span></span><span></span><span></span>
+          </button>
         </div>
       </div>
-    </nav>
-
-    <!-- Mobile Menu -->
-    <div id="mobile-menu">
-      <a href="/shop" class="nav-link">فروشگاه</a
-      ><a href="/shop?category=collections" class="nav-link">کالکشن ها</a
-      ><a href="/shop?category=brands" class="nav-link">برندها</a
-      ><a href="/magazine" class="nav-link">مجله</a
-      ><a href="/about" class="nav-link">درباره ما</a>
     </div>
-    <div id="mobile-menu-overlay" class="mobile-menu-overlay"></div>
+  </nav>
 
-    <section
-      class="min-h-screen relative flex items-center justify-center text-center overflow-hidden"
-    >
-      <img
-        id="hero-bg-image"
-        src="/assets/images/hero.png"
-        alt="زیبایی طبیعی"
-        class="absolute inset-0 w-full h-full object-cover z-0"
-      />
-      <div class="cloud-animation"></div>
-      <div class="particle-overlay"></div>
-      <div
-        class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent z-10"
-      ></div>
-      <div class="container mx-auto px-6 relative z-20 text-white">
-        <div data-aos="fade-up" data-aos-duration="700">
-          <span
-            class="block text-lg font-medium tracking-wider mb-4"
-            style="text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5)"
-            >هنر زیبایی آگاهانه</span
-          >
-          <h1
-            class="hero-title-creative text-4xl lg:text-6xl font-serif font-bold leading-tight mb-6"
-          >
-            درخششی فراتر از طبیعت
-          </h1>
-          <p
-            class="text-lg text-gray-200 mb-10 max-w-2xl leading-relaxed mx-auto"
-            style="text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5)"
-          >
-            با کوالا، جایی که علم پیشرفته و خالص‌ترین ترکیبات طبیعی با هم ترکیب
-            می‌شوند، زیبایی خود را بازتعریف کنید.
-          </p>
-          <div class="flex justify-center">
-            <a
-              href="/shop"
-              class="magnetic-btn group px-8 py-4 bg-white text-gray-900 rounded-full hover:shadow-2xl transition-all duration-300 flex items-center space-x-2 font-semibold"
-            >
-              <span>کالکشن را کاوش کنید</span
-              ><i
-                data-feather="arrow-left"
-                class="w-5 h-5 group-hover:-translate-x-2 transition-transform duration-300"
-              ></i>
-            </a>
+  <!-- Mobile Menu -->
+  <div id="mobile-menu">
+    <a href="/shop" class="nav-link">فروشگاه</a><a href="/shop?category=collections" class="nav-link">کالکشن ها</a><a
+      href="/shop?category=brands" class="nav-link">برندها</a><a href="/magazine" class="nav-link">مجله</a><a
+      href="/about" class="nav-link">درباره ما</a>
+  </div>
+  <div id="mobile-menu-overlay" class="mobile-menu-overlay"></div>
+
+  <section class="min-h-screen relative flex items-center justify-center text-center overflow-hidden">
+    <img id="hero-bg-image" src="/assets/images/hero.png" alt="زیبایی طبیعی"
+      class="absolute inset-0 w-full h-full object-cover z-0" />
+    <div class="cloud-animation"></div>
+    <div class="particle-overlay"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent z-10"></div>
+    <div class="container mx-auto px-6 relative z-20 text-white">
+      <div data-aos="fade-up" data-aos-duration="700">
+        <span class="block text-lg font-medium tracking-wider mb-4"
+          style="text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5)">هنر زیبایی آگاهانه</span>
+        <h1 class="hero-title-creative text-4xl lg:text-6xl font-serif font-bold leading-tight mb-6">
+          درخششی فراتر از طبیعت
+        </h1>
+        <p class="text-lg text-gray-200 mb-10 max-w-2xl leading-relaxed mx-auto"
+          style="text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5)">
+          با کوالا، جایی که علم پیشرفته و خالص‌ترین ترکیبات طبیعی با هم ترکیب
+          می‌شوند، زیبایی خود را بازتعریف کنید.
+        </p>
+        <div class="flex justify-center">
+          <a href="/shop"
+            class="magnetic-btn group px-8 py-4 bg-white text-gray-900 rounded-full hover:shadow-2xl transition-all duration-300 flex items-center space-x-2 font-semibold">
+            <span>کالکشن را کاوش کنید</span><i data-feather="arrow-left"
+              class="w-5 h-5 group-hover:-translate-x-2 transition-transform duration-300"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="scroll-indicator"></div>
+  </section>
+
+  <section id="collections" class="py-24 bg-cream relative overflow-hidden">
+    <div
+      class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vh] bg-rose-200/40 rounded-full blur-3xl opacity-50 z-0">
+    </div>
+    <div class="container mx-auto px-6 relative z-10">
+      <div class="text-center mb-16" data-aos="fade-up">
+        <span class="text-sm font-medium text-rose-800 tracking-wider uppercase mb-4 block">دست‌چین شده برای شما</span>
+        <h2 class="text-4xl lg:text-5xl font-serif font-bold text-gray-800 mb-6">
+          کالکشن‌های ویژه
+        </h2>
+        <div class="cute-divider"><span class="star">✦</span></div>
+        <p class="text-gray-600 max-w-2xl mx-auto text-lg">
+          سفری به دنیای زیبایی‌های ما. هر کالکشن داستانی منحصر به فرد را روایت
+          می‌کند.
+        </p>
+      </div>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 collections-grid">
+        <!-- Collections will be loaded dynamically from backend -->
+        <div class="col-span-full text-center py-8">
+          <p class="text-gray-500">در حال بارگذاری کالکشن‌ها...</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-24 bg-gray-50/50 overflow-hidden">
+    <div class="container mx-auto px-6">
+      <div class="text-center mb-16" data-aos="fade-up">
+        <span class="text-sm font-medium text-rose-800 tracking-wider uppercase mb-4 block">راهنمای شما</span>
+        <h2 class="text-4xl lg:text-5xl font-serif font-bold text-gray-800 mb-6">
+          خرید بر اساس دسته‌بندی
+        </h2>
+        <div class="cute-divider"><span class="star">✦</span></div>
+        <p class="text-gray-600 max-w-2xl mx-auto text-lg mt-4">
+          محصولات مورد علاقه خود را در مجموعه‌های منتخب ما بیابید. از
+          مراقبت‌های ضروری پوست تا آرایش‌های جذاب.
+        </p>
+      </div>
+      <div class="category-scroll-container" data-aos="fade-up" data-aos-delay="200">
+        <div class="flex flex-nowrap gap-6 lg:gap-8">
+          <!-- Categories will be loaded dynamically from backend -->
+          <div class="w-full text-center py-8">
+            <p class="text-gray-500">در حال بارگذاری دسته‌بندی‌ها...</p>
           </div>
         </div>
       </div>
-      <div class="scroll-indicator"></div>
-    </section>
+    </div>
+  </section>
 
-    <section id="collections" class="py-24 bg-cream relative overflow-hidden">
-      <div
-        class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vh] bg-rose-200/40 rounded-full blur-3xl opacity-50 z-0"
-      ></div>
-      <div class="container mx-auto px-6 relative z-10">
-        <div class="text-center mb-16" data-aos="fade-up">
-          <span
-            class="text-sm font-medium text-rose-800 tracking-wider uppercase mb-4 block"
-            >دست‌چین شده برای شما</span
-          >
-          <h2
-            class="text-4xl lg:text-5xl font-serif font-bold text-gray-800 mb-6"
-          >
-            کالکشن‌های ویژه
-          </h2>
-          <div class="cute-divider"><span class="star">✦</span></div>
-          <p class="text-gray-600 max-w-2xl mx-auto text-lg">
-            سفری به دنیای زیبایی‌های ما. هر کالکشن داستانی منحصر به فرد را روایت
-            می‌کند.
-          </p>
-        </div>
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 collections-grid">
-          <!-- Collections will be loaded dynamically from backend -->
-          <div class="col-span-full text-center py-8">
-            <p class="text-gray-500">در حال بارگذاری کالکشن‌ها...</p>
+  <section id="brands" class="py-20 bg-cream/50 overflow-hidden">
+    <div class="container mx-auto px-6">
+      <div class="text-center mb-16" data-aos="fade-up">
+        <span class="text-sm font-medium text-rose-800 tracking-wider uppercase mb-4 block">مجموعه‌ای منتخب</span>
+        <h2 class="text-4xl lg:text-5xl font-serif font-bold text-gray-800 mb-6">
+          خرید بر اساس برند
+        </h2>
+        <div class="cute-divider"><span class="star">✦</span></div>
+        <p class="text-gray-600 max-w-2xl mx-auto text-lg mt-4">
+          برترین برندهای زیبایی جهان را که به خاطر کیفیت و نوآوری بی‌نظیرشان
+          انتخاب شده‌اند، کاوش کنید.
+        </p>
+      </div>
+      <div class="brands-container" data-aos="fade-up" data-aos-delay="200">
+        <div class="brands-marquee py-4">
+          <!-- Brands will be loaded dynamically from backend -->
+          <div class="text-center py-8 w-full">
+            <p class="text-gray-500">در حال بارگذاری برندها...</p>
           </div>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <section class="py-24 bg-gray-50/50 overflow-hidden">
-      <div class="container mx-auto px-6">
-        <div class="text-center mb-16" data-aos="fade-up">
-          <span
-            class="text-sm font-medium text-rose-800 tracking-wider uppercase mb-4 block"
-            >راهنمای شما</span
-          >
-          <h2
-            class="text-4xl lg:text-5xl font-serif font-bold text-gray-800 mb-6"
-          >
-            خرید بر اساس دسته‌بندی
-          </h2>
-          <div class="cute-divider"><span class="star">✦</span></div>
-          <p class="text-gray-600 max-w-2xl mx-auto text-lg mt-4">
-            محصولات مورد علاقه خود را در مجموعه‌های منتخب ما بیابید. از
-            مراقبت‌های ضروری پوست تا آرایش‌های جذاب.
-          </p>
-        </div>
-        <div
-          class="category-scroll-container"
-          data-aos="fade-up"
-          data-aos-delay="200"
-        >
-          <div class="flex flex-nowrap gap-6 lg:gap-8">
-            <!-- Categories will be loaded dynamically from backend -->
-            <div class="w-full text-center py-8">
-              <p class="text-gray-500">در حال بارگذاری دسته‌بندی‌ها...</p>
-            </div>
-          </div>
-        </div>
+  <section class="py-32 bestsellers-section relative">
+    <div class="container mx-auto px-6 relative z-10">
+      <div class="text-center mb-20" data-aos="fade-up">
+        <span class="text-sm font-medium text-rose-800 tracking-wider uppercase mb-4 block opacity-90">محبوب‌ترین‌های
+          مشتریان</span>
+        <h2 class="section-title-enhanced text-5xl lg:text-6xl font-serif font-bold text-gray-800 mb-8">
+          زیبایی‌های پرفروش
+        </h2>
+        <div class="cute-divider mb-6"><span class="star">✦</span></div>
+        <p class="text-gray-600 max-w-3xl mx-auto text-lg leading-relaxed">
+          محصولاتی را کشف کنید که مشتریان ما نمی‌توانند بدون آن‌ها زندگی کنند.
+          هر محصول داستان عشق و تحولی را روایت می‌کند.
+        </p>
       </div>
-    </section>
-
-    <section id="brands" class="py-20 bg-cream/50 overflow-hidden">
-      <div class="container mx-auto px-6">
-        <div class="text-center mb-16" data-aos="fade-up">
-          <span
-            class="text-sm font-medium text-rose-800 tracking-wider uppercase mb-4 block"
-            >مجموعه‌ای منتخب</span
-          >
-          <h2
-            class="text-4xl lg:text-5xl font-serif font-bold text-gray-800 mb-6"
-          >
-            خرید بر اساس برند
-          </h2>
-          <div class="cute-divider"><span class="star">✦</span></div>
-          <p class="text-gray-600 max-w-2xl mx-auto text-lg mt-4">
-            برترین برندهای زیبایی جهان را که به خاطر کیفیت و نوآوری بی‌نظیرشان
-            انتخاب شده‌اند، کاوش کنید.
-          </p>
-        </div>
-        <div class="brands-container" data-aos="fade-up" data-aos-delay="200">
-          <div class="brands-marquee py-4">
-            <!-- Brands will be loaded dynamically from backend -->
-            <div class="text-center py-8 w-full">
-              <p class="text-gray-500">در حال بارگذاری برندها...</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="py-32 bestsellers-section relative">
-      <div class="container mx-auto px-6 relative z-10">
-        <div class="text-center mb-20" data-aos="fade-up">
-          <span
-            class="text-sm font-medium text-rose-800 tracking-wider uppercase mb-4 block opacity-90"
-            >محبوب‌ترین‌های مشتریان</span
-          >
-          <h2
-            class="section-title-enhanced text-5xl lg:text-6xl font-serif font-bold text-gray-800 mb-8"
-          >
-            زیبایی‌های پرفروش
-          </h2>
-          <div class="cute-divider mb-6"><span class="star">✦</span></div>
-          <p class="text-gray-600 max-w-3xl mx-auto text-lg leading-relaxed">
-            محصولاتی را کشف کنید که مشتریان ما نمی‌توانند بدون آن‌ها زندگی کنند.
-            هر محصول داستان عشق و تحولی را روایت می‌کند.
-          </p>
-        </div>
-        <div
-          class="flex flex-wrap justify-center items-center gap-4 mb-16"
-          data-aos="fade-up"
-          data-aos-delay="100"
-        >
-          <button class="filter-btn active" data-filter="all">
-            <span>همه محصولات</span>
-          </button>
-          <button class="filter-btn" data-filter="skincare">
-            <span>مراقبت از پوست</span>
-          </button>
-          <button class="filter-btn" data-filter="makeup">
-            <span>آرایش</span>
-          </button>
-          <button class="filter-btn" data-filter="fragrance">
-            <span>عطر</span>
-          </button>
-          <button class="filter-btn" data-filter="bestseller">
-            <span>پرفروش‌ترین‌ها</span>
-          </button>
-        </div>
-        <div class="product-scroll-wrapper hide-scrollbar">
-          <div
-            id="product-grid"
-            class="columns-1 sm:columns-2 lg:columns-4 gap-8"
-          ></div>
-        </div>
-        <div class="text-center mt-16" data-aos="fade-up" data-aos-delay="100">
-          <a
-            href="/shop"
-            class="inline-flex items-center px-6 md:px-10 py-3 md:py-5 border-2 border-gray-900 text-gray-900 rounded-full hover:bg-gray-900 hover:text-white transition-all duration-500 group text-base md:text-lg font-semibold tracking-wide"
-            ><i
-              data-feather="arrow-left"
-              class="ml-3 w-5 h-5 group-hover:-translate-x-2 transition-transform duration-300"
-            ></i
-            ><span>کاوش کامل کالکشن</span></a
-          >
-          <p class="text-gray-500 text-sm mt-4">
-            بیش از ۲۰۰ محصول منحصر به فرد در انتظار شماست
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <section class="py-24 campaign-section relative overflow-hidden">
-      <div class="container mx-auto px-6 relative z-10">
-        <div class="text-center mb-20" data-aos="fade-up">
-          <span
-            class="text-sm font-medium text-rose-800 tracking-wider uppercase mb-4 block"
-            >نسخه محدود</span
-          >
-          <h2
-            class="section-title-enhanced text-5xl lg:text-6xl font-serif font-bold text-gray-800 mb-8"
-          >
-            محصولات ویژه با تخفیف
-          </h2>
-          <div class="cute-divider mb-6">
-            <span class="star" style="color: var(--primary)">✦</span>
-          </div>
-          <p class="text-gray-600 max-w-3xl mx-auto text-lg leading-relaxed">
-            بهترین محصولات با تخفیف‌های استثنایی. فرصت محدود برای خرید با قیمت
-            ویژه.
-          </p>
-        </div>
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
-          <!-- Products will be loaded dynamically from backend -->
-          <div class="col-span-full text-center py-8">
-            <p class="text-gray-500">در حال بارگذاری محصولات ویژه...</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section
-      id="magazine"
-      class="py-24 bg-gradient-to-b from-gray-50 to-white overflow-hidden"
-    >
-      <div class="container mx-auto px-6">
-        <div class="text-center mb-16" data-aos="fade-up">
-          <span
-            class="text-sm font-medium text-rose-800 tracking-wider uppercase mb-4 block"
-            >مجله</span
-          >
-          <h2
-            class="text-4xl lg:text-5xl font-serif font-bold text-gray-800 mb-6"
-          >
-            جایی برای خواندن و الهام گرفتن
-          </h2>
-          <div class="cute-divider"><span class="star">✦</span></div>
-          <p class="text-gray-600 max-w-2xl mx-auto text-lg">
-            نکات علمی، ترندها و آموزش‌ها؛ هر هفته مطالب تازه برای زیبایی
-            آگاهانه.
-          </p>
-        </div>
-        <div
-          id="magazine-scroller"
-          class="flex lg:grid lg:grid-cols-3 gap-6 lg:gap-8 overflow-x-auto lg:overflow-visible snap-x snap-mandatory hide-scrollbar"
-          data-aos="fade-up"
-          data-aos-delay="100"
-        >
-          <!-- Articles will be loaded dynamically from backend -->
-          <div class="w-full text-center py-8 col-span-3">
-            <p class="text-gray-500">در حال بارگذاری مقالات...</p>
-          </div>
-        </div>
-        <div class="text-center mt-12" data-aos="fade-up" data-aos-delay="150">
-          <a
-            href="/magazine"
-            class="inline-flex items-center px-8 py-4 border-2 border-gray-900 text-gray-900 rounded-full hover:bg-gray-900 hover:text-white transition-all duration-300 group font-semibold"
-            ><i data-feather="book-open" class="ml-3 w-5 h-5"></i
-            ><span>مشاهده همه مطالب مجله</span
-            ><i
-              data-feather="arrow-left"
-              class="mr-3 w-5 h-5 transition-transform duration-300 group-hover:-translate-x-2"
-            ></i
-          ></a>
-          <p class="text-gray-500 text-sm mt-4">
-            هر هفته مقالات جدید منتشر می‌کنیم
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <section class="py-24 bg-gradient-to-b from-white to-gray-50">
-      <div class="container mx-auto px-6">
-        <div class="text-center mb-16" data-aos="fade-up">
-          <span
-            class="text-sm font-medium text-rose-800 tracking-wider uppercase mb-4 block"
-            >نظرات مشتریان</span
-          >
-          <h2
-            class="text-4xl lg:text-5xl font-serif font-bold text-gray-800 mb-6"
-          >
-            نامه‌های محبت‌آمیز ✧
-          </h2>
-          <div class="cute-divider"><span class="star">✦</span></div>
-          <p class="text-gray-600 max-w-2xl mx-auto text-lg">
-            داستان‌های واقعی از جامعه زیبای ما
-          </p>
-        </div>
-        <div
-          id="testimonial-grid"
-          class="flex lg:grid lg:grid-cols-3 gap-6 lg:gap-8 overflow-x-auto lg:overflow-visible snap-x snap-mandatory -mx-6 px-6 hide-scrollbar"
-        ></div>
-      </div>
-    </section>
-
-    <section class="py-24 bg-white">
-      <div class="container mx-auto px-6">
-        <div class="text-center mb-16" data-aos="fade-up">
-          <span
-            class="text-sm font-medium text-rose-800 tracking-wider uppercase mb-4 block"
-            >ما را دنبال کنید</span
-          >
-          <h2
-            class="text-4xl lg:text-5xl font-serif font-bold text-gray-800 mb-6"
-            style="direction: ltr"
-          >
-            @koalaw.shop
-          </h2>
-          <p class="text-gray-600 max-w-2xl mx-auto text-lg">
-            به جامعه علاقه‌مندان به زیبایی ما بپیوندید
-          </p>
-        </div>
-        <div
-          id="instagram-grid"
-          class="grid grid-cols-2 md:grid-cols-4 gap-4"
-          data-aos="fade-up"
-        ></div>
-        <div class="text-center mt-12" data-aos="fade-up">
-          <a
-            href="https://www.instagram.com/koalaw.shop/"
-            class="inline-flex items-center text-rose-900 font-semibold hover:text-rose-700 transition duration-300 group"
-            ><i data-feather="instagram" class="ml-2 w-5 h-5"></i
-            ><span>ما را در اینستاگرام دنبال کنید</span
-            ><i
-              data-feather="arrow-left"
-              class="mr-2 w-4 h-4 group-hover:-translate-x-2 transition-transform duration-300"
-            ></i
-          ></a>
-        </div>
-      </div>
-    </section>
-
-    <section class="py-24 newsletter-bg relative">
-      <div class="container mx-auto px-6 relative z-10">
-        <div class="max-w-4xl mx-auto text-center" data-aos="fade-up">
-          <h2 class="text-4xl lg:text-5xl font-serif font-bold text-white mb-6">
-            درخشان بمانید
-          </h2>
-          <div class="cute-divider"><span class="star">✦</span></div>
-          <p class="text-rose-100 mb-10 text-lg max-w-2xl mx-auto">
-            اولین کسی باشید که از کالکشن‌های جدید، پیشنهادات انحصاری و نکات
-            زیبایی متخصصان ما باخبر می‌شود.
-          </p>
-          <form class="flex flex-col sm:flex-row max-w-xl mx-auto gap-4">
-            <input
-              type="email"
-              placeholder="ایمیل خود را وارد کنید"
-              class="flex-grow px-6 py-4 rounded-full bg-white text-gray-800 placeholder-gray-500 shadow-sm focus:outline-none focus:ring-4 focus:ring-rose-300/50 transition-all duration-300"
-            />
-            <button
-              type="submit"
-              class="px-8 py-4 bg-white text-gray-900 rounded-full font-semibold hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 hover:shadow-xl"
-            >
-              عضویت
-            </button>
-          </form>
-          <p class="text-xs text-rose-200 mt-6">
-            به بیش از ۵۰,۰۰۰ دوست‌دار زیبایی بپیوندید. لغو عضویت در هر زمان ممکن
-            است.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Search Overlay -->
-    <div id="search-overlay" class="search-overlay">
-      <div class="search-container">
-        <button id="close-search-button" class="close-search-button">
-          <i data-feather="x" class="w-8 h-8"></i>
+      <div class="flex flex-wrap justify-center items-center gap-4 mb-16" id="home-product-filters" data-aos="fade-up"
+        data-aos-delay="100">
+        <button class="filter-btn active" data-filter="all">
+          <span>همه محصولات</span>
         </button>
-        <form class="search-form">
-          <input
-            type="search"
-            id="search-input"
-            placeholder="جستجو برای محصولات، برندها و..."
-            class="search-input"
-          />
-          <button type="submit" class="search-submit-button">
-            <i data-feather="search"></i>
+          <!-- DB categories (top 3 by product count) will be injected here --> <button class="filter-btn"
+          data-filter="bestseller">
+          <span>پرفروش‌ترین‌ها</span>
+        </button>
+      </div>
+      <div class="product-scroll-wrapper hide-scrollbar">
+        <div id="product-grid" class="columns-1 sm:columns-2 lg:columns-4 gap-8"></div>
+      </div>
+      <div class="text-center mt-16" data-aos="fade-up" data-aos-delay="100">
+        <a href="/shop"
+          class="inline-flex items-center px-6 md:px-10 py-3 md:py-5 border-2 border-gray-900 text-gray-900 rounded-full hover:bg-gray-900 hover:text-white transition-all duration-500 group text-base md:text-lg font-semibold tracking-wide"><i
+            data-feather="arrow-left"
+            class="ml-3 w-5 h-5 group-hover:-translate-x-2 transition-transform duration-300"></i><span>کاوش کامل
+            کالکشن</span></a>
+        <p class="text-gray-500 text-sm mt-4">
+          بیش از ۲۰۰ محصول منحصر به فرد در انتظار شماست
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-24 campaign-section relative overflow-hidden">
+    <div class="container mx-auto px-6 relative z-10">
+      <div class="text-center mb-20" data-aos="fade-up">
+        <span class="text-sm font-medium text-rose-800 tracking-wider uppercase mb-4 block">نسخه محدود</span>
+        <h2 class="section-title-enhanced text-5xl lg:text-6xl font-serif font-bold text-gray-800 mb-8">
+          محصولات ویژه با تخفیف
+        </h2>
+        <div class="cute-divider mb-6">
+          <span class="star" style="color: var(--primary)">✦</span>
+        </div>
+        <p class="text-gray-600 max-w-3xl mx-auto text-lg leading-relaxed">
+          بهترین محصولات با تخفیف‌های استثنایی. فرصت محدود برای خرید با قیمت
+          ویژه.
+        </p>
+      </div>
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
+        <!-- Products will be loaded dynamically from backend -->
+        <div class="col-span-full text-center py-8">
+          <p class="text-gray-500">در حال بارگذاری محصولات ویژه...</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="magazine" class="py-24 bg-gradient-to-b from-gray-50 to-white overflow-hidden">
+    <div class="container mx-auto px-6">
+      <div class="text-center mb-16" data-aos="fade-up">
+        <span class="text-sm font-medium text-rose-800 tracking-wider uppercase mb-4 block">مجله</span>
+        <h2 class="text-4xl lg:text-5xl font-serif font-bold text-gray-800 mb-6">
+          جایی برای خواندن و الهام گرفتن
+        </h2>
+        <div class="cute-divider"><span class="star">✦</span></div>
+        <p class="text-gray-600 max-w-2xl mx-auto text-lg">
+          نکات علمی، ترندها و آموزش‌ها؛ هر هفته مطالب تازه برای زیبایی
+          آگاهانه.
+        </p>
+      </div>
+      <div id="magazine-scroller"
+        class="flex lg:grid lg:grid-cols-3 gap-6 lg:gap-8 overflow-x-auto lg:overflow-visible snap-x snap-mandatory hide-scrollbar"
+        data-aos="fade-up" data-aos-delay="100">
+        <!-- Articles will be loaded dynamically from backend -->
+        <div class="w-full text-center py-8 col-span-3">
+          <p class="text-gray-500">در حال بارگذاری مقالات...</p>
+        </div>
+      </div>
+      <div class="text-center mt-12" data-aos="fade-up" data-aos-delay="150">
+        <a href="/magazine"
+          class="inline-flex items-center px-8 py-4 border-2 border-gray-900 text-gray-900 rounded-full hover:bg-gray-900 hover:text-white transition-all duration-300 group font-semibold"><i
+            data-feather="book-open" class="ml-3 w-5 h-5"></i><span>مشاهده همه مطالب مجله</span><i
+            data-feather="arrow-left"
+            class="mr-3 w-5 h-5 transition-transform duration-300 group-hover:-translate-x-2"></i></a>
+        <p class="text-gray-500 text-sm mt-4">
+          هر هفته مقالات جدید منتشر می‌کنیم
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-24 bg-gradient-to-b from-white to-gray-50">
+    <div class="container mx-auto px-6">
+      <div class="text-center mb-16" data-aos="fade-up">
+        <span class="text-sm font-medium text-rose-800 tracking-wider uppercase mb-4 block">نظرات مشتریان</span>
+        <h2 class="text-4xl lg:text-5xl font-serif font-bold text-gray-800 mb-6">
+          نامه‌های محبت‌آمیز ✧
+        </h2>
+        <div class="cute-divider"><span class="star">✦</span></div>
+        <p class="text-gray-600 max-w-2xl mx-auto text-lg">
+          داستان‌های واقعی از جامعه زیبای ما
+        </p>
+      </div>
+      <div id="testimonial-grid"
+        class="flex lg:grid lg:grid-cols-3 gap-6 lg:gap-8 overflow-x-auto lg:overflow-visible snap-x snap-mandatory -mx-6 px-6 hide-scrollbar">
+      </div>
+    </div>
+  </section>
+
+  <section class="py-24 bg-white">
+    <div class="container mx-auto px-6">
+      <div class="text-center mb-16" data-aos="fade-up">
+        <span class="text-sm font-medium text-rose-800 tracking-wider uppercase mb-4 block">ما را دنبال کنید</span>
+        <h2 class="text-4xl lg:text-5xl font-serif font-bold text-gray-800 mb-6" style="direction: ltr">
+          @koalaw.shop
+        </h2>
+        <p class="text-gray-600 max-w-2xl mx-auto text-lg">
+          به جامعه علاقه‌مندان به زیبایی ما بپیوندید
+        </p>
+      </div>
+      <div id="instagram-grid" class="grid grid-cols-2 md:grid-cols-4 gap-4" data-aos="fade-up"></div>
+      <div class="text-center mt-12" data-aos="fade-up">
+        <a href="https://www.instagram.com/koalaw.shop/"
+          class="inline-flex items-center text-rose-900 font-semibold hover:text-rose-700 transition duration-300 group"><i
+            data-feather="instagram" class="ml-2 w-5 h-5"></i><span>ما را در اینستاگرام دنبال کنید</span><i
+            data-feather="arrow-left"
+            class="mr-2 w-4 h-4 group-hover:-translate-x-2 transition-transform duration-300"></i></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-24 newsletter-bg relative">
+    <div class="container mx-auto px-6 relative z-10">
+      <div class="max-w-4xl mx-auto text-center" data-aos="fade-up">
+        <h2 class="text-4xl lg:text-5xl font-serif font-bold text-white mb-6">
+          درخشان بمانید
+        </h2>
+        <div class="cute-divider"><span class="star">✦</span></div>
+        <p class="text-rose-100 mb-10 text-lg max-w-2xl mx-auto">
+          اولین کسی باشید که از کالکشن‌های جدید، پیشنهادات انحصاری و نکات
+          زیبایی متخصصان ما باخبر می‌شود.
+        </p>
+        <form class="flex flex-col sm:flex-row max-w-xl mx-auto gap-4">
+          <input type="email" placeholder="ایمیل خود را وارد کنید"
+            class="flex-grow px-6 py-4 rounded-full bg-white text-gray-800 placeholder-gray-500 shadow-sm focus:outline-none focus:ring-4 focus:ring-rose-300/50 transition-all duration-300" />
+          <button type="submit"
+            class="px-8 py-4 bg-white text-gray-900 rounded-full font-semibold hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 hover:shadow-xl">
+            عضویت
           </button>
         </form>
-        <div class="search-suggestions">
-          <p>پیشنهادات:</p>
-          <a href="#">سرم پوست</a>
-          <a href="#">رژ لب مات</a>
-          <a href="#">عطر Bloom</a>
-          <a href="#">کرم پودر</a>
+        <p class="text-xs text-rose-200 mt-6">
+          به بیش از ۵۰,۰۰۰ دوست‌دار زیبایی بپیوندید. لغو عضویت در هر زمان ممکن
+          است.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Search Overlay -->
+  <div id="search-overlay" class="search-overlay">
+    <div class="search-container">
+      <button id="close-search-button" class="close-search-button">
+        <i data-feather="x" class="w-8 h-8"></i>
+      </button>
+      <form class="search-form">
+        <input type="search" id="search-input" placeholder="جستجو برای محصولات، برندها و..." class="search-input" />
+        <button type="submit" class="search-submit-button">
+          <i data-feather="search"></i>
+        </button>
+      </form>
+      <div class="search-suggestions">
+        <p>پیشنهادات:</p>
+        <a href="#">سرم پوست</a>
+        <a href="#">رژ لب مات</a>
+        <a href="#">عطر Bloom</a>
+        <a href="#">کرم پودر</a>
+      </div>
+    </div>
+  </div>
+
+  <footer id="about" class="bg-gradient-to-b from-gray-900 to-black text-white py-20">
+    <div class="container mx-auto px-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-12">
+        <div class="lg:col-span-2">
+          <h3 class="text-3xl font-serif font-bold mb-6">KOALAW</h3>
+          <p class="text-gray-400 mb-6 leading-relaxed">
+            ارتقای زیبایی از طریق تجمل آگاهانه. هر محصول جشنی از بهترین مواد
+            طبیعی و علم نوآورانه است.
+          </p>
+          <div class="space-y-3 mb-8">
+            <div class="flex items-start gap-2 text-gray-300">
+              <i data-feather="map-pin" class="w-5 h-5 flex-shrink-0 mt-0.5"></i>
+              <address class="not-italic leading-relaxed">
+                همدان، شهرک آیت‌الله مدنی
+              </address>
+            </div>
+            <div class="rounded-xl overflow-hidden ring-1 ring-white/10 max-w-sm">
+              <iframe title="نقشه ایران، همدان، شهرک آیت‌الله مدنی"
+                src="https://www.google.com/maps?q=ایران+همدان+شهرک+آیت+الله+مدنی&output=embed" width="100%"
+                height="160" style="border: 0; filter: grayscale(20%)" allowfullscreen loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+          </div>
+          <div class="flex gap-3">
+            <a href="https://instagram.com/koalaw.shop" target="_blank" rel="noopener"
+              class="bg-gray-800 p-3 rounded-full hover:bg-gray-700 transition-all duration-300 transform hover:scale-110"><i
+                data-feather="instagram" class="w-5 h-5"></i></a>
+          </div>
+        </div>
+        <div id="footer-links" class="lg:col-span-3 grid grid-cols-2 md:grid-cols-3 gap-8"></div>
+      </div>
+      <div class="border-t border-gray-800 pt-8">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+          <div class="flex flex-col md:flex-row items-center mb-4 md:mb-0">
+            <p class="text-gray-400 text-sm mb-2 md:mb-0 md:ml-6">
+              <a href="https://www.dai-ai.ir" class="hover:text-gray-300 transition-colors">
+                © ۲۰۲۵ D.AI — تمام حقوق محفوظ است — www.dai-ai.ir
+              </a>
+            </p>
+            <div class="flex items-center gap-x-6 md:gap-x-8 text-sm flex-wrap">
+              <a href="/tos" class="text-gray-400 hover:text-white transition duration-300">سیاست حفظ حریم خصوصی</a>
+            </div>
+          </div>
+          <div class="flex items-center gap-x-4">
+            <span class="text-gray-400 text-sm ml-2">پرداخت امن:</span>
+            <a referrerpolicy="origin" target="_blank"
+              href="https://trustseal.enamad.ir/?id=657686&Code=sZDr0tl8qRUK6ezQADBirvTJL8liU2qS"><img
+                referrerpolicy="origin"
+                src="https://trustseal.enamad.ir/logo.aspx?id=657686&Code=sZDr0tl8qRUK6ezQADBirvTJL8liU2qS" alt=""
+                style="cursor: pointer" code="sZDr0tl8qRUK6ezQADBirvTJL8liU2qS" /></a>
+          </div>
         </div>
       </div>
     </div>
+  </footer>
 
-    <footer
-      id="about"
-      class="bg-gradient-to-b from-gray-900 to-black text-white py-20"
-    >
-      <div class="container mx-auto px-6">
-        <div
-          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-12"
-        >
-          <div class="lg:col-span-2">
-            <h3 class="text-3xl font-serif font-bold mb-6">KOALAW</h3>
-            <p class="text-gray-400 mb-6 leading-relaxed">
-              ارتقای زیبایی از طریق تجمل آگاهانه. هر محصول جشنی از بهترین مواد
-              طبیعی و علم نوآورانه است.
-            </p>
-            <div class="space-y-3 mb-8">
-              <div class="flex items-start gap-2 text-gray-300">
-                <i
-                  data-feather="map-pin"
-                  class="w-5 h-5 flex-shrink-0 mt-0.5"
-                ></i>
-                <address class="not-italic leading-relaxed">
-                  همدان، شهرک آیت‌الله مدنی
-                </address>
-              </div>
-              <div
-                class="rounded-xl overflow-hidden ring-1 ring-white/10 max-w-sm"
-              >
-                <iframe
-                  title="نقشه ایران، همدان، شهرک آیت‌الله مدنی"
-                  src="https://www.google.com/maps?q=ایران+همدان+شهرک+آیت+الله+مدنی&output=embed"
-                  width="100%"
-                  height="160"
-                  style="border: 0; filter: grayscale(20%)"
-                  allowfullscreen
-                  loading="lazy"
-                  referrerpolicy="no-referrer-when-downgrade"
-                ></iframe>
-              </div>
-            </div>
-            <div class="flex gap-3">
-              <a
-                href="https://instagram.com/koalaw.shop"
-                target="_blank"
-                rel="noopener"
-                class="bg-gray-800 p-3 rounded-full hover:bg-gray-700 transition-all duration-300 transform hover:scale-110"
-                ><i data-feather="instagram" class="w-5 h-5"></i
-              ></a>
-            </div>
-          </div>
-          <div
-            id="footer-links"
-            class="lg:col-span-3 grid grid-cols-2 md:grid-cols-3 gap-8"
-          ></div>
-        </div>
-        <div class="border-t border-gray-800 pt-8">
-          <div class="flex flex-col md:flex-row justify-between items-center">
-            <div class="flex flex-col md:flex-row items-center mb-4 md:mb-0">
-              <p class="text-gray-400 text-sm mb-2 md:mb-0 md:ml-6">
-                <a
-                  href="https://www.dai-ai.ir"
-                  class="hover:text-gray-300 transition-colors"
-                >
-                  © ۲۰۲۵ D.AI — تمام حقوق محفوظ است — www.dai-ai.ir
-                </a>
-              </p>
-              <div
-                class="flex items-center gap-x-6 md:gap-x-8 text-sm flex-wrap"
-              >
-                <a
-                  href="/tos"
-                  class="text-gray-400 hover:text-white transition duration-300"
-                  >سیاست حفظ حریم خصوصی</a
-                >
-              </div>
-            </div>
-            <div class="flex items-center gap-x-4">
-              <span class="text-gray-400 text-sm ml-2">پرداخت امن:</span>
-              <a
-                referrerpolicy="origin"
-                target="_blank"
-                href="https://trustseal.enamad.ir/?id=657686&Code=sZDr0tl8qRUK6ezQADBirvTJL8liU2qS"
-                ><img
-                  referrerpolicy="origin"
-                  src="https://trustseal.enamad.ir/logo.aspx?id=657686&Code=sZDr0tl8qRUK6ezQADBirvTJL8liU2qS"
-                  alt=""
-                  style="cursor: pointer"
-                  code="sZDr0tl8qRUK6ezQADBirvTJL8liU2qS"
-              /></a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </footer>
+  <button id="backToTop"
+    class="fixed bottom-8 left-8 bg-gradient-to-r from-gray-900 to-black text-white p-4 rounded-full shadow-lg opacity-0 invisible transition-all duration-300 hover:shadow-xl transform hover:scale-110 z-40">
+    <i data-feather="arrow-up" class="w-5 h-5"></i>
+  </button>
+  <script src="/assets/js/utils.js"></script>
+  <script src="/assets/js/main.js"></script>
+  <script src="/assets/js/components/navbar.js"></script>
+  <script src="/assets/js/components/search.js"></script>
+  <script src="/assets/js/components/animations.js"></script>
+  <script src="/assets/js/components/newsletter.js"></script>
+  <script src="/assets/js/components/cursor.js"></script>
+</body>
 
-    <button
-      id="backToTop"
-      class="fixed bottom-8 left-8 bg-gradient-to-r from-gray-900 to-black text-white p-4 rounded-full shadow-lg opacity-0 invisible transition-all duration-300 hover:shadow-xl transform hover:scale-110 z-40"
-    >
-      <i data-feather="arrow-up" class="w-5 h-5"></i>
-    </button>
-    <script src="/assets/js/utils.js"></script>
-    <script src="/assets/js/main.js"></script>
-    <script src="/assets/js/components/navbar.js"></script>
-    <script src="/assets/js/components/search.js"></script>
-    <script src="/assets/js/components/animations.js"></script>
-    <script src="/assets/js/components/newsletter.js"></script>
-    <script src="/assets/js/components/cursor.js"></script>
-  </body>
 </html>

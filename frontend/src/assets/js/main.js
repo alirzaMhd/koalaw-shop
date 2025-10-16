@@ -1,5 +1,5 @@
 // src/assets/js/main.js
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   // AOS
   if (window.AOS) {
     AOS.init({
@@ -94,14 +94,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const toIRR = (n) => {
       try {
         if (window.KUtils?.toIRR) return window.KUtils.toIRR(n);
-      } catch {}
+      } catch { }
       return new Intl.NumberFormat("fa-IR").format(Number(n || 0)) + " تومان";
     };
 
     const toFa = (n) => {
       try {
         if (window.KUtils?.toFa) return window.KUtils.toFa(n);
-      } catch {}
+      } catch { }
       return String(n);
     };
 
@@ -153,13 +153,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function createProductCard(item) {
-      const category = item.category || "SKINCARE";
-      const cIcon = categoryIcons[category] || "gift";
-      const cLabel = categoryLabels[category] || "محصول";
+      // Use DB-backed category fields (categoryLabel, categoryIcon, categoryValue)
+      const cLabel = item.categoryLabel || "محصول";
+      const cIcon = item.categoryIcon || "gift";
+      const categoryValue = item.categoryValue || item.category || "default";
       const img = item.heroImageUrl || "/assets/images/products/product.png";
       const { c1, c2 } = deriveCardColors(item);
-      const catCls = `category-${String(category).toLowerCase().replace("_", "-")}`;
-
+      const catCls = `category-${String(categoryValue)
+        .toLowerCase()
+        .replace(/[_\s]+/g, "-")}`;
       const a = document.createElement("a");
       a.href = `/product/${encodeURIComponent(item.slug)}`;
       a.className = `product-card-v3 break-inside-avoid ${catCls}`;
@@ -189,47 +191,95 @@ document.addEventListener("DOMContentLoaded", () => {
     `;
       return a;
     }
+async function initHomeFilters() {
+  const container = document.getElementById("home-product-filters");
+  if (!container) return;
 
-    async function fetchProducts(filter = "all") {
-      try {
-        const params = new URLSearchParams();
-        params.set("page", "1");
-        params.set("perPage", "4"); // 4 products
-        params.set("includeImages", "true");
-        params.set("activeOnly", "true");
+  try {
+    const res = await fetch("/api/products/filters", { cache: "no-store" });
+    if (!res.ok) {
+      console.error("Failed to fetch filters:", res.status);
+      return;
+    }
+    const json = await res.json();
+    const dbCats = Array.isArray(json?.data?.dbCategories)
+      ? json.data.dbCategories
+      : [];
 
-        // Apply filter logic
-        if (filter === "all") {
-          // All products - newest
-          params.set("sort", "newest");
-        } else if (filter === "bestseller") {
-          // Best sellers - sort by popularity/sales
-          params.set("sort", "popular");
-        } else if (filter === "skincare") {
-          params.set("sort", "newest");
-          params.append("categories[]", categoryMap["skincare"]);
-        } else if (filter === "makeup") {
-          params.set("sort", "newest");
-          params.append("categories[]", categoryMap["makeup"]);
-        } else if (filter === "fragrance") {
-          params.set("sort", "newest");
-          params.append("categories[]", categoryMap["fragrance"]);
-        }
+    const top3 = dbCats
+      .slice()
+      .sort((a, b) => (b.count || 0) - (a.count || 0))
+      .slice(0, 3);
 
-        const response = await fetch(`${API_PRODUCTS}?${params.toString()}`);
-        if (!response.ok) {
-          console.error("Failed to fetch products:", response.status);
-          return;
-        }
+    // Remove any existing dynamic category buttons (keep all + bestseller)
+    container.querySelectorAll(".filter-btn").forEach((btn) => {
+      const f = btn.dataset.filter;
+      if (f !== "all" && f !== "bestseller") btn.remove();
+    });
 
-        const json = await response.json();
-        const products = json?.data?.items || [];
+    const bestsellerBtn = container.querySelector(
+      '.filter-btn[data-filter="bestseller"]'
+    );
+    top3.forEach((c) => {
+      const btn = document.createElement("button");
+      btn.className = "filter-btn";
+      btn.dataset.filter = `db:${String(c.value || "").toLowerCase()}`;
+      btn.innerHTML = `<span>${c.label || c.value}</span>`;
+      container.insertBefore(btn, bestsellerBtn);
+    });
 
-        renderProducts(products);
-      } catch (error) {
-        console.error("Error fetching products:", error);
+    // Delegate click handling once
+    if (!container.dataset.bound) {
+      container.addEventListener("click", (e) => {
+        const btn = e.target.closest(".filter-btn");
+        if (!btn) return;
+        const key = btn.dataset.filter || "all";
+        container
+          .querySelectorAll(".filter-btn")
+          .forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        fetchProducts(key);
+      });
+      container.dataset.bound = "1";
+    }
+  } catch (e) {
+    console.warn("Home filters init failed:", e);
+  }
+}
+async function fetchProducts(filter = "all") {
+  try {
+    const params = new URLSearchParams();
+    params.set("page", "1");
+    params.set("perPage", "4");
+    params.set("includeImages", "true");
+    params.set("activeOnly", "true");
+
+    if (filter === "all") {
+      params.set("sort", "newest");
+    } else if (filter === "bestseller") {
+      params.set("bestsellerOnly", "true");
+      params.set("sort", "popular");
+    } else if (filter && filter.startsWith("db:")) {
+      const slug = filter.slice(3).trim().toLowerCase();
+      if (slug) {
+        params.set("sort", "newest");
+        params.append("categories[]", slug);
       }
     }
+
+    const response = await fetch(`${API_PRODUCTS}?${params.toString()}`);
+    if (!response.ok) {
+      console.error("Failed to fetch products:", response.status);
+      return;
+    }
+
+    const json = await response.json();
+    const products = json?.data?.items || [];
+    renderProducts(products);
+  } catch (err) {
+    console.error("Error fetching products:", err);
+  }
+}
 
     function renderProducts(products) {
       // Clear grid
@@ -274,7 +324,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Initial load - show all products
-    fetchProducts("all");
+    await initHomeFilters();
+    await fetchProducts("all");
   }
 
   // ========== FETCH COLLECTIONS FOR HOMEPAGE ==========
@@ -470,21 +521,21 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ========== FETCH CATEGORIES FOR HOMEPAGE ==========
-   const categoryContainer = document.querySelector(
-     ".category-scroll-container .flex"
-   );
-   if (categoryContainer) {
-     async function fetchCategories() {
-       try {
-         const response = await fetch("/api/products/filters", {
-           cache: "no-store",
-         });
- 
-         if (!response.ok) {
-           console.error("Failed to fetch categories:", response.status);
-           return;
-         }
- 
+  const categoryContainer = document.querySelector(
+    ".category-scroll-container .flex"
+  );
+  if (categoryContainer) {
+    async function fetchCategories() {
+      try {
+        const response = await fetch("/api/products/filters", {
+          cache: "no-store",
+        });
+
+        if (!response.ok) {
+          console.error("Failed to fetch categories:", response.status);
+          return;
+        }
+
         const json = await response.json();
         const data = json?.data || {};
 
@@ -515,7 +566,7 @@ document.addEventListener("DOMContentLoaded", () => {
             count: c.count || 0,
             fromDb: true,
           }));
-         } else {
+        } else {
           const staticCats = Array.isArray(data.categories)
             ? data.categories
             : [];
@@ -530,34 +581,34 @@ document.addEventListener("DOMContentLoaded", () => {
             fromDb: false,
           }));
         }
- 
-         if (categories.length > 0) {
-           renderCategoryCards(categories);
-         } else {
-           console.warn("No categories found, using fallback");
-           // Use fallback categories
-           const fallbackCategories = [
-             { category: "SKINCARE", count: 0 },
-             { category: "MAKEUP", count: 0 },
-             { category: "FRAGRANCE", count: 0 },
-             { category: "HAIRCARE", count: 0 },
-             { category: "BODY_BATH", count: 0 },
-           ];
-           renderCategoryCards(fallbackCategories);
-         }
-       } catch (error) {
-         console.error("Error fetching categories:", error);
-         // Render fallback on error
-         const fallbackCategories = [
-           { category: "SKINCARE", count: 0 },
-           { category: "MAKEUP", count: 0 },
-           { category: "FRAGRANCE", count: 0 },
-           { category: "HAIRCARE", count: 0 },
-           { category: "BODY_BATH", count: 0 },
-         ];
-         renderCategoryCards(fallbackCategories);
-       }
-     }
+
+        if (categories.length > 0) {
+          renderCategoryCards(categories);
+        } else {
+          console.warn("No categories found, using fallback");
+          // Use fallback categories
+          const fallbackCategories = [
+            { category: "SKINCARE", count: 0 },
+            { category: "MAKEUP", count: 0 },
+            { category: "FRAGRANCE", count: 0 },
+            { category: "HAIRCARE", count: 0 },
+            { category: "BODY_BATH", count: 0 },
+          ];
+          renderCategoryCards(fallbackCategories);
+        }
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+        // Render fallback on error
+        const fallbackCategories = [
+          { category: "SKINCARE", count: 0 },
+          { category: "MAKEUP", count: 0 },
+          { category: "FRAGRANCE", count: 0 },
+          { category: "HAIRCARE", count: 0 },
+          { category: "BODY_BATH", count: 0 },
+        ];
+        renderCategoryCards(fallbackCategories);
+      }
+    }
 
     function renderCategoryCards(categories) {
       // Static image mapping for each category
@@ -792,14 +843,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const toIRR = (n) => {
       try {
         if (window.KUtils?.toIRR) return window.KUtils.toIRR(n);
-      } catch {}
+      } catch { }
       return new Intl.NumberFormat("fa-IR").format(Number(n || 0)) + " تومان";
     };
 
     const toFa = (n) => {
       try {
         if (window.KUtils?.toFa) return window.KUtils.toFa(n);
-      } catch {}
+      } catch { }
       return String(n);
     };
 
@@ -886,20 +937,19 @@ document.addEventListener("DOMContentLoaded", () => {
             <p class="text-rose-100/90 mb-6 max-w-md">
               ${escapeHtml(description)}
             </p>
-            ${
-              discountPercent > 0
-                ? `
+            ${discountPercent > 0
+            ? `
               <div class="flex items-center gap-4 mb-6">
                 <span class="text-3xl font-bold text-white">${toIRR(discountPrice)}</span>
                 <span class="text-lg line-through text-rose-200/60">${toIRR(price)}</span>
               </div>
             `
-                : `
+            : `
               <div class="mb-6">
                 <span class="text-3xl font-bold text-white">${toIRR(price)}</span>
               </div>
             `
-            }
+          }
             <div class="mt-auto pt-6">
               <span class="inline-flex items-center gap-3 bg-white text-rose-900 font-bold px-8 py-4 rounded-full transition-all duration-300 group-hover:bg-rose-100 group-hover:shadow-lg">
                 <span>مشاهده محصول</span>
@@ -943,28 +993,26 @@ document.addEventListener("DOMContentLoaded", () => {
           class="campaign-side-image"
         />
         <div class="campaign-side-content">
-          ${
-            discountPercent > 0
-              ? `
+          ${discountPercent > 0
+            ? `
             <span class="inline-block bg-rose-500 text-white text-xs font-bold px-2 py-1 rounded-full mb-2">
               ${toFa(discountPercent)}% تخفیف
             </span>
           `
-              : ""
+            : ""
           }
           <h4 class="font-bold text-lg text-gray-800">${escapeHtml(title)}</h4>
           <p class="text-sm text-gray-500 mb-3">
             ${escapeHtml(description)}
           </p>
-          ${
-            discountPercent > 0
-              ? `
+          ${discountPercent > 0
+            ? `
             <div class="flex items-center gap-2">
               <span class="font-semibold text-rose-700">${toIRR(discountPrice)}</span>
               <span class="text-xs line-through text-gray-400">${toIRR(price)}</span>
             </div>
           `
-              : `
+            : `
             <span class="font-semibold text-rose-700">${toIRR(price)}</span>
           `
           }
@@ -1008,7 +1056,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const toFa = (n) => {
       try {
         if (window.KUtils?.toFa) return window.KUtils.toFa(n);
-      } catch {}
+      } catch { }
       return String(n);
     };
 
