@@ -45,7 +45,26 @@
     const GIFT_WRAP_PRICE = 20000;
 
     // Sample coupons (for frontend validation before API call)
-    const coupons = {};
+        const coupons = {
+          KOALAW10: {
+            type: "percent",
+            value: 10,
+            min: 0,
+            msg: "کد ۱۰٪ تخفیف اعمال شد.",
+          },
+          WELCOME15: {
+            type: "percent",
+            value: 15,
+            min: 400000,
+            msg: "۱۵٪ تخفیف خوش‌آمدگویی اعمال شد.",
+          },
+          FREESHIP: {
+            type: "shipping",
+            value: BASE_SHIPPING,
+            min: 0,
+            msg: "ارسال رایگان فعال شد.",
+          },
+        };
 
     const SAMPLE_ITEMS = [];
     // UUID validation helper
