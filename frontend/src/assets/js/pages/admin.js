@@ -840,14 +840,14 @@
               <select name="brandId" class="admin-form-input" required>
                 <option value="">انتخاب کنید</option>
                 ${brands.brands
-            .map(
-              (b) => `
+                  .map(
+                    (b) => `
                   <option value="${b.id}" ${data.brandId === b.id ? "selected" : ""}>
                     ${b.name}
                   </option>
                 `
-            )
-            .join("")}
+                  )
+                  .join("")}
               </select>
             </div>
 
@@ -856,14 +856,14 @@
               <select name="collectionId" class="admin-form-input">
                 <option value="">هیچکدام</option>
                 ${collections.collections
-            .map(
-              (c) => `
+                  .map(
+                    (c) => `
                   <option value="${c.id}" ${data.collectionId === c.id ? "selected" : ""}>
                     ${c.name}
                   </option>
                 `
-            )
-            .join("")}
+                  )
+                  .join("")}
               </select>
             </div>
           </div>
@@ -874,14 +874,14 @@
               <select name="colorThemeId" class="admin-form-input">
                 <option value="">هیچکدام</option>
                 ${(colorThemes?.colorThemes || [])
-            .map(
-              (ct) => `
+                  .map(
+                    (ct) => `
                    <option value="${ct.id}" ${data.colorThemeId === ct.id ? "selected" : ""}>
                      ${ct.name}
                    </option>
                  `
-            )
-            .join("")}
+                  )
+                  .join("")}
               </select>
             </div>
 
@@ -891,8 +891,8 @@
             <label class="admin-form-label">نشان‌ها</label>
             <div class="space-y-2" id="badges-checklist">
               ${badges.badges
-            .map(
-              (b) => `
+                .map(
+                  (b) => `
                 <label class="flex items-center gap-2 cursor-pointer p-2 hover:bg-gray-50 rounded">
                   <input 
                     type="checkbox" 
@@ -905,8 +905,8 @@
                   <span>${b.title}</span>
                 </label>
               `
-            )
-            .join("")}
+                )
+                .join("")}
             </div>
           </div>
 
@@ -920,10 +920,7 @@
             <textarea name="ingredients" class="admin-form-input" rows="3">${data.ingredients || ""}</textarea>
           </div>
 
-          <div class="admin-form-group">
-            <label class="admin-form-label">نحوه استفاده</label>
-            <textarea name="howToUse" class="admin-form-input" rows="3">${data.howToUse || ""}</textarea>
-          </div>
+          <div class="admin-form-group"> <label class="admin-form-label">نحوه استفاده</label> <textarea name="howToUse" class="admin-form-input" rows="3" placeholder="هر مرحله را با ویرگول جدا کنید (مثلاً: صورت را تمیز کنید، سرم را بزنید، ...)">${data.howToUse || ""}</textarea> <small class="text-gray-500">مراحل را با ویرگول (، یا ,) جدا کنید</small> </div>
         </div>
 
         <div class="admin-form-section">
@@ -987,14 +984,14 @@
             <label class="admin-form-label">انتخاب محصولات مرتبط</label>
             <select name="relatedProductIds" id="related-products-select" class="admin-form-input" multiple size="8">
               ${(allProducts?.products || [])
-            .filter((p) => !data.id || p.id !== data.id)
-            .map(
-              (p) => `
+                .filter((p) => !data.id || p.id !== data.id)
+                .map(
+                  (p) => `
                 <option value="${p.id}" ${existingRelatedIds.includes(p.id) ? "selected" : ""}>
                   ${p.title}
                 </option>`
-            )
-            .join("")}
+                )
+                .join("")}
             </select>
             <small class="text-gray-500">برای انتخاب چند مورد، کلید Ctrl/⌘ را نگه دارید.</small>
           </div>

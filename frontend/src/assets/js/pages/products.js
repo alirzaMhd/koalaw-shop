@@ -742,7 +742,7 @@
       // Update <title>
       try {
         document.title = `KOALAW | ${p.title} - محصولات لوکس آرایش`;
-      } catch {}
+      } catch { }
 
       // Category + Title
       if (productCategoryEl) {
@@ -827,8 +827,8 @@
         const b = badges[0];
         productBadge.innerHTML = `<span class="inline-flex items-center gap-1">
           <i data-feather="${escapeHtml(
-            b.icon || "award"
-          )}" class="w-4 h-4"></i>
+          b.icon || "award"
+        )}" class="w-4 h-4"></i>
           ${escapeHtml(b.title || "")}
         </span>`;
         setVisible(productBadge, true);
@@ -853,11 +853,11 @@
           card.className = "bg-white p-4 rounded-xl text-center";
           card.innerHTML = `
             <i data-feather="${escapeHtml(
-              icon
-            )}" class="w-8 h-8 ${colorClass} mx-auto mb-2"></i>
+            icon
+          )}" class="w-8 h-8 ${colorClass} mx-auto mb-2"></i>
             <div class="font-semibold text-sm">${escapeHtml(
-              b.title || ""
-            )}</div>
+            b.title || ""
+          )}</div>
           `;
           badgesGrid.appendChild(card);
         });
@@ -929,9 +929,8 @@
             const outOfStock = v.stock <= 0 || v.isActive === false;
             const btn = document.createElement("button");
             btn.type = "button";
-            btn.className = `px-3 py-1 rounded-lg border text-sm transition hover:border-black ${
-              outOfStock ? "opacity-40 cursor-not-allowed line-through" : ""
-            }`;
+            btn.className = `px-3 py-1 rounded-lg border text-sm transition hover:border-black ${outOfStock ? "opacity-40 cursor-not-allowed line-through" : ""
+              }`;
             btn.textContent = v.variantName;
             btn.dataset.variantId = v.id;
             btn.title = outOfStock ? "ناموجود" : `موجود: ${toFa(v.stock)} عدد`;
@@ -1206,7 +1205,7 @@
       let usageHtml = "";
       if (p.howToUse) {
         const steps = p.howToUse
-          .split(/\n/)
+          .split(/\n|،|,/)
           .map((s) => s.trim())
           .filter(Boolean);
         usageHtml = steps
@@ -1229,8 +1228,7 @@
           .fill(0)
           .map(
             (_, i) =>
-              `<i data-feather="star" class="w-4 h-4 ${
-                i < n ? "fill-current" : ""
+              `<i data-feather="star" class="w-4 h-4 ${i < n ? "fill-current" : ""
               }"></i>`
           )
           .join("");
@@ -1254,11 +1252,11 @@
                 />
                 <div>
                   <div class="font-semibold">${escapeHtml(
-                    r.authorName || "کاربر"
-                  )}</div>
+            r.authorName || "کاربر"
+          )}</div>
                   <div class="text-sm text-gray-500">${timeAgoFa(
-                    r.createdAt
-                  )}</div>
+            r.createdAt
+          )}</div>
                 </div>
               </div>
               <div class="stars">${renderStars(Number(r.rating || 0))}</div>
@@ -1306,8 +1304,8 @@
             </div>
             <div class="card-image-wrapper">
               <img src="${hero}" alt="${escapeHtml(
-                item.title
-              )}" class="card-image" />
+            item.title
+          )}" class="card-image" />
             </div>
             <div class="card-content">
               <div class="card-category">
@@ -1320,9 +1318,9 @@
                 <span>${ratingText}</span>
               </div>
               <p class="card-price">${formatPrice(
-                item.price,
-                item.currencyCode
-              )}</p>
+            item.price,
+            item.currencyCode
+          )}</p>
             </div>
           `;
           relatedList.appendChild(card);
