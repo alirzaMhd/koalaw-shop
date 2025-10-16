@@ -128,7 +128,7 @@ export const adminController = {
         page: parseInt(req.query.page as string) || 1,
         perPage: parseInt(req.query.perPage as string) || 20,
         search: req.query.search as string,
-        category: req.query.category as string,
+        categoryId: req.query.categoryId as string,
         isActive: req.query.isActive === "true" ? true : req.query.isActive === "false" ? false : undefined,
       };
       const result = await adminService.listAllProducts(query);

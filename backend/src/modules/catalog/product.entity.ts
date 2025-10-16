@@ -278,33 +278,33 @@ export function mapDbProductToEntity(row: any): Product {
   const brand = row.brand
     ? mapDbBrandToRef(row.brand)
     : mapDbBrandToRef({
-        id: row.brandId ?? row.brand_id,
-        name: row.brandName ?? row.brand_name,
-        slug: row.brandSlug ?? row.brand_slug,
-      });
+      id: row.brandId ?? row.brand_id,
+      name: row.brandName ?? row.brand_name,
+      slug: row.brandSlug ?? row.brand_slug,
+    });
   // Optional DB category relation (NEW)
   const dbCategory: DbCategoryRef | null =
     row.dbCategory
       ? mapDbCategoryToRef(row.dbCategory)
       : row.categoryId || row.category_id
-      ? mapDbCategoryToRef({
+        ? mapDbCategoryToRef({
           id: row.categoryId ?? row.category_id,
           value: row.categoryValue ?? row.category_value ?? undefined,
           label: row.categoryLabel ?? row.category_label ?? undefined,
           heroImageUrl: row.categoryHeroImageUrl ?? row.category_hero_image_url ?? null,
         })
-      : null;
+        : null;
   const colorTheme =
     row.colorTheme
       ? mapDbColorThemeToRef(row.colorTheme)
       : row.colorThemeId || row.color_theme_id
-      ? mapDbColorThemeToRef({
+        ? mapDbColorThemeToRef({
           id: row.colorThemeId ?? row.color_theme_id,
           name: row.colorThemeName ?? row.color_theme_name,
           slug: row.colorThemeSlug ?? row.color_theme_slug,
           hexCode: row.colorThemeHexCode ?? row.color_theme_hex_code ?? null,
         })
-      : null;
+        : null;
 
   const images: ProductImage[] | undefined = Array.isArray(row.images)
     ? row.images.map(mapDbImageToEntity)
@@ -525,11 +525,13 @@ export function toPrismaWhere(filters: ProductFilters = {}) {
   }
 
   if (filters.categories?.length) {
-    const enumVals = filters.categories
-      .map(toPrismaCategoryEnumValue)
-      .filter((v): v is any => v !== null);
-    if (enumVals.length) {
-      AND.push({ category: { in: enumVals } });
+    const slugs = (filters.categories as any[])
+      .map((s) =>
+        String(s || "").trim().toLowerCase().replace(/[\s_]+/g, "-")
+      )
+      .filter(Boolean);
+    if (slugs.length) {
+      AND.push({ dbCategory: { value: { in: slugs } } });
     }
   }
 

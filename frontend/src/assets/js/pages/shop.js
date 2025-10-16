@@ -143,14 +143,12 @@
     }
 
     function createProductCard(item) {
-      const cIcon = iconMap[item.category] || "gift";
-      const cLabel = labelMap[item.category] || "محصول";
+      const cIcon = item.categoryIcon || iconMap[item.category] || "gift";
+      const cLabel = item.categoryLabel || labelMap[item.category] || "محصول";
       const img =
         item.heroImageUrl || "/assets/images/products/product.png";
       const { c1, c2 } = deriveCardColors(item);
-      const catCls = `category-${String(item.category || "default")
-        .toLowerCase()
-        .replace("_", "-")}`;
+      const catCls = `category-${String( item.categoryValue || item.category || "default" ) .toLowerCase() .replace(/[_\s]+/g, "-")}`;
 
       const a = document.createElement("a");
       a.href = `/product/${encodeURIComponent(item.slug)}`;

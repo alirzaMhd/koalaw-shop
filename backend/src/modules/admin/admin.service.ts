@@ -117,7 +117,7 @@ export const adminService = {
     page?: number;
     perPage?: number;
     search?: string;
-    category?: string;
+    categoryId?: string;
     isActive?: boolean;
   }) {
     const page = Math.max(1, query.page || 1);
@@ -131,7 +131,7 @@ export const adminService = {
         { description: { contains: query.search, mode: "insensitive" } },
       ];
     }
-    if (query.category) where.category = query.category;
+    if (query.categoryId) where.categoryId = query.categoryId;
     if (typeof query.isActive === "boolean") where.isActive = query.isActive;
 
     const [total, products] = await Promise.all([

@@ -31,7 +31,7 @@ import {
   type AddReviewInput,
   type ListReviewsQuery,
 } from "./product.validators.js";
-import { listCategories, normalizeCategories } from "./category.entity.js"; // NEW
+import { listCategories } from "./category.entity.js"; // NEW
 
 // ---------------- Utils ----------------
 
@@ -77,13 +77,28 @@ async function resolveBrandId(input: { brandId?: string | undefined; brandSlug?:
 
 function pickCoreProductData(input: CreateProductInput | UpdateProductInput, brandId?: string) {
   const data: any = {
-    // Relations
-    ...(brandId ? { brandId } : {}),
-    ...(input.colorThemeId !== undefined ? { colorThemeId: input.colorThemeId || null } : {}),
-    ...(input.collectionId !== undefined ? { collectionId: input.collectionId || null } : {}),
-    ...((input as any).categoryId !== undefined ? { categoryId: (input as any).categoryId || null } : {}),
-    // Scalars
-    ...(input.category ? { category: input.category } : {}),
+    // Relations (use nested connect/disconnect)
+    ...(brandId ? { brand: { connect: { id: brandId } } } : {}),
+
+    ...(input.colorThemeId !== undefined
+      ? input.colorThemeId
+        ? { colorTheme: { connect: { id: input.colorThemeId } } }
+        : { colorTheme: { disconnect: true } }
+      : {}),
+
+    ...(input.collectionId !== undefined
+      ? input.collectionId
+        ? { collection: { connect: { id: input.collectionId } } }
+        : { collection: { disconnect: true } }
+      : {}),
+
+    ...((input as any).categoryId !== undefined
+      ? (input as any).categoryId
+        ? { dbCategory: { connect: { id: (input as any).categoryId } } }
+        : { dbCategory: { disconnect: true } }
+      : {}),
+
+    // Scalars (no legacy category here)
     ...(input.title ? { title: input.title } : {}),
     ...(input.subtitle !== undefined ? { subtitle: input.subtitle || null } : {}),
     ...(input.slug !== undefined ? { slug: input.slug } : {}),
@@ -103,13 +118,10 @@ function pickCoreProductData(input: CreateProductInput | UpdateProductInput, bra
     ...(typeof input.isSpecialProduct === "boolean" ? { isSpecialProduct: input.isSpecialProduct } : {}),
     ...(typeof input.isActive === "boolean" ? { isActive: input.isActive } : {}),
 
-    // Fix heroImageUrl handling - accept null, undefined, or valid URL
-    ...(input.heroImageUrl !== undefined ? {
-      heroImageUrl: input.heroImageUrl
-    } : {}),
-
+    ...(input.heroImageUrl !== undefined ? { heroImageUrl: input.heroImageUrl } : {}),
     ...(input.internalNotes !== undefined ? { internalNotes: input.internalNotes || null } : {}),
   };
+
   return data;
 }
 
@@ -158,11 +170,16 @@ class ProductService {
     const { page, perPage, sort, includeImages, includeVariants, ...rest } = query;
 
     // Normalize categories into canonical slugs (skincare/makeup/...) regardless of input format
-    const normalizedCategories = normalizeCategories(rest.categories);
-
+    const categoryValues = Array.isArray(rest.categories)
+      ? rest.categories
+      .map((s) =>
+      String(s || "").trim().toLowerCase().replace(/[\s_]+/g, "-")
+      )
+      .filter(Boolean)
+      : [];
     const where = toPrismaWhere({
       search: rest.search,
-      categories: normalizedCategories as any,
+      categories: categoryValues as any,
       brandIds: rest.brandIds as any,
       brandSlugs: rest.brandSlugs as any,
       collectionIds: rest.collectionIds as any,

@@ -120,11 +120,10 @@
     categoryOptionsHtml(selectedSlug) {
       const opts = (state.categories || []).map(
         (c) =>
-          `<option value="${c.id}" data-slug="${c.value}" ${
-            (String(selectedSlug || "").toLowerCase() ===
+          `<option value="${c.id}" data-slug="${c.value}" ${(String(selectedSlug || "").toLowerCase() ===
             String(c.value || "").toLowerCase())
-              ? "selected"
-              : ""
+            ? "selected"
+            : ""
           }>${c.label}</option>`
       );
       return ['<option value="">هیچکدام</option>', ...opts].join("");
@@ -215,7 +214,7 @@
       });
       if (!res.ok) {
         let err = {};
-        try { err = await res.json(); } catch {}
+        try { err = await res.json(); } catch { }
         throw new Error(err.message || "خطا در آپلود تصویر");
       }
       const json = await res.json();
@@ -886,34 +885,7 @@
               </select>
             </div>
 
-            <div class="admin-form-group">
-              <label class="admin-form-label required">دسته‌بندی</label>
-              <select name="category" class="admin-form-input" required>
-                <option value="">انتخاب کنید</option>
-                <option value="SKINCARE" ${data.category === "SKINCARE" ? "selected" : ""}>مراقبت از پوست</option>
-                <option value="MAKEUP" ${data.category === "MAKEUP" ? "selected" : ""}>آرایش</option>
-                <option value="FRAGRANCE" ${data.category === "FRAGRANCE" ? "selected" : ""}>عطر</option>
-                <option value="HAIRCARE" ${data.category === "HAIRCARE" ? "selected" : ""}>مراقبت از مو</option>
-                <option value="BODY_BATH" ${data.category === "BODY_BATH" ? "selected" : ""}>بدن و حمام</option>
-              </select>
-            </div>
-
-          <div class="admin-form-group">
-            <label class="admin-form-label">دسته‌بندی (از DB - اختیاری)</label>
-            <select name="categoryId" class="admin-form-input">
-              <option value="">هیچکدام</option>
-              ${categories
-                .map(
-                  (c) => `
-                <option value="${c.id}" ${
-                  data.categoryId === c.id || data.dbCategory?.id === c.id ? "selected" : ""
-                }>${c.label} (${c.value})</option>`
-                )
-                .join("")}
-            </select>
-            <small class="text-gray-500">در صورت انتخاب، این مقدار به عنوان دسته‌بندی جدید ثبت می‌شود.</small>
-
-          </div>
+          <div class="admin-form-group"> <label class="admin-form-label required">دسته‌بندی</label> <select name="categoryId" class="admin-form-input" required> <option value="">انتخاب کنید</option> ${categories.map((c) => ` <option value="${c.id}" ${data.categoryId === c.id || data.dbCategory?.id === c.id ? "selected" : ""}>${c.label} (${c.value})</option>`).join("")} </select> </div>
 
           <div class="admin-form-group">
             <label class="admin-form-label">نشان‌ها</label>
@@ -1337,12 +1309,10 @@
               // Required fields
               const title = getStringValue("title");
               const brandId = getStringValue("brandId");
-              const category = getStringValue("category");
               const price = getNumberValue("price");
 
               if (!title) throw new Error("عنوان محصول الزامی است.");
               if (!brandId) throw new Error("انتخاب برند الزامی است.");
-              if (!category) throw new Error("انتخاب دسته‌بندی الزامی است.");
               if (!price || price <= 0)
                 throw new Error(
                   "قیمت محصول الزامی است و باید بیشتر از صفر باشد."
@@ -1350,7 +1320,6 @@
 
               payload.title = title;
               payload.brandId = brandId;
-              payload.category = category;
               payload.price = price;
 
               // Optional fields
@@ -1363,7 +1332,20 @@
               const collectionId = getStringValue("collectionId");
               const colorThemeId = getStringValue("colorThemeId");
               const categoryId = getStringValue("categoryId");
+              if (!categoryId) throw new Error("انتخاب دسته‌بندی الزامی است.");
+              payload.categoryId = categoryId;
 
+              // Keep legacy enum for backend compatibility (maps DB value -> ENUM e.g., skincare -> SKINCARE)
+              const selCat = (state.categories || []).find(
+                (c) => c.id === categoryId
+              );
+              if (selCat && selCat.value) {
+                const enumVal = String(selCat.value)
+                  .trim()
+                  .toUpperCase()
+                  .replace(/[^A-Z0-9]+/g, "_");
+                payload.category = enumVal;
+              }
               if (subtitle) payload.subtitle = subtitle;
               if (slug) payload.slug = slug;
               if (description) payload.description = description;
@@ -2488,7 +2470,7 @@
                 } catch (uploadError) {
                   throw new Error("خطا در آپلود تصویر: " + uploadError.message);
                 }
-               } else {
+              } else {
                 const urlValue = formData.get("heroImageUrl");
                 if (urlValue && typeof urlValue === "string") {
                   const trimmedUrl = urlValue.trim();
@@ -3957,8 +3939,8 @@
         if (tbody) {
           tbody.innerHTML = categories.length
             ? categories
-                .map(
-                  (c) => `
+              .map(
+                (c) => `
               <tr>
                 <td>${c.heroImageUrl ? `<img src="${c.heroImageUrl}" class="w-12 h-12 rounded object-cover border" />` : "-"}</td>
                 <td><i data-feather="${c.icon || "grid"}" class="w-4 h-4"></i></td>
@@ -3976,8 +3958,8 @@
                   </div>
                 </td>
               </tr>`
-                )
-                .join("")
+              )
+              .join("")
             : '<tr><td colspan="5" class="text-center py-8 text-gray-500">دسته‌ای وجود ندارد</td></tr>';
         }
         utils.refreshIcons();
@@ -4102,7 +4084,7 @@
           try {
             const catRes = await api.getCategories();
             state.categories = catRes?.categories || catRes || [];
-          } catch {}
+          } catch { }
         }
         const data = await api.getProducts({ page: 1, perPage: 20 });
         state.products = data.products;
@@ -4126,10 +4108,7 @@
                 <td>${product.brand?.name || "-"}</td>
                 <td>
                   <div class="flex items-center gap-2">
-                    <span class="hidden sm:inline">${utils.getCategoryLabel(product.dbCategory?.value || product.category)}</span>
-                    <select class="admin-form-input product-category-select text-xs" data-id="${product.id}">
-                      ${utils.categoryOptionsHtml(product.dbCategory?.value || utils.categorySlug(product.category))}
-                    </select>
+                    <spanc lass="hidden sm:inline">${utils.getCategoryLabel(product.dbCategory?.value)}</span>
                   </div>
                 </td>
                 <td>${utils.toIRR(product.price)}</td>
