@@ -58,6 +58,35 @@ const couponCreateSchema = z.object({
     startsAt: z.string().datetime().optional().transform(val => val ? new Date(val) : undefined),
     endsAt: z.string().datetime().optional().transform(val => val ? new Date(val) : undefined),
 });
+// ========== CATEGORY (DB-backed) VALIDATORS ==========
+// Helpers: optional slug and optional URL with trimming
+const optionalSlugSchema = z
+    .preprocess((val) => (typeof val === "string" ? val.trim() : undefined), z.string().optional())
+    .transform((v) => v
+    ? v
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "")
+    : undefined)
+    .refine((v) => v === undefined || /^[a-z0-9-]+$/.test(v), {
+    message: "فقط حروف کوچک، اعداد و خط تیره مجاز است.",
+});
+const optionalUrlSchema = z
+    .preprocess((val) => (typeof val === "string" ? val.trim() : undefined), z.string().optional())
+    .refine((v) => v === undefined || v === "" || v.startsWith("/") || /^https?:\/\//i.test(v), { message: "آدرس تصویر باید نسبی (شروع با /) یا URL معتبر باشد." })
+    .transform((v) => (v === "" ? undefined : v));
+const categoryCreateSchema = z.object({
+    value: optionalSlugSchema, // optional; will be derived from label on service if absent
+    label: z.string().min(1, "عنوان/برچسب الزامی است."),
+    icon: z.string().min(1).max(50).optional(), // feather icon name (e.g., shield)
+    heroImageUrl: optionalUrlSchema,
+});
+const categoryUpdateSchema = z.object({
+    value: optionalSlugSchema,
+    label: z.string().min(1).optional(),
+    icon: z.string().min(1).max(50).optional(),
+    heroImageUrl: optionalUrlSchema,
+});
 export const adminController = {
     // ========== DASHBOARD ==========
     getDashboard: (async (_req, res, next) => {
@@ -76,7 +105,7 @@ export const adminController = {
                 page: parseInt(req.query.page) || 1,
                 perPage: parseInt(req.query.perPage) || 20,
                 search: req.query.search,
-                category: req.query.category,
+                categoryId: req.query.categoryId,
                 isActive: req.query.isActive === "true" ? true : req.query.isActive === "false" ? false : undefined,
             };
             const result = await adminService.listAllProducts(query);
@@ -391,6 +420,56 @@ export const adminController = {
             return ok(res, result, 200);
         }
         catch (err) {
+            next(err);
+        }
+    }),
+    // ========== CATEGORIES (DB-backed) ==========
+    listCategories: (async (_req, res, next) => {
+        try {
+            const categories = await adminService.listCategories();
+            return ok(res, { categories }, 200);
+        }
+        catch (err) {
+            next(err);
+        }
+    }),
+    createCategory: (async (req, res, next) => {
+        try {
+            const data = await categoryCreateSchema.parseAsync(req.body);
+            const category = await adminService.createCategory(data);
+            return ok(res, { category }, 201);
+        }
+        catch (err) {
+            if (err?.issues?.length) {
+                return next(new AppError(err.issues[0].message, 422, "VALIDATION_ERROR"));
+            }
+            next(err);
+        }
+    }),
+    updateCategory: (async (req, res, next) => {
+        try {
+            const { id } = await idParamSchema.parseAsync(req.params);
+            const data = await categoryUpdateSchema.parseAsync(req.body);
+            const category = await adminService.updateCategory(id, data);
+            return ok(res, { category }, 200);
+        }
+        catch (err) {
+            if (err?.issues?.length) {
+                return next(new AppError(err.issues[0].message, 422, "VALIDATION_ERROR"));
+            }
+            next(err);
+        }
+    }),
+    deleteCategory: (async (req, res, next) => {
+        try {
+            const { id } = await idParamSchema.parseAsync(req.params);
+            const result = await adminService.deleteCategory(id);
+            return ok(res, result, 200);
+        }
+        catch (err) {
+            if (err?.issues?.length) {
+                return next(new AppError(err.issues[0].message, 422, "VALIDATION_ERROR"));
+            }
             next(err);
         }
     }),

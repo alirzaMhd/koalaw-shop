@@ -4,7 +4,13 @@ export const updateProfileSchema = z.object({
     firstName: z.string().max(100).optional(),
     lastName: z.string().max(100).optional(),
     phone: z.string().max(20).optional().nullable(),
-    birthDate: z.string().optional().nullable(),
+    birthDate: z
+        .string()
+        .regex(/^\d{4}-\d{2}-\d{2}$/, "فرمت تاریخ نامعتبر است (YYYY-MM-DD)")
+        .refine((date) => !isNaN(new Date(date).getTime()), "تاریخ نامعتبر است")
+        .optional()
+        .nullable()
+        .transform((val) => (val === "" || val === null ? null : val)),
     gender: z.enum(["UNDISCLOSED", "MALE", "FEMALE"]).optional(),
 });
 export const updateNotificationPrefsSchema = z.object({

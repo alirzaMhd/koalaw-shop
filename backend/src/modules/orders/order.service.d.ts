@@ -21,10 +21,15 @@ export interface OrderSummary {
     id: string;
     orderNumber: string;
     status: OrderStatus;
+    statusLabel: string;
     total: number;
     currencyCode: string;
     placedAt: Date;
     itemsCount: number;
+    firstItem?: {
+        title: string;
+        imageUrl: string | null;
+    } | null;
 }
 declare class OrderService {
     getById(orderId: string): Promise<any>;
@@ -49,6 +54,7 @@ declare class OrderService {
     }): Promise<any>;
     createCartFromOrder(orderId: string, userId?: string | null): Promise<{
         cartId: string;
+        itemsAdded: number;
     }>;
 }
 export declare const orderService: OrderService;

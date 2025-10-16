@@ -25,5 +25,9 @@ export declare const adminController: {
     getUser: RequestHandler;
     deleteUser: RequestHandler;
     listNewsletterSubscribers: RequestHandler;
+    listCategories: RequestHandler;
+    createCategory: RequestHandler;
+    updateCategory: RequestHandler;
+    deleteCategory: RequestHandler;
 };
 //# sourceMappingURL=admin.controller.d.ts.map

@@ -7,6 +7,7 @@ import cookieParser from "cookie-parser";
 import path from "node:path";
 import fs from "node:fs";
 import { env } from "./config/env.js";
+import adminCollectionsRouter from "./modules/admin/collections/collections.routes.js";
 import { requestLogger } from "./common/middlewares/requestLogger.js";
 import { errorHandler } from "./common/middlewares/errorHandler.js";
 import { rateLimiter } from "./common/middlewares/rateLimiter.js";
@@ -118,6 +119,7 @@ export function createApp() {
     app.get(["/product/:slug", "/products/:slug", "/p/:slug", "/shop/:category/:slug"], (_req, res) => {
         res.sendFile(path.join(frontendPages, "product.html"));
     });
+    app.use("/api/admin/collections", adminCollectionsRouter);
     // Simple page router: /shop -> pages/shop.html, /login -> pages/login.html, etc.
     // NOTE: keep this AFTER the more specific routes above
     app.get("/:page", (req, res, next) => {

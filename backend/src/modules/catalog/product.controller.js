@@ -81,6 +81,25 @@ class ProductController {
             next(err);
         }
     };
+    // GET /products/categories (returns only categories; useful for DB-backed categories UI)
+    categories = async (_req, res, next) => {
+        try {
+            const result = await productService.getFilterOptions();
+            return ok(res, { categories: result.categories }, 200);
+        }
+        catch (err) {
+            next(err);
+        }
+    };
+    suggestions = async (_req, res, next) => {
+        try {
+            const items = await productService.getTopSelling(4);
+            return ok(res, { suggestions: items }, 200);
+        }
+        catch (err) {
+            next(err);
+        }
+    };
     // GET /products/:id
     getById = async (req, res, next) => {
         try {

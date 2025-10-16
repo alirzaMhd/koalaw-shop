@@ -1,6 +1,7 @@
 // src/modules/catalog/product.entity.ts
 // Domain types and helpers for products, variants, images, brand, and color theme.
 // Aligned with your SQL migration while keeping camelCase in the domain layer.
+import { CATEGORY_LABELS_FA, CATEGORY_FEATHER_ICONS, } from "./category.entity.js";
 // ---------- Mappers ----------
 function toDate(v) {
     return v instanceof Date ? v : new Date(v);
@@ -11,6 +12,16 @@ export function mapDbBrandToRef(row) {
         id: src.id,
         name: src.name,
         slug: src.slug,
+    };
+}
+export function mapDbCategoryToRef(row) {
+    const src = row?.dbCategory ?? row;
+    return {
+        id: src.id,
+        value: src.value,
+        label: src.label,
+        heroImageUrl: src.heroImageUrl ?? src.hero_image_url ?? null,
+        icon: src.icon ?? null,
     };
 }
 export function mapDbColorThemeToRef(row) {
@@ -84,6 +95,17 @@ export function mapDbProductToEntity(row) {
             name: row.brandName ?? row.brand_name,
             slug: row.brandSlug ?? row.brand_slug,
         });
+    // Optional DB category relation (NEW)
+    const dbCategory = row.dbCategory
+        ? mapDbCategoryToRef(row.dbCategory)
+        : row.categoryId || row.category_id
+            ? mapDbCategoryToRef({
+                id: row.categoryId ?? row.category_id,
+                value: row.categoryValue ?? row.category_value ?? undefined,
+                label: row.categoryLabel ?? row.category_label ?? undefined,
+                heroImageUrl: row.categoryHeroImageUrl ?? row.category_hero_image_url ?? null,
+            })
+            : null;
     const colorTheme = row.colorTheme
         ? mapDbColorThemeToRef(row.colorTheme)
         : row.colorThemeId || row.color_theme_id
@@ -109,6 +131,7 @@ export function mapDbProductToEntity(row) {
     return {
         id: row.id,
         brand,
+        dbCategory,
         colorTheme,
         category: row.category,
         title: row.title,
@@ -144,6 +167,18 @@ export function isDiscounted(p) {
 export function effectiveVariantPrice(p, v) {
     return typeof v?.price === "number" && v.price > 0 ? v.price : p.price;
 }
+function fallbackCategoryLabel(cat) {
+    if (!cat)
+        return undefined;
+    const slug = String(cat).trim().toLowerCase().replace(/_/g, "-");
+    return CATEGORY_LABELS_FA[slug];
+}
+function fallbackCategoryIcon(cat) {
+    if (!cat)
+        return undefined;
+    const slug = String(cat).trim().toLowerCase().replace(/_/g, "-");
+    return CATEGORY_FEATHER_ICONS[slug];
+}
 export function toProductCardDto(p) {
     const chips = Array.from(new Map((p.variants ?? [])
         .filter((v) => v.isActive && v.colorHexCode)
@@ -151,12 +186,20 @@ export function toProductCardDto(p) {
         const hex = v.colorHexCode.toLowerCase();
         return [hex, { hex, name: v.colorName ?? null }];
     })).values());
+    const categoryValue = p.dbCategory?.value ?? p.category;
+    const categoryLabel = p.dbCategory?.label ?? fallbackCategoryLabel(p.category);
+    const categoryHeroImageUrl = p.dbCategory?.heroImageUrl ?? null;
+    const categoryIcon = p.dbCategory?.icon ?? fallbackCategoryIcon(p.category) ?? null;
     return {
         id: p.id,
         slug: p.slug,
         title: p.title,
         brand: { ...p.brand },
         category: p.category,
+        categoryValue,
+        categoryLabel,
+        categoryHeroImageUrl,
+        categoryIcon,
         price: p.price,
         compareAtPrice: p.compareAtPrice ?? null,
         currencyCode: p.currencyCode,
@@ -238,11 +281,11 @@ export function toPrismaWhere(filters = {}) {
         AND.push({ isActive: true });
     }
     if (filters.categories?.length) {
-        const enumVals = filters.categories
-            .map(toPrismaCategoryEnumValue)
-            .filter((v) => v !== null);
-        if (enumVals.length) {
-            AND.push({ category: { in: enumVals } });
+        const slugs = filters.categories
+            .map((s) => String(s || "").trim().toLowerCase().replace(/[\s_]+/g, "-"))
+            .filter(Boolean);
+        if (slugs.length) {
+            AND.push({ dbCategory: { value: { in: slugs } } });
         }
     }
     if (filters.brandIds?.length) {

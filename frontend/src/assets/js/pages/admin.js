@@ -386,11 +386,11 @@
       });
     },
     updateCollection(id, data) {
-      return this.fetch(`/api/admin/collections/${id}`, {
-        method: "PUT",
-        body: JSON.stringify(data),
-      });
-    },
+  return this.fetch(`/api/admin/collections/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(data),
+  });
+},
     deleteCollection(id) {
       return this.fetch(`/api/admin/collections/${id}`, { method: "DELETE" });
     },
@@ -614,15 +614,16 @@
             </div>
             <div class="admin-form-group">
               <label class="admin-form-label">آواتار</label>
-              ${author?.avatarUrl
-          ? `
+              ${
+                author?.avatarUrl
+                  ? `
                 <div class="mb-3">
                   <img src="${author.avatarUrl}" alt="${author.name || ""}" class="w-16 h-16 rounded object-cover border" />
                   <small class="text-gray-500 block mt-1">آواتار فعلی</small>
                 </div>
               `
-          : ""
-        }
+                  : ""
+              }
               <input type="file" id="author-avatar-file" class="admin-form-input" accept="image/*" />
               <small class="text-gray-500">فرمت‌های مجاز: JPG, PNG, WebP, GIF (حداکثر 5MB)</small>
               <div id="author-avatar-preview" class="mt-3 hidden">
@@ -702,7 +703,10 @@
               const imageUrl = await utils.uploadImage(file);
               if (imageUrl) payload.avatarUrl = imageUrl;
             } catch (err) {
-              utils.showToast("خطا در آپلود تصویر: " + (err.message || err), "error");
+              utils.showToast(
+                "خطا در آپلود تصویر: " + (err.message || err),
+                "error"
+              );
               return;
             }
           }
@@ -840,14 +844,14 @@
               <select name="brandId" class="admin-form-input" required>
                 <option value="">انتخاب کنید</option>
                 ${brands.brands
-            .map(
-              (b) => `
+                  .map(
+                    (b) => `
                   <option value="${b.id}" ${data.brandId === b.id ? "selected" : ""}>
                     ${b.name}
                   </option>
                 `
-            )
-            .join("")}
+                  )
+                  .join("")}
               </select>
             </div>
 
@@ -856,14 +860,14 @@
               <select name="collectionId" class="admin-form-input">
                 <option value="">هیچکدام</option>
                 ${collections.collections
-            .map(
-              (c) => `
+                  .map(
+                    (c) => `
                   <option value="${c.id}" ${data.collectionId === c.id ? "selected" : ""}>
                     ${c.name}
                   </option>
                 `
-            )
-            .join("")}
+                  )
+                  .join("")}
               </select>
             </div>
           </div>
@@ -874,14 +878,14 @@
               <select name="colorThemeId" class="admin-form-input">
                 <option value="">هیچکدام</option>
                 ${(colorThemes?.colorThemes || [])
-            .map(
-              (ct) => `
+                  .map(
+                    (ct) => `
                    <option value="${ct.id}" ${data.colorThemeId === ct.id ? "selected" : ""}>
                      ${ct.name}
                    </option>
                  `
-            )
-            .join("")}
+                  )
+                  .join("")}
               </select>
             </div>
 
@@ -891,8 +895,8 @@
             <label class="admin-form-label">نشان‌ها</label>
             <div class="space-y-2" id="badges-checklist">
               ${badges.badges
-            .map(
-              (b) => `
+                .map(
+                  (b) => `
                 <label class="flex items-center gap-2 cursor-pointer p-2 hover:bg-gray-50 rounded">
                   <input 
                     type="checkbox" 
@@ -905,8 +909,8 @@
                   <span>${b.title}</span>
                 </label>
               `
-            )
-            .join("")}
+                )
+                .join("")}
             </div>
           </div>
 
@@ -990,14 +994,14 @@
             <label class="admin-form-label">انتخاب محصولات مرتبط</label>
             <select name="relatedProductIds" id="related-products-select" class="admin-form-input" multiple size="8">
               ${(allProducts?.products || [])
-            .filter((p) => !data.id || p.id !== data.id)
-            .map(
-              (p) => `
+                .filter((p) => !data.id || p.id !== data.id)
+                .map(
+                  (p) => `
                 <option value="${p.id}" ${existingRelatedIds.includes(p.id) ? "selected" : ""}>
                   ${p.title}
                 </option>`
-            )
-            .join("")}
+                )
+                .join("")}
             </select>
             <small class="text-gray-500">برای انتخاب چند مورد، کلید Ctrl/⌘ را نگه دارید.</small>
           </div>
@@ -1478,7 +1482,9 @@
       }
     },
     category(categoryId = null) {
-      const cat = categoryId ? (state.categories || []).find((c) => c.id === categoryId) : null;
+      const cat = categoryId
+        ? (state.categories || []).find((c) => c.id === categoryId)
+        : null;
       const isEdit = !!categoryId;
       const formHtml = `
         <form id="category-form" class="admin-form">
@@ -1554,9 +1560,15 @@
       });
 
       // ===== Category gallery (EXACTLY like product images flow) =====
-      const catGalleryInput = document.getElementById("cat-gallery-files-input");
-      const catGalleryUrlInput = document.getElementById("cat-gallery-url-input");
-      const catAddGalleryUrlBtn = document.getElementById("cat-add-gallery-url-btn");
+      const catGalleryInput = document.getElementById(
+        "cat-gallery-files-input"
+      );
+      const catGalleryUrlInput = document.getElementById(
+        "cat-gallery-url-input"
+      );
+      const catAddGalleryUrlBtn = document.getElementById(
+        "cat-add-gallery-url-btn"
+      );
       const catGalleryList = document.getElementById("cat-gallery-list");
 
       let catGallery = []; // [{ url, alt }]
@@ -1616,7 +1628,8 @@
             utils.showToast(err.message, "error");
           }
         }
-        if (catGallery.length && (catHeroIndex == null || catHeroIndex < 0)) catHeroIndex = 0;
+        if (catGallery.length && (catHeroIndex == null || catHeroIndex < 0))
+          catHeroIndex = 0;
         catRenderGallery();
         catGalleryInput.value = "";
       });
@@ -1626,7 +1639,10 @@
         const url = (catGalleryUrlInput?.value || "").trim();
         if (!url) return;
         if (!(url.startsWith("/") || url.startsWith("http"))) {
-          utils.showToast("آدرس URL تصویر باید با / یا http شروع شود.", "error");
+          utils.showToast(
+            "آدرس URL تصویر باید با / یا http شروع شود.",
+            "error"
+          );
           return;
         }
         catGallery.push({ url, alt: "" });
@@ -1656,48 +1672,57 @@
         if (Number.isNaN(idx)) return;
         if (action === "catRemoveGallery") {
           catGallery.splice(idx, 1);
-          if (catHeroIndex === idx) catHeroIndex = Math.max(0, catGallery.length - 1);
+          if (catHeroIndex === idx)
+            catHeroIndex = Math.max(0, catGallery.length - 1);
           if (catHeroIndex > idx) catHeroIndex -= 1;
           catRenderGallery();
         } else if (action === "catMoveUp" && idx > 0) {
-          [catGallery[idx - 1], catGallery[idx]] = [catGallery[idx], catGallery[idx - 1]];
+          [catGallery[idx - 1], catGallery[idx]] = [
+            catGallery[idx],
+            catGallery[idx - 1],
+          ];
           if (catHeroIndex === idx) catHeroIndex = idx - 1;
           else if (catHeroIndex === idx - 1) catHeroIndex = idx;
           catRenderGallery();
         } else if (action === "catMoveDown" && idx < catGallery.length - 1) {
-          [catGallery[idx + 1], catGallery[idx]] = [catGallery[idx], catGallery[idx + 1]];
+          [catGallery[idx + 1], catGallery[idx]] = [
+            catGallery[idx],
+            catGallery[idx + 1],
+          ];
           if (catHeroIndex === idx) catHeroIndex = idx + 1;
           else if (catHeroIndex === idx + 1) catHeroIndex = idx;
           catRenderGallery();
         }
       });
-      document.getElementById("category-form")?.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const fd = new FormData(e.target);
-        const payload = {
-          value: String(fd.get("value") || "").trim() || undefined,
-          label: String(fd.get("label") || "").trim(),
-          icon: String(fd.get("icon") || "grid").trim() || "grid",
-          // Prefer manual URL if provided; otherwise use selected hero from gallery
-          heroImageUrl:
-            String(fd.get("heroImageUrl") || "").trim() ||
-            (catGallery[catHeroIndex]?.url || "").trim() ||
-            undefined,
-        };
-        try {
-          if (isEdit) {
-            await api.updateCategory(categoryId, payload);
-            utils.showToast("دسته‌بندی ویرایش شد", "success");
-          } else {
-            await api.createCategory(payload);
-            utils.showToast("دسته‌بندی افزوده شد", "success");
+      document
+        .getElementById("category-form")
+        ?.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const fd = new FormData(e.target);
+          const payload = {
+            value: String(fd.get("value") || "").trim() || undefined,
+            label: String(fd.get("label") || "").trim(),
+            icon: String(fd.get("icon") || "grid").trim() || "grid",
+            // Prefer manual URL if provided; otherwise use selected hero from gallery
+            heroImageUrl:
+              String(fd.get("heroImageUrl") || "").trim() ||
+              (catGallery[catHeroIndex]?.url || "").trim() ||
+              undefined,
+          };
+          try {
+            if (isEdit) {
+              await api.updateCategory(categoryId, payload);
+              utils.showToast("دسته‌بندی ویرایش شد", "success");
+            } else {
+              await api.createCategory(payload);
+              utils.showToast("دسته‌بندی افزوده شد", "success");
+            }
+            panel.close();
+            handlers.categories();
+          } catch (err) {
+            utils.showToast("خطا: " + err.message, "error");
           }
-          panel.close();
-          handlers.categories();
-        } catch (err) {
-          utils.showToast("خطا: " + err.message, "error");
-        }
-      });
+        });
     },
     // Add this new form method inside the `forms` object
     colorTheme(themeId = null) {
@@ -1973,14 +1998,14 @@
             <label class="admin-form-label">وضعیت سفارش</label>
             <select name="status" class="admin-form-input">
               ${statusOptions
-            .map(
-              (opt) => `
+                .map(
+                  (opt) => `
                 <option value="${opt.value}" ${order.status === opt.value ? "selected" : ""}>
                   ${opt.label}
                 </option>
               `
-            )
-            .join("")}
+                )
+                .join("")}
             </select>
           </div>
 
@@ -2055,14 +2080,15 @@
             <textarea class="admin-form-input" rows="2" disabled>${order.shippingAddressLine1 || "-"}</textarea>
           </div>
 
-          ${order.shippingAddressLine2
-            ? `
+          ${
+            order.shippingAddressLine2
+              ? `
           <div class="admin-form-group">
             <label class="admin-form-label">جزئیات آدرس</label>
             <textarea class="admin-form-input" rows="2" disabled>${order.shippingAddressLine2}</textarea>
           </div>
           `
-            : ""
+              : ""
           }
 
           <div class="admin-form-row">
@@ -2085,7 +2111,8 @@
           </div>
         </div>
 
-        ${order.payments && order.payments.length
+        ${
+          order.payments && order.payments.length
             ? `
         <div class="admin-form-section">
           <h3 class="admin-form-section-title">پرداخت‌ها</h3>
@@ -2095,7 +2122,7 @@
         </div>
         `
             : ""
-          }
+        }
 
         <div class="admin-form-section">
           <h3 class="admin-form-section-title">مالی</h3>
@@ -2106,30 +2133,32 @@
               <span class="font-semibold">${utils.toIRR(order.subtotal)}</span>
             </div>
 
-            ${order.discountTotal > 0
-            ? `
+            ${
+              order.discountTotal > 0
+                ? `
             <div class="flex justify-between text-green-600">
               <span>تخفیف:</span>
               <span class="font-semibold">- ${utils.toIRR(order.discountTotal)}</span>
             </div>
             `
-            : ""
-          }
+                : ""
+            }
 
             <div class="flex justify-between">
               <span>هزینه ارسال:</span>
               <span class="font-semibold">${order.shippingTotal > 0 ? utils.toIRR(order.shippingTotal) : "رایگان"}</span>
             </div>
 
-            ${order.giftWrapTotal > 0
-            ? `
+            ${
+              order.giftWrapTotal > 0
+                ? `
             <div class="flex justify-between">
               <span>بسته‌بندی هدیه:</span>
               <span class="font-semibold">${utils.toIRR(order.giftWrapTotal)}</span>
             </div>
             `
-            : ""
-          }
+                : ""
+            }
 
             <div class="flex justify-between pt-2 border-t text-lg">
               <span class="font-bold">مجموع:</span>
@@ -2137,17 +2166,19 @@
             </div>
           </div>
 
-          ${order.giftWrap
-            ? `
+          ${
+            order.giftWrap
+              ? `
           <div class="mt-4 p-3 bg-pink-50 rounded-lg">
             <p class="text-sm font-semibold text-pink-800">🎁 بسته‌بندی هدیه فعال است</p>
           </div>
           `
-            : ""
+              : ""
           }
         </div>
 
-        ${order.note
+        ${
+          order.note
             ? `
         <div class="admin-form-section">
           <h3 class="admin-form-section-title">یادداشت مشتری</h3>
@@ -2157,7 +2188,7 @@
         </div>
         `
             : ""
-          }
+        }
 
         <div class="admin-form-actions">
           <button type="button" class="admin-btn admin-btn-secondary" data-action="closePanel">
@@ -2260,18 +2291,19 @@
             <label class="admin-form-label">نویسنده</label>
             <select name="authorId" class="admin-form-input">
               <option value="">هیچکدام</option>
-              ${Array.isArray(authors)
-            ? authors
-              .map(
-                (a) => `
+              ${
+                Array.isArray(authors)
+                  ? authors
+                      .map(
+                        (a) => `
                 <option value="${a.id}" ${data.authorId === a.id ? "selected" : ""}>
                   ${a.name}
                 </option>
               `
-              )
-              .join("")
-            : ""
-          }
+                      )
+                      .join("")
+                  : ""
+              }
             </select>
           </div>
 
@@ -2300,8 +2332,9 @@
         <div class="admin-form-section">
           <h3 class="admin-form-section-title">تصویر شاخص</h3>
 
-          ${data.heroImageUrl
-            ? `
+          ${
+            data.heroImageUrl
+              ? `
             <div class="admin-form-group">
               <label class="admin-form-label">تصویر فعلی</label>
               <div class="admin-image-preview">
@@ -2309,7 +2342,7 @@
               </div>
             </div>
           `
-            : ""
+              : ""
           }
 
           <div class="admin-form-group">
@@ -2341,18 +2374,19 @@
           <div class="admin-form-group">
             <label class="admin-form-label">انتخاب مقالات مرتبط</label>
             <select name="relatedPostIds" id="related-posts-select" class="admin-form-input" multiple size="8">
-              ${Array.isArray(allPosts)
-            ? allPosts
-              .filter((p) => !data.id || p.id !== data.id)
-              .map(
-                (p) => `
+              ${
+                Array.isArray(allPosts)
+                  ? allPosts
+                      .filter((p) => !data.id || p.id !== data.id)
+                      .map(
+                        (p) => `
                 <option value="${p.id}" ${existingRelatedIds.includes(p.id) ? "selected" : ""}>
                   ${p.title}
                 </option>`
-              )
-              .join("")
-            : ""
-          }
+                      )
+                      .join("")
+                  : ""
+              }
             </select>
             <small class="text-gray-500">برای انتخاب چند مورد، کلید Ctrl/⌘ را نگه دارید.</small>
           </div>
@@ -2380,12 +2414,13 @@
           <div class="admin-form-group">
             <label class="admin-form-label">برچسب‌ها (با کاما جدا کنید)</label>
             <input type="text" name="tags" class="admin-form-input" value="${data.tags?.map((t) => t.tag?.name || t.name).join(", ") || ""}" />
-            ${Array.isArray(tags) && tags.length
-            ? `
+            ${
+              Array.isArray(tags) && tags.length
+                ? `
               <small class="text-gray-500">برچسب‌های موجود: ${tags.map((t) => t.name).join(", ")}</small>
             `
-            : ""
-          }
+                : ""
+            }
           </div>
         </div>
 
@@ -2490,10 +2525,10 @@
               const tagsInput = formData.get("tags");
               const tagsArray = tagsInput
                 ? tagsInput
-                  .toString()
-                  .split(",")
-                  .map((t) => t.trim())
-                  .filter(Boolean)
+                    .toString()
+                    .split(",")
+                    .map((t) => t.trim())
+                    .filter(Boolean)
                 : [];
 
               const authorIdValue = formData.get("authorId");
@@ -2729,29 +2764,203 @@
       const isEdit = !!collectionId;
 
       const formHtml = `
-        <form id="collection-form" class="admin-form">
-          <div class="admin-form-section">
-            <h3 class="admin-form-section-title">اطلاعات کالکشن</h3>
+    <form id="collection-form" class="admin-form">
+      <div class="admin-form-section">
+        <h3 class="admin-form-section-title">اطلاعات کالکشن</h3>
 
-            <div class="admin-form-group">
-              <label class="admin-form-label required">نام کالکشن</label>
-              <input type="text" name="name" class="admin-form-input" value="${collection?.name || ""}" required />
-            </div>
-          </div>
+        <div class="admin-form-group">
+          <label class="admin-form-label required">نام کالکشن</label>
+          <input type="text" name="name" class="admin-form-input" value="${collection?.name || ""}" required />
+        </div>
+      </div>
 
-          <div class="admin-form-actions">
-            <button type="button" class="admin-btn admin-btn-secondary" data-action="closePanel">
-              انصراف
-            </button>
-            <button type="submit" class="admin-btn admin-btn-primary">
-              ${isEdit ? "ذخیره تغییرات" : "افزودن کالکشن"}
+      <div class="admin-form-section">
+        <h3 class="admin-form-section-title">گالری تصاویر</h3>
+
+        <div class="admin-form-group">
+          <label class="admin-form-label">آپلود تصاویر</label>
+          <input type="file" id="collection-gallery-files-input" class="admin-form-input" accept="image/*" multiple />
+          <small class="text-gray-500">می‌توانید چند تصویر انتخاب کنید. فرمت‌های مجاز: JPG, PNG, WebP, GIF (حداکثر 5MB)</small>
+        </div>
+
+        <div class="admin-form-divider">
+          <span>یا</span>
+        </div>
+
+        <div class="admin-form-group">
+          <label class="admin-form-label">افزودن با آدرس URL</label>
+          <div class="flex items-center gap-2">
+            <input type="url" id="collection-gallery-url-input" class="admin-form-input flex-1" placeholder="https://example.com/image.jpg" />
+            <button type="button" id="collection-add-gallery-url-btn" class="admin-btn admin-btn-secondary">
+              <i data-feather="plus"></i>
+              افزودن
             </button>
           </div>
-        </form>
-      `;
+        </div>
+
+        <div id="collection-gallery-list" class="grid grid-cols-2 md:grid-cols-3 gap-3 mt-3"></div>
+        <small class="text-gray-500 block mt-2">ترتیب نمایش بر اساس ترتیب لیست است. تصویر شاخص را انتخاب کنید.</small>
+      </div>
+
+      <div class="admin-form-actions">
+        <button type="button" class="admin-btn admin-btn-secondary" data-action="closePanel">
+          انصراف
+        </button>
+        <button type="submit" class="admin-btn admin-btn-primary">
+          ${isEdit ? "ذخیره تغییرات" : "افزودن کالکشن"}
+        </button>
+      </div>
+    </form>
+  `;
 
       panel.open(formHtml, isEdit ? "ویرایش کالکشن" : "افزودن کالکشن");
 
+      // ===== Gallery state (replicated from product form) =====
+      const collectionGalleryInput = document.getElementById(
+        "collection-gallery-files-input"
+      );
+      const collectionGalleryUrlInput = document.getElementById(
+        "collection-gallery-url-input"
+      );
+      const collectionAddGalleryUrlBtn = document.getElementById(
+        "collection-add-gallery-url-btn"
+      );
+      const collectionGalleryList = document.getElementById(
+        "collection-gallery-list"
+      );
+
+      let collectionGallery = []; // [{ url, alt }]
+      let collectionHeroIndex = 0;
+
+      // Prefill existing hero image (edit mode)
+      if (isEdit && collection?.heroImageUrl) {
+        collectionGallery = [{ url: collection.heroImageUrl, alt: "" }];
+        collectionHeroIndex = 0;
+      }
+
+      function collectionRenderGallery() {
+        if (!collectionGalleryList) return;
+        if (!collectionGallery.length) {
+          collectionGalleryList.innerHTML =
+            '<div class="text-center text-gray-500 col-span-full py-6">تصویری اضافه نشده است</div>';
+          utils.refreshIcons();
+          return;
+        }
+        collectionGalleryList.innerHTML = collectionGallery
+          .map(
+            (img, idx) => `
+        <div class="border rounded-lg p-2 flex flex-col gap-2" data-idx="${idx}">
+          <img src="${img.url}" alt="${img.alt || ""}" class="w-full h-28 object-cover rounded" />
+          <label class="flex items-center gap-2">
+            <input type="radio" name="collectionHeroImage" value="${idx}" ${collectionHeroIndex === idx ? "checked" : ""} />
+            <span class="text-sm">تصویر شاخص</span>
+          </label>
+          <input type="text" class="admin-form-input" data-role="alt" data-idx="${idx}" placeholder="متن جایگزین" value="${img.alt || ""}" />
+          <div class="flex gap-2">
+            <button type="button" class="admin-btn admin-btn-secondary flex-1" data-action="collectionMoveUp" data-idx="${idx}" ${idx === 0 ? "disabled" : ""}>
+              <i data-feather="arrow-up"></i>
+            </button>
+            <button type="button" class="admin-btn admin-btn-secondary flex-1" data-action="collectionMoveDown" data-idx="${idx}" ${idx === collectionGallery.length - 1 ? "disabled" : ""}>
+              <i data-feather="arrow-down"></i>
+            </button>
+            <button type="button" class="admin-btn admin-btn-danger" data-action="collectionRemoveGallery" data-idx="${idx}">
+              <i data-feather="trash-2"></i>
+            </button>
+          </div>
+        </div>
+      `
+          )
+          .join("");
+        utils.refreshIcons();
+      }
+
+      collectionRenderGallery();
+
+      const uploadCollectionImageFile = (file) => utils.uploadImage(file);
+
+      collectionGalleryInput?.addEventListener("change", async (e) => {
+        const files = Array.from(e.target.files || []);
+        for (const file of files) {
+          try {
+            const url = await uploadCollectionImageFile(file);
+            collectionGallery.push({ url, alt: "" });
+          } catch (err) {
+            utils.showToast(err.message, "error");
+          }
+        }
+        if (
+          collectionGallery.length &&
+          (collectionHeroIndex == null || collectionHeroIndex < 0)
+        )
+          collectionHeroIndex = 0;
+        collectionRenderGallery();
+        collectionGalleryInput.value = "";
+      });
+
+      collectionAddGalleryUrlBtn?.addEventListener("click", () => {
+        const url = (collectionGalleryUrlInput?.value || "").trim();
+        if (!url) return;
+        if (!(url.startsWith("/") || url.startsWith("http"))) {
+          utils.showToast(
+            "آدرس URL تصویر باید با / یا http شروع شود.",
+            "error"
+          );
+          return;
+        }
+        collectionGallery.push({ url, alt: "" });
+        if (collectionGallery.length === 1) collectionHeroIndex = 0;
+        collectionGalleryUrlInput.value = "";
+        collectionRenderGallery();
+      });
+
+      collectionGalleryList?.addEventListener("change", (e) => {
+        if (e.target.name === "collectionHeroImage") {
+          collectionHeroIndex = parseInt(e.target.value, 10);
+        }
+      });
+      collectionGalleryList?.addEventListener("input", (e) => {
+        const inp = e.target.closest('input[data-role="alt"]');
+        if (inp) {
+          const idx = parseInt(inp.dataset.idx, 10);
+          if (!isNaN(idx) && collectionGallery[idx])
+            collectionGallery[idx].alt = inp.value;
+        }
+      });
+      collectionGalleryList?.addEventListener("click", (e) => {
+        const btn = e.target.closest("[data-action]");
+        if (!btn) return;
+        const idx = parseInt(btn.dataset.idx, 10);
+        const action = btn.dataset.action;
+        if (Number.isNaN(idx)) return;
+        if (action === "collectionRemoveGallery") {
+          collectionGallery.splice(idx, 1);
+          if (collectionHeroIndex === idx)
+            collectionHeroIndex = Math.max(0, collectionGallery.length - 1);
+          if (collectionHeroIndex > idx) collectionHeroIndex -= 1;
+          collectionRenderGallery();
+        } else if (action === "collectionMoveUp" && idx > 0) {
+          [collectionGallery[idx - 1], collectionGallery[idx]] = [
+            collectionGallery[idx],
+            collectionGallery[idx - 1],
+          ];
+          if (collectionHeroIndex === idx) collectionHeroIndex = idx - 1;
+          else if (collectionHeroIndex === idx - 1) collectionHeroIndex = idx;
+          collectionRenderGallery();
+        } else if (
+          action === "collectionMoveDown" &&
+          idx < collectionGallery.length - 1
+        ) {
+          [collectionGallery[idx + 1], collectionGallery[idx]] = [
+            collectionGallery[idx],
+            collectionGallery[idx + 1],
+          ];
+          if (collectionHeroIndex === idx) collectionHeroIndex = idx + 1;
+          else if (collectionHeroIndex === idx + 1) collectionHeroIndex = idx;
+          collectionRenderGallery();
+        }
+      });
+
+      // Submit
       document
         .getElementById("collection-form")
         .addEventListener("submit", async (e) => {
@@ -2761,6 +2970,11 @@
           const payload = {
             name: formData.get("name"),
           };
+
+          // Use selected hero image from gallery (replicates product form behavior)
+          const heroImageUrl =
+            collectionGallery[collectionHeroIndex]?.url || null;
+          if (heroImageUrl) payload.heroImageUrl = heroImageUrl;
 
           try {
             if (isEdit) {

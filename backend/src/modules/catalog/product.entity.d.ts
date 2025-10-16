@@ -1,9 +1,16 @@
-import type { ProductCategory as DomainProductCategory } from "./category.entity.js";
+import { type ProductCategory as DomainProductCategory } from "./category.entity.js";
 export type CurrencyCode = string;
 export interface BrandRef {
     id: string;
     name: string;
     slug: string;
+}
+export interface DbCategoryRef {
+    id: string;
+    value: string;
+    label: string;
+    heroImageUrl?: string | null;
+    icon?: string | null;
 }
 export interface ColorChip {
     hex: string;
@@ -62,6 +69,7 @@ export interface ProductReview {
 export interface Product {
     id: string;
     brand: BrandRef;
+    dbCategory?: DbCategoryRef | null;
     colorTheme?: ColorThemeRef | null;
     category: DomainProductCategory;
     title: string;
@@ -98,6 +106,10 @@ export interface ProductCardDto {
         slug: string;
     };
     category: DomainProductCategory;
+    categoryValue?: string;
+    categoryLabel?: string;
+    categoryHeroImageUrl?: string | null;
+    categoryIcon?: string | null;
     price: number;
     compareAtPrice?: number | null;
     currencyCode: CurrencyCode;
@@ -136,6 +148,7 @@ export interface ProductDetailDto extends ProductCardDto {
     related?: ProductCardDto[];
 }
 export declare function mapDbBrandToRef(row: any): BrandRef;
+export declare function mapDbCategoryToRef(row: any): DbCategoryRef;
 export declare function mapDbColorThemeToRef(row: any): ColorThemeRef | null;
 export declare function mapDbBadgeToRef(row: any): BadgeRef;
 export declare function mapDbImageToEntity(row: any): ProductImage;

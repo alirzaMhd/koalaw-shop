@@ -3,7 +3,7 @@ export declare const updateProfileSchema: z.ZodObject<{
     firstName: z.ZodOptional<z.ZodString>;
     lastName: z.ZodOptional<z.ZodString>;
     phone: z.ZodNullable<z.ZodOptional<z.ZodString>>;
-    birthDate: z.ZodNullable<z.ZodOptional<z.ZodString>>;
+    birthDate: z.ZodEffects<z.ZodNullable<z.ZodOptional<z.ZodEffects<z.ZodString, string, string>>>, string | null | undefined, string | null | undefined>;
     gender: z.ZodOptional<z.ZodEnum<["UNDISCLOSED", "MALE", "FEMALE"]>>;
 }, "strip", z.ZodTypeAny, {
     phone?: string | null | undefined;

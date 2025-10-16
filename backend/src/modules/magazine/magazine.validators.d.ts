@@ -170,8 +170,8 @@ export declare const updatePostSchema: z.ZodObject<{
         relatedPostIds: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
     }, "strip", z.ZodTypeAny, {
         title?: string | undefined;
-        slug?: string | undefined;
         category?: MagazineCategory | undefined;
+        slug?: string | undefined;
         heroImageUrl?: string | undefined;
         authorId?: string | null | undefined;
         excerpt?: string | undefined;
@@ -183,8 +183,8 @@ export declare const updatePostSchema: z.ZodObject<{
         relatedPostIds?: string[] | undefined;
     }, {
         title?: string | undefined;
-        slug?: string | undefined;
         category?: MagazineCategory | undefined;
+        slug?: string | undefined;
         heroImageUrl?: string | undefined;
         authorId?: string | null | undefined;
         excerpt?: string | undefined;
@@ -196,8 +196,8 @@ export declare const updatePostSchema: z.ZodObject<{
         relatedPostIds?: string[] | undefined;
     }>, {
         title?: string | undefined;
-        slug?: string | undefined;
         category?: MagazineCategory | undefined;
+        slug?: string | undefined;
         heroImageUrl?: string | undefined;
         authorId?: string | null | undefined;
         excerpt?: string | undefined;
@@ -209,8 +209,8 @@ export declare const updatePostSchema: z.ZodObject<{
         relatedPostIds?: string[] | undefined;
     }, {
         title?: string | undefined;
-        slug?: string | undefined;
         category?: MagazineCategory | undefined;
+        slug?: string | undefined;
         heroImageUrl?: string | undefined;
         authorId?: string | null | undefined;
         excerpt?: string | undefined;
@@ -227,8 +227,8 @@ export declare const updatePostSchema: z.ZodObject<{
     };
     body: {
         title?: string | undefined;
-        slug?: string | undefined;
         category?: MagazineCategory | undefined;
+        slug?: string | undefined;
         heroImageUrl?: string | undefined;
         authorId?: string | null | undefined;
         excerpt?: string | undefined;
@@ -245,8 +245,8 @@ export declare const updatePostSchema: z.ZodObject<{
     };
     body: {
         title?: string | undefined;
-        slug?: string | undefined;
         category?: MagazineCategory | undefined;
+        slug?: string | undefined;
         heroImageUrl?: string | undefined;
         authorId?: string | null | undefined;
         excerpt?: string | undefined;

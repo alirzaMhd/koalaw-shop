@@ -49,6 +49,16 @@ declare class CheckoutService {
         options: CheckoutOptions;
         returnUrl?: string | undefined;
         cancelUrl?: string | undefined;
+        lines?: Array<{
+            title: string;
+            unitPrice: number;
+            quantity: number;
+            productId?: string | null;
+            variantId?: string | null;
+            variantName?: string | null;
+            imageUrl?: string | null;
+            currencyCode?: string | undefined;
+        }>;
     }): Promise<CheckoutResult>;
 }
 export declare const checkoutService: CheckoutService;

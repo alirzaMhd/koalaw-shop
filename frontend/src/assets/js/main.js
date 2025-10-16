@@ -94,14 +94,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     const toIRR = (n) => {
       try {
         if (window.KUtils?.toIRR) return window.KUtils.toIRR(n);
-      } catch { }
+      } catch {}
       return new Intl.NumberFormat("fa-IR").format(Number(n || 0)) + " تومان";
     };
 
     const toFa = (n) => {
       try {
         if (window.KUtils?.toFa) return window.KUtils.toFa(n);
-      } catch { }
+      } catch {}
       return String(n);
     };
 
@@ -191,95 +191,95 @@ document.addEventListener("DOMContentLoaded", async () => {
     `;
       return a;
     }
-async function initHomeFilters() {
-  const container = document.getElementById("home-product-filters");
-  if (!container) return;
+    async function initHomeFilters() {
+      const container = document.getElementById("home-product-filters");
+      if (!container) return;
 
-  try {
-    const res = await fetch("/api/products/filters", { cache: "no-store" });
-    if (!res.ok) {
-      console.error("Failed to fetch filters:", res.status);
-      return;
-    }
-    const json = await res.json();
-    const dbCats = Array.isArray(json?.data?.dbCategories)
-      ? json.data.dbCategories
-      : [];
+      try {
+        const res = await fetch("/api/products/filters", { cache: "no-store" });
+        if (!res.ok) {
+          console.error("Failed to fetch filters:", res.status);
+          return;
+        }
+        const json = await res.json();
+        const dbCats = Array.isArray(json?.data?.dbCategories)
+          ? json.data.dbCategories
+          : [];
 
-    const top3 = dbCats
-      .slice()
-      .sort((a, b) => (b.count || 0) - (a.count || 0))
-      .slice(0, 3);
+        const top3 = dbCats
+          .slice()
+          .sort((a, b) => (b.count || 0) - (a.count || 0))
+          .slice(0, 3);
 
-    // Remove any existing dynamic category buttons (keep all + bestseller)
-    container.querySelectorAll(".filter-btn").forEach((btn) => {
-      const f = btn.dataset.filter;
-      if (f !== "all" && f !== "bestseller") btn.remove();
-    });
+        // Remove any existing dynamic category buttons (keep all + bestseller)
+        container.querySelectorAll(".filter-btn").forEach((btn) => {
+          const f = btn.dataset.filter;
+          if (f !== "all" && f !== "bestseller") btn.remove();
+        });
 
-    const bestsellerBtn = container.querySelector(
-      '.filter-btn[data-filter="bestseller"]'
-    );
-    top3.forEach((c) => {
-      const btn = document.createElement("button");
-      btn.className = "filter-btn";
-      btn.dataset.filter = `db:${String(c.value || "").toLowerCase()}`;
-      btn.innerHTML = `<span>${c.label || c.value}</span>`;
-      container.insertBefore(btn, bestsellerBtn);
-    });
+        const bestsellerBtn = container.querySelector(
+          '.filter-btn[data-filter="bestseller"]'
+        );
+        top3.forEach((c) => {
+          const btn = document.createElement("button");
+          btn.className = "filter-btn";
+          btn.dataset.filter = `db:${String(c.value || "").toLowerCase()}`;
+          btn.innerHTML = `<span>${c.label || c.value}</span>`;
+          container.insertBefore(btn, bestsellerBtn);
+        });
 
-    // Delegate click handling once
-    if (!container.dataset.bound) {
-      container.addEventListener("click", (e) => {
-        const btn = e.target.closest(".filter-btn");
-        if (!btn) return;
-        const key = btn.dataset.filter || "all";
-        container
-          .querySelectorAll(".filter-btn")
-          .forEach((b) => b.classList.remove("active"));
-        btn.classList.add("active");
-        fetchProducts(key);
-      });
-      container.dataset.bound = "1";
-    }
-  } catch (e) {
-    console.warn("Home filters init failed:", e);
-  }
-}
-async function fetchProducts(filter = "all") {
-  try {
-    const params = new URLSearchParams();
-    params.set("page", "1");
-    params.set("perPage", "4");
-    params.set("includeImages", "true");
-    params.set("activeOnly", "true");
-
-    if (filter === "all") {
-      params.set("sort", "newest");
-    } else if (filter === "bestseller") {
-      params.set("bestsellerOnly", "true");
-      params.set("sort", "popular");
-    } else if (filter && filter.startsWith("db:")) {
-      const slug = filter.slice(3).trim().toLowerCase();
-      if (slug) {
-        params.set("sort", "newest");
-        params.append("categories[]", slug);
+        // Delegate click handling once
+        if (!container.dataset.bound) {
+          container.addEventListener("click", (e) => {
+            const btn = e.target.closest(".filter-btn");
+            if (!btn) return;
+            const key = btn.dataset.filter || "all";
+            container
+              .querySelectorAll(".filter-btn")
+              .forEach((b) => b.classList.remove("active"));
+            btn.classList.add("active");
+            fetchProducts(key);
+          });
+          container.dataset.bound = "1";
+        }
+      } catch (e) {
+        console.warn("Home filters init failed:", e);
       }
     }
+    async function fetchProducts(filter = "all") {
+      try {
+        const params = new URLSearchParams();
+        params.set("page", "1");
+        params.set("perPage", "4");
+        params.set("includeImages", "true");
+        params.set("activeOnly", "true");
 
-    const response = await fetch(`${API_PRODUCTS}?${params.toString()}`);
-    if (!response.ok) {
-      console.error("Failed to fetch products:", response.status);
-      return;
+        if (filter === "all") {
+          params.set("sort", "newest");
+        } else if (filter === "bestseller") {
+          params.set("bestsellerOnly", "true");
+          params.set("sort", "popular");
+        } else if (filter && filter.startsWith("db:")) {
+          const slug = filter.slice(3).trim().toLowerCase();
+          if (slug) {
+            params.set("sort", "newest");
+            params.append("categories[]", slug);
+          }
+        }
+
+        const response = await fetch(`${API_PRODUCTS}?${params.toString()}`);
+        if (!response.ok) {
+          console.error("Failed to fetch products:", response.status);
+          return;
+        }
+
+        const json = await response.json();
+        const products = json?.data?.items || [];
+        renderProducts(products);
+      } catch (err) {
+        console.error("Error fetching products:", err);
+      }
     }
-
-    const json = await response.json();
-    const products = json?.data?.items || [];
-    renderProducts(products);
-  } catch (err) {
-    console.error("Error fetching products:", err);
-  }
-}
 
     function renderProducts(products) {
       // Clear grid
@@ -335,36 +335,35 @@ async function fetchProducts(filter = "all") {
   if (collectionsContainer) {
     async function fetchCollectionProducts() {
       try {
-        // Build API request
-        const params = new URLSearchParams();
-        params.set("page", "1");
-        params.set("perPage", "3"); // Get 3 products
-        params.set("sort", "newest"); // Most recent
-        params.set("includeImages", "true");
-        params.set("activeOnly", "true");
-        // Optional: Filter by specific collection
-        // params.append('collectionIds[]', 'YOUR_COLLECTION_ID_HERE');
-
-        const response = await fetch(`/api/products?${params.toString()}`);
-        if (!response.ok) {
-          console.error("Failed to fetch collections:", response.status);
+        // Fetch collections (now includes heroImageUrl)
+        const res = await fetch("/api/products/filters", { cache: "no-store" });
+        if (!res.ok) {
+          console.error("Failed to fetch collections:", res.status);
           return;
         }
+        const json = await res.json();
+        const collections = Array.isArray(json?.data?.collections)
+          ? json.data.collections
+          : [];
 
-        const json = await response.json();
-        const products = json?.data?.items || [];
+        // Pick top 3 by product count, prefer those with heroImageUrl
+        const sorted = collections
+          .slice()
+          .sort((a, b) => (b.count || 0) - (a.count || 0));
+        let top3 = sorted.filter((c) => !!c.heroImageUrl).slice(0, 3);
+        if (top3.length < 3) top3 = sorted.slice(0, 3);
 
-        if (products.length > 0) {
-          renderCollectionCards(products);
+        if (top3.length > 0) {
+          renderCollectionCards(top3);
         } else {
-          console.warn("No collection products found");
+          console.warn("No collections found");
         }
       } catch (error) {
         console.error("Error fetching collections:", error);
       }
     }
 
-    function renderCollectionCards(products) {
+    function renderCollectionCards(collections) {
       // Color schemes for each card
       const colorSchemes = [
         {
@@ -393,70 +392,47 @@ async function fetchProducts(filter = "all") {
         },
       ];
 
-      // Category icons mapping
-      const categoryIcons = {
-        SKINCARE: "shield",
-        MAKEUP: "pen-tool",
-        FRAGRANCE: "wind",
-        HAIRCARE: "git-branch",
-        BODY_BATH: "droplet",
-      };
-
-      // Category labels in Persian
-      const categoryLabels = {
-        SKINCARE: "مراقبت از پوست",
-        MAKEUP: "آرایش",
-        FRAGRANCE: "عطر",
-        HAIRCARE: "مراقبت از مو",
-        BODY_BATH: "بدن و حمام",
-      };
-
       // Clear existing loading message
       collectionsContainer.innerHTML = "";
 
       // Create first large card
-      if (products[0]) {
-        const product = products[0];
+      if (collections[0]) {
+        const col = collections[0];
         const scheme = colorSchemes[0];
-        const category = product.category || "SKINCARE";
-        const icon = categoryIcons[category] || "gift";
-        const label = categoryLabels[category] || "محصول";
         const image =
-          product.heroImageUrl || "/assets/images/products/collection.png";
-        const description =
-          product.description ||
-          product.subtitle ||
-          "محصول ویژه از کالکشن جدید ما که برای تغذیه و جوانسازی طراحی شده است.";
+          col.heroImageUrl || "/assets/images/products/collection.png";
+        const title = col.name || "کالکشن";
+        const description = `منتخب محصولات از کالکشن ${title}`;
 
         const largeCard = document.createElement("a");
-        largeCard.href = `/product/${product.slug}`;
+        largeCard.href = `/shop?collectionId=${encodeURIComponent(col.id)}`;
         largeCard.className = "collection-card-link group block";
         largeCard.innerHTML = `
-          <div class="collection-card-new large h-full" data-aos="fade-right" data-aos-duration="700">
-            <div class="collection-visuals-container">
-              <div class="card-bg-shapes">
-                <div class="card-bg-shape shape-1" style="background: ${scheme.gradient}; animation-duration: ${scheme.duration1};"></div>
-                <div class="card-bg-shape shape-2" style="background: ${scheme.accent}; animation-duration: ${scheme.duration2};"></div>
-                <div class="card-bg-shape shape-3" style="background: ${scheme.light}; animation-duration: ${scheme.duration3};"></div>
-              </div>
-              <div class="collection-glob float-animation">
-                <img src="${image}" alt="${product.title}" class="collection-product-image" />
-                <div class="collection-glob-inner"></div>
-              </div>
+        <div class="collection-card-new large h-full" data-aos="fade-right" data-aos-duration="700">
+          <div class="collection-visuals-container">
+            <div class="card-bg-shapes">
+              <div class="card-bg-shape shape-1" style="background: ${scheme.gradient}; animation-duration: ${scheme.duration1};"></div>
+              <div class="card-bg-shape shape-2" style="background: ${scheme.accent}; animation-duration: ${scheme.duration2};"></div>
+              <div class="card-bg-shape shape-3" style="background: ${scheme.light}; animation-duration: ${scheme.duration3};"></div>
             </div>
-            <div class="collection-content-new">
-              <span class="collection-category" style="color: ${scheme.accent}">
-                ${label}
-              </span>
-              <h3 class="collection-title">${product.title}</h3>
-              <p class="collection-desc">${description}</p>
-              <div class="collection-link">
-                <span>کشف کنید</span>
-                <i data-feather="arrow-left" class="w-5 h-5 transition-transform duration-300 group-hover:-translate-x-2"></i>
-              </div>
+            <div class="collection-glob float-animation">
+              <img src="${image}" alt="${title}" class="collection-product-image" />
+              <div class="collection-glob-inner"></div>
             </div>
           </div>
-        `;
+          <div class="collection-content-new">
+            <span class="collection-category" style="color: ${scheme.accent}">
+              کالکشن
+            </span>
+            <h3 class="collection-title">${title}</h3>
+            <p class="collection-desc">${description}</p>
+            <div class="collection-link">
+              <span>کشف کنید</span>
+              <i data-feather="arrow-left" class="w-5 h-5 transition-transform duration-300 group-hover:-translate-x-2"></i>
+            </div>
+          </div>
+        </div>
+      `;
         collectionsContainer.appendChild(largeCard);
       }
 
@@ -465,43 +441,41 @@ async function fetchProducts(filter = "all") {
       smallCardsContainer.className = "flex flex-col gap-8";
 
       // Create two smaller cards
-      for (let i = 1; i < Math.min(products.length, 3); i++) {
-        const product = products[i];
+      for (let i = 1; i < Math.min(collections.length, 3); i++) {
+        const col = collections[i];
         const scheme = colorSchemes[i];
-        const category = product.category || "SKINCARE";
-        const icon = categoryIcons[category] || "gift";
-        const label = categoryLabels[category] || "محصول";
         const image =
-          product.heroImageUrl || "/assets/images/products/collection.png";
+          col.heroImageUrl || "/assets/images/products/collection.png";
+        const title = col.name || "کالکشن";
 
         const smallCard = document.createElement("a");
-        smallCard.href = `/product/${product.slug}`;
+        smallCard.href = `/shop?collectionId=${encodeURIComponent(col.id)}`;
         smallCard.className = "collection-card-link group block";
         smallCard.innerHTML = `
-          <div class="collection-card-new" data-aos="fade-left" data-aos-duration="700" data-aos-delay="${i * 100}">
-            <div class="collection-visuals-container">
-              <div class="card-bg-shapes">
-                <div class="card-bg-shape shape-1" style="background: ${scheme.gradient}; animation-duration: ${scheme.duration1};"></div>
-                <div class="card-bg-shape shape-2" style="background: ${scheme.accent}; animation-duration: ${scheme.duration2};"></div>
-                <div class="card-bg-shape shape-3" style="background: ${scheme.light}; animation-duration: ${scheme.duration3};"></div>
-              </div>
-              <div class="collection-glob float-animation">
-                <img src="${image}" alt="${product.title}" class="collection-product-image" />
-                <div class="collection-glob-inner"></div>
-              </div>
+        <div class="collection-card-new" data-aos="fade-left" data-aos-duration="700" data-aos-delay="${i * 100}">
+          <div class="collection-visuals-container">
+            <div class="card-bg-shapes">
+              <div class="card-bg-shape shape-1" style="background: ${scheme.gradient}; animation-duration: ${scheme.duration1};"></div>
+              <div class="card-bg-shape shape-2" style="background: ${scheme.accent}; animation-duration: ${scheme.duration2};"></div>
+              <div class="card-bg-shape shape-3" style="background: ${scheme.light}; animation-duration: ${scheme.duration3};"></div>
             </div>
-            <div class="collection-content-new">
-              <span class="collection-category" style="color: ${scheme.accent}">
-                ${label}
-              </span>
-              <h3 class="collection-title">${product.title}</h3>
-              <div class="collection-link">
-                <span>کشف کنید</span>
-                <i data-feather="arrow-left" class="w-5 h-5 transition-transform duration-300 group-hover:-translate-x-2"></i>
-              </div>
+            <div class="collection-glob float-animation">
+              <img src="${image}" alt="${title}" class="collection-product-image" />
+              <div class="collection-glob-inner"></div>
             </div>
           </div>
-        `;
+          <div class="collection-content-new">
+            <span class="collection-category" style="color: ${scheme.accent}">
+              کالکشن
+            </span>
+            <h3 class="collection-title">${title}</h3>
+            <div class="collection-link">
+              <span>کشف کنید</span>
+              <i data-feather="arrow-left" class="w-5 h-5 transition-transform duration-300 group-hover:-translate-x-2"></i>
+            </div>
+          </div>
+        </div>
+      `;
         smallCardsContainer.appendChild(smallCard);
       }
 
@@ -558,7 +532,9 @@ async function fetchProducts(filter = "all") {
         if (dbCategories.length) {
           // Normalize for renderer (from DB) - use icon, label, heroImageUrl directly from DB
           categories = dbCategories.map((c) => ({
-            key: String(c.value || "").toUpperCase().replace(/-/g, "_"),
+            key: String(c.value || "")
+              .toUpperCase()
+              .replace(/-/g, "_"),
             slug: String(c.value || "").toLowerCase(),
             label: c.label || c.value,
             icon: c.icon || "grid",
@@ -629,7 +605,10 @@ async function fetchProducts(filter = "all") {
             slug: c.slug,
             label: c.label,
             icon: c.icon || "grid",
-            hero: c.heroImageUrl || categoryImages[c.key] || categoryImages.SKINCARE,
+            hero:
+              c.heroImageUrl ||
+              categoryImages[c.key] ||
+              categoryImages.SKINCARE,
             count: c.count || 0,
           };
         }
@@ -843,14 +822,14 @@ async function fetchProducts(filter = "all") {
     const toIRR = (n) => {
       try {
         if (window.KUtils?.toIRR) return window.KUtils.toIRR(n);
-      } catch { }
+      } catch {}
       return new Intl.NumberFormat("fa-IR").format(Number(n || 0)) + " تومان";
     };
 
     const toFa = (n) => {
       try {
         if (window.KUtils?.toFa) return window.KUtils.toFa(n);
-      } catch { }
+      } catch {}
       return String(n);
     };
 
@@ -863,7 +842,6 @@ async function fetchProducts(filter = "all") {
         params.set("specialOnly", "true"); // Only special/discounted products
         params.set("includeImages", "true");
         params.set("activeOnly", "true");
-
 
         const response = await fetch(`${API_PRODUCTS}?${params.toString()}`);
         if (!response.ok) {
@@ -937,19 +915,20 @@ async function fetchProducts(filter = "all") {
             <p class="text-rose-100/90 mb-6 max-w-md">
               ${escapeHtml(description)}
             </p>
-            ${discountPercent > 0
-            ? `
+            ${
+              discountPercent > 0
+                ? `
               <div class="flex items-center gap-4 mb-6">
                 <span class="text-3xl font-bold text-white">${toIRR(discountPrice)}</span>
                 <span class="text-lg line-through text-rose-200/60">${toIRR(price)}</span>
               </div>
             `
-            : `
+                : `
               <div class="mb-6">
                 <span class="text-3xl font-bold text-white">${toIRR(price)}</span>
               </div>
             `
-          }
+            }
             <div class="mt-auto pt-6">
               <span class="inline-flex items-center gap-3 bg-white text-rose-900 font-bold px-8 py-4 rounded-full transition-all duration-300 group-hover:bg-rose-100 group-hover:shadow-lg">
                 <span>مشاهده محصول</span>
@@ -993,26 +972,28 @@ async function fetchProducts(filter = "all") {
           class="campaign-side-image"
         />
         <div class="campaign-side-content">
-          ${discountPercent > 0
-            ? `
+          ${
+            discountPercent > 0
+              ? `
             <span class="inline-block bg-rose-500 text-white text-xs font-bold px-2 py-1 rounded-full mb-2">
               ${toFa(discountPercent)}% تخفیف
             </span>
           `
-            : ""
+              : ""
           }
           <h4 class="font-bold text-lg text-gray-800">${escapeHtml(title)}</h4>
           <p class="text-sm text-gray-500 mb-3">
             ${escapeHtml(description)}
           </p>
-          ${discountPercent > 0
-            ? `
+          ${
+            discountPercent > 0
+              ? `
             <div class="flex items-center gap-2">
               <span class="font-semibold text-rose-700">${toIRR(discountPrice)}</span>
               <span class="text-xs line-through text-gray-400">${toIRR(price)}</span>
             </div>
           `
-            : `
+              : `
             <span class="font-semibold text-rose-700">${toIRR(price)}</span>
           `
           }
@@ -1056,7 +1037,7 @@ async function fetchProducts(filter = "all") {
     const toFa = (n) => {
       try {
         if (window.KUtils?.toFa) return window.KUtils.toFa(n);
-      } catch { }
+      } catch {}
       return String(n);
     };
 
@@ -1090,7 +1071,6 @@ async function fetchProducts(filter = "all") {
         // ✅ ADD: Explicit sorting by newest
         params.set("sortBy", "publishedAt"); // Sort by publish date
         params.set("sortOrder", "desc"); // Descending (newest first)
-
 
         const response = await fetch(`${API_MAGAZINE}?${params.toString()}`);
         if (!response.ok) {

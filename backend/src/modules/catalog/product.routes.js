@@ -22,6 +22,8 @@ const requireAdmin = (req, _res, next) => {
 // Public endpoints
 productRouter.get("/", productController.list);
 productRouter.get("/filters", productController.filters); // NEW
+productRouter.get("/categories", productController.categories);
+productRouter.get("/suggestions", productController.suggestions);
 // Reviews (public)
 productRouter.get("/slug/:slug/reviews", productController.listReviewsBySlug);
 productRouter.post("/slug/:slug/reviews", productController.addReviewBySlug);

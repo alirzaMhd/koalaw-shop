@@ -62,6 +62,7 @@ export declare const createProductInputSchema: z.ZodEffects<z.ZodObject<{
     brandSlug: z.ZodOptional<z.ZodString>;
     colorThemeId: z.ZodOptional<z.ZodString>;
     collectionId: z.ZodOptional<z.ZodString>;
+    categoryId: z.ZodOptional<z.ZodString>;
     category: z.ZodString;
     title: z.ZodString;
     subtitle: z.ZodOptional<z.ZodString>;
@@ -137,6 +138,7 @@ export declare const createProductInputSchema: z.ZodEffects<z.ZodObject<{
     brandId?: string | undefined;
     colorThemeId?: string | undefined;
     collectionId?: string | undefined;
+    categoryId?: string | undefined;
     subtitle?: string | undefined;
     description?: string | undefined;
     ingredients?: string | undefined;
@@ -172,6 +174,7 @@ export declare const createProductInputSchema: z.ZodEffects<z.ZodObject<{
     brandId?: string | undefined;
     colorThemeId?: string | undefined;
     collectionId?: string | undefined;
+    categoryId?: string | undefined;
     subtitle?: string | undefined;
     description?: string | undefined;
     ingredients?: string | undefined;
@@ -215,6 +218,7 @@ export declare const createProductInputSchema: z.ZodEffects<z.ZodObject<{
     brandId?: string | undefined;
     colorThemeId?: string | undefined;
     collectionId?: string | undefined;
+    categoryId?: string | undefined;
     subtitle?: string | undefined;
     description?: string | undefined;
     ingredients?: string | undefined;
@@ -250,6 +254,7 @@ export declare const createProductInputSchema: z.ZodEffects<z.ZodObject<{
     brandId?: string | undefined;
     colorThemeId?: string | undefined;
     collectionId?: string | undefined;
+    categoryId?: string | undefined;
     subtitle?: string | undefined;
     description?: string | undefined;
     ingredients?: string | undefined;
@@ -286,6 +291,7 @@ export declare const updateProductInputSchema: z.ZodObject<{
     brandSlug: z.ZodOptional<z.ZodString>;
     colorThemeId: z.ZodOptional<z.ZodString>;
     collectionId: z.ZodOptional<z.ZodString>;
+    categoryId: z.ZodOptional<z.ZodString>;
     category: z.ZodOptional<z.ZodString>;
     title: z.ZodOptional<z.ZodString>;
     subtitle: z.ZodOptional<z.ZodNullable<z.ZodString>>;
@@ -351,11 +357,12 @@ export declare const updateProductInputSchema: z.ZodObject<{
 }, "strip", z.ZodTypeAny, {
     currencyCode?: "IRR" | "USD" | "EUR" | undefined;
     title?: string | undefined;
+    category?: string | undefined;
     slug?: string | undefined;
     brandId?: string | undefined;
     colorThemeId?: string | undefined;
     collectionId?: string | undefined;
-    category?: string | undefined;
+    categoryId?: string | undefined;
     subtitle?: string | null | undefined;
     description?: string | null | undefined;
     ingredients?: string | null | undefined;
@@ -390,11 +397,12 @@ export declare const updateProductInputSchema: z.ZodObject<{
 }, {
     currencyCode?: "IRR" | "USD" | "EUR" | undefined;
     title?: string | undefined;
+    category?: string | undefined;
     slug?: string | undefined;
     brandId?: string | undefined;
     colorThemeId?: string | undefined;
     collectionId?: string | undefined;
-    category?: string | undefined;
+    categoryId?: string | undefined;
     subtitle?: string | null | undefined;
     description?: string | null | undefined;
     ingredients?: string | null | undefined;
@@ -584,6 +592,7 @@ export declare const validateProductInput: {
         brandId?: string | undefined;
         colorThemeId?: string | undefined;
         collectionId?: string | undefined;
+        categoryId?: string | undefined;
         subtitle?: string | undefined;
         description?: string | undefined;
         ingredients?: string | undefined;
@@ -614,11 +623,12 @@ export declare const validateProductInput: {
     update: (data: unknown) => {
         currencyCode?: "IRR" | "USD" | "EUR" | undefined;
         title?: string | undefined;
+        category?: string | undefined;
         slug?: string | undefined;
         brandId?: string | undefined;
         colorThemeId?: string | undefined;
         collectionId?: string | undefined;
-        category?: string | undefined;
+        categoryId?: string | undefined;
         subtitle?: string | null | undefined;
         description?: string | null | undefined;
         ingredients?: string | null | undefined;

@@ -60,8 +60,8 @@ export declare const magazineRepo: {
             createdAt: Date;
             updatedAt: Date;
             title: string;
-            slug: string;
             category: import("@prisma/client").$Enums.MagazineCategory;
+            slug: string;
             heroImageUrl: string | null;
             authorId: string | null;
             excerpt: string | null;
@@ -99,8 +99,8 @@ export declare const magazineRepo: {
         createdAt: Date;
         updatedAt: Date;
         title: string;
-        slug: string;
         category: import("@prisma/client").$Enums.MagazineCategory;
+        slug: string;
         heroImageUrl: string | null;
         authorId: string | null;
         excerpt: string | null;
@@ -136,8 +136,8 @@ export declare const magazineRepo: {
         createdAt: Date;
         updatedAt: Date;
         title: string;
-        slug: string;
         category: import("@prisma/client").$Enums.MagazineCategory;
+        slug: string;
         heroImageUrl: string | null;
         authorId: string | null;
         excerpt: string | null;
@@ -153,8 +153,8 @@ export declare const magazineRepo: {
         createdAt: Date;
         updatedAt: Date;
         title: string;
-        slug: string;
         category: import("@prisma/client").$Enums.MagazineCategory;
+        slug: string;
         heroImageUrl: string | null;
         authorId: string | null;
         excerpt: string | null;

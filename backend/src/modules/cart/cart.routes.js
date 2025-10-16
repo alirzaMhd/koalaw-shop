@@ -11,10 +11,10 @@ const requireAdmin = (req, _res, next) => {
         return next();
     return next(new AppError("دسترسی غیرمجاز.", 403, "FORBIDDEN"));
 };
+cartRouter.get("/me", authGuard, cartController.getOrCreateForUser);
 // Fetch cart by id (public; cart id acts as capability)
 cartRouter.get("/:id", cartController.getById);
 // User cart (requires auth)
-cartRouter.get("/me", authGuard, cartController.getOrCreateForUser);
 // Anonymous cart (guest flow; body { anonymousId })
 cartRouter.post("/anonymous", cartController.getOrCreateForAnonymous);
 // Items

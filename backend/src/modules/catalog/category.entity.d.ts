@@ -8,11 +8,13 @@ export declare const CATEGORY_LABELS_FA: Record<ProductCategory, string>;
  * Feather icon names used by the frontend for each category
  */
 export declare const CATEGORY_FEATHER_ICONS: Record<ProductCategory, string>;
+export declare const CATEGORY_HERO_IMAGES: Record<ProductCategory, string>;
 export interface Category {
     code: ProductCategory;
     slug: ProductCategory;
     label: string;
     icon: string;
+    heroImageUrl?: string;
 }
 /**
  * Returns the static list of categories with display metadata.
@@ -31,6 +33,22 @@ export declare function assertCategory(x: any): asserts x is ProductCategory;
  * Accepts minor variants like underscores/spaces; normalizes to hyphenated slug.
  */
 export declare function parseCategory(input?: string | null): ProductCategory | null;
+/**
+ * Normalize an arbitrary category value/slug (from DB or URL) to our canonical hyphenated slug.
+ * If it's not one of the known static categories, returns the normalized slug string (not typed).
+ */
+export declare function toCategorySlug(value: string): string;
+/**
+ * Returns a Farsi label for a given category value/slug.
+ * Falls back to the raw slug if it's not a known static category.
+ */
+export declare function getCategoryLabel(value: string): string;
+export interface DbCategory {
+    id: string;
+    value: string;
+    label: string;
+    heroImageUrl?: string | null;
+}
 /**
  * Normalizes a list of categories from a mixed input (string, CSV, array).
  * Deduplicates and filters invalid values.

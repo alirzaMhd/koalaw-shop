@@ -28,6 +28,13 @@ export const CATEGORY_FEATHER_ICONS = {
     haircare: "git-branch",
     "body-bath": "droplet",
 };
+export const CATEGORY_HERO_IMAGES = {
+    skincare: "/assets/images/products/skin.png",
+    makeup: "/assets/images/products/cosmetic.png",
+    fragrance: "/assets/images/products/perfume.png",
+    haircare: "/assets/images/products/hair.png",
+    "body-bath": "/assets/images/products/body.png",
+};
 /**
  * Returns the static list of categories with display metadata.
  */
@@ -37,6 +44,7 @@ export function listCategories() {
         slug: code,
         label: CATEGORY_LABELS_FA[code],
         icon: CATEGORY_FEATHER_ICONS[code],
+        heroImageUrl: CATEGORY_HERO_IMAGES[code],
     }));
 }
 /**
@@ -62,6 +70,21 @@ export function parseCategory(input) {
         return null;
     const normalized = String(input).trim().toLowerCase().replace(/[\s_]+/g, "-");
     return isProductCategory(normalized) ? normalized : null;
+}
+/**
+ * Normalize an arbitrary category value/slug (from DB or URL) to our canonical hyphenated slug.
+ * If it's not one of the known static categories, returns the normalized slug string (not typed).
+ */
+export function toCategorySlug(value) {
+    return String(value || "").trim().toLowerCase().replace(/[\s_]+/g, "-");
+}
+/**
+ * Returns a Farsi label for a given category value/slug.
+ * Falls back to the raw slug if it's not a known static category.
+ */
+export function getCategoryLabel(value) {
+    const slug = toCategorySlug(value);
+    return CATEGORY_LABELS_FA[slug] ?? slug;
 }
 /**
  * Normalizes a list of categories from a mixed input (string, CSV, array).

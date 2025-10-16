@@ -91,12 +91,14 @@ class ZarinpalGateway {
             };
             logger.debug({ payload }, "Zarinpal payment request");
             const response = await this.client.post("/request.json", payload);
-            const data = response.data?.data;
-            const errors = response.data?.errors;
-            if (errors || !data || data.code !== 100) {
-                const code = errors?.code || data?.code || -1;
-                const message = ZARINPAL_ERRORS[code] || errors?.message || data?.message || "خطای ناشناخته زرین‌پال";
-                logger.error({ code, message, errors, data }, "Zarinpal request failed");
+            const responseData = response.data;
+            const errors = responseData?.errors;
+            const data = responseData?.data;
+            const code = data?.code || -1; // ← code is INSIDE data object
+            // Check if request was successful (code 100)
+            if (code !== 100 || !data?.authority) {
+                const message = ZARINPAL_ERRORS[code] || data?.message || "خطای ناشناخته زرین‌پال";
+                logger.error({ code, message, errors, data, responseData }, "Zarinpal request failed");
                 throw new AppError(`${message} (کد خطا: ${code})`, 400, "ZARINPAL_ERROR");
             }
             const authority = data.authority;
@@ -139,29 +141,24 @@ class ZarinpalGateway {
             };
             logger.debug({ payload }, "Zarinpal verify request");
             const response = await this.client.post("/verify.json", payload);
-            const data = response.data?.data;
-            const errors = response.data?.errors;
-            if (errors) {
-                const code = errors.code || -1;
-                const message = ZARINPAL_ERRORS[code] || errors.message || "خطای تایید تراکنش";
-                logger.warn({ code, message, authority }, "Zarinpal verification failed");
-                return { success: false, code, message };
-            }
-            if (!data || (data.code !== 100 && data.code !== 101)) {
-                const code = data?.code || -1;
-                const message = ZARINPAL_ERRORS[code] || data?.message || "تراکنش ناموفق بود.";
+            const responseData = response.data;
+            const errors = responseData?.errors;
+            const data = responseData?.data;
+            const code = data?.code || -1;
+            if (code !== 100 && code !== 101) {
+                const message = ZARINPAL_ERRORS[code] || responseData?.message || "تراکنش ناموفق بود.";
                 logger.warn({ code, message, authority }, "Zarinpal verification unsuccessful");
                 return { success: false, code, message };
             }
-            logger.info({ authority, refId: data.ref_id, code: data.code }, "Zarinpal payment verified");
+            logger.info({ authority, refId: data?.ref_id, code: code }, "Zarinpal payment verified");
             return {
                 success: true,
-                code: data.code,
-                refId: data.ref_id ? String(data.ref_id) : undefined,
-                cardPan: data.card_pan,
-                cardHash: data.card_hash,
-                fee: data.fee,
-                feeType: data.fee_type,
+                code,
+                refId: data?.ref_id ? String(data.ref_id) : undefined,
+                cardPan: data?.card_pan,
+                cardHash: data?.card_hash,
+                fee: data?.fee,
+                feeType: data?.fee_type,
             };
         }
         catch (error) {

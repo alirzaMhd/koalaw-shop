@@ -7,7 +7,7 @@ import { eventBus } from "../../events/eventBus.js";
 import { AppError } from "../../common/errors/AppError.js";
 import { mapDbProductToEntity, mapDbImageToEntity, mapDbVariantToEntity, toProductCardDto, toProductDetailDto, toPrismaWhere, toPrismaOrderBy, } from "./product.entity.js";
 import {} from "./product.validators.js";
-import { listCategories, normalizeCategories } from "./category.entity.js"; // NEW
+import { listCategories } from "./category.entity.js"; // NEW
 // ---------------- Utils ----------------
 function slugify(input) {
     const s = (input || "")
@@ -51,12 +51,24 @@ async function resolveBrandId(input) {
 }
 function pickCoreProductData(input, brandId) {
     const data = {
-        // Relations
-        ...(brandId ? { brandId } : {}),
-        ...(input.colorThemeId !== undefined ? { colorThemeId: input.colorThemeId || null } : {}),
-        ...(input.collectionId !== undefined ? { collectionId: input.collectionId || null } : {}),
-        // Scalars
-        ...(input.category ? { category: input.category } : {}),
+        // Relations (use nested connect/disconnect)
+        ...(brandId ? { brand: { connect: { id: brandId } } } : {}),
+        ...(input.colorThemeId !== undefined
+            ? input.colorThemeId
+                ? { colorTheme: { connect: { id: input.colorThemeId } } }
+                : { colorTheme: { disconnect: true } }
+            : {}),
+        ...(input.collectionId !== undefined
+            ? input.collectionId
+                ? { collection: { connect: { id: input.collectionId } } }
+                : { collection: { disconnect: true } }
+            : {}),
+        ...(input.categoryId !== undefined
+            ? input.categoryId
+                ? { dbCategory: { connect: { id: input.categoryId } } }
+                : { dbCategory: { disconnect: true } }
+            : {}),
+        // Scalars (no legacy category here)
         ...(input.title ? { title: input.title } : {}),
         ...(input.subtitle !== undefined ? { subtitle: input.subtitle || null } : {}),
         ...(input.slug !== undefined ? { slug: input.slug } : {}),
@@ -72,10 +84,7 @@ function pickCoreProductData(input, brandId) {
         ...(typeof input.isFeatured === "boolean" ? { isFeatured: input.isFeatured } : {}),
         ...(typeof input.isSpecialProduct === "boolean" ? { isSpecialProduct: input.isSpecialProduct } : {}),
         ...(typeof input.isActive === "boolean" ? { isActive: input.isActive } : {}),
-        // Fix heroImageUrl handling - accept null, undefined, or valid URL
-        ...(input.heroImageUrl !== undefined ? {
-            heroImageUrl: input.heroImageUrl
-        } : {}),
+        ...(input.heroImageUrl !== undefined ? { heroImageUrl: input.heroImageUrl } : {}),
         ...(input.internalNotes !== undefined ? { internalNotes: input.internalNotes || null } : {}),
     };
     return data;
@@ -83,6 +92,7 @@ function pickCoreProductData(input, brandId) {
 function includeForList(opts) {
     return {
         brand: true,
+        dbCategory: true,
         colorTheme: true,
         images: opts?.includeImages
             ? { orderBy: { position: "asc" } }
@@ -94,6 +104,7 @@ function includeForList(opts) {
 }
 const includeForDetail = {
     brand: true,
+    dbCategory: true,
     colorTheme: true,
     images: { orderBy: { position: "asc" } },
     variants: { orderBy: { position: "asc" } },
@@ -119,10 +130,14 @@ class ProductService {
     async list(query) {
         const { page, perPage, sort, includeImages, includeVariants, ...rest } = query;
         // Normalize categories into canonical slugs (skincare/makeup/...) regardless of input format
-        const normalizedCategories = normalizeCategories(rest.categories);
+        const categoryValues = Array.isArray(rest.categories)
+            ? rest.categories
+                .map((s) => String(s || "").trim().toLowerCase().replace(/[\s_]+/g, "-"))
+                .filter(Boolean)
+            : [];
         const where = toPrismaWhere({
             search: rest.search,
-            categories: normalizedCategories,
+            categories: categoryValues,
             brandIds: rest.brandIds,
             brandSlugs: rest.brandSlugs,
             collectionIds: rest.collectionIds,
@@ -530,6 +545,29 @@ class ProductService {
     }
     // ---------------- Filters for sidebar (NEW) ----------------
     async getFilterOptions() {
+        // DB-backed categories with counts (optional hero image)
+        const dbCatCounts = await prisma.product.groupBy({
+            by: ["categoryId"],
+            where: { isActive: true, categoryId: { not: null } },
+            _count: { _all: true },
+        });
+        const dbCatCountMap = new Map();
+        for (const c of dbCatCounts) {
+            if (c.categoryId)
+                dbCatCountMap.set(c.categoryId, c._count._all);
+        }
+        const dbCategoriesRaw = await prisma.category.findMany({
+            select: { id: true, value: true, label: true, heroImageUrl: true, icon: true },
+            orderBy: { label: "asc" },
+        });
+        const dbCategories = dbCategoriesRaw.map((c) => ({
+            id: c.id,
+            value: c.value,
+            label: c.label,
+            heroImageUrl: c.heroImageUrl,
+            icon: c.icon || "grid",
+            count: dbCatCountMap.get(c.id) ?? 0,
+        }));
         const brandCounts = await prisma.product.groupBy({
             by: ["brandId"],
             where: { isActive: true },
@@ -550,7 +588,7 @@ class ProductService {
         }))
             .sort((a, b) => a.name.localeCompare(b.name, "fa"));
         const allCollections = await prisma.collection.findMany({
-            select: { id: true, name: true },
+            select: { id: true, name: true, heroImageUrl: true },
         });
         const collectionCounts = await prisma.product.groupBy({
             by: ["collectionId"],
@@ -566,6 +604,7 @@ class ProductService {
             .map((c) => ({
             id: c.id,
             name: c.name,
+            heroImageUrl: c.heroImageUrl || null,
             count: collCountMap.get(c.id) ?? 0,
         }))
             .sort((a, b) => a.name.localeCompare(b.name, "fa"));
@@ -580,10 +619,34 @@ class ProductService {
         };
         return {
             categories: listCategories(),
+            dbCategories,
             brands: brandOptions,
             collections: collectionOptions,
             priceRange,
         };
+    }
+    // Add after the getFilterOptions method, before the closing bracket of the class
+    // Get top selling products for search suggestions
+    async getTopSelling(limit = 4) {
+        const products = await prisma.product.findMany({
+            where: { isActive: true },
+            orderBy: [
+                { isBestseller: 'desc' },
+                { ratingCount: 'desc' },
+                { ratingAvg: 'desc' }
+            ],
+            take: limit,
+            select: {
+                id: true,
+                slug: true,
+                title: true,
+            }
+        });
+        return products.map((p) => ({
+            title: p.title,
+            slug: p.slug,
+            url: `/shop?search=${encodeURIComponent(p.title)}`
+        }));
     }
 }
 export const productService = new ProductService();

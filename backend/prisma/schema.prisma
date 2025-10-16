@@ -177,6 +177,7 @@ model ProductReview {
 model Collection {
   id       String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name     String
+  heroImageUrl  String?   @map("hero_image_url")
   products Product[]
 
   @@map("collections")

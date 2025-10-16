@@ -39,7 +39,7 @@ export declare const adminService: {
         page?: number;
         perPage?: number;
         search?: string;
-        category?: string;
+        categoryId?: string;
         isActive?: boolean;
     }): Promise<{
         products: ({
@@ -73,6 +73,15 @@ export declare const adminService: {
                 colorName: string | null;
                 colorHexCode: string | null;
             }[];
+            dbCategory: {
+                value: string;
+                id: string;
+                createdAt: Date;
+                updatedAt: Date;
+                label: string;
+                heroImageUrl: string | null;
+                icon: string;
+            } | null;
         } & {
             id: string;
             createdAt: Date;
@@ -83,7 +92,7 @@ export declare const adminService: {
             brandId: string;
             colorThemeId: string | null;
             collectionId: string | null;
-            category: import("@prisma/client").$Enums.ProductCategory;
+            categoryId: string | null;
             subtitle: string | null;
             description: string | null;
             ingredients: string | null;
@@ -345,20 +354,66 @@ export declare const adminService: {
     } & {
         name: string;
         id: string;
+        heroImageUrl: string | null;
     })[]>;
     createCollection(data: {
         name: string;
     }): Promise<{
         name: string;
         id: string;
+        heroImageUrl: string | null;
     }>;
     updateCollection(id: string, data: {
         name: string;
     }): Promise<{
         name: string;
         id: string;
+        heroImageUrl: string | null;
     }>;
     deleteCollection(id: string): Promise<{
+        deleted: boolean;
+    }>;
+    listCategories(): Promise<({
+        _count: {
+            products: number;
+        };
+    } & {
+        value: string;
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        label: string;
+        heroImageUrl: string | null;
+        icon: string;
+    })[]>;
+    createCategory(data: {
+        value?: string;
+        label: string;
+        heroImageUrl?: string;
+    }): Promise<{
+        value: string;
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        label: string;
+        heroImageUrl: string | null;
+        icon: string;
+    }>;
+    updateCategory(id: string, data: {
+        value?: string;
+        label?: string;
+        heroImageUrl?: string;
+        icon?: string;
+    }): Promise<{
+        value: string;
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        label: string;
+        heroImageUrl: string | null;
+        icon: string;
+    }>;
+    deleteCategory(id: string): Promise<{
         deleted: boolean;
     }>;
     getNewsletterStats(): Promise<{

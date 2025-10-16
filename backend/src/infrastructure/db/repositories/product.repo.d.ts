@@ -218,7 +218,7 @@ export declare const productRepo: {
         brandId: string;
         colorThemeId: string | null;
         collectionId: string | null;
-        category: import("@prisma/client").$Enums.ProductCategory;
+        categoryId: string | null;
         subtitle: string | null;
         description: string | null;
         ingredients: string | null;
@@ -454,7 +454,7 @@ export declare const productRepo: {
         brandId: string;
         colorThemeId: string | null;
         collectionId: string | null;
-        category: import("@prisma/client").$Enums.ProductCategory;
+        categoryId: string | null;
         subtitle: string | null;
         description: string | null;
         ingredients: string | null;
@@ -489,7 +489,7 @@ export declare const productRepo: {
         brandId: string;
         colorThemeId: string | null;
         collectionId: string | null;
-        category: import("@prisma/client").$Enums.ProductCategory;
+        categoryId: string | null;
         subtitle: string | null;
         description: string | null;
         ingredients: string | null;
@@ -515,7 +515,7 @@ export declare const productRepo: {
         brandId: string;
         colorThemeId: string | null;
         collectionId: string | null;
-        category: import("@prisma/client").$Enums.ProductCategory;
+        categoryId: string | null;
         subtitle: string | null;
         description: string | null;
         ingredients: string | null;
@@ -543,7 +543,7 @@ export declare const productRepo: {
         brandId: string;
         colorThemeId: string | null;
         collectionId: string | null;
-        category: import("@prisma/client").$Enums.ProductCategory;
+        categoryId: string | null;
         subtitle: string | null;
         description: string | null;
         ingredients: string | null;
@@ -571,7 +571,7 @@ export declare const productRepo: {
         brandId: string;
         colorThemeId: string | null;
         collectionId: string | null;
-        category: import("@prisma/client").$Enums.ProductCategory;
+        categoryId: string | null;
         subtitle: string | null;
         description: string | null;
         ingredients: string | null;

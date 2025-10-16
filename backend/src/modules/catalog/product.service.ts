@@ -697,7 +697,7 @@ class ProductService {
       .sort((a: { name: string; }, b: { name: any; }) => a.name.localeCompare(b.name, "fa"));
 
     const allCollections = await prisma.collection.findMany({
-      select: { id: true, name: true },
+      select: { id: true, name: true, heroImageUrl: true },
     });
     const collectionCounts = await prisma.product.groupBy({
       by: ["collectionId"],
@@ -709,9 +709,10 @@ class ProductService {
       if (c.collectionId) collCountMap.set(c.collectionId, c._count._all);
     }
     const collectionOptions = allCollections
-      .map((c: { id: string; name: any; }) => ({
+      .map((c: { id: string; name: string; heroImageUrl?: string | null }) => ({
         id: c.id,
         name: c.name,
+        heroImageUrl: c.heroImageUrl || null,
         count: collCountMap.get(c.id) ?? 0,
       }))
       .sort((a: { name: string; }, b: { name: any; }) => a.name.localeCompare(b.name, "fa"));

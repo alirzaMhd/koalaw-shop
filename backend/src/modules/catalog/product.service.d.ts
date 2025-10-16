@@ -74,6 +74,14 @@ declare class ProductService {
     }>;
     getFilterOptions(): Promise<{
         categories: import("./category.entity.js").Category[];
+        dbCategories: {
+            id: string;
+            value: string;
+            label: string;
+            heroImageUrl: string | null;
+            icon: string;
+            count: number;
+        }[];
         brands: {
             id: unknown;
             name: any;
@@ -82,7 +90,8 @@ declare class ProductService {
         }[];
         collections: {
             id: string;
-            name: any;
+            name: string;
+            heroImageUrl: string | null;
             count: number;
         }[];
         priceRange: {
@@ -90,6 +99,11 @@ declare class ProductService {
             max: number;
         };
     }>;
+    getTopSelling(limit?: number): Promise<{
+        title: string;
+        slug: string;
+        url: string;
+    }[]>;
 }
 export declare const productService: ProductService;
 export {};

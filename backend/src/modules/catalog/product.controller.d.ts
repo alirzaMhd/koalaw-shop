@@ -2,6 +2,8 @@ import type { RequestHandler } from "express";
 declare class ProductController {
     list: RequestHandler;
     filters: RequestHandler;
+    categories: RequestHandler;
+    suggestions: RequestHandler;
     getById: RequestHandler;
     getBySlug: RequestHandler;
     create: RequestHandler;
