@@ -335,7 +335,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (collectionsContainer) {
     async function fetchCollectionProducts() {
       try {
-        // Fetch collections (now includes heroImageUrl)
+        // Fetch collections (now includes heroImageUrl, subtitle, isFeatured, displayOrder)
         const res = await fetch("/api/products/filters", { cache: "no-store" });
         if (!res.ok) {
           console.error("Failed to fetch collections:", res.status);
@@ -346,17 +346,16 @@ document.addEventListener("DOMContentLoaded", async () => {
           ? json.data.collections
           : [];
 
-        // Pick top 3 by product count, prefer those with heroImageUrl
-        const sorted = collections
-          .slice()
-          .sort((a, b) => (b.count || 0) - (a.count || 0));
-        let top3 = sorted.filter((c) => !!c.heroImageUrl).slice(0, 3);
-        if (top3.length < 3) top3 = sorted.slice(0, 3);
+        // Filter featured collections and sort by displayOrder (descending)
+        const featured = collections
+          .filter((c) => c.isFeatured && c.heroImageUrl)
+          .sort((a, b) => (b.displayOrder || 0) - (a.displayOrder || 0))
+          .slice(0, 3);
 
-        if (top3.length > 0) {
-          renderCollectionCards(top3);
+        if (featured.length > 0) {
+          renderCollectionCards(featured);
         } else {
-          console.warn("No collections found");
+          console.warn("No featured collections found");
         }
       } catch (error) {
         console.error("Error fetching collections:", error);
@@ -402,7 +401,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const image =
           col.heroImageUrl || "/assets/images/products/collection.png";
         const title = col.name || "کالکشن";
-        const description = `منتخب محصولات از کالکشن ${title}`;
+        const description = col.subtitle || `منتخب محصولات از کالکشن ${title}`;
 
         const largeCard = document.createElement("a");
         largeCard.href = `/shop?collectionId=${encodeURIComponent(col.id)}`;

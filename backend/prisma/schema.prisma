@@ -178,6 +178,9 @@ model Collection {
   id       String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name     String
   heroImageUrl  String?   @map("hero_image_url")
+  subtitle     String?   // NEW: custom subtitle for homepage
+  isFeatured   Boolean   @default(false) @map("is_featured") // NEW: featured on homepage
+  displayOrder Int       @default(0) @map("display_order") // NEW: order for featured collections
   products Product[]
 
   @@map("collections")

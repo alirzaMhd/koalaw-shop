@@ -5,11 +5,17 @@ import { collectionsService } from "./collections.service.js";
 const createSchema = z.object({
   name: z.string().min(1, "نام کالکشن الزامی است."),
   heroImageUrl: z.string().trim().optional().nullable(),
+  subtitle: z.string().trim().optional().nullable(), // NEW
+  isFeatured: z.boolean().optional(), // NEW
+  displayOrder: z.number().int().optional(), // NEW
 });
 
 const updateSchema = z.object({
   name: z.string().min(1).optional(),
   heroImageUrl: z.string().trim().optional().nullable(),
+  subtitle: z.string().trim().optional().nullable(), // NEW
+  isFeatured: z.boolean().optional(), // NEW
+  displayOrder: z.number().int().optional(), // NEW
 });
 
 export const collectionsController = {

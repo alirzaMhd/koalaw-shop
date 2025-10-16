@@ -386,11 +386,11 @@
       });
     },
     updateCollection(id, data) {
-  return this.fetch(`/api/admin/collections/${id}`, {
-    method: "PATCH",
-    body: JSON.stringify(data),
-  });
-},
+      return this.fetch(`/api/admin/collections/${id}`, {
+        method: "PATCH",
+        body: JSON.stringify(data),
+      });
+    },
     deleteCollection(id) {
       return this.fetch(`/api/admin/collections/${id}`, { method: "DELETE" });
     },
@@ -614,16 +614,15 @@
             </div>
             <div class="admin-form-group">
               <label class="admin-form-label">آواتار</label>
-              ${
-                author?.avatarUrl
-                  ? `
+              ${author?.avatarUrl
+          ? `
                 <div class="mb-3">
                   <img src="${author.avatarUrl}" alt="${author.name || ""}" class="w-16 h-16 rounded object-cover border" />
                   <small class="text-gray-500 block mt-1">آواتار فعلی</small>
                 </div>
               `
-                  : ""
-              }
+          : ""
+        }
               <input type="file" id="author-avatar-file" class="admin-form-input" accept="image/*" />
               <small class="text-gray-500">فرمت‌های مجاز: JPG, PNG, WebP, GIF (حداکثر 5MB)</small>
               <div id="author-avatar-preview" class="mt-3 hidden">
@@ -844,14 +843,14 @@
               <select name="brandId" class="admin-form-input" required>
                 <option value="">انتخاب کنید</option>
                 ${brands.brands
-                  .map(
-                    (b) => `
+            .map(
+              (b) => `
                   <option value="${b.id}" ${data.brandId === b.id ? "selected" : ""}>
                     ${b.name}
                   </option>
                 `
-                  )
-                  .join("")}
+            )
+            .join("")}
               </select>
             </div>
 
@@ -860,14 +859,14 @@
               <select name="collectionId" class="admin-form-input">
                 <option value="">هیچکدام</option>
                 ${collections.collections
-                  .map(
-                    (c) => `
+            .map(
+              (c) => `
                   <option value="${c.id}" ${data.collectionId === c.id ? "selected" : ""}>
                     ${c.name}
                   </option>
                 `
-                  )
-                  .join("")}
+            )
+            .join("")}
               </select>
             </div>
           </div>
@@ -878,14 +877,14 @@
               <select name="colorThemeId" class="admin-form-input">
                 <option value="">هیچکدام</option>
                 ${(colorThemes?.colorThemes || [])
-                  .map(
-                    (ct) => `
+            .map(
+              (ct) => `
                    <option value="${ct.id}" ${data.colorThemeId === ct.id ? "selected" : ""}>
                      ${ct.name}
                    </option>
                  `
-                  )
-                  .join("")}
+            )
+            .join("")}
               </select>
             </div>
 
@@ -895,8 +894,8 @@
             <label class="admin-form-label">نشان‌ها</label>
             <div class="space-y-2" id="badges-checklist">
               ${badges.badges
-                .map(
-                  (b) => `
+            .map(
+              (b) => `
                 <label class="flex items-center gap-2 cursor-pointer p-2 hover:bg-gray-50 rounded">
                   <input 
                     type="checkbox" 
@@ -909,8 +908,8 @@
                   <span>${b.title}</span>
                 </label>
               `
-                )
-                .join("")}
+            )
+            .join("")}
             </div>
           </div>
 
@@ -994,14 +993,14 @@
             <label class="admin-form-label">انتخاب محصولات مرتبط</label>
             <select name="relatedProductIds" id="related-products-select" class="admin-form-input" multiple size="8">
               ${(allProducts?.products || [])
-                .filter((p) => !data.id || p.id !== data.id)
-                .map(
-                  (p) => `
+            .filter((p) => !data.id || p.id !== data.id)
+            .map(
+              (p) => `
                 <option value="${p.id}" ${existingRelatedIds.includes(p.id) ? "selected" : ""}>
                   ${p.title}
                 </option>`
-                )
-                .join("")}
+            )
+            .join("")}
             </select>
             <small class="text-gray-500">برای انتخاب چند مورد، کلید Ctrl/⌘ را نگه دارید.</small>
           </div>
@@ -1998,14 +1997,14 @@
             <label class="admin-form-label">وضعیت سفارش</label>
             <select name="status" class="admin-form-input">
               ${statusOptions
-                .map(
-                  (opt) => `
+            .map(
+              (opt) => `
                 <option value="${opt.value}" ${order.status === opt.value ? "selected" : ""}>
                   ${opt.label}
                 </option>
               `
-                )
-                .join("")}
+            )
+            .join("")}
             </select>
           </div>
 
@@ -2080,15 +2079,14 @@
             <textarea class="admin-form-input" rows="2" disabled>${order.shippingAddressLine1 || "-"}</textarea>
           </div>
 
-          ${
-            order.shippingAddressLine2
-              ? `
+          ${order.shippingAddressLine2
+            ? `
           <div class="admin-form-group">
             <label class="admin-form-label">جزئیات آدرس</label>
             <textarea class="admin-form-input" rows="2" disabled>${order.shippingAddressLine2}</textarea>
           </div>
           `
-              : ""
+            : ""
           }
 
           <div class="admin-form-row">
@@ -2111,8 +2109,7 @@
           </div>
         </div>
 
-        ${
-          order.payments && order.payments.length
+        ${order.payments && order.payments.length
             ? `
         <div class="admin-form-section">
           <h3 class="admin-form-section-title">پرداخت‌ها</h3>
@@ -2122,7 +2119,7 @@
         </div>
         `
             : ""
-        }
+          }
 
         <div class="admin-form-section">
           <h3 class="admin-form-section-title">مالی</h3>
@@ -2133,32 +2130,30 @@
               <span class="font-semibold">${utils.toIRR(order.subtotal)}</span>
             </div>
 
-            ${
-              order.discountTotal > 0
-                ? `
+            ${order.discountTotal > 0
+            ? `
             <div class="flex justify-between text-green-600">
               <span>تخفیف:</span>
               <span class="font-semibold">- ${utils.toIRR(order.discountTotal)}</span>
             </div>
             `
-                : ""
-            }
+            : ""
+          }
 
             <div class="flex justify-between">
               <span>هزینه ارسال:</span>
               <span class="font-semibold">${order.shippingTotal > 0 ? utils.toIRR(order.shippingTotal) : "رایگان"}</span>
             </div>
 
-            ${
-              order.giftWrapTotal > 0
-                ? `
+            ${order.giftWrapTotal > 0
+            ? `
             <div class="flex justify-between">
               <span>بسته‌بندی هدیه:</span>
               <span class="font-semibold">${utils.toIRR(order.giftWrapTotal)}</span>
             </div>
             `
-                : ""
-            }
+            : ""
+          }
 
             <div class="flex justify-between pt-2 border-t text-lg">
               <span class="font-bold">مجموع:</span>
@@ -2166,19 +2161,17 @@
             </div>
           </div>
 
-          ${
-            order.giftWrap
-              ? `
+          ${order.giftWrap
+            ? `
           <div class="mt-4 p-3 bg-pink-50 rounded-lg">
             <p class="text-sm font-semibold text-pink-800">🎁 بسته‌بندی هدیه فعال است</p>
           </div>
           `
-              : ""
+            : ""
           }
         </div>
 
-        ${
-          order.note
+        ${order.note
             ? `
         <div class="admin-form-section">
           <h3 class="admin-form-section-title">یادداشت مشتری</h3>
@@ -2188,7 +2181,7 @@
         </div>
         `
             : ""
-        }
+          }
 
         <div class="admin-form-actions">
           <button type="button" class="admin-btn admin-btn-secondary" data-action="closePanel">
@@ -2291,19 +2284,18 @@
             <label class="admin-form-label">نویسنده</label>
             <select name="authorId" class="admin-form-input">
               <option value="">هیچکدام</option>
-              ${
-                Array.isArray(authors)
-                  ? authors
-                      .map(
-                        (a) => `
+              ${Array.isArray(authors)
+            ? authors
+              .map(
+                (a) => `
                 <option value="${a.id}" ${data.authorId === a.id ? "selected" : ""}>
                   ${a.name}
                 </option>
               `
-                      )
-                      .join("")
-                  : ""
-              }
+              )
+              .join("")
+            : ""
+          }
             </select>
           </div>
 
@@ -2332,9 +2324,8 @@
         <div class="admin-form-section">
           <h3 class="admin-form-section-title">تصویر شاخص</h3>
 
-          ${
-            data.heroImageUrl
-              ? `
+          ${data.heroImageUrl
+            ? `
             <div class="admin-form-group">
               <label class="admin-form-label">تصویر فعلی</label>
               <div class="admin-image-preview">
@@ -2342,7 +2333,7 @@
               </div>
             </div>
           `
-              : ""
+            : ""
           }
 
           <div class="admin-form-group">
@@ -2374,19 +2365,18 @@
           <div class="admin-form-group">
             <label class="admin-form-label">انتخاب مقالات مرتبط</label>
             <select name="relatedPostIds" id="related-posts-select" class="admin-form-input" multiple size="8">
-              ${
-                Array.isArray(allPosts)
-                  ? allPosts
-                      .filter((p) => !data.id || p.id !== data.id)
-                      .map(
-                        (p) => `
+              ${Array.isArray(allPosts)
+            ? allPosts
+              .filter((p) => !data.id || p.id !== data.id)
+              .map(
+                (p) => `
                 <option value="${p.id}" ${existingRelatedIds.includes(p.id) ? "selected" : ""}>
                   ${p.title}
                 </option>`
-                      )
-                      .join("")
-                  : ""
-              }
+              )
+              .join("")
+            : ""
+          }
             </select>
             <small class="text-gray-500">برای انتخاب چند مورد، کلید Ctrl/⌘ را نگه دارید.</small>
           </div>
@@ -2414,13 +2404,12 @@
           <div class="admin-form-group">
             <label class="admin-form-label">برچسب‌ها (با کاما جدا کنید)</label>
             <input type="text" name="tags" class="admin-form-input" value="${data.tags?.map((t) => t.tag?.name || t.name).join(", ") || ""}" />
-            ${
-              Array.isArray(tags) && tags.length
-                ? `
+            ${Array.isArray(tags) && tags.length
+            ? `
               <small class="text-gray-500">برچسب‌های موجود: ${tags.map((t) => t.name).join(", ")}</small>
             `
-                : ""
-            }
+            : ""
+          }
           </div>
         </div>
 
@@ -2525,10 +2514,10 @@
               const tagsInput = formData.get("tags");
               const tagsArray = tagsInput
                 ? tagsInput
-                    .toString()
-                    .split(",")
-                    .map((t) => t.trim())
-                    .filter(Boolean)
+                  .toString()
+                  .split(",")
+                  .map((t) => t.trim())
+                  .filter(Boolean)
                 : [];
 
               const authorIdValue = formData.get("authorId");
@@ -2772,6 +2761,26 @@
           <label class="admin-form-label required">نام کالکشن</label>
           <input type="text" name="name" class="admin-form-input" value="${collection?.name || ""}" required />
         </div>
+
+        <div class="admin-form-group">
+          <label class="admin-form-label">متن توضیحات (برای صفحه اصلی)</label>
+          <textarea name="subtitle" class="admin-form-input" rows="3" placeholder="مثال: منتخب محصولات از کالکشن پاییزی">${collection?.subtitle || ""}</textarea>
+          <small class="text-gray-500">این متن زیر عنوان کالکشن در صفحه اصلی نمایش داده می‌شود</small>
+        </div>
+
+        <div class="admin-form-group">
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" name="isFeatured" class="w-4 h-4" ${collection?.isFeatured ? "checked" : ""} />
+            <span>نمایش در صفحه اصلی</span>
+          </label>
+          <small class="text-gray-500">فقط 3 کالکشن با بالاترین ترتیب نمایش در صفحه اصلی نشان داده می‌شوند</small>
+        </div>
+
+        <div class="admin-form-group">
+          <label class="admin-form-label">ترتیب نمایش</label>
+          <input type="number" name="displayOrder" class="admin-form-input" value="${collection?.displayOrder ?? 0}" min="0" />
+          <small class="text-gray-500">عدد بزرگتر = اولویت بیشتر (کالکشن بزرگ سمت چپ)</small>
+        </div>
       </div>
 
       <div class="admin-form-section">
@@ -2815,7 +2824,7 @@
 
       panel.open(formHtml, isEdit ? "ویرایش کالکشن" : "افزودن کالکشن");
 
-      // ===== Gallery state (replicated from product form) =====
+      // [Keep all existing gallery code unchanged...]
       const collectionGalleryInput = document.getElementById(
         "collection-gallery-files-input"
       );
@@ -2829,10 +2838,9 @@
         "collection-gallery-list"
       );
 
-      let collectionGallery = []; // [{ url, alt }]
+      let collectionGallery = [];
       let collectionHeroIndex = 0;
 
-      // Prefill existing hero image (edit mode)
       if (isEdit && collection?.heroImageUrl) {
         collectionGallery = [{ url: collection.heroImageUrl, alt: "" }];
         collectionHeroIndex = 0;
@@ -2960,7 +2968,7 @@
         }
       });
 
-      // Submit
+      // Submit with new fields
       document
         .getElementById("collection-form")
         .addEventListener("submit", async (e) => {
@@ -2969,12 +2977,14 @@
 
           const payload = {
             name: formData.get("name"),
+            subtitle: formData.get("subtitle") || null,
+            isFeatured: formData.get("isFeatured") === "on",
+            displayOrder: parseInt(formData.get("displayOrder")) || 0,
           };
 
-          // Use selected hero image from gallery (replicates product form behavior)
           const heroImageUrl =
             collectionGallery[collectionHeroIndex]?.url || null;
-          if (heroImageUrl) payload.heroImageUrl = heroImageUrl;
+          payload.heroImageUrl = heroImageUrl;
 
           try {
             if (isEdit) {
