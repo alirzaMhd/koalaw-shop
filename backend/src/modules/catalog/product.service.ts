@@ -172,10 +172,10 @@ class ProductService {
     // Normalize categories into canonical slugs (skincare/makeup/...) regardless of input format
     const categoryValues = Array.isArray(rest.categories)
       ? rest.categories
-      .map((s) =>
-      String(s || "").trim().toLowerCase().replace(/[\s_]+/g, "-")
-      )
-      .filter(Boolean)
+        .map((s) =>
+          String(s || "").trim().toLowerCase().replace(/[\s_]+/g, "-")
+        )
+        .filter(Boolean)
       : [];
     const where = toPrismaWhere({
       search: rest.search,
@@ -664,14 +664,15 @@ class ProductService {
       if (c.categoryId) dbCatCountMap.set(c.categoryId, c._count._all);
     }
     const dbCategoriesRaw = await prisma.category.findMany({
-      select: { id: true, value: true, label: true, heroImageUrl: true },
+      select: { id: true, value: true, label: true, heroImageUrl: true, icon: true },
       orderBy: { label: "asc" },
     });
     const dbCategories = dbCategoriesRaw.map((c) => ({
       id: c.id,
-      value: c.value,            // canonical slug/code
-      label: c.label,            // fa display
+      value: c.value,
+      label: c.label,
       heroImageUrl: c.heroImageUrl,
+      icon: c.icon || "grid",
       count: dbCatCountMap.get(c.id) ?? 0,
     }));
     const brandCounts = await prisma.product.groupBy({

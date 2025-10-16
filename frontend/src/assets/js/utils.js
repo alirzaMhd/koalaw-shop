@@ -27,7 +27,7 @@
   function setJSON(key, value) {
     try {
       localStorage.setItem(key, JSON.stringify(value));
-    } catch {}
+    } catch { }
   }
 
   function throttle(fn, wait = 100) {
@@ -55,10 +55,9 @@
   function refreshIcons() {
     try {
       window.feather && window.feather.replace();
-    } catch {}
+    } catch { }
   }
 
-  // Footer links generator (shared default)
   // Footer links generator (shared default)
   const DEFAULT_FOOTER_LINKS = {
     فروشگاه: [
@@ -77,42 +76,106 @@
     ],
   };
 
-  function buildFooterLinks(
-    containerId = "footer-links",
-    data = DEFAULT_FOOTER_LINKS
-  ) {
-    const wrap = $("#" + containerId);
-    if (!wrap) return;
+  // ---- Footer: DB categories loader ----
+  async function fetchDbCategoryLinks() {
+    try {
+      // bump cache key to invalidate old cached full list
+      const cacheKey = "dbFooterCategories:last4:v2";
+      const cached = getJSON(cacheKey, null);
+      const maxAgeMs = 6 * 60 * 60 * 1000; // 6h
+      if (
+        cached &&
+        Array.isArray(cached.items) &&
+        Date.now() - (cached.ts || 0) < maxAgeMs
+      ) {
+        return cached.items;
+      }
 
-    // Normalize: support both object map and array of sections
-    const sections = Array.isArray(data)
-      ? data
-      : Object.entries(data).map(([title, items = []]) => ({
-          title,
-          items: items.map((i) =>
-            typeof i === "string" ? { label: i, href: "#" } : i
-          ),
-        }));
+      const res = await fetch("/api/products/filters", { cache: "no-store" });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const json = await res.json();
+      const dbCats = Array.isArray(json?.data?.dbCategories)
+        ? json.data.dbCategories
+        : [];
 
-    const html = sections
+      // only last 4 categories
+      const last4 = dbCats.slice(-4);
+      const items = last4.map((c) => ({
+        label: c.label || c.value,
+        href: `/shop?category=${encodeURIComponent(
+          String(c.value || "").toLowerCase()
+        )}`,
+        icon: c.icon || "grid",
+      }));
+
+      setJSON(cacheKey, { ts: Date.now(), items });
+      return items;
+    } catch (e) {
+      console.warn("Footer: failed to load DB categories", e);
+      return [];
+    }
+  }
+
+  function renderFooterSections(sections) {
+    return sections
       .map(({ title, items = [] }) => {
         const list = items
           .map(({ label = "", href = "#", target, rel }) => {
-            const isExternal = /^https?:\/\//i.test(href);
+            const isExternal = /^https?:\/\//i.test(href || "");
             const t = target ? ` target="${target}"` : "";
             const r = rel
               ? ` rel="${rel}"`
               : isExternal
-              ? ` rel="noopener noreferrer"`
-              : "";
+                ? ` rel="noopener noreferrer"`
+                : "";
             return `<li><a href="${href}"${t}${r} class="text-gray-400 hover:text-white transition duration-300">${label}</a></li>`;
           })
           .join("");
         return `<div><h4 class="font-semibold text-lg mb-6">${title}</h4><ul class="space-y-3">${list}</ul></div>`;
       })
       .join("");
+  }
 
-    wrap.innerHTML = html;
+  function normalizeSections(data) {
+    return Array.isArray(data)
+      ? data
+      : Object.entries(data).map(([title, items = []]) => ({
+        title,
+        items: items.map((i) =>
+          typeof i === "string" ? { label: i, href: "#" } : i
+        ),
+      }));
+  }
+
+  // Build footer links: replace any "/shop?category=..." items with DB-backed categories (label, link, icon)
+  async function buildFooterLinks(
+    containerId = "footer-links",
+    data = DEFAULT_FOOTER_LINKS
+  ) {
+    const wrap = $("#" + containerId);
+    if (!wrap) return;
+
+    // Initial render with provided data
+    let sections = normalizeSections(data);
+    wrap.innerHTML = renderFooterSections(sections);
+    refreshIcons();
+
+    // Fetch DB categories
+    const dbCatItems = await fetchDbCategoryLinks();
+    if (!dbCatItems.length) return;
+
+    // Replace category links in "فروشگاه" section and strip them from others
+    sections = sections.map((sec) => {
+      const nonCategoryItems = (sec.items || []).filter(
+        (it) => !((it?.href || "") + "").startsWith("/shop?category=")
+      );
+      if (sec.title === "فروشگاه") {
+        return { ...sec, items: [...nonCategoryItems, ...dbCatItems] };
+      }
+      return { ...sec, items: nonCategoryItems };
+    });
+
+    wrap.innerHTML = renderFooterSections(sections);
     refreshIcons();
   }
 
@@ -144,6 +207,7 @@
   }
 
   window.KUtils = {
+    ...(window.KUtils || {}),
     $,
     $$,
     on,
