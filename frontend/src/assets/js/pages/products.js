@@ -742,23 +742,28 @@
       // Update <title>
       try {
         document.title = `KOALAW | ${p.title} - محصولات لوکس آرایش`;
-      } catch { }
+      } catch {}
 
       // Category + Title
       if (productCategoryEl) {
-        const catLabel = p.categoryLabel || categoryLabel(p.category || p.categoryValue || "");
+        const catLabel =
+          p.categoryLabel || categoryLabel(p.category || p.categoryValue || "");
         productCategoryEl.textContent = catLabel;
         // Update the category icon beside the label using DB icon if provided
         const wrap = productCategoryEl.parentElement;
         if (wrap) {
-          const iconEl = wrap.querySelector('i[data-feather], svg.feather');
+          const iconEl = wrap.querySelector("i[data-feather], svg.feather");
           const slug = toCategorySlug(p.categoryValue || p.category || "");
           const iconName = p.categoryIcon || categoryIconFallback(slug);
           // If it's already an <i>, update attribute; if it's an svg, replace with <i> and re-render icons
-          let iTag = wrap.querySelector('i[data-feather]');
+          let iTag = wrap.querySelector("i[data-feather]");
           if (!iTag) {
             // replace any existing svg with a new <i>
-            if (iconEl && iconEl.tagName && iconEl.tagName.toLowerCase() === "svg") {
+            if (
+              iconEl &&
+              iconEl.tagName &&
+              iconEl.tagName.toLowerCase() === "svg"
+            ) {
               iconEl.remove();
             }
             const i = document.createElement("i");
@@ -781,7 +786,9 @@
         const catLink = breadcrumb.querySelector('a[href^="/shop/"]');
         if (catLink) {
           const slug = toCategorySlug(p.categoryValue || p.category || "");
-          const catLabel = p.categoryLabel || categoryLabel(p.category || p.categoryValue || "");
+          const catLabel =
+            p.categoryLabel ||
+            categoryLabel(p.category || p.categoryValue || "");
           catLink.href = `/shop?category=${slug}`;
           catLink.textContent = catLabel;
         }
@@ -827,8 +834,8 @@
         const b = badges[0];
         productBadge.innerHTML = `<span class="inline-flex items-center gap-1">
           <i data-feather="${escapeHtml(
-          b.icon || "award"
-        )}" class="w-4 h-4"></i>
+            b.icon || "award"
+          )}" class="w-4 h-4"></i>
           ${escapeHtml(b.title || "")}
         </span>`;
         setVisible(productBadge, true);
@@ -853,11 +860,11 @@
           card.className = "bg-white p-4 rounded-xl text-center";
           card.innerHTML = `
             <i data-feather="${escapeHtml(
-            icon
-          )}" class="w-8 h-8 ${colorClass} mx-auto mb-2"></i>
+              icon
+            )}" class="w-8 h-8 ${colorClass} mx-auto mb-2"></i>
             <div class="font-semibold text-sm">${escapeHtml(
-            b.title || ""
-          )}</div>
+              b.title || ""
+            )}</div>
           `;
           badgesGrid.appendChild(card);
         });
@@ -929,8 +936,9 @@
             const outOfStock = v.stock <= 0 || v.isActive === false;
             const btn = document.createElement("button");
             btn.type = "button";
-            btn.className = `px-3 py-1 rounded-lg border text-sm transition hover:border-black ${outOfStock ? "opacity-40 cursor-not-allowed line-through" : ""
-              }`;
+            btn.className = `px-3 py-1 rounded-lg border text-sm transition hover:border-black ${
+              outOfStock ? "opacity-40 cursor-not-allowed line-through" : ""
+            }`;
             btn.textContent = v.variantName;
             btn.dataset.variantId = v.id;
             btn.title = outOfStock ? "ناموجود" : `موجود: ${toFa(v.stock)} عدد`;
@@ -1172,63 +1180,25 @@
         if (has && mountEl) mountEl.innerHTML = html;
       };
 
-      const descHtml = (p.description || "")
-        .split(/\n{2,}/)
-        .map(
-          (chunk) =>
-            `<p class="text-gray-600 leading-relaxed mb-4">${escapeHtml(
-              chunk.trim()
-            )}</p>`
-        )
-        .join("");
+      // Description - render HTML directly
+      const descHtml = p.description || "";
       setHtmlOrHide("description", descriptionBody, descHtml);
 
-      let ingHtml = "";
-      if (p.ingredients) {
-        const parts = p.ingredients
-          .split(/\n|،|,/)
-          .map((s) => s.trim())
-          .filter(Boolean);
-        if (parts.length > 1) {
-          ingHtml = `<h3 class="text-xl font-bold mb-4">ترکیبات</h3>
-            <ul class="space-y-2 text-gray-600">${parts
-              .map((x) => `<li>• ${escapeHtml(x)}</li>`)
-              .join("")}</ul>`;
-        } else {
-          ingHtml = `<p class="text-gray-600 leading-relaxed">${escapeHtml(
-            p.ingredients
-          )}</p>`;
-        }
-      }
+      // Ingredients - render HTML directly
+      const ingHtml = p.ingredients || "";
       setHtmlOrHide("ingredients", ingredientsBody, ingHtml);
 
-      let usageHtml = "";
-      if (p.howToUse) {
-        const steps = p.howToUse
-          .split(/\n|،|,/)
-          .map((s) => s.trim())
-          .filter(Boolean);
-        usageHtml = steps
-          .map(
-            (txt, idx) => `
-          <div class="flex items-start gap-4">
-            <div class="bg-rose-100 text-rose-800 w-8 h-8 rounded-full flex items-center justify-center font-bold flex-shrink-0">${toFa(
-              idx + 1
-            )}</div>
-            <div><p class="text-gray-600">${escapeHtml(txt)}</p></div>
-          </div>`
-          )
-          .join("");
-      }
+      // How to Use - render HTML directly
+      const usageHtml = p.howToUse || "";
       setHtmlOrHide("usage", usageBody, usageHtml);
-
       // Reviews: render from DB with avatar logic
       const renderStars = (n) =>
         Array(5)
           .fill(0)
           .map(
             (_, i) =>
-              `<i data-feather="star" class="w-4 h-4 ${i < n ? "fill-current" : ""
+              `<i data-feather="star" class="w-4 h-4 ${
+                i < n ? "fill-current" : ""
               }"></i>`
           )
           .join("");
@@ -1252,11 +1222,11 @@
                 />
                 <div>
                   <div class="font-semibold">${escapeHtml(
-            r.authorName || "کاربر"
-          )}</div>
+                    r.authorName || "کاربر"
+                  )}</div>
                   <div class="text-sm text-gray-500">${timeAgoFa(
-            r.createdAt
-          )}</div>
+                    r.createdAt
+                  )}</div>
                 </div>
               </div>
               <div class="stars">${renderStars(Number(r.rating || 0))}</div>
@@ -1280,14 +1250,18 @@
         relatedSection.classList.remove("hidden");
 
         items.forEach((item, idx) => {
-          const slug = toCategorySlug(item.categoryValue || item.category || "default");
+          const slug = toCategorySlug(
+            item.categoryValue || item.category || "default"
+          );
           const categoryClass = `category-${slug}`;
           const ratingText = Number(item.ratingAvg || 0)
             .toFixed(1)
             .replace(".", "٫");
           const href = `/product/${encodeURIComponent(item.slug)}`;
           const hero = item.heroImageUrl || "/assets/images/product.png";
-          const label = item.categoryLabel || categoryLabel(item.categoryValue || item.category || "");
+          const label =
+            item.categoryLabel ||
+            categoryLabel(item.categoryValue || item.category || "");
           const icon = item.categoryIcon || categoryIconFallback(slug);
           const card = document.createElement("a");
           card.href = href;
@@ -1304,8 +1278,8 @@
             </div>
             <div class="card-image-wrapper">
               <img src="${hero}" alt="${escapeHtml(
-            item.title
-          )}" class="card-image" />
+                item.title
+              )}" class="card-image" />
             </div>
             <div class="card-content">
               <div class="card-category">
@@ -1318,9 +1292,9 @@
                 <span>${ratingText}</span>
               </div>
               <p class="card-price">${formatPrice(
-            item.price,
-            item.currencyCode
-          )}</p>
+                item.price,
+                item.currencyCode
+              )}</p>
             </div>
           `;
           relatedList.appendChild(card);
