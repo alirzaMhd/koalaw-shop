@@ -1,6 +1,6 @@
 // /assets/js/pages/magazine.js
 (function () {
-  document.addEventListener("DOMContentLoaded", () => {
+  document.addEventListener("DOMContentLoaded", async () => {
     const grid = document.getElementById("articles-grid");
     if (!grid) return;
 
@@ -24,30 +24,13 @@
 
     // UI elements
     const searchBox = document.getElementById("article-search");
-    const filterBtns = Array.from(document.querySelectorAll(".filter-btn"));
+    const filterContainer = document.getElementById("mag-filters");
     const sentinel = document.getElementById("load-more-sentinel");
 
     // Clear initial hardcoded articles
     grid.innerHTML = "";
 
-    // Category mapping
-    const categoryMap = {
-      all: null,
-      guide: "GUIDE",
-      tutorial: "TUTORIAL",
-      trends: "TRENDS",
-      lifestyle: "LIFESTYLE",
-      general: "GENERAL",
-    };
-
-    // Category display names
-    const categoryNames = {
-      GUIDE: "راهنما",
-      TUTORIAL: "آموزش",
-      LIFESTYLE: "لایف‌استایل",
-      TRENDS: "ترندها",
-      GENERAL: "عمومی",
-    };
+    let categoriesMap = {}; // e.g., { GUIDE: "راهنما", ... }
 
     /**
      * Format date to Persian
@@ -78,10 +61,72 @@
     }
 
     /**
+     * Fetch magazine categories from API
+     */
+    async function fetchMagCategories() {
+      try {
+        const res = await fetch("/api/magazine/categories", { cache: "no-store" });
+        if (!res.ok) {
+          throw new Error(`Failed to fetch categories: ${res.status}`);
+        }
+        const json = await res.json();
+        const items = Array.isArray(json?.data) ? json.data : [];
+        return items;
+      } catch (err) {
+        console.warn("Could not load magazine categories:", err);
+        return [];
+      }
+    }
+
+    /**
+     * Render dynamic filter buttons from DB categories
+     */
+    function renderFilterButtons(cats = []) {
+      if (!filterContainer) return;
+      // Remove any existing dynamic buttons (keep the "all" button)
+      filterContainer
+        .querySelectorAll('.filter-btn:not([data-code="all"])')
+        .forEach((el) => el.remove());
+
+      cats.forEach((c) => {
+        if (!c?.code) return;
+        const btn = document.createElement("button");
+        btn.className = "filter-btn";
+        btn.dataset.code = String(c.code);
+        btn.innerHTML = `<span>${c.name || c.code}</span>`;
+        filterContainer.appendChild(btn);
+      });
+    }
+
+    /**
+     * Event delegation for filter buttons
+     */
+    if (filterContainer) {
+      filterContainer.addEventListener("click", (e) => {
+        const btn = e.target.closest(".filter-btn");
+        if (!btn) return;
+        const code = btn.dataset.code || "all";
+        // Update active state
+        filterContainer
+          .querySelectorAll(".filter-btn")
+          .forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        // Set and fetch
+        activeFilter = code;
+        console.log("🔖 Filter changed to:", activeFilter);
+        currentPage = 1;
+        fetchArticles(1, false, categoriesMap);
+      });
+    }
+
+
+    /**
      * Create article card HTML
      */
-    function createArticleCard(article, delay = 100) {
-      const categoryDisplay = categoryNames[article.category] || "عمومی";
+
+    function createArticleCard(article, delay = 100, catMap = {}) {
+      const categoryDisplay =
+        article.categoryName || catMap[article.category] || article.category || "عمومی";
       const readTime = article.readTimeMinutes || 5;
       const publishDate = formatPersianDate(article.publishedAt);
       const excerpt = getExcerpt(article);
@@ -195,7 +240,7 @@
     /**
      * Fetch articles from API
      */
-    async function fetchArticles(page = 1, append = false) {
+    async function fetchArticles(page = 1, append = false, catMap = {}) {
       if (isLoading) return;
 
       isLoading = true;
@@ -218,8 +263,9 @@
           params.append("q", searchQuery.trim());
           params.append("sort", "relevance");
 
-          if (activeFilter !== "all" && categoryMap[activeFilter]) {
-            params.append("category", categoryMap[activeFilter]);
+          if (activeFilter !== "all") {
+            // Send category CODE to backend
+            params.append("category", activeFilter);
           }
         } else {
           // Use regular API for browsing
@@ -227,8 +273,10 @@
           params.append("onlyPublished", "true");
           params.append("sort", "newest");
 
-          if (activeFilter !== "all" && categoryMap[activeFilter]) {
-            params.append("category", categoryMap[activeFilter]);
+
+          if (activeFilter !== "all") {
+            // Send category CODE to backend
+            params.append("category", activeFilter);
           }
         }
 
@@ -277,7 +325,8 @@
             const wrapper = document.createElement("div");
             wrapper.innerHTML = createArticleCard(
               article,
-              100 + (index % 3) * 50
+              100 + (index % 3) * 50,
+              catMap,
             );
             fragment.appendChild(wrapper.firstElementChild);
           });
@@ -321,20 +370,6 @@
     }
 
     /**
-     * Handle filter button clicks
-     */
-    filterBtns.forEach((btn) => {
-      btn.addEventListener("click", () => {
-        filterBtns.forEach((b) => b.classList.remove("active"));
-        btn.classList.add("active");
-        activeFilter = btn.getAttribute("data-filter") || "all";
-        console.log("🔖 Filter changed to:", activeFilter);
-        currentPage = 1;
-        fetchArticles(1, false);
-      });
-    });
-
-    /**
      * Handle search with debounce
      */
     if (searchBox) {
@@ -344,7 +379,7 @@
           searchQuery = e.target.value.trim();
           console.log("🔎 Search query:", searchQuery || "(empty)");
           currentPage = 1;
-          fetchArticles(1, false);
+          fetchArticles(1, false, categoriesMap);
         }, 300)
       );
 
@@ -354,7 +389,7 @@
           searchBox.value = "";
           searchQuery = "";
           currentPage = 1;
-          fetchArticles(1, false);
+          fetchArticles(1, false, categoriesMap);
         }
       });
     }
@@ -369,7 +404,7 @@
             console.log(
               `♾️ Loading more articles (page ${currentPage + 1}/${totalPages})...`
             );
-            fetchArticles(currentPage + 1, true);
+            fetchArticles(currentPage + 1, true, categoriesMap);
           }
         });
       },
@@ -384,7 +419,15 @@
      * Initial load
      */
     console.log("🚀 Initializing magazine page");
-    fetchArticles(1, false);
+
+    const cats = await fetchMagCategories();
+    // Build categoriesMap (code -> name)
+    categoriesMap = cats.reduce((acc, c) => {
+      if (c?.code) acc[c.code] = c.name || c.code;
+      return acc;
+    }, {});
+    renderFilterButtons(cats);
+    await fetchArticles(1, false, categoriesMap);
 
     /**
      * Expose refresh function globally (for debugging)
@@ -392,7 +435,7 @@
     window.refreshMagazine = () => {
       console.log("🔄 Manual refresh triggered");
       currentPage = 1;
-      fetchArticles(1, false);
+      fetchArticles(1, false, categoriesMap);
     };
   });
 })();
