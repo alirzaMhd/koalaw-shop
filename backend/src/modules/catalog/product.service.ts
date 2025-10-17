@@ -658,7 +658,8 @@ class ProductService {
       by: ["categoryId"],
       where: { isActive: true, categoryId: { not: null } },
       _count: { _all: true },
-    });
+    }) as Array<{ categoryId: string | null; _count: { _all: number } }>;
+
     const dbCatCountMap = new Map<string, number>();
     for (const c of dbCatCounts) {
       if (c.categoryId) dbCatCountMap.set(c.categoryId, c._count._all);
@@ -667,7 +668,7 @@ class ProductService {
       select: { id: true, value: true, label: true, heroImageUrl: true, icon: true },
       orderBy: { label: "asc" },
     });
-    const dbCategories = dbCategoriesRaw.map((c) => ({
+    const dbCategories = dbCategoriesRaw.map((c: typeof dbCategoriesRaw[number]) => ({
       id: c.id,
       value: c.value,
       label: c.label,
@@ -722,13 +723,12 @@ class ProductService {
         id: c.id,
         name: c.name,
         heroImageUrl: c.heroImageUrl || null,
-        subtitle: c.subtitle || null, // NEW
-        isFeatured: c.isFeatured, // NEW
-        displayOrder: c.displayOrder, // NEW
+        subtitle: c.subtitle || null,
+        isFeatured: c.isFeatured,
+        displayOrder: c.displayOrder,
         count: collCountMap.get(c.id) ?? 0,
       }))
-      .sort((a, b) => a.name.localeCompare(b.name, "fa"));
-
+      .sort((a: { name: string }, b: { name: string }) => a.name.localeCompare(b.name, "fa"));
     const agg = await prisma.product.aggregate({
       where: { isActive: true },
       _min: { price: true },
