@@ -15,6 +15,7 @@
     magazines: [],
     authors: [],
     tags: [],
+    magazineCategories: [],
     colorThemes: [],
     badges: [],
     newsletterSubscribers: [],
@@ -496,6 +497,27 @@
         method: "DELETE",
       });
     },
+    // Magazine Categories (Admin)
+    getMagazineCategories() {
+      return this.fetch("/api/magazine/admin/categories");
+    },
+    createMagazineCategory(data) {
+      return this.fetch("/api/magazine/admin/categories", {
+        method: "POST",
+        body: JSON.stringify(data),
+      });
+    },
+    updateMagazineCategory(id, data) {
+      return this.fetch(`/api/magazine/admin/categories/${id}`, {
+        method: "PUT",
+        body: JSON.stringify(data),
+      });
+    },
+    deleteMagazineCategory(id) {
+      return this.fetch(`/api/magazine/admin/categories/${id}`, {
+        method: "DELETE",
+      });
+    },
 
     // Badges
     getBadges() {
@@ -774,6 +796,76 @@
             utils.showToast("خطا: " + err.message, "error");
           }
         });
+    },
+    // Magazine Category Form
+    magazineCategory(categoryId = null) {
+      const cat = categoryId
+        ? (state.magazineCategories || []).find((c) => c.id === categoryId)
+        : null;
+      const isEdit = !!categoryId;
+      const formHtml = `
+        <form id="magazine-category-form" class="admin-form">
+          <div class="admin-form-section">
+            <h3 class="admin-form-section-title">${isEdit ? "ویرایش دسته‌بندی مجله" : "افزودن دسته‌بندی مجله"}</h3>
+            <div class="admin-form-group">
+              <label class="admin-form-label required">کد (CODE)</label>
+              <input type="text" name="code" class="admin-form-input uppercase-input" value="${cat?.code || ""}" placeholder="GUIDE, TUTORIAL, ..." required />
+              <small class="text-gray-500">فقط حروف بزرگ انگلیسی و آندرلاین (مثال: GUIDE)</small>
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label required">نام نمایشی</label>
+              <input type="text" name="name" class="admin-form-input" value="${cat?.name || ""}" required />
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">اسلاگ (slug)</label>
+              <input type="text" name="slug" class="admin-form-input" value="${cat?.slug || ""}" placeholder="guide, tutorial, ..." />
+              <small class="text-gray-500">خالی بگذارید تا بر اساس نام ساخته شود</small>
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label">توضیحات</label>
+              <textarea name="description" class="admin-form-input" rows="3">${cat?.description || ""}</textarea>
+            </div>
+          </div>
+          <div class="admin-form-actions">
+            <button type="button" class="admin-btn admin-btn-secondary" data-action="closePanel">انصراف</button>
+            <button type="submit" class="admin-btn admin-btn-primary">${isEdit ? "ذخیره تغییرات" : "افزودن دسته‌بندی"}</button>
+          </div>
+        </form>
+      `;
+      panel.open(formHtml, isEdit ? "ویرایش دسته‌بندی مجله" : "افزودن دسته‌بندی مجله");
+      utils.refreshIcons();
+
+      // Force uppercase for code input
+      const codeInput = document.querySelector('#magazine-category-form input[name="code"]');
+      codeInput?.addEventListener("input", () => {
+        codeInput.value = codeInput.value.replace(/[^A-Za-z0-9_]/g, "").toUpperCase();
+      });
+
+      document.getElementById("magazine-category-form")?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const fd = new FormData(e.target);
+        const payload = {
+          code: String(fd.get("code") || "").trim().toUpperCase(),
+          name: String(fd.get("name") || "").trim(),
+          slug: (fd.get("slug") || "").toString().trim() || undefined,
+          description: (fd.get("description") || "").toString().trim() || undefined,
+        };
+        if (!payload.code) return utils.showToast("کد دسته‌بندی الزامی است", "error");
+        if (!payload.name) return utils.showToast("نام دسته‌بندی الزامی است", "error");
+        try {
+          if (isEdit) {
+            await api.updateMagazineCategory(categoryId, payload);
+            utils.showToast("دسته‌بندی ویرایش شد", "success");
+          } else {
+            await api.createMagazineCategory(payload);
+            utils.showToast("دسته‌بندی افزوده شد", "success");
+          }
+          panel.close();
+          handlers.magazineCategories();
+        } catch (err) {
+          utils.showToast("خطا: " + err.message, "error");
+        }
+      });
     },
     // Product Form
     async product(productId = null) {
@@ -3400,6 +3492,24 @@
             );
         }
       },
+      // Magazine Categories actions
+      createMagazineCategory() {
+        forms.magazineCategory();
+      },
+      editMagazineCategory(id) {
+        forms.magazineCategory(id);
+      },
+      deleteMagazineCategory(id) {
+        if (confirm("آیا مطمئن هستید که می‌خواهید این دسته‌بندی را حذف کنید؟")) {
+          api
+            .deleteMagazineCategory(id)
+            .then(() => {
+              utils.showToast("دسته‌بندی حذف شد", "success");
+              handlers.magazineCategories();
+            })
+            .catch((error) => utils.showToast("خطا: " + error.message, "error"));
+        }
+      },
 
       deleteMagazine(id) {
         if (confirm("آیا مطمئن هستید که می‌خواهید این مقاله را حذف کنید؟")) {
@@ -3638,6 +3748,37 @@
                 </thead>
                 <tbody id="magazine-tags-tbody">
                   <tr><td colspan="3">${utils.showLoading()}</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      `;
+    },
+    magazineCategories() {
+      return `
+        <div class="mb-6 flex justify-between items-center">
+          <h2 class="text-xl font-bold">دسته‌بندی‌های مجله</h2>
+          <button data-action="createMagazineCategory" class="admin-btn admin-btn-primary">
+            <i data-feather="plus"></i>
+            <span>افزودن دسته‌بندی</span>
+          </button>
+        </div>
+        <div class="admin-card">
+          <div class="admin-card-body">
+            <div class="admin-table-container">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>کد</th>
+                    <th>نام</th>
+                    <th>اسلاگ</th>
+                    <th>تعداد مقالات</th>
+                    <th>عملیات</th>
+                  </tr>
+                </thead>
+                <tbody id="magazine-cats-tbody">
+                  <tr><td colspan="5">${utils.showLoading()}</td></tr>
                 </tbody>
               </table>
             </div>
@@ -4857,7 +4998,43 @@
         document.getElementById("app-content").innerHTML = utils.showError(error.message);
       }
     },
-
+    async magazineCategories() {
+      try {
+        const cats = await api.getMagazineCategories();
+        // Response may be { success, data } or raw array
+        const list = cats?.data || cats || [];
+        state.magazineCategories = list;
+        const tbody = document.getElementById("magazine-cats-tbody");
+        if (tbody) {
+          tbody.innerHTML = list.length
+            ? list
+                .map(
+                  (c) => `
+                <tr>
+                  <td><code>${c.code}</code></td>
+                  <td>${c.name}</td>
+                  <td>${c.slug}</td>
+                  <td>${utils.toFa(c._count?.posts || 0)}</td>
+                  <td>
+                    <div class="flex gap-2">
+                      <button data-action="editMagazineCategory" data-id="${c.id}" class="admin-btn admin-btn-secondary">
+                        <i data-feather="edit-2" class="w-4 h-4"></i>
+                      </button>
+                      <button data-action="deleteMagazineCategory" data-id="${c.id}" class="admin-btn admin-btn-danger">
+                        <i data-feather="trash-2" class="w-4 h-4"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>`
+                )
+                .join("")
+            : '<tr><td colspan="5" class="text-center py-8 text-gray-500">دسته‌بندی‌ای وجود ندارد</td></tr>';
+        }
+        utils.refreshIcons();
+      } catch (error) {
+        document.getElementById("app-content").innerHTML = utils.showError(error.message);
+      }
+    },
     async badges() {
       try {
         const data = await api.getBadges();
@@ -5047,6 +5224,11 @@
         title: "برچسب‌های مجله",
         view: views.magazineTags,
         handler: handlers.magazineTags,
+      },
+      magazineCategories: {
+        title: "دسته‌بندی‌های مجله",
+        view: views.magazineCategories,
+        handler: handlers.magazineCategories,
       },
       badges: {
         title: "مدیریت نشان‌ها",
