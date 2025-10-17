@@ -70,7 +70,7 @@
         showError("تأیید پرداخت با خطا مواجه شد");
       }
     } catch (error) {
-      logger.error("Payment verification error:", error);
+      console.error("Payment verification error:", error);
       showError(error.message || "خطا در بررسی پرداخت");
     }
 

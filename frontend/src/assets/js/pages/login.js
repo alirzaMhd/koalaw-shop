@@ -128,7 +128,7 @@
             await sendVerificationCode(emailValue);
           } catch (err) {
             // If rate-limited or other issues, still go to verify page; user can retry there
-            logger.warn("Resend verification failed:", err);
+            console.warn("Resend verification failed:", err);
           }
           await goToVerify(emailValue);
           return;
@@ -197,7 +197,7 @@
           data?.error?.message || "خطا در ورود. لطفاً دوباره تلاش کنید.";
         resetBtn();
       } catch (error) {
-        logger.error("Login/Register error:", error);
+        console.error("Login/Register error:", error);
         emailMsg.textContent = "خطا در ارتباط با سرور. لطفاً دوباره تلاش کنید.";
         resetBtn();
       }

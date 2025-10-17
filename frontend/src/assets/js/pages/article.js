@@ -71,7 +71,7 @@
     const slug = pathParts[pathParts.length - 1];
 
     if (!slug || slug === "magazine") {
-      logger.error("No valid slug found");
+      console.error("No valid slug found");
       window.location.href = "/magazine";
       return;
     }
@@ -107,7 +107,7 @@
       // Load related articles
       await loadRelatedArticles(article.related || []);
     } catch (error) {
-      logger.error("Error loading article:", error);
+      console.error("Error loading article:", error);
       // Redirect to 404 page on any error
       window.location.href = "/404";
     }

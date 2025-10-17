@@ -23,7 +23,7 @@
     try {
       localStorage.setItem(key, JSON.stringify(value));
     } catch (e) {
-      logger.warn("localStorage setItem failed:", e);
+      console.warn("localStorage setItem failed:", e);
     }
   }
 
@@ -64,7 +64,7 @@
       setJSON(cacheKey, { ts: Date.now(), items });
       return items;
     } catch (e) {
-      logger.warn("404 Page: failed to load DB categories", e);
+      console.warn("404 Page: failed to load DB categories", e);
       return [];
     }
   }
@@ -111,7 +111,7 @@
       const html = renderCategoryLinks(categories);
       populateSuggestions(html);
     } catch (error) {
-      logger.error("Error initializing category suggestions:", error);
+      console.error("Error initializing category suggestions:", error);
       // Fallback
       populateSuggestions(' <a href="/shop">مشاهده فروشگاه</a>');
     }

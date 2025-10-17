@@ -198,7 +198,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       try {
         const res = await fetch("/api/products/filters", { cache: "no-store" });
         if (!res.ok) {
-          logger.error("Failed to fetch filters:", res.status);
+          console.error("Failed to fetch filters:", res.status);
           return;
         }
         const json = await res.json();
@@ -243,7 +243,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           container.dataset.bound = "1";
         }
       } catch (e) {
-        logger.warn("Home filters init failed:", e);
+        console.warn("Home filters init failed:", e);
       }
     }
     async function fetchProducts(filter = "all") {
@@ -269,7 +269,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         const response = await fetch(`${API_PRODUCTS}?${params.toString()}`);
         if (!response.ok) {
-          logger.error("Failed to fetch products:", response.status);
+          console.error("Failed to fetch products:", response.status);
           return;
         }
 
@@ -277,7 +277,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const products = json?.data?.items || [];
         renderProducts(products);
       } catch (err) {
-        logger.error("Error fetching products:", err);
+        console.error("Error fetching products:", err);
       }
     }
 
@@ -338,7 +338,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         // Fetch collections (now includes heroImageUrl, subtitle, isFeatured, displayOrder)
         const res = await fetch("/api/products/filters", { cache: "no-store" });
         if (!res.ok) {
-          logger.error("Failed to fetch collections:", res.status);
+          console.error("Failed to fetch collections:", res.status);
           return;
         }
         const json = await res.json();
@@ -355,10 +355,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (featured.length > 0) {
           renderCollectionCards(featured);
         } else {
-          logger.warn("No featured collections found");
+          console.warn("No featured collections found");
         }
       } catch (error) {
-        logger.error("Error fetching collections:", error);
+        console.error("Error fetching collections:", error);
       }
     }
 
@@ -505,7 +505,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
 
         if (!response.ok) {
-          logger.error("Failed to fetch categories:", response.status);
+          console.error("Failed to fetch categories:", response.status);
           return;
         }
 
@@ -560,7 +560,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (categories.length > 0) {
           renderCategoryCards(categories);
         } else {
-          logger.warn("No categories found, using fallback");
+          console.warn("No categories found, using fallback");
           // Use fallback categories
           const fallbackCategories = [
             { category: "SKINCARE", count: 0 },
@@ -572,7 +572,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           renderCategoryCards(fallbackCategories);
         }
       } catch (error) {
-        logger.error("Error fetching categories:", error);
+        console.error("Error fetching categories:", error);
         // Render fallback on error
         const fallbackCategories = [
           { category: "SKINCARE", count: 0 },
@@ -688,7 +688,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
 
         if (!response.ok) {
-          logger.error("Failed to fetch brands:", response.status);
+          console.error("Failed to fetch brands:", response.status);
           return;
         }
 
@@ -698,10 +698,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (brands.length > 0) {
           renderBrandItems(brands);
         } else {
-          logger.warn("No brands found in API response");
+          console.warn("No brands found in API response");
         }
       } catch (error) {
-        logger.error("Error fetching brands:", error);
+        console.error("Error fetching brands:", error);
       }
     }
 
@@ -844,7 +844,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         const response = await fetch(`${API_PRODUCTS}?${params.toString()}`);
         if (!response.ok) {
-          logger.error("Failed to fetch campaign products:", response.status);
+          console.error("Failed to fetch campaign products:", response.status);
           return;
         }
 
@@ -854,10 +854,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (products.length > 0) {
           renderCampaignProducts(products);
         } else {
-          logger.warn("No special products found for campaign");
+          console.warn("No special products found for campaign");
         }
       } catch (error) {
-        logger.error("Error fetching campaign products:", error);
+        console.error("Error fetching campaign products:", error);
       }
     }
 
@@ -1073,7 +1073,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         try {
           catMap = await fetchMagCategories();
         } catch (e) {
-          logger.warn("Magazine categories fetch failed:", e);
+          console.warn("Magazine categories fetch failed:", e);
         }
 
         const params = new URLSearchParams();
@@ -1086,7 +1086,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         const response = await fetch(`${API_MAGAZINE}?${params.toString()}`);
         if (!response.ok) {
-          logger.error("Failed to fetch magazine articles:", response.status);
+          console.error("Failed to fetch magazine articles:", response.status);
           return;
         }
 
@@ -1100,10 +1100,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (topThree.length > 0) {
           renderMagazineArticles(topThree, catMap);
         } else {
-          logger.warn("No magazine articles found");
+          console.warn("No magazine articles found");
         }
       } catch (error) {
-        logger.error("Error fetching magazine articles:", error);
+        console.error("Error fetching magazine articles:", error);
       }
     }
 

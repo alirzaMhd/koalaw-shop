@@ -896,7 +896,7 @@
             const productData = await api.getProduct(productId);
             product = productData.product || productData;
           } catch (error) {
-            logger.error("Error fetching product:", error);
+            console.error("Error fetching product:", error);
             throw new Error("خطا در بارگذاری اطلاعات محصول");
           }
         }
@@ -1550,7 +1550,7 @@
               panel.close();
               handlers.products();
             } catch (error) {
-              logger.error("Product save error:", error);
+              console.error("Product save error:", error);
               utils.showToast("خطا: " + error.message, "error");
               submitBtn.disabled = false;
               submitBtn.innerHTML = originalText;
@@ -1560,7 +1560,7 @@
 
         utils.refreshIcons();
       } catch (error) {
-        logger.error("Product form error:", error);
+        console.error("Product form error:", error);
         panel.open(
           utils.showError(error.message || "خطا در بارگذاری فرم"),
           "خطا"
@@ -2337,7 +2337,7 @@
             const postData = await api.getMagazinePost(postId);
             post = postData.data || postData;
           } catch (error) {
-            logger.error("Error fetching post:", error);
+            console.error("Error fetching post:", error);
             throw new Error("خطا در بارگذاری اطلاعات مقاله");
           }
         }
@@ -2667,7 +2667,7 @@
               panel.close();
               handlers.magazine();
             } catch (error) {
-              logger.error("Magazine save error:", error);
+              console.error("Magazine save error:", error);
               utils.showToast("خطا: " + error.message, "error");
               submitBtn.disabled = false;
               submitBtn.innerHTML = originalText;
@@ -2677,7 +2677,7 @@
 
         utils.refreshIcons();
       } catch (error) {
-        logger.error("Magazine form error:", error);
+        console.error("Magazine form error:", error);
         panel.open(
           utils.showError(error.message || "خطا در بارگذاری فرم"),
           "خطا"
@@ -4430,7 +4430,7 @@
 
         utils.refreshIcons();
       } catch (error) {
-        logger.error("Dashboard error:", error);
+        console.error("Dashboard error:", error);
         document.getElementById("app-content").innerHTML = utils.showError(
           error.message
         );
@@ -4494,7 +4494,7 @@
 
         utils.refreshIcons();
       } catch (error) {
-        logger.error("Products error:", error);
+        console.error("Products error:", error);
         document.getElementById("app-content").innerHTML = utils.showError(
           error.message
         );
@@ -4580,7 +4580,7 @@
 
         utils.refreshIcons();
       } catch (error) {
-        logger.error("Orders error:", error);
+        console.error("Orders error:", error);
         document.getElementById("app-content").innerHTML = utils.showError(
           error.message
         );
@@ -4625,7 +4625,7 @@
 
         utils.refreshIcons();
       } catch (error) {
-        logger.error("Users error:", error);
+        console.error("Users error:", error);
         document.getElementById("app-content").innerHTML = utils.showError(
           error.message
         );
@@ -4684,7 +4684,7 @@
 
         utils.refreshIcons();
       } catch (error) {
-        logger.error("Reviews error:", error);
+        console.error("Reviews error:", error);
         document.getElementById("app-content").innerHTML = utils.showError(
           error.message
         );
@@ -4733,7 +4733,7 @@
 
         utils.refreshIcons();
       } catch (error) {
-        logger.error("Brands error:", error);
+        console.error("Brands error:", error);
         document.getElementById("app-content").innerHTML = utils.showError(
           error.message
         );
@@ -4781,7 +4781,7 @@
 
         utils.refreshIcons();
       } catch (error) {
-        logger.error("Collections error:", error);
+        console.error("Collections error:", error);
         document.getElementById("app-content").innerHTML = utils.showError(
           error.message
         );
@@ -4837,7 +4837,7 @@
 
         utils.refreshIcons();
       } catch (error) {
-        logger.error("Coupons error:", error);
+        console.error("Coupons error:", error);
         document.getElementById("app-content").innerHTML = utils.showError(
           error.message
         );
@@ -4859,7 +4859,7 @@
 
         utils.refreshIcons();
       } catch (error) {
-        logger.error("Newsletter error:", error);
+        console.error("Newsletter error:", error);
         document.getElementById("app-content").innerHTML = utils.showError(
           error.message
         );
@@ -4911,7 +4911,7 @@
 
         utils.refreshIcons();
       } catch (error) {
-        logger.error("Magazine error:", error);
+        console.error("Magazine error:", error);
         document.getElementById("app-content").innerHTML = utils.showError(
           error.message
         );
@@ -5073,7 +5073,7 @@
 
         utils.refreshIcons();
       } catch (error) {
-        logger.error("Badges error:", error);
+        console.error("Badges error:", error);
         document.getElementById("app-content").innerHTML = utils.showError(
           error.message
         );
@@ -5124,7 +5124,7 @@
 
         utils.refreshIcons();
       } catch (error) {
-        logger.error("Newsletter subscribers error:", error);
+        console.error("Newsletter subscribers error:", error);
         document.getElementById("app-content").innerHTML = utils.showError(
           error.message
         );
@@ -5237,7 +5237,7 @@
     navigate(routeName) {
       const route = this.routes[routeName];
       if (!route) {
-        logger.error("Route not found:", routeName);
+        console.error("Route not found:", routeName);
         return;
       }
 

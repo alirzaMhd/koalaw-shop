@@ -104,7 +104,7 @@
         const data = await resp.json();
         return data?.data?.profile || null;
       } catch (e) {
-        logger.warn("[CART] Failed to fetch profile:", e);
+        console.warn("[CART] Failed to fetch profile:", e);
         return null;
       }
     }
@@ -119,7 +119,7 @@
         const data = await resp.json();
         return data?.data?.addresses || [];
       } catch (e) {
-        logger.warn("[CART] Failed to fetch addresses:", e);
+        console.warn("[CART] Failed to fetch addresses:", e);
         return [];
       }
     }
@@ -197,7 +197,7 @@
           headers: { "Content-Type": "application/json" },
         });
       } catch (e) {
-        logger.warn("[CART] Failed to clear backend cart:", e);
+        console.warn("[CART] Failed to clear backend cart:", e);
       }
 
       for (const it of syncable) {
@@ -214,7 +214,7 @@
 
           // If cart not found, reset and create new cart
           if (resp.status === 404) {
-            logger.warn("[CART] Backend cart not found, creating new one");
+            console.warn("[CART] Backend cart not found, creating new one");
             resetBackendCartId();
             const newCartId = await getOrCreateBackendCartId();
             // Retry with new cart ID
@@ -229,7 +229,7 @@
             });
           }
         } catch (e) {
-          logger.warn("[CART] Failed to sync item to backend cart:", e);
+          console.warn("[CART] Failed to sync item to backend cart:", e);
         }
       }
     }
@@ -241,7 +241,7 @@
           credentials: "include",
         });
       } catch (e) {
-        logger.warn("[CART] Failed to delete item from backend:", e);
+        console.warn("[CART] Failed to delete item from backend:", e);
       }
     }
 
@@ -253,7 +253,7 @@
           credentials: "include",
         });
       } catch (e) {
-        logger.warn("[CART] Failed to clear backend cart:", e);
+        console.warn("[CART] Failed to clear backend cart:", e);
       }
     }
 
@@ -292,7 +292,7 @@
             }
           });
         } catch (e) {
-          logger.warn("[CART] Failed to fetch related products:", e);
+          console.warn("[CART] Failed to fetch related products:", e);
         }
       }
 
@@ -614,7 +614,7 @@
                 }
               }
             } catch (e) {
-              logger.warn("[CART] Failed to sync delete with backend:", e);
+              console.warn("[CART] Failed to sync delete with backend:", e);
             }
           }
         })
@@ -753,7 +753,7 @@
             }
           }
         } catch (e) {
-          logger.warn("[CART] Failed to fetch backend quote:", e);
+          console.warn("[CART] Failed to fetch backend quote:", e);
         }
       }
       updateCartSummary();
@@ -878,7 +878,7 @@
                 progFill && (progFill.style.width = pct + "%");
               }
             } else {
-              logger.warn("[CART] Coupon failed:", q?.appliedCoupon);
+              console.warn("[CART] Coupon failed:", q?.appliedCoupon);
               couponMsg.textContent = mapCouponReason(q?.appliedCoupon?.reason);
               couponMsg.className = "text-sm text-rose-700 mt-2";
               s.coupon = "";
@@ -886,7 +886,7 @@
               updateCartSummary();
             }
           } catch (e) {
-            logger.error("[CART] Coupon validation error:", e);
+            console.error("[CART] Coupon validation error:", e);
             couponMsg.textContent = "خطا در بررسی کد. لطفاً دوباره تلاش کنید.";
             couponMsg.className = "text-sm text-rose-700 mt-2";
           }
@@ -910,7 +910,7 @@
                 await syncClearBackendCart(cartId);
               }
             } catch (e) {
-              logger.warn("[CART] Failed to clear backend cart:", e);
+              console.warn("[CART] Failed to clear backend cart:", e);
             }
 
             renderCart();
@@ -981,7 +981,7 @@
                     }),
                   });
                 } catch (e) {
-                  logger.warn("Failed to sync with backend:", e);
+                  console.warn("Failed to sync with backend:", e);
                 }
 
                 renderCart();
@@ -1211,7 +1211,7 @@
           );
           set("addr-grand", KUtils.toIRR(q.total));
         } catch (e) {
-          logger.warn("[ADDR] Failed to fetch backend quote:", e);
+          console.warn("[ADDR] Failed to fetch backend quote:", e);
         }
       }
       update();
@@ -1305,7 +1305,7 @@
           );
           set("pay-grand", KUtils.toIRR(q.total));
         } catch (e) {
-          logger.warn("[PAY] Failed to fetch backend quote:", e);
+          console.warn("[PAY] Failed to fetch backend quote:", e);
         }
       }
       update();
@@ -1353,7 +1353,7 @@
               credentials: "include",
             });
           } catch (e) {
-            logger.warn("[CART] Failed to mark cart as converted:", e);
+            console.warn("[CART] Failed to mark cart as converted:", e);
           }
         }
 
@@ -1458,13 +1458,13 @@
             try {
               await syncClearBackendCart(checkoutPayload.cartId);
             } catch (e) {
-              logger.warn("Failed to clear backend cart:", e);
+              console.warn("Failed to clear backend cart:", e);
             }
           }
 
           return data;
         } catch (error) {
-          logger.error("Checkout error:", error);
+          console.error("Checkout error:", error);
           throw error;
         }
       }

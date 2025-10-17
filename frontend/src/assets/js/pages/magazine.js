@@ -42,7 +42,7 @@
         const options = { year: "numeric", month: "long", day: "numeric" };
         return new Intl.DateTimeFormat("fa-IR", options).format(date);
       } catch (e) {
-        logger.error("Date formatting error:", e);
+        console.error("Date formatting error:", e);
         return "اخیراً";
       }
     }
@@ -73,7 +73,7 @@
         const items = Array.isArray(json?.data) ? json.data : [];
         return items;
       } catch (err) {
-        logger.warn("Could not load magazine categories:", err);
+        console.warn("Could not load magazine categories:", err);
         return [];
       }
     }
@@ -345,7 +345,7 @@
           throw new Error(data.message || "Failed to load articles");
         }
       } catch (error) {
-        logger.error("❌ Error fetching articles:", error);
+        console.error("❌ Error fetching articles:", error);
 
         // Show error state if not appending
         if (!append) {

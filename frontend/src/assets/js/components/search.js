@@ -37,7 +37,7 @@
           suggestions.innerHTML = `<p>پیشنهادات:</p>${links}`;
         }
       } catch (e) {
-        logger.error("Failed to load search suggestions:", e);
+        console.error("Failed to load search suggestions:", e);
         // Keep default suggestions on error
       }
     }
