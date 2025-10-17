@@ -719,7 +719,7 @@ class ProductService {
       if (c.collectionId) collCountMap.set(c.collectionId, c._count._all);
     }
     const collectionOptions = allCollections
-      .map((c) => ({
+      .map((c: { id: string; name: string; heroImageUrl: string | null; subtitle: string | null; isFeatured: boolean; displayOrder: number }) => ({
         id: c.id,
         name: c.name,
         heroImageUrl: c.heroImageUrl || null,
