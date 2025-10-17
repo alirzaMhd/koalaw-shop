@@ -3,6 +3,7 @@ import { prisma } from '../prismaClient.js';
 
 
 const defaultPostInclude = {
+  category: true,
   author: true,
   tags: {
     include: {
@@ -42,7 +43,9 @@ const defaultPostInclude = {
 export interface ListPostsFilter {
   page: number;
   pageSize: number;
-  category?: any;
+  categoryId?: string;
+  categoryCode?: string;
+  categorySlug?: string;
   tagSlugs?: string[];
   authorSlug?: string;
   q?: string;
@@ -52,11 +55,29 @@ export interface ListPostsFilter {
 export const magazineRepo = {
   // POSTS
   async listPosts(filter: ListPostsFilter) {
-    const { page, pageSize, category, tagSlugs, authorSlug, q, onlyPublished = true } = filter;
+    const {
+      page,
+      pageSize,
+      categoryId,
+      categoryCode,
+      categorySlug,
+      tagSlugs,
+      authorSlug,
+      q,
+      onlyPublished = true,
+    } = filter;
+    const categoryWhere =
+      categoryId
+        ? { categoryId }
+        : categoryCode
+        ? { category: { code: categoryCode } }
+        : categorySlug
+        ? { category: { slug: categorySlug } }
+        : {};
 
     const where: any = {
       AND: [
-        category ? { category } : {},
+        categoryWhere,
         tagSlugs?.length
           ? {
               tags: {
@@ -244,5 +265,36 @@ export const magazineRepo = {
 
   async deleteTag(id: string) {
     return prisma.magazineTag.delete({ where: { id } });
+  },
+  
+  // NEW: CATEGORIES
+  async listCategories() {
+    return prisma.magazineCategory.findMany({
+      orderBy: [{ name: 'asc' }],
+    });
+  },
+
+  async findCategoryById(id: string) {
+    return prisma.magazineCategory.findUnique({ where: { id } });
+  },
+
+  async findCategoryByCode(code: string) {
+    return prisma.magazineCategory.findUnique({ where: { code } });
+  },
+
+  async findCategoryBySlug(slug: string) {
+    return prisma.magazineCategory.findUnique({ where: { slug } });
+  },
+
+  async createCategory(data: { code: string; name: string; slug: string; description?: string | null }) {
+    return prisma.magazineCategory.create({ data });
+  },
+
+  async updateCategory(id: string, data: Partial<{ code: string; name: string; slug: string; description: string | null }>) {
+    return prisma.magazineCategory.update({ where: { id }, data });
+  },
+
+  async deleteCategory(id: string) {
+    return prisma.magazineCategory.delete({ where: { id } });
   },
 };

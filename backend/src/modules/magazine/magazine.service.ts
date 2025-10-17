@@ -14,13 +14,11 @@ export type AuthorDTO =
     }
   | null;
 
-// Derive the category type from the repository filter (falls back to string if not present)
-type DerivedCategory = ListPostsFilter extends { category?: infer C } ? C : string;
-
 export type PostDTO = {
   id: string;
   author: AuthorDTO;
-  category: DerivedCategory;
+  category: string; // category code (e.g., GUIDE)
+  categoryName?: string | null; // display name if available
   title: string;
   slug: string;
   excerpt: string | null;
@@ -175,7 +173,8 @@ function toPostDTO(post: any): PostDTO {
           avatarUrl: post.author.avatarUrl,
         }
       : null,
-    category: post.category,
+    category: post.category?.code ?? 'GENERAL',
+    categoryName: post.category?.name ?? null,
     title: post.title,
     slug: post.slug,
     excerpt: post.excerpt,
@@ -196,7 +195,7 @@ export class MagazineService {
   async listPosts(params: {
     page: number;
     pageSize: number;
-    category?: DerivedCategory;
+    category?: string;
     tagSlugs?: string[];
     authorSlug?: string;
     q?: string;
@@ -208,7 +207,12 @@ export class MagazineService {
       pageSize: safePageSize,
       onlyPublished: params.onlyPublished ?? true,
       // Conditionally add optional properties only if they have a non-falsy value.
-      ...(params.category && { category: params.category as any }),
+      // If category is uppercase assume code, otherwise assume slug
+      ...(params.category && /^[A-Z_]+$/.test(params.category)
+        ? { categoryCode: params.category }
+        : params.category
+        ? { categorySlug: String(params.category).toLowerCase() }
+        : {}),
       ...(params.tagSlugs && { tagSlugs: params.tagSlugs }),
       ...(params.authorSlug && { authorSlug: params.authorSlug }),
       ...(params.q && { q: params.q }),
@@ -244,9 +248,20 @@ export class MagazineService {
     return toPostDTO(post);
   }
 
+  private async resolveCategory(input: string) {
+    const codeCandidate = input.trim().toUpperCase();
+    const slugCandidate = input.trim().toLowerCase();
+    let cat = await magazineRepo.findCategoryByCode(codeCandidate);
+    if (!cat) {
+      cat = await magazineRepo.findCategoryBySlug(slugCandidate);
+    }
+    if (!cat) throw new AppError('دسته‌بندی معتبر یافت نشد', 400);
+    return cat;
+  }
+
   async createPost(input: {
     authorId?: string | null;
-    category: DerivedCategory;
+    category: string;
     title: string;
     slug?: string;
     excerpt?: string;
@@ -273,9 +288,11 @@ export class MagazineService {
 
     const authorId = input.authorId && input.authorId.trim() !== "" ? input.authorId.trim() : null;
 
+    const category = await this.resolveCategory(input.category);
+
     const data: any = {
       authorId,
-      category: input.category,
+      categoryId: category.id,
       title: input.title,
       slug,
       excerpt: input.excerpt ?? null,
@@ -299,7 +316,7 @@ export class MagazineService {
     id: string,
     input: Partial<{
       authorId: string | null;
-      category: DerivedCategory;
+      category: string;
       title: string;
       slug: string;
       excerpt: string | null;
@@ -318,7 +335,10 @@ export class MagazineService {
     const data: any = {};
 
     if (typeof input.title !== 'undefined') data.title = input.title;
-    if (typeof input.category !== 'undefined') data.category = input.category;
+    if (typeof input.category !== 'undefined') {
+      const category = await this.resolveCategory(input.category);
+      data.categoryId = category.id;
+    }
     if (typeof input.authorId !== 'undefined') {
       data.authorId = input.authorId && input.authorId.trim() !== "" ? input.authorId.trim() : null;
     }
@@ -445,6 +465,65 @@ export class MagazineService {
 
   async deleteTag(id: string) {
     await magazineRepo.deleteTag(id);
+  }
+  
+  // CATEGORIES
+  async listCategories() {
+    return magazineRepo.listCategories();
+  }
+
+  async getCategoryBySlug(slug: string) {
+    const cat = await magazineRepo.findCategoryBySlug(slug);
+    if (!cat) throw new AppError('Category not found', 404);
+    return cat;
+  }
+
+  async createCategory(input: { code: string; name: string; slug?: string; description?: string }) {
+    const code = input.code.trim().toUpperCase();
+    const exists = await magazineRepo.findCategoryByCode(code);
+    if (exists) throw new AppError('Category code already exists', 409);
+    const slug = input.slug?.trim()
+      ? slugify(input.slug)
+      : slugify(input.name || input.code);
+    const slugExists = await magazineRepo.findCategoryBySlug(slug);
+    if (slugExists) throw new AppError('Category slug already exists', 409);
+    return magazineRepo.createCategory({
+      code,
+      name: input.name,
+      slug,
+      description: input.description ?? null,
+    });
+  }
+
+  async updateCategory(
+    id: string,
+    input: Partial<{ code: string; name: string; slug: string; description: string | null }>
+  ) {
+    const data: any = {};
+    if (typeof input.code !== 'undefined') {
+      const code = input.code.trim().toUpperCase();
+      const dup = await magazineRepo.findCategoryByCode(code);
+      if (dup && dup.id !== id) throw new AppError('Category code already exists', 409);
+      data.code = code;
+    }
+    if (typeof input.name !== 'undefined') data.name = input.name;
+    if (typeof input.slug !== 'undefined') {
+      const clean = slugify(input.slug);
+      const dup = await magazineRepo.findCategoryBySlug(clean);
+      if (dup && dup.id !== id) throw new AppError('Category slug already exists', 409);
+      data.slug = clean;
+    }
+    if (typeof input.description !== 'undefined') data.description = input.description;
+    return magazineRepo.updateCategory(id, data);
+  }
+
+  async deleteCategory(id: string) {
+    // Optionally: ensure no posts reference this category
+    const inUse = await prisma.magazinePost.count({ where: { categoryId: id } });
+    if (inUse > 0) {
+      throw new AppError('امکان حذف دسته‌بندی در حال استفاده وجود ندارد', 409);
+    }
+    await magazineRepo.deleteCategory(id);
   }
 }
 

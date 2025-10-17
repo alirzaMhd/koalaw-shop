@@ -15,6 +15,10 @@ import {
   createTagSchema,
   updateTagSchema,
   deleteTagSchema,
+  createMagazineCategorySchema,
+  updateMagazineCategorySchema,
+  deleteMagazineCategorySchema,
+  getMagazineCategoryBySlugSchema,
 } from "./magazine.validators.js";
 
 const router = Router();
@@ -35,6 +39,27 @@ router.post("/admin/tags", authGuard, validate(createTagSchema), magazineControl
 router.put("/admin/tags/:id", authGuard, validate(updateTagSchema), magazineController.updateTag);
 router.delete("/admin/tags/:id", authGuard, validate(deleteTagSchema), magazineController.deleteTag);
 
+// NEW: ADMIN CATEGORIES
+router.get("/admin/categories", authGuard, magazineController.listCategories);
+router.post(
+  "/admin/categories",
+  authGuard,
+  validate(createMagazineCategorySchema),
+  magazineController.createCategory
+);
+router.put(
+  "/admin/categories/:id",
+  authGuard,
+  validate(updateMagazineCategorySchema),
+  magazineController.updateCategory
+);
+router.delete(
+  "/admin/categories/:id",
+  authGuard,
+  validate(deleteMagazineCategorySchema),
+  magazineController.deleteCategory
+);
+
 // ========== PUBLIC ROUTES (use slug) ==========
 router.get('/posts', validate(listPostsSchema), magazineController.listPosts);
 router.get('/posts/:slug', validate(getPostBySlugSchema), magazineController.getPostBySlug);
@@ -43,5 +68,7 @@ router.get("/authors", magazineController.listAuthors);
 router.get("/authors/:slug", magazineController.getAuthorBySlug);
 
 router.get("/tags", magazineController.listTags);
+router.get("/categories", magazineController.listCategories);
+router.get("/categories/:slug", validate(getMagazineCategoryBySlugSchema), magazineController.getCategoryBySlug);
 
 export default router;

@@ -1023,6 +1023,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const magazineScroller = document.getElementById("magazine-scroller");
   if (magazineScroller) {
     const API_MAGAZINE = "/api/magazine/posts";
+    const API_MAG_CATEGORIES = "/api/magazine/categories";
 
     // Helper functions
     const escapeHtml = (v) =>
@@ -1040,6 +1041,19 @@ document.addEventListener("DOMContentLoaded", async () => {
       return String(n);
     };
 
+    // Fetch categories from DB only; return a code -> name map
+    async function fetchMagCategories() {
+      const res = await fetch(API_MAG_CATEGORIES, { cache: "no-store" });
+      if (!res.ok) {
+        throw new Error(`Failed to fetch magazine categories: ${res.status}`);
+      }
+      const json = await res.json();
+      const items = Array.isArray(json?.data) ? json.data : [];
+      return items.reduce((acc, c) => {
+        if (c?.code) acc[c.code] = c.name || c.code;
+        return acc;
+      }, {});
+    }
     // Format date to Persian
     function formatPersianDate(dateString) {
       if (!dateString) return "اخیراً";
@@ -1052,17 +1066,16 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     }
 
-    // Category labels in Persian
-    const categoryLabels = {
-      GUIDE: "راهنما",
-      TUTORIAL: "آموزش",
-      LIFESTYLE: "لایف‌استایل",
-      TRENDS: "ترندها",
-      GENERAL: "عمومی",
-    };
-
     async function fetchMagazineArticles() {
       try {
+        // Fetch categories from DB (no local defaults)
+        let catMap = {};
+        try {
+          catMap = await fetchMagCategories();
+        } catch (e) {
+          console.warn("Magazine categories fetch failed:", e);
+        }
+
         const params = new URLSearchParams();
         params.set("page", "1"); // First page only
         params.set("size", "3"); // Exactly 3 articles
@@ -1085,7 +1098,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const topThree = articles.slice(0, 3);
 
         if (topThree.length > 0) {
-          renderMagazineArticles(topThree);
+          renderMagazineArticles(topThree, catMap);
         } else {
           console.warn("No magazine articles found");
         }
@@ -1094,7 +1107,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     }
 
-    function renderMagazineArticles(articles) {
+    function renderMagazineArticles(articles, catMap = {}) {
       // Clear existing content
       magazineScroller.innerHTML = "";
 
@@ -1103,8 +1116,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       // Render each article
       limitedArticles.forEach((article, index) => {
-        const category = article.category || "GENERAL";
-        const categoryLabel = categoryLabels[category] || "عمومی";
+        const category = article.category || "GENERAL";// Prefer server-provided name, then DB map, then code
+        const categoryLabel =
+          article.categoryName ||
+          catMap[category] ||
+          category ||
+          "";
         const image =
           article.heroImageUrl || "/assets/images/magazine/article3.jpg";
         const title = article.title || "مقاله";

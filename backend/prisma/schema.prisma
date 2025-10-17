@@ -395,7 +395,8 @@ model MagazineAuthor {
 model MagazinePost {
   id              String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   authorId        String?               @map("author_id") @db.Uuid
-  category        MagazineCategory
+  categoryId      String                @map("category_id") @db.Uuid
+  category        MagazineCategory      @relation(fields: [categoryId], references: [id])
   title           String
   slug            String                @unique
   excerpt         String?
@@ -520,14 +521,17 @@ enum ReviewStatus {
   @@map("review_status_enum")
 }
 
-enum MagazineCategory {
-  GUIDE     @map("guide")
-  TUTORIAL  @map("tutorial")
-  TRENDS    @map("trends")
-  LIFESTYLE @map("lifestyle")
-  GENERAL   @map("general")
+model MagazineCategory {
+  id          String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  code        String         @unique @db.VarChar(32)     // e.g., GUIDE, TUTORIAL
+  name        String         @db.VarChar(150)            // display label (e.g., راهنما)
+  slug        String         @unique @db.VarChar(64)     // e.g., guide, tutorial
+  description String?
+  createdAt   DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime       @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  posts       MagazinePost[]
 
-  @@map("magazine_category_enum")
+  @@map("magazine_categories")
 }
 
 enum CustomerTier {
