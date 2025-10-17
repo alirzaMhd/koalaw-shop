@@ -473,7 +473,7 @@
       couponInput && (couponInput.value = state.coupon || "");
       couponMsg &&
         (couponMsg.textContent = state.coupon
-          ? "کد اعمال‌شده. در حال بررسی..."
+          ? ""
           : "");
 
       const navCnt = document.getElementById("nav-cart-count");
