@@ -3,51 +3,54 @@
   // Simple Markdown to HTML converter
   function parseMarkdown(markdown) {
     let html = markdown;
-    
+
     // Headers
     html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
     html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
     html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
-    
+
     // Bold
     html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
     html = html.replace(/__(.+?)__/g, '<strong>$1</strong>');
-    
+
     // Italic
     html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
     html = html.replace(/_(.+?)_/g, '<em>$1</em>');
-    
+
     // Lists
     html = html.replace(/^\* (.+)$/gim, '<li>$1</li>');
     html = html.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
     html = html.replace(/^\d+\. (.+)$/gim, '<li>$1</li>');
-    
+
     // Links
 
     html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
 
     // Images
     html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" />');
-    
+
     // Code blocks
     html = html.replace(/```([^`]+)```/g, '<pre><code>$1</code></pre>');
     html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
-    
+
     // Blockquotes
     html = html.replace(/^> (.+)$/gim, '<blockquote><p>$1</p></blockquote>');
-    
+
     // Paragraphs
-    html = html.split('\n\n').map(para => {
-      para = para.trim();
-      if (para && !para.match(/^<[^>]+>/)) {
-        return `<p>${para}</p>`;
-      }
-      return para;
-    }).join('\n');
-    
+    html = html
+      .split('\n\n')
+      .map((para) => {
+        para = para.trim();
+        if (para && !para.match(/^<[^>]+>/)) {
+          return `<p>${para}</p>`;
+        }
+        return para;
+      })
+      .join('\n');
+
     // Line breaks
     html = html.replace(/\n/g, '<br>');
-    
+
     return html;
   }
 
@@ -66,7 +69,6 @@
     // Extract slug from URL
     const pathParts = window.location.pathname.split("/");
     const slug = pathParts[pathParts.length - 1];
-    
 
     if (!slug || slug === "magazine") {
       console.error("No valid slug found");
@@ -77,15 +79,15 @@
     try {
       // Fetch article data
       const apiUrl = `/api/magazine/posts/${slug}`;
-      
+
       const response = await fetch(apiUrl);
-      
+
       // Check if the response is 404 and redirect
       if (response.status === 404) {
         window.location.href = "/404";
         return;
       }
-      
+
       const result = await response.json();
 
       if (!response.ok || !result.success || !result.data) {
@@ -104,7 +106,6 @@
 
       // Load related articles
       await loadRelatedArticles(article.related || []);
-
     } catch (error) {
       console.error("Error loading article:", error);
       // Redirect to 404 page on any error
@@ -120,22 +121,17 @@
   }
 
   function updateArticleContent(article) {
-    // Update category
-    const categoryDisplay =
-      article.category === "GUIDE"
-        ? "راهنما"
-        : article.category === "TUTORIAL"
-        ? "آموزش"
-        : article.category === "LIFESTYLE"
-        ? "لایف‌استایل"
-        : article.category === "TRENDS"
-        ? "ترندها"
-        : "عمومی";
+    // Category display: use DB-provided values only
+    const categoryCode = article.category || "";
+    const categoryDisplay = article.categoryName || categoryCode || "عمومی";
 
     const categoryLink = document.getElementById("article-category");
     if (categoryLink) {
       categoryLink.textContent = categoryDisplay;
-      categoryLink.href = `/magazine?category=${article.category.toLowerCase()}`;
+      // Pass category code to magazine page; backend supports code or slug
+      categoryLink.href = categoryCode
+        ? `/magazine?category=${encodeURIComponent(categoryCode)}`
+        : "/magazine";
     }
 
     // Update title
@@ -148,7 +144,7 @@
       excerptElement.textContent = article.excerpt;
     } else if (excerptElement) {
       // Create excerpt from content if not provided
-      const plainText = article.content.replace(/[#*_`[```()]/g, '').substring(0, 150);
+      const plainText = article.content.replace(/[#*_`[```()]/g, "").substring(0, 150);
       excerptElement.textContent = plainText + "...";
     }
 
@@ -173,6 +169,7 @@
 
       const authorBoxBio = document.getElementById("author-box-bio");
       if (authorBoxBio && article.author.bio) {
+        // Note: bio is not guaranteed in API; will fallback below
         authorBoxBio.textContent = article.author.bio;
       } else if (authorBoxBio) {
         authorBoxBio.textContent = "نویسنده مجله KOALAW";
@@ -285,16 +282,8 @@
   }
 
   function createRelatedArticleCard(article, index) {
-    const categoryDisplay =
-      article.category === "GUIDE"
-        ? "راهنما"
-        : article.category === "TUTORIAL"
-        ? "آموزش"
-        : article.category === "LIFESTYLE"
-        ? "لایف‌استایل"
-        : article.category === "TRENDS"
-        ? "ترندها"
-        : "عمومی";
+    // Prefer server-provided fields; no hardcoded map
+    const categoryDisplay = article.categoryName || article.category || "عمومی";
 
     const readTime = article.readTimeMinutes || 5;
     const publishDate = article.publishedAt
