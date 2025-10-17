@@ -1,6 +1,7 @@
 import { Prisma } from '@prisma/client';
 import { prisma } from '../prismaClient.js';
 const defaultPostInclude = {
+    category: true,
     author: true,
     tags: {
         include: {
@@ -39,10 +40,17 @@ const defaultPostInclude = {
 export const magazineRepo = {
     // POSTS
     async listPosts(filter) {
-        const { page, pageSize, category, tagSlugs, authorSlug, q, onlyPublished = true } = filter;
+        const { page, pageSize, categoryId, categoryCode, categorySlug, tagSlugs, authorSlug, q, onlyPublished = true, } = filter;
+        const categoryWhere = categoryId
+            ? { categoryId }
+            : categoryCode
+                ? { category: { code: categoryCode } }
+                : categorySlug
+                    ? { category: { slug: categorySlug } }
+                    : {};
         const where = {
             AND: [
-                category ? { category } : {},
+                categoryWhere,
                 tagSlugs?.length
                     ? {
                         tags: {
@@ -194,6 +202,30 @@ export const magazineRepo = {
     },
     async deleteTag(id) {
         return prisma.magazineTag.delete({ where: { id } });
+    },
+    // NEW: CATEGORIES
+    async listCategories() {
+        return prisma.magazineCategory.findMany({
+            orderBy: [{ name: 'asc' }],
+        });
+    },
+    async findCategoryById(id) {
+        return prisma.magazineCategory.findUnique({ where: { id } });
+    },
+    async findCategoryByCode(code) {
+        return prisma.magazineCategory.findUnique({ where: { code } });
+    },
+    async findCategoryBySlug(slug) {
+        return prisma.magazineCategory.findUnique({ where: { slug } });
+    },
+    async createCategory(data) {
+        return prisma.magazineCategory.create({ data });
+    },
+    async updateCategory(id, data) {
+        return prisma.magazineCategory.update({ where: { id }, data });
+    },
+    async deleteCategory(id) {
+        return prisma.magazineCategory.delete({ where: { id } });
     },
 };
 //# sourceMappingURL=magazine.repo.js.map

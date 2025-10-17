@@ -160,6 +160,53 @@ export class MagazineController {
             next(err);
         }
     };
+    // CATEGORIES
+    listCategories = async (_req, res, next) => {
+        try {
+            const cats = await magazineService.listCategories();
+            res.json({ success: true, data: cats });
+        }
+        catch (err) {
+            next(err);
+        }
+    };
+    getCategoryBySlug = async (req, res, next) => {
+        try {
+            const { slug } = req.params;
+            const cat = await magazineService.getCategoryBySlug(slug);
+            res.json({ success: true, data: cat });
+        }
+        catch (err) {
+            next(err);
+        }
+    };
+    createCategory = async (req, res, next) => {
+        try {
+            const cat = await magazineService.createCategory(req.body);
+            res.status(201).json({ success: true, data: cat });
+        }
+        catch (err) {
+            next(err);
+        }
+    };
+    updateCategory = async (req, res, next) => {
+        try {
+            const cat = await magazineService.updateCategory(req.params.id, req.body);
+            res.json({ success: true, data: cat });
+        }
+        catch (err) {
+            next(err);
+        }
+    };
+    deleteCategory = async (req, res, next) => {
+        try {
+            await magazineService.deleteCategory(req.params.id);
+            res.status(204).send();
+        }
+        catch (err) {
+            next(err);
+        }
+    };
 }
 export const magazineController = new MagazineController();
 //# sourceMappingURL=magazine.controller.js.map

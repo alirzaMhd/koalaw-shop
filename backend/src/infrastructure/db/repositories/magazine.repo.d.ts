@@ -1,7 +1,9 @@
 export interface ListPostsFilter {
     page: number;
     pageSize: number;
-    category?: any;
+    categoryId?: string;
+    categoryCode?: string;
+    categorySlug?: string;
     tagSlugs?: string[];
     authorSlug?: string;
     q?: string;
@@ -10,6 +12,15 @@ export interface ListPostsFilter {
 export declare const magazineRepo: {
     listPosts(filter: ListPostsFilter): Promise<{
         items: ({
+            category: {
+                code: string;
+                name: string;
+                id: string;
+                createdAt: Date;
+                updatedAt: Date;
+                slug: string;
+                description: string | null;
+            };
             relatedOut: ({
                 relatedPost: {
                     id: string;
@@ -60,8 +71,8 @@ export declare const magazineRepo: {
             createdAt: Date;
             updatedAt: Date;
             title: string;
-            category: import("@prisma/client").$Enums.MagazineCategory;
             slug: string;
+            categoryId: string;
             heroImageUrl: string | null;
             authorId: string | null;
             excerpt: string | null;
@@ -87,10 +98,10 @@ export declare const magazineRepo: {
             relatedPostId: string;
         })[] | {
             postId: string;
-            relatedPostId: string;
+            tagId: string;
         }[] | {
             postId: string;
-            tagId: string;
+            relatedPostId: string;
         }[];
         [x: number]: never;
         [x: symbol]: never;
@@ -99,8 +110,8 @@ export declare const magazineRepo: {
         createdAt: Date;
         updatedAt: Date;
         title: string;
-        category: import("@prisma/client").$Enums.MagazineCategory;
         slug: string;
+        categoryId: string;
         heroImageUrl: string | null;
         authorId: string | null;
         excerpt: string | null;
@@ -124,10 +135,10 @@ export declare const magazineRepo: {
             relatedPostId: string;
         })[] | {
             postId: string;
-            relatedPostId: string;
+            tagId: string;
         }[] | {
             postId: string;
-            tagId: string;
+            relatedPostId: string;
         }[];
         [x: number]: never;
         [x: symbol]: never;
@@ -136,8 +147,8 @@ export declare const magazineRepo: {
         createdAt: Date;
         updatedAt: Date;
         title: string;
-        category: import("@prisma/client").$Enums.MagazineCategory;
         slug: string;
+        categoryId: string;
         heroImageUrl: string | null;
         authorId: string | null;
         excerpt: string | null;
@@ -153,8 +164,8 @@ export declare const magazineRepo: {
         createdAt: Date;
         updatedAt: Date;
         title: string;
-        category: import("@prisma/client").$Enums.MagazineCategory;
         slug: string;
+        categoryId: string;
         heroImageUrl: string | null;
         authorId: string | null;
         excerpt: string | null;
@@ -246,6 +257,79 @@ export declare const magazineRepo: {
         name: string;
         id: string;
         slug: string;
+    }>;
+    listCategories(): Promise<{
+        code: string;
+        name: string;
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        slug: string;
+        description: string | null;
+    }[]>;
+    findCategoryById(id: string): Promise<{
+        code: string;
+        name: string;
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        slug: string;
+        description: string | null;
+    } | null>;
+    findCategoryByCode(code: string): Promise<{
+        code: string;
+        name: string;
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        slug: string;
+        description: string | null;
+    } | null>;
+    findCategoryBySlug(slug: string): Promise<{
+        code: string;
+        name: string;
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        slug: string;
+        description: string | null;
+    } | null>;
+    createCategory(data: {
+        code: string;
+        name: string;
+        slug: string;
+        description?: string | null;
+    }): Promise<{
+        code: string;
+        name: string;
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        slug: string;
+        description: string | null;
+    }>;
+    updateCategory(id: string, data: Partial<{
+        code: string;
+        name: string;
+        slug: string;
+        description: string | null;
+    }>): Promise<{
+        code: string;
+        name: string;
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        slug: string;
+        description: string | null;
+    }>;
+    deleteCategory(id: string): Promise<{
+        code: string;
+        name: string;
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        slug: string;
+        description: string | null;
     }>;
 };
 //# sourceMappingURL=magazine.repo.d.ts.map

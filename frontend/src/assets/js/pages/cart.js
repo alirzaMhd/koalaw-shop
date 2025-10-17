@@ -34,6 +34,7 @@
 
     // Constants + storage keys
     const API_BASE = "/api"; // Your backend API base URL
+    const CARTS_API = `${API_BASE}/carts`;
     const CART_KEY = "koalaw_cart";
     const STATE_KEY = "koalaw_cart_state";
     const ADDR_KEY = "koalaw_checkout_address";
@@ -43,28 +44,6 @@
     const BASE_SHIPPING = 45000;
     const EXPRESS_PRICE = 30000;
     const GIFT_WRAP_PRICE = 20000;
-
-    // Sample coupons (for frontend validation before API call)
-        const coupons = {
-          KOALAW10: {
-            type: "percent",
-            value: 10,
-            min: 0,
-            msg: "کد ۱۰٪ تخفیف اعمال شد.",
-          },
-          WELCOME15: {
-            type: "percent",
-            value: 15,
-            min: 400000,
-            msg: "۱۵٪ تخفیف خوش‌آمدگویی اعمال شد.",
-          },
-          FREESHIP: {
-            type: "shipping",
-            value: BASE_SHIPPING,
-            min: 0,
-            msg: "ارسال رایگان فعال شد.",
-          },
-        };
 
     const SAMPLE_ITEMS = [];
     // UUID validation helper
@@ -82,7 +61,27 @@
       });
 
     // Add after the constants section (around line 30):
-
+    // Map backend coupon failure reasons to Farsi messages
+    function mapCouponReason(reason) {
+      switch (String(reason || "").toUpperCase()) {
+        case "INACTIVE":
+          return "این کد غیرفعال است.";
+        case "NOT_STARTED":
+          return "این کد هنوز فعال نشده است.";
+        case "EXPIRED":
+          return "مهلت این کد به پایان رسیده است.";
+        case "MIN_NOT_MET":
+          return "حداقل مبلغ سبد برای این کد رعایت نشده است.";
+        case "USAGE_LIMIT_REACHED":
+          return "سقف استفاده از این کد تکمیل شده است.";
+        case "USER_USAGE_LIMIT_REACHED":
+          return "سقف استفاده از این کد برای حساب شما تکمیل شده است.";
+        case "INVALID_DEFINITION":
+        case "INVALID":
+        default:
+          return "کد معتبر نیست.";
+      }
+    }
     // Check if user is authenticated
     async function isAuthenticated() {
       try {
@@ -182,7 +181,58 @@
       KUtils.setJSON("koalaw_backend_cart_id", id);
       return id;
     }
+    function resetBackendCartId() {
+      KUtils.setJSON("koalaw_backend_cart_id", null);
+    }
+    // Sync local cart to backend to be able to quote/apply DB coupons
+    // REPLACE the syncLocalCartToBackend function (around line 168)
+    async function syncLocalCartToBackend(backendCartId) {
+      const local = loadCart();
+      const syncable = local.filter((it) => isUUID(it.productId));
 
+      // Clear backend cart first to avoid duplicates
+      try {
+        await fetch(`${API_BASE}/carts/${backendCartId}/clear`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+        });
+      } catch (e) {
+        console.warn("[CART] Failed to clear backend cart:", e);
+      }
+
+      for (const it of syncable) {
+        try {
+          const resp = await fetch(`${API_BASE}/carts/${backendCartId}/items`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              productId: it.productId,
+              variantId: it.variantId || null,
+              quantity: Number(it.qty || it.quantity || 1),
+            }),
+          });
+
+          // If cart not found, reset and create new cart
+          if (resp.status === 404) {
+            console.warn("[CART] Backend cart not found, creating new one");
+            resetBackendCartId();
+            const newCartId = await getOrCreateBackendCartId();
+            // Retry with new cart ID
+            await fetch(`${API_BASE}/carts/${newCartId}/items`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                productId: it.productId,
+                variantId: it.variantId || null,
+                quantity: Number(it.qty || it.quantity || 1),
+              }),
+            });
+          }
+        } catch (e) {
+          console.warn("[CART] Failed to sync item to backend cart:", e);
+        }
+      }
+    }
     async function syncDeleteItemFromBackend(cartId, itemId) {
       try {
         await fetch(`${API_BASE}/carts/${cartId}/items/${itemId}`, {
@@ -295,22 +345,14 @@
       KUtils.setJSON(ADDR_KEY, addr);
     }
 
+    // Local fallback totals (without coupon). Backend quote provides final numbers.
     function computeTotals(cart, state) {
       const subtotal = cart.reduce((a, c) => a + c.price * c.qty, 0);
-      let discount = 0,
-        shipping = 0,
-        gift = state.gift ? GIFT_WRAP_PRICE : 0;
-      if (state.coupon) {
-        const r = coupons[state.coupon.toUpperCase()];
-        if (r && subtotal >= r.min) {
-          if (r.type === "percent")
-            discount = Math.floor(subtotal * (r.value / 100));
-          else if (r.type === "shipping") shipping = 0;
-        }
-      }
+      const discount = 0;
       const postSubtotal = subtotal - discount;
-      shipping = postSubtotal >= FREE_SHIP_THRESHOLD ? 0 : BASE_SHIPPING;
+      let shipping = postSubtotal >= FREE_SHIP_THRESHOLD ? 0 : BASE_SHIPPING;
       if (state.express) shipping += EXPRESS_PRICE;
+      const gift = state.gift ? GIFT_WRAP_PRICE : 0;
       const total = Math.max(0, postSubtotal + shipping + gift);
       return { subtotal, discount, shipping, gift, total };
     }
@@ -431,7 +473,7 @@
       couponInput && (couponInput.value = state.coupon || "");
       couponMsg &&
         (couponMsg.textContent = state.coupon
-          ? coupons[state.coupon]?.msg || "کد اعمال‌شده."
+          ? "کد اعمال‌شده. در حال بررسی..."
           : "");
 
       const navCnt = document.getElementById("nav-cart-count");
@@ -536,6 +578,7 @@
           }
         })
       );
+      // REPLACE the remove button handler (around line 570)
       itemsWrap?.querySelectorAll(".remove").forEach((btn) =>
         btn.addEventListener("click", async () => {
           const row = btn.closest("[data-id]");
@@ -550,12 +593,16 @@
           // Sync with backend
           if (item && item.productId && isUUID(item.productId)) {
             try {
-              const cartId = await getOrCreateBackendCartId();
-              // Find the backend cart item by productId/variantId
+              let cartId = await getOrCreateBackendCartId();
               const cartResp = await fetch(`${CARTS_API}/${cartId}`, {
                 credentials: "include",
               });
-              if (cartResp.ok) {
+
+              // If cart not found, reset and create new
+              if (cartResp.status === 404) {
+                resetBackendCartId();
+                cartId = await getOrCreateBackendCartId();
+              } else if (cartResp.ok) {
                 const cartData = await cartResp.json();
                 const backendItem = cartData?.data?.cart?.items?.find(
                   (i) =>
@@ -573,7 +620,7 @@
         })
       );
 
-      function updateCartSummary() {
+      async function updateCartSummary() {
         const s = loadState();
         const c = loadCart();
         const t = computeTotals(c, s);
@@ -621,6 +668,93 @@
           );
           progFill && (progFill.style.width = pct + "%");
         }
+        // Fetch authoritative totals from backend (DB coupons)
+
+        const q = data?.data?.quote;
+        if (!q) return;
+        // REPLACE the backend quote fetch section in updateCartSummary (around line 630)
+        try {
+          if (!c.length) return;
+          let cartId = await getOrCreateBackendCartId();
+          await syncLocalCartToBackend(cartId);
+
+          const resp = await fetch(`${API_BASE}/carts/${cartId}/quote`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify({
+              couponCode: s.coupon || undefined,
+              shippingMethod:
+                s.shippingMethod || (s.express ? "express" : "standard"),
+              giftWrap: !!s.gift,
+            }),
+          });
+
+          // If cart not found, reset and retry
+          if (resp.status === 404) {
+            resetBackendCartId();
+            cartId = await getOrCreateBackendCartId();
+            await syncLocalCartToBackend(cartId);
+            return; // Let next render handle the quote
+          }
+
+          if (!resp.ok) return;
+          const data = await resp.json();
+          subtotal && (subtotal.textContent = toIRR(q.subtotal));
+          discount &&
+            (discount.textContent =
+              q.discount > 0 ? `- ${toIRR(q.discount)}` : "۰ تومان");
+          shipping &&
+            (shipping.textContent =
+              q.shipping === 0 ? "رایگان" : toIRR(q.shipping));
+          gift &&
+            (gift.textContent = q.giftWrap > 0 ? toIRR(q.giftWrap) : "۰ تومان");
+          grand && (grand.textContent = toIRR(q.total));
+
+          // Update free-shipping progress based on backend
+          const cur = Math.max(0, q.postSubtotal || 0);
+          const thr = Math.max(
+            0,
+            q.freeShippingThreshold || FREE_SHIP_THRESHOLD
+          );
+          if (cur >= thr) {
+            progText &&
+              (progText.textContent =
+                "تبریک! ارسال رایگان برای سفارش شما فعال شد.");
+            if (shipBadge) {
+              shipBadge.textContent = "ارسال رایگان";
+              shipBadge.className = "text-xs px-3 py-1 rounded-full badge-free";
+            }
+            progFill && (progFill.style.width = "100%");
+          } else {
+            const remain = Math.max(0, thr - cur);
+            progText &&
+              (progText.textContent = `برای ارسال رایگان، هنوز ${toIRR(
+                remain
+              )} مانده است.`);
+            if (shipBadge) {
+              shipBadge.textContent = "فعال‌سازی ارسال رایگان";
+              shipBadge.className = "text-xs px-3 py-1 rounded-full badge-warn";
+            }
+            const pct = Math.min(100, Math.round((cur / thr) * 100));
+            progFill && (progFill.style.width = pct + "%");
+          }
+
+          // Coupon feedback
+          if (s.coupon) {
+            const couponMsg = document.getElementById("cart-coupon-msg");
+            const applied = q.appliedCoupon;
+            if (applied?.ok) {
+              couponMsg.textContent = "کد تخفیف اعمال شد.";
+              couponMsg.className = "text-sm text-emerald-700 mt-2";
+            } else if (applied) {
+              couponMsg.textContent = mapCouponReason(applied.reason);
+              couponMsg.className = "text-sm text-rose-700 mt-2";
+            }
+          }
+        } catch (e) {
+          console.warn("[CART] Failed to fetch backend quote:", e);
+        }
       }
       updateCartSummary();
 
@@ -647,56 +781,155 @@
           saveState(s);
         });
 
-      // Coupon
+      // In the coupon apply button handler (around line 665)
       const applyBtn = document.getElementById("cart-apply-coupon");
       applyBtn &&
-        (applyBtn.onclick = () => {
+        (applyBtn.onclick = async () => {
           const code = (couponInput?.value || "").trim().toUpperCase();
-          const subtotal = cart.reduce((a, c) => a + c.price * c.qty, 0);
+          const s = loadState();
           if (!code) {
-            const s = loadState();
             s.coupon = "";
             saveState(s);
             couponMsg.textContent = "";
             updateCartSummary();
             return;
           }
-          const r = coupons[code];
-          if (r) {
-            if (subtotal < r.min) {
-              couponMsg.textContent = `حداقل سبد برای این کد: ${toIRR(r.min)}`;
-              couponMsg.className = "text-sm text-rose-700 mt-2";
-            } else {
-              const s = loadState();
+          couponMsg.textContent = "در حال بررسی کد...";
+          couponMsg.className = "text-sm text-gray-500 mt-2";
+          try {
+            const cartId = await getOrCreateBackendCartId();
+            await syncLocalCartToBackend(cartId);
+            const resp = await fetch(`${API_BASE}/carts/${cartId}/quote`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              credentials: "include",
+              body: JSON.stringify({
+                couponCode: code,
+                shippingMethod:
+                  s.shippingMethod || (s.express ? "express" : "standard"),
+                giftWrap: !!s.gift,
+              }),
+            });
+            const data = await resp.json();
+            const q = data?.data?.quote;
+
+            console.log("[CART] Quote response:", q);
+            console.log("[CART] Applied coupon:", q?.appliedCoupon);
+            console.log("[CART] Discount amount:", q?.discount);
+
+            if (resp.ok && q?.appliedCoupon?.ok) {
               s.coupon = code;
               saveState(s);
-              couponMsg.textContent = r.msg || "کد تخفیف اعمال شد.";
+
+              // Log the actual values
+              console.log("[CART] Coupon applied!", {
+                subtotal: q.subtotal,
+                discount: q.discount,
+                shipping: q.shipping,
+                total: q.total,
+                effect: q.appliedCoupon.effect,
+              });
+
+              couponMsg.textContent = `کد تخفیف اعمال شد. تخفیف: ${toIRR(q.discount)}`;
               couponMsg.className = "text-sm text-emerald-700 mt-2";
-              showToast("کد تخفیف اعمال شد", "tag");
+              showToast(
+                `کد تخفیف اعمال شد - تخفیف: ${toIRR(q.discount)}`,
+                "tag"
+              );
+
+              // Update all displays
+              const subtotal = document.getElementById("cart-subtotal");
+              const discount = document.getElementById("cart-discount");
+              const shipping = document.getElementById("cart-shipping");
+              const gift = document.getElementById("cart-gift");
+              const grand = document.getElementById("cart-grand");
+
+              if (subtotal) subtotal.textContent = toIRR(q.subtotal);
+              if (discount) {
+                discount.textContent =
+                  q.discount > 0 ? `- ${toIRR(q.discount)}` : "۰ تومان";
+                console.log(
+                  "[CART] Updated discount display to:",
+                  discount.textContent
+                );
+              }
+              if (shipping)
+                shipping.textContent =
+                  q.shipping === 0 ? "رایگان" : toIRR(q.shipping);
+              if (gift)
+                gift.textContent =
+                  q.giftWrap > 0 ? toIRR(q.giftWrap) : "۰ تومان";
+              if (grand) grand.textContent = toIRR(q.total);
+
+              // Update progress bar
+              const progText = document.getElementById("cart-progress-text");
+              const shipBadge = document.getElementById("cart-ship-badge");
+              const progFill = document.getElementById("cart-progress-bar");
+              const cur = Math.max(0, q.postSubtotal || 0);
+              const thr = Math.max(
+                0,
+                q.freeShippingThreshold || FREE_SHIP_THRESHOLD
+              );
+
+              if (cur >= thr) {
+                progText &&
+                  (progText.textContent =
+                    "تبریک! ارسال رایگان برای سفارش شما فعال شد.");
+                if (shipBadge) {
+                  shipBadge.textContent = "ارسال رایگان";
+                  shipBadge.className =
+                    "text-xs px-3 py-1 rounded-full badge-free";
+                }
+                progFill && (progFill.style.width = "100%");
+              } else {
+                const remain = Math.max(0, thr - cur);
+                progText &&
+                  (progText.textContent = `برای ارسال رایگان، هنوز ${toIRR(remain)} مانده است.`);
+                if (shipBadge) {
+                  shipBadge.textContent = "فعال‌سازی ارسال رایگان";
+                  shipBadge.className =
+                    "text-xs px-3 py-1 rounded-full badge-warn";
+                }
+                const pct = Math.min(100, Math.round((cur / thr) * 100));
+                progFill && (progFill.style.width = pct + "%");
+              }
+            } else {
+              console.warn("[CART] Coupon failed:", q?.appliedCoupon);
+              couponMsg.textContent = mapCouponReason(q?.appliedCoupon?.reason);
+              couponMsg.className = "text-sm text-rose-700 mt-2";
+              s.coupon = "";
+              saveState(s);
               updateCartSummary();
             }
-          } else {
-            couponMsg.textContent = "کد معتبر نیست.";
+          } catch (e) {
+            console.error("[CART] Coupon validation error:", e);
+            couponMsg.textContent = "خطا در بررسی کد. لطفاً دوباره تلاش کنید.";
             couponMsg.className = "text-sm text-rose-700 mt-2";
           }
         });
 
-      // Clear
+      // REPLACE the clearBtn handler (around line 650)
       const clearBtn = document.getElementById("cart-clear");
       clearBtn &&
         (clearBtn.onclick = async () => {
           if (!cart.length) return;
           if (confirm("آیا از پاک کردن سبد خرید مطمئن هستید؟")) {
             saveCart([]);
-            renderCart();
 
-            // Sync with backend
+            // Reset backend cart ID so a fresh cart is created next time
+            resetBackendCartId();
+
+            // Try to clear backend cart if it exists
             try {
-              const cartId = await getOrCreateBackendCartId();
-              await syncClearBackendCart(cartId);
+              const cartId = KUtils.getJSON("koalaw_backend_cart_id");
+              if (cartId && isUUID(cartId)) {
+                await syncClearBackendCart(cartId);
+              }
             } catch (e) {
               console.warn("[CART] Failed to clear backend cart:", e);
             }
+
+            renderCart();
           }
         });
 
@@ -768,6 +1001,7 @@
                 }
 
                 renderCart();
+                updateCartSummary();
               });
               recWrap.appendChild(d);
             });
@@ -929,7 +1163,7 @@
         });
       }
 
-      function update() {
+      async function update() {
         const t = computeTotals(loadCart(), loadState());
         const set = (id, val) => {
           const el = document.getElementById(id);
@@ -959,6 +1193,42 @@
           navCnt.textContent = KUtils.toFa(
             loadCart().reduce((x, y) => x + y.qty, 0)
           );
+
+        // Backend authoritative totals (DB coupons)
+        try {
+          const s = loadState();
+          const cart = loadCart();
+          if (!cart.length) return;
+          const cartId = await getOrCreateBackendCartId();
+          await syncLocalCartToBackend(cartId);
+          const resp = await fetch(`${API_BASE}/carts/${cartId}/quote`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify({
+              couponCode: s.coupon || undefined,
+              shippingMethod:
+                s.shippingMethod || (s.express ? "express" : "standard"),
+              giftWrap: !!s.gift,
+            }),
+          });
+          if (!resp.ok) return;
+          const data = await resp.json();
+          const q = data?.data?.quote;
+          if (!q) return;
+          set("addr-subtotal", KUtils.toIRR(q.subtotal));
+          set(
+            "addr-discount",
+            q.discount > 0 ? `- ${KUtils.toIRR(q.discount)}` : "۰ تومان"
+          );
+          set(
+            "addr-shipping",
+            q.shipping === 0 ? "رایگان" : KUtils.toIRR(q.shipping)
+          );
+          set("addr-grand", KUtils.toIRR(q.total));
+        } catch (e) {
+          console.warn("[ADDR] Failed to fetch backend quote:", e);
+        }
       }
       update();
       KUtils.refreshIcons();
@@ -990,7 +1260,7 @@
       }
       let state = loadState();
 
-      function update() {
+      async function update() {
         const t = computeTotals(loadCart(), loadState());
         const set = (id, val) => {
           const el = document.getElementById(id);
@@ -1018,6 +1288,41 @@
           navCnt.textContent = KUtils.toFa(
             loadCart().reduce((x, y) => x + y.qty, 0)
           );
+        // Backend authoritative totals
+        try {
+          const s = loadState();
+          const cart = loadCart();
+          if (!cart.length) return;
+          const cartId = await getOrCreateBackendCartId();
+          await syncLocalCartToBackend(cartId);
+          const resp = await fetch(`${API_BASE}/carts/${cartId}/quote`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify({
+              couponCode: s.coupon || undefined,
+              shippingMethod:
+                s.shippingMethod || (s.express ? "express" : "standard"),
+              giftWrap: !!s.gift,
+            }),
+          });
+          if (!resp.ok) return;
+          const data = await resp.json();
+          const q = data?.data?.quote;
+          if (!q) return;
+          set("pay-subtotal", KUtils.toIRR(q.subtotal));
+          set(
+            "pay-discount",
+            q.discount > 0 ? `- ${KUtils.toIRR(q.discount)}` : "۰ تومان"
+          );
+          set(
+            "pay-shipping",
+            q.shipping === 0 ? "رایگان" : KUtils.toIRR(q.shipping)
+          );
+          set("pay-grand", KUtils.toIRR(q.total));
+        } catch (e) {
+          console.warn("[PAY] Failed to fetch backend quote:", e);
+        }
       }
       update();
 
@@ -1044,34 +1349,7 @@
       /**
        * Sync local cart (if it contains real product IDs) to backend cart
        */
-      const UUID_RE =
-        /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}$/i;
-      const isUUID = (v) => UUID_RE.test(String(v || ""));
-      async function syncLocalCartToBackend(backendCartId) {
-        const local = loadCart();
-        const syncable = local.filter((it) => isUUID(it.productId));
-        if (!syncable.length) return;
-        // Clear backend cart first to avoid duplicates
-        await fetch(`${API_BASE}/carts/${backendCartId}/clear`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-        }).catch(() => {});
-        for (const it of syncable) {
-          try {
-            await fetch(`${API_BASE}/carts/${backendCartId}/items`, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                productId: it.productId,
-                variantId: it.variantId || null,
-                quantity: Number(it.qty || it.quantity || 1),
-              }),
-            });
-          } catch (e) {
-            console.warn("Failed to sync item to backend cart:", e);
-          }
-        }
-      }
+      // syncLocalCartToBackend and isUUID are defined globally above; reused here.
 
       /**
        * Create order via backend API and handle Zarinpal payment

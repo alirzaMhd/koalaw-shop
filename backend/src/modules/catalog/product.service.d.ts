@@ -92,6 +92,9 @@ declare class ProductService {
             id: string;
             name: string;
             heroImageUrl: string | null;
+            subtitle: string | null;
+            isFeatured: boolean;
+            displayOrder: number;
             count: number;
         }[];
         priceRange: {

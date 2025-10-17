@@ -125,7 +125,8 @@ function toPostDTO(post) {
                 avatarUrl: post.author.avatarUrl,
             }
             : null,
-        category: post.category,
+        category: post.category?.code ?? 'GENERAL',
+        categoryName: post.category?.name ?? null,
         title: post.title,
         slug: post.slug,
         excerpt: post.excerpt,
@@ -149,7 +150,12 @@ export class MagazineService {
             pageSize: safePageSize,
             onlyPublished: params.onlyPublished ?? true,
             // Conditionally add optional properties only if they have a non-falsy value.
-            ...(params.category && { category: params.category }),
+            // If category is uppercase assume code, otherwise assume slug
+            ...(params.category && /^[A-Z_]+$/.test(params.category)
+                ? { categoryCode: params.category }
+                : params.category
+                    ? { categorySlug: String(params.category).toLowerCase() }
+                    : {}),
             ...(params.tagSlugs && { tagSlugs: params.tagSlugs }),
             ...(params.authorSlug && { authorSlug: params.authorSlug }),
             ...(params.q && { q: params.q }),
@@ -181,6 +187,17 @@ export class MagazineService {
         // For admin, we don't need to check if it's published
         return toPostDTO(post);
     }
+    async resolveCategory(input) {
+        const codeCandidate = input.trim().toUpperCase();
+        const slugCandidate = input.trim().toLowerCase();
+        let cat = await magazineRepo.findCategoryByCode(codeCandidate);
+        if (!cat) {
+            cat = await magazineRepo.findCategoryBySlug(slugCandidate);
+        }
+        if (!cat)
+            throw new AppError('دسته‌بندی معتبر یافت نشد', 400);
+        return cat;
+    }
     async createPost(input) {
         let slug;
         if (input.slug && input.slug.trim()) {
@@ -196,9 +213,10 @@ export class MagazineService {
             ? (await upsertTagsByNamesOrSlugs(input.tags)).map((t) => t.id)
             : [];
         const authorId = input.authorId && input.authorId.trim() !== "" ? input.authorId.trim() : null;
+        const category = await this.resolveCategory(input.category);
         const data = {
             authorId,
-            category: input.category,
+            categoryId: category.id,
             title: input.title,
             slug,
             excerpt: input.excerpt ?? null,
@@ -223,8 +241,10 @@ export class MagazineService {
         const data = {};
         if (typeof input.title !== 'undefined')
             data.title = input.title;
-        if (typeof input.category !== 'undefined')
-            data.category = input.category;
+        if (typeof input.category !== 'undefined') {
+            const category = await this.resolveCategory(input.category);
+            data.categoryId = category.id;
+        }
         if (typeof input.authorId !== 'undefined') {
             data.authorId = input.authorId && input.authorId.trim() !== "" ? input.authorId.trim() : null;
         }
@@ -337,6 +357,64 @@ export class MagazineService {
     }
     async deleteTag(id) {
         await magazineRepo.deleteTag(id);
+    }
+    // CATEGORIES
+    async listCategories() {
+        return magazineRepo.listCategories();
+    }
+    async getCategoryBySlug(slug) {
+        const cat = await magazineRepo.findCategoryBySlug(slug);
+        if (!cat)
+            throw new AppError('Category not found', 404);
+        return cat;
+    }
+    async createCategory(input) {
+        const code = input.code.trim().toUpperCase();
+        const exists = await magazineRepo.findCategoryByCode(code);
+        if (exists)
+            throw new AppError('Category code already exists', 409);
+        const slug = input.slug?.trim()
+            ? slugify(input.slug)
+            : slugify(input.name || input.code);
+        const slugExists = await magazineRepo.findCategoryBySlug(slug);
+        if (slugExists)
+            throw new AppError('Category slug already exists', 409);
+        return magazineRepo.createCategory({
+            code,
+            name: input.name,
+            slug,
+            description: input.description ?? null,
+        });
+    }
+    async updateCategory(id, input) {
+        const data = {};
+        if (typeof input.code !== 'undefined') {
+            const code = input.code.trim().toUpperCase();
+            const dup = await magazineRepo.findCategoryByCode(code);
+            if (dup && dup.id !== id)
+                throw new AppError('Category code already exists', 409);
+            data.code = code;
+        }
+        if (typeof input.name !== 'undefined')
+            data.name = input.name;
+        if (typeof input.slug !== 'undefined') {
+            const clean = slugify(input.slug);
+            const dup = await magazineRepo.findCategoryBySlug(clean);
+            if (dup && dup.id !== id)
+                throw new AppError('Category slug already exists', 409);
+            data.slug = clean;
+        }
+        if (typeof input.description !== 'undefined')
+            data.description = input.description;
+        return magazineRepo.updateCategory(id, data);
+    }
+    async deleteCategory(id) {
+        // Optionally: ensure no posts reference this category
+        const inUse = await prisma.magazinePost.count({ where: { categoryId: id } });
+        if (inUse > 0) {
+            throw new AppError('امکان حذف دسته‌بندی در حال استفاده وجود ندارد', 409);
+        }
+        await magazineRepo.deleteCategory(id);
     }
 }
 export const magazineService = new MagazineService();

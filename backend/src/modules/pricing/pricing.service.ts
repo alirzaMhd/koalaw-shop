@@ -88,77 +88,8 @@ const BASE_SHIPPING = Number(env.PRICING_BASE_SHIPPING ?? 45_000);
 const EXPRESS_SURCHARGE = Number(env.PRICING_EXPRESS_SURCHARGE ?? 30_000);
 const GIFT_WRAP_PRICE = Number(env.PRICING_GIFT_WRAP_PRICE ?? 20_000);
 const DEFAULT_CURRENCY = String(env.CURRENCY_DEFAULT ?? "IRR");
-const ENABLE_SAMPLE_COUPONS = String(env.PRICING_ENABLE_SAMPLE_COUPONS ?? "true") === "true";
-
 // ---------- Sample fallback coupons (used if DB has none and feature enabled) ----------
 
-function sampleCoupon(code: string): Coupon | null {
-  const upper = normalizeCouponCode(code);
-  const now = new Date();
-  const base: Partial<Coupon> = {
-    minSubtotal: 0,
-    isActive: true,
-    createdAt: now,
-    updatedAt: now,
-    startsAt: null,
-    endsAt: null,
-  };
-  if (upper === "KOALAW10") {
-    return {
-      id: "sample-KOALAW10",
-      code: upper,
-      type: "percent",
-      percentValue: 10,
-      amountValue: null,
-      minSubtotal: 0,
-      maxUses: null,
-      maxUsesPerUser: null,
-      startsAt: null,
-      endsAt: null,
-      isActive: true,
-      createdAt: now,
-      updatedAt: now,
-      ...base,
-    } as Coupon;
-  }
-  if (upper === "WELCOME15") {
-    return {
-      id: "sample-WELCOME15",
-      code: upper,
-      type: "percent",
-      percentValue: 15,
-      amountValue: null,
-      minSubtotal: 400_000,
-      maxUses: null,
-      maxUsesPerUser: null,
-      startsAt: null,
-      endsAt: null,
-      isActive: true,
-      createdAt: now,
-      updatedAt: now,
-      ...base,
-    } as Coupon;
-  }
-  if (upper === "FREESHIP") {
-    return {
-      id: "sample-FREESHIP",
-      code: upper,
-      type: "free_shipping",
-      percentValue: null,
-      amountValue: null,
-      minSubtotal: 0,
-      maxUses: null,
-      maxUsesPerUser: null,
-      startsAt: null,
-      endsAt: null,
-      isActive: true,
-      createdAt: now,
-      updatedAt: now,
-      ...base,
-    } as Coupon;
-  }
-  return null;
-}
 
 // ---------- Helpers ----------
 
@@ -294,11 +225,6 @@ class PricingService {
     if (opts.couponCode) {
       const upper = normalizeCouponCode(opts.couponCode);
       let coupon = await loadCouponByCode(upper);
-
-      if (!coupon && ENABLE_SAMPLE_COUPONS) {
-        coupon = sampleCoupon(upper);
-      }
-
       if (coupon && isCouponActive(coupon)) {
         // Evaluate against current subtotal and base shipping after discount
         const subtotal = lines.reduce((acc, l) => acc + Math.max(0, Math.floor(l.unitPrice || 0)) * Math.max(1, Math.floor(l.quantity || 1)), 0);
@@ -308,10 +234,7 @@ class PricingService {
         // We don't know discount yet; for conservative estimate, pass current base shipping by threshold on current subtotal (close enough).
         const prelimShippingBase = subtotal >= FREE_SHIP_THRESHOLD ? 0 : BASE_SHIPPING;
 
-        const counts = coupon.id.startsWith("sample-")
-          ? { global: 0, user: 0 }
-          : await countCouponRedemptions(coupon.id, opts.userId || undefined);
-
+        const counts = await countCouponRedemptions(coupon.id, opts.userId || undefined);
         const evalRes = evaluateCoupon(coupon, {
           subtotal,
           shipping: prelimShippingBase,

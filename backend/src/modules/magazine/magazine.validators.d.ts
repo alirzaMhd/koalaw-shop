@@ -1,14 +1,7 @@
 import { z } from 'zod';
-export declare enum MagazineCategory {
-    GUIDE = "GUIDE",
-    TUTORIAL = "TUTORIAL",
-    TRENDS = "TRENDS",
-    LIFESTYLE = "LIFESTYLE",
-    GENERAL = "GENERAL"
-}
 export declare const listPostsSchema: z.ZodObject<{
     query: z.ZodObject<{
-        category: z.ZodOptional<z.ZodNativeEnum<typeof MagazineCategory>>;
+        category: z.ZodOptional<z.ZodString>;
         tag: z.ZodOptional<z.ZodString>;
         tags: z.ZodOptional<z.ZodEffects<z.ZodString, string[], string>>;
         authorSlug: z.ZodOptional<z.ZodString>;
@@ -19,14 +12,14 @@ export declare const listPostsSchema: z.ZodObject<{
     }, "strip", z.ZodTypeAny, {
         page: number;
         pageSize: number;
-        category?: MagazineCategory | undefined;
+        category?: string | undefined;
         tags?: string[] | undefined;
         tag?: string | undefined;
         q?: string | undefined;
         authorSlug?: string | undefined;
         onlyPublished?: boolean | undefined;
     }, {
-        category?: MagazineCategory | undefined;
+        category?: string | undefined;
         tags?: string | undefined;
         tag?: string | undefined;
         page?: number | undefined;
@@ -39,7 +32,7 @@ export declare const listPostsSchema: z.ZodObject<{
     query: {
         page: number;
         pageSize: number;
-        category?: MagazineCategory | undefined;
+        category?: string | undefined;
         tags?: string[] | undefined;
         tag?: string | undefined;
         q?: string | undefined;
@@ -48,7 +41,7 @@ export declare const listPostsSchema: z.ZodObject<{
     };
 }, {
     query: {
-        category?: MagazineCategory | undefined;
+        category?: string | undefined;
         tags?: string | undefined;
         tag?: string | undefined;
         page?: number | undefined;
@@ -78,7 +71,7 @@ export declare const getPostBySlugSchema: z.ZodObject<{
 export declare const createPostSchema: z.ZodObject<{
     body: z.ZodObject<{
         authorId: z.ZodOptional<z.ZodNullable<z.ZodString>>;
-        category: z.ZodNativeEnum<typeof MagazineCategory>;
+        category: z.ZodString;
         title: z.ZodString;
         slug: z.ZodOptional<z.ZodString>;
         excerpt: z.ZodOptional<z.ZodString>;
@@ -91,7 +84,7 @@ export declare const createPostSchema: z.ZodObject<{
         relatedPostIds: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
     }, "strip", z.ZodTypeAny, {
         title: string;
-        category: MagazineCategory;
+        category: string;
         content: string;
         slug?: string | undefined;
         heroImageUrl?: string | undefined;
@@ -104,7 +97,7 @@ export declare const createPostSchema: z.ZodObject<{
         relatedPostIds?: string[] | undefined;
     }, {
         title: string;
-        category: MagazineCategory;
+        category: string;
         content: string;
         slug?: string | undefined;
         heroImageUrl?: string | undefined;
@@ -119,7 +112,7 @@ export declare const createPostSchema: z.ZodObject<{
 }, "strip", z.ZodTypeAny, {
     body: {
         title: string;
-        category: MagazineCategory;
+        category: string;
         content: string;
         slug?: string | undefined;
         heroImageUrl?: string | undefined;
@@ -134,7 +127,7 @@ export declare const createPostSchema: z.ZodObject<{
 }, {
     body: {
         title: string;
-        category: MagazineCategory;
+        category: string;
         content: string;
         slug?: string | undefined;
         heroImageUrl?: string | undefined;
@@ -157,7 +150,7 @@ export declare const updatePostSchema: z.ZodObject<{
     }>;
     body: z.ZodEffects<z.ZodObject<{
         authorId: z.ZodOptional<z.ZodNullable<z.ZodString>>;
-        category: z.ZodOptional<z.ZodNativeEnum<typeof MagazineCategory>>;
+        category: z.ZodOptional<z.ZodString>;
         title: z.ZodOptional<z.ZodString>;
         slug: z.ZodOptional<z.ZodString>;
         excerpt: z.ZodOptional<z.ZodString>;
@@ -170,7 +163,7 @@ export declare const updatePostSchema: z.ZodObject<{
         relatedPostIds: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
     }, "strip", z.ZodTypeAny, {
         title?: string | undefined;
-        category?: MagazineCategory | undefined;
+        category?: string | undefined;
         slug?: string | undefined;
         heroImageUrl?: string | undefined;
         authorId?: string | null | undefined;
@@ -183,7 +176,7 @@ export declare const updatePostSchema: z.ZodObject<{
         relatedPostIds?: string[] | undefined;
     }, {
         title?: string | undefined;
-        category?: MagazineCategory | undefined;
+        category?: string | undefined;
         slug?: string | undefined;
         heroImageUrl?: string | undefined;
         authorId?: string | null | undefined;
@@ -196,7 +189,7 @@ export declare const updatePostSchema: z.ZodObject<{
         relatedPostIds?: string[] | undefined;
     }>, {
         title?: string | undefined;
-        category?: MagazineCategory | undefined;
+        category?: string | undefined;
         slug?: string | undefined;
         heroImageUrl?: string | undefined;
         authorId?: string | null | undefined;
@@ -209,7 +202,7 @@ export declare const updatePostSchema: z.ZodObject<{
         relatedPostIds?: string[] | undefined;
     }, {
         title?: string | undefined;
-        category?: MagazineCategory | undefined;
+        category?: string | undefined;
         slug?: string | undefined;
         heroImageUrl?: string | undefined;
         authorId?: string | null | undefined;
@@ -227,7 +220,7 @@ export declare const updatePostSchema: z.ZodObject<{
     };
     body: {
         title?: string | undefined;
-        category?: MagazineCategory | undefined;
+        category?: string | undefined;
         slug?: string | undefined;
         heroImageUrl?: string | undefined;
         authorId?: string | null | undefined;
@@ -245,7 +238,7 @@ export declare const updatePostSchema: z.ZodObject<{
     };
     body: {
         title?: string | undefined;
-        category?: MagazineCategory | undefined;
+        category?: string | undefined;
         slug?: string | undefined;
         heroImageUrl?: string | undefined;
         authorId?: string | null | undefined;
@@ -457,6 +450,127 @@ export declare const deleteTagSchema: z.ZodObject<{
 }, {
     params: {
         id: string;
+    };
+}>;
+export declare const createMagazineCategorySchema: z.ZodObject<{
+    body: z.ZodObject<{
+        code: z.ZodString;
+        name: z.ZodString;
+        slug: z.ZodOptional<z.ZodString>;
+        description: z.ZodOptional<z.ZodString>;
+    }, "strip", z.ZodTypeAny, {
+        code: string;
+        name: string;
+        slug?: string | undefined;
+        description?: string | undefined;
+    }, {
+        code: string;
+        name: string;
+        slug?: string | undefined;
+        description?: string | undefined;
+    }>;
+}, "strip", z.ZodTypeAny, {
+    body: {
+        code: string;
+        name: string;
+        slug?: string | undefined;
+        description?: string | undefined;
+    };
+}, {
+    body: {
+        code: string;
+        name: string;
+        slug?: string | undefined;
+        description?: string | undefined;
+    };
+}>;
+export declare const updateMagazineCategorySchema: z.ZodObject<{
+    params: z.ZodObject<{
+        id: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        id: string;
+    }, {
+        id: string;
+    }>;
+    body: z.ZodEffects<z.ZodObject<{
+        code: z.ZodOptional<z.ZodString>;
+        name: z.ZodOptional<z.ZodString>;
+        slug: z.ZodOptional<z.ZodString>;
+        description: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    }, "strip", z.ZodTypeAny, {
+        code?: string | undefined;
+        name?: string | undefined;
+        slug?: string | undefined;
+        description?: string | null | undefined;
+    }, {
+        code?: string | undefined;
+        name?: string | undefined;
+        slug?: string | undefined;
+        description?: string | null | undefined;
+    }>, {
+        code?: string | undefined;
+        name?: string | undefined;
+        slug?: string | undefined;
+        description?: string | null | undefined;
+    }, {
+        code?: string | undefined;
+        name?: string | undefined;
+        slug?: string | undefined;
+        description?: string | null | undefined;
+    }>;
+}, "strip", z.ZodTypeAny, {
+    params: {
+        id: string;
+    };
+    body: {
+        code?: string | undefined;
+        name?: string | undefined;
+        slug?: string | undefined;
+        description?: string | null | undefined;
+    };
+}, {
+    params: {
+        id: string;
+    };
+    body: {
+        code?: string | undefined;
+        name?: string | undefined;
+        slug?: string | undefined;
+        description?: string | null | undefined;
+    };
+}>;
+export declare const deleteMagazineCategorySchema: z.ZodObject<{
+    params: z.ZodObject<{
+        id: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        id: string;
+    }, {
+        id: string;
+    }>;
+}, "strip", z.ZodTypeAny, {
+    params: {
+        id: string;
+    };
+}, {
+    params: {
+        id: string;
+    };
+}>;
+export declare const getMagazineCategoryBySlugSchema: z.ZodObject<{
+    params: z.ZodObject<{
+        slug: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        slug: string;
+    }, {
+        slug: string;
+    }>;
+}, "strip", z.ZodTypeAny, {
+    params: {
+        slug: string;
+    };
+}, {
+    params: {
+        slug: string;
     };
 }>;
 //# sourceMappingURL=magazine.validators.d.ts.map

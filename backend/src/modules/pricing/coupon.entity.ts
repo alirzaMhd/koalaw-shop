@@ -43,13 +43,29 @@ function toDate(v: any): Date {
 export function mapDbCouponToEntity(row: any): Coupon {
   if (!row) throw new Error("mapDbCouponToEntity: row is required");
 
+  // Normalize type to lowercase - CRITICAL FIX
+  const rawType = (row.type ?? row.coupon_type ?? "percent").toString();
+  const couponType = rawType.toLowerCase() as CouponType;
+
+  // Map percent_value and amount_value (snake_case from DB)
+  const percentValue = row.percentValue ?? row.percent_value ?? null;
+  const amountValue = row.amountValue ?? row.amount_value ?? null;
+
+  console.log('[MAPPER] Mapping coupon:', {
+    code: row.code,
+    rawType,
+    normalizedType: couponType,
+    percentValue,
+    amountValue
+  });
+
   return {
     id: row.id,
     code: (row.code ?? "").toString(),
-    type: (row.type ?? row.coupon_type ?? "percent") as CouponType,
+    type: couponType,
 
-    percentValue: typeof row.percentValue === "number" ? row.percentValue : row.percent_value ?? null,
-    amountValue: typeof row.amountValue === "number" ? row.amountValue : row.amount_value ?? null,
+    percentValue: typeof percentValue === "number" ? percentValue : null,
+    amountValue: typeof amountValue === "number" ? amountValue : null,
 
     minSubtotal: typeof row.minSubtotal === "number" ? row.minSubtotal : row.min_subtotal ?? 0,
 
@@ -148,11 +164,14 @@ export function validateCoupon(c: Coupon, ctx: CouponCheckContext): CouponValida
     return { ok: false, reason: "MIN_NOT_MET" };
   }
 
+  // Normalize type for validation
+  const couponType = c.type.toLowerCase();
+
   // Ensure definition is coherent
-  if (c.type === "percent" && !(typeof c.percentValue === "number" && c.percentValue > 0 && c.percentValue <= 100)) {
+  if (couponType === "percent" && !(typeof c.percentValue === "number" && c.percentValue > 0 && c.percentValue <= 100)) {
     return { ok: false, reason: "INVALID_DEFINITION" };
   }
-  if (c.type === "amount" && !(typeof c.amountValue === "number" && c.amountValue >= 0)) {
+  if (couponType === "amount" && !(typeof c.amountValue === "number" && c.amountValue >= 0)) {
     return { ok: false, reason: "INVALID_DEFINITION" };
   }
 
@@ -187,25 +206,45 @@ export function computeCouponEffect(
   let discount = 0;
   let shippingDiscount = 0;
 
-  switch (c.type) {
+  // Normalize type to lowercase for comparison - CRITICAL FIX
+  const couponType = c.type.toLowerCase();
+
+  console.log('[COUPON] Computing effect for:', {
+    originalType: c.type,
+    normalizedType: couponType,
+    percentValue: c.percentValue,
+    amountValue: c.amountValue,
+    subtotal,
+    shipping
+  });
+
+  switch (couponType) {
     case "percent": {
       const pct = Math.min(100, Math.max(0, (c.percentValue ?? 0) | 0));
+      console.log('[COUPON] Percent calculation:', { pct, percentValue: c.percentValue });
       discount = Math.floor((subtotal * pct) / 100);
+      console.log('[COUPON] Calculated discount:', discount);
       break;
     }
     case "amount": {
       const amt = Math.max(0, (c.amountValue ?? 0) | 0);
       discount = Math.min(amt, subtotal);
+      console.log('[COUPON] Amount discount:', discount);
       break;
     }
     case "free_shipping": {
-      shippingDiscount = shipping; // make shipping free
+      shippingDiscount = shipping;
+      console.log('[COUPON] Free shipping discount:', shippingDiscount);
       break;
     }
+    default:
+      console.warn('[COUPON] Unknown coupon type:', couponType);
   }
 
   // Guard: don't exceed subtotal for subtotal discounts
   discount = Math.min(discount, subtotal);
+
+  console.log('[COUPON] Final effect:', { discount, shippingDiscount });
 
   return { discount, shippingDiscount };
 }

@@ -354,21 +354,30 @@ export declare const adminService: {
     } & {
         name: string;
         id: string;
+        subtitle: string | null;
+        isFeatured: boolean;
         heroImageUrl: string | null;
+        displayOrder: number;
     })[]>;
     createCollection(data: {
         name: string;
     }): Promise<{
         name: string;
         id: string;
+        subtitle: string | null;
+        isFeatured: boolean;
         heroImageUrl: string | null;
+        displayOrder: number;
     }>;
     updateCollection(id: string, data: {
         name: string;
     }): Promise<{
         name: string;
         id: string;
+        subtitle: string | null;
+        isFeatured: boolean;
         heroImageUrl: string | null;
+        displayOrder: number;
     }>;
     deleteCollection(id: string): Promise<{
         deleted: boolean;

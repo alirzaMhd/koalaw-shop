@@ -15,6 +15,11 @@ export declare class MagazineController {
     createTag: (req: Request, res: Response, next: NextFunction) => Promise<void>;
     updateTag: (req: Request, res: Response, next: NextFunction) => Promise<void>;
     deleteTag: (req: Request, res: Response, next: NextFunction) => Promise<void>;
+    listCategories: (_req: Request, res: Response, next: NextFunction) => Promise<void>;
+    getCategoryBySlug: (req: Request, res: Response, next: NextFunction) => Promise<void>;
+    createCategory: (req: Request, res: Response, next: NextFunction) => Promise<void>;
+    updateCategory: (req: Request, res: Response, next: NextFunction) => Promise<void>;
+    deleteCategory: (req: Request, res: Response, next: NextFunction) => Promise<void>;
 }
 export declare const magazineController: MagazineController;
 //# sourceMappingURL=magazine.controller.d.ts.map

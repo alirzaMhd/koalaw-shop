@@ -1,14 +1,18 @@
 import { z } from "zod";
 import { collectionsService } from "./collections.service.js";
-import { AppError } from "../../../common/errors/AppError.js";
-const createCollectionSchema = z.object({
+const createSchema = z.object({
     name: z.string().min(1, "نام کالکشن الزامی است."),
-    // accept absolute or relative URLs; do not force URL() format
-    heroImageUrl: z.string().trim().min(1).optional().nullable(),
+    heroImageUrl: z.string().trim().optional().nullable(),
+    subtitle: z.string().trim().optional().nullable(), // NEW
+    isFeatured: z.boolean().optional(), // NEW
+    displayOrder: z.number().int().optional(), // NEW
 });
-const updateCollectionSchema = z.object({
+const updateSchema = z.object({
     name: z.string().min(1).optional(),
     heroImageUrl: z.string().trim().optional().nullable(),
+    subtitle: z.string().trim().optional().nullable(), // NEW
+    isFeatured: z.boolean().optional(), // NEW
+    displayOrder: z.number().int().optional(), // NEW
 });
 export const collectionsController = {
     list: async (_req, res, next) => {
@@ -22,7 +26,7 @@ export const collectionsController = {
     },
     create: async (req, res, next) => {
         try {
-            const body = await createCollectionSchema.parseAsync(req.body ?? {});
+            const body = await createSchema.parseAsync(req.body ?? {});
             const created = await collectionsService.create(body);
             return res.status(201).json({ success: true, data: created });
         }
@@ -33,9 +37,19 @@ export const collectionsController = {
     update: async (req, res, next) => {
         try {
             const { id } = req.params;
-            const body = await updateCollectionSchema.parseAsync(req.body ?? {});
+            const body = await updateSchema.parseAsync(req.body ?? {});
             const updated = await collectionsService.update(id, body);
             return res.json({ success: true, data: updated });
+        }
+        catch (err) {
+            next(err);
+        }
+    },
+    delete: async (req, res, next) => {
+        try {
+            const { id } = req.params;
+            await collectionsService.delete(id);
+            return res.json({ success: true, data: { deleted: true } });
         }
         catch (err) {
             next(err);

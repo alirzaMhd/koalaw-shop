@@ -90,6 +90,7 @@ export function createApp() {
     app.use("/static", express.static(rootPublic));
     // NEW: expose /auth alias (so frontend calling /auth/... works)
     app.use("/auth", authRouter);
+    app.use("/api/admin/collections", adminCollectionsRouter);
     // API routes under /api
     app.use("/api", buildApiRouter());
     // API 404 (JSON)
@@ -119,7 +120,6 @@ export function createApp() {
     app.get(["/product/:slug", "/products/:slug", "/p/:slug", "/shop/:category/:slug"], (_req, res) => {
         res.sendFile(path.join(frontendPages, "product.html"));
     });
-    app.use("/api/admin/collections", adminCollectionsRouter);
     // Simple page router: /shop -> pages/shop.html, /login -> pages/login.html, etc.
     // NOTE: keep this AFTER the more specific routes above
     app.get("/:page", (req, res, next) => {

@@ -1,13 +1,5 @@
 // backend/src/modules/magazine/magazine.validators.ts
 import { z } from 'zod';
-export var MagazineCategory;
-(function (MagazineCategory) {
-    MagazineCategory["GUIDE"] = "GUIDE";
-    MagazineCategory["TUTORIAL"] = "TUTORIAL";
-    MagazineCategory["TRENDS"] = "TRENDS";
-    MagazineCategory["LIFESTYLE"] = "LIFESTYLE";
-    MagazineCategory["GENERAL"] = "GENERAL";
-})(MagazineCategory || (MagazineCategory = {}));
 // ========== CUSTOM VALIDATORS ==========
 /**
  * Accepts both full URLs (http/https) and relative paths (/static/...)
@@ -42,7 +34,7 @@ const pagination = {
 export const listPostsSchema = z.object({
     query: z.object({
         ...pagination,
-        category: z.nativeEnum(MagazineCategory).optional(),
+        category: z.string().min(1).optional(),
         tag: z.string().min(1).optional(), // single tag
         tags: z
             .string()
@@ -61,7 +53,7 @@ export const getPostBySlugSchema = z.object({
 export const createPostSchema = z.object({
     body: z.object({
         authorId: z.string().uuid().nullable().optional(),
-        category: z.nativeEnum(MagazineCategory),
+        category: z.string().min(1, "دسته‌بندی الزامی است"),
         title: z.string().min(1, "عنوان الزامی است"),
         slug: z.string().min(1).optional(),
         excerpt: z.string().optional(),
@@ -81,7 +73,7 @@ export const updatePostSchema = z.object({
     body: z
         .object({
         authorId: z.string().uuid().nullable().optional(),
-        category: z.nativeEnum(MagazineCategory).optional(),
+        category: z.string().min(1).optional(),
         title: z.string().min(1, "عنوان الزامی است").optional(),
         slug: z.string().min(1).optional(),
         excerpt: z.string().optional(),
@@ -154,6 +146,38 @@ export const updateTagSchema = z.object({
 export const deleteTagSchema = z.object({
     params: z.object({
         id: z.string().uuid(),
+    }),
+});
+// ========== MAGAZINE CATEGORY SCHEMAS ==========
+export const createMagazineCategorySchema = z.object({
+    body: z.object({
+        code: z.string().regex(/^[A-Z_]+$/, "کد باید با حروف بزرگ انگلیسی باشد (مثال: GUIDE)"),
+        name: z.string().min(1, "نام دسته‌بندی الزامی است"),
+        slug: z.string().regex(/^[a-z0-9-]+$/, "اسلاگ باید با حروف کوچک و خط تیره باشد").optional(),
+        description: z.string().optional(),
+    }),
+});
+export const updateMagazineCategorySchema = z.object({
+    params: z.object({
+        id: z.string().uuid(),
+    }),
+    body: z.object({
+        code: z.string().regex(/^[A-Z_]+$/).optional(),
+        name: z.string().min(1).optional(),
+        slug: z.string().regex(/^[a-z0-9-]+$/).optional(),
+        description: z.string().nullable().optional(),
+    }).refine((data) => Object.keys(data).length > 0, {
+        message: 'حداقل یک فیلد برای بروزرسانی الزامی است',
+    }),
+});
+export const deleteMagazineCategorySchema = z.object({
+    params: z.object({
+        id: z.string().uuid(),
+    }),
+});
+export const getMagazineCategoryBySlugSchema = z.object({
+    params: z.object({
+        slug: z.string().min(1),
     }),
 });
 //# sourceMappingURL=magazine.validators.js.map

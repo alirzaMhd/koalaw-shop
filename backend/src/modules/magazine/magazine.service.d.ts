@@ -1,17 +1,14 @@
-import { type ListPostsFilter } from '../../infrastructure/db/repositories/magazine.repo.js';
 export type AuthorDTO = {
     id: string;
     name: string;
     slug: string;
     avatarUrl: string | null;
 } | null;
-type DerivedCategory = ListPostsFilter extends {
-    category?: infer C;
-} ? C : string;
 export type PostDTO = {
     id: string;
     author: AuthorDTO;
-    category: DerivedCategory;
+    category: string;
+    categoryName?: string | null;
     title: string;
     slug: string;
     excerpt: string | null;
@@ -29,7 +26,7 @@ export declare class MagazineService {
     listPosts(params: {
         page: number;
         pageSize: number;
-        category?: DerivedCategory;
+        category?: string;
         tagSlugs?: string[];
         authorSlug?: string;
         q?: string;
@@ -45,9 +42,10 @@ export declare class MagazineService {
     }>;
     getPostBySlug(slug: string, includeUnpublished?: boolean): Promise<PostDTO>;
     getPostById(id: string): Promise<PostDTO>;
+    private resolveCategory;
     createPost(input: {
         authorId?: string | null;
-        category: DerivedCategory;
+        category: string;
         title: string;
         slug?: string;
         excerpt?: string;
@@ -61,7 +59,7 @@ export declare class MagazineService {
     }): Promise<PostDTO>;
     updatePost(id: string, input: Partial<{
         authorId: string | null;
-        category: DerivedCategory;
+        category: string;
         title: string;
         slug: string;
         excerpt: string | null;
@@ -143,7 +141,53 @@ export declare class MagazineService {
         slug: string;
     }>;
     deleteTag(id: string): Promise<void>;
+    listCategories(): Promise<{
+        code: string;
+        name: string;
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        slug: string;
+        description: string | null;
+    }[]>;
+    getCategoryBySlug(slug: string): Promise<{
+        code: string;
+        name: string;
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        slug: string;
+        description: string | null;
+    }>;
+    createCategory(input: {
+        code: string;
+        name: string;
+        slug?: string;
+        description?: string;
+    }): Promise<{
+        code: string;
+        name: string;
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        slug: string;
+        description: string | null;
+    }>;
+    updateCategory(id: string, input: Partial<{
+        code: string;
+        name: string;
+        slug: string;
+        description: string | null;
+    }>): Promise<{
+        code: string;
+        name: string;
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        slug: string;
+        description: string | null;
+    }>;
+    deleteCategory(id: string): Promise<void>;
 }
 export declare const magazineService: MagazineService;
-export {};
 //# sourceMappingURL=magazine.service.d.ts.map

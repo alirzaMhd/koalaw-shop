@@ -587,8 +587,16 @@ class ProductService {
             count: brandCountMap.get(b.id) ?? 0,
         }))
             .sort((a, b) => a.name.localeCompare(b.name, "fa"));
+        // inside getFilterOptions() method
         const allCollections = await prisma.collection.findMany({
-            select: { id: true, name: true, heroImageUrl: true },
+            select: {
+                id: true,
+                name: true,
+                heroImageUrl: true,
+                subtitle: true, // NEW
+                isFeatured: true, // NEW
+                displayOrder: true, // NEW
+            },
         });
         const collectionCounts = await prisma.product.groupBy({
             by: ["collectionId"],
@@ -605,6 +613,9 @@ class ProductService {
             id: c.id,
             name: c.name,
             heroImageUrl: c.heroImageUrl || null,
+            subtitle: c.subtitle || null, // NEW
+            isFeatured: c.isFeatured, // NEW
+            displayOrder: c.displayOrder, // NEW
             count: collCountMap.get(c.id) ?? 0,
         }))
             .sort((a, b) => a.name.localeCompare(b.name, "fa"));
