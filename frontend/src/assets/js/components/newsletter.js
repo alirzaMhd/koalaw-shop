@@ -101,7 +101,7 @@
             );
           }
         } catch (error) {
-          console.error("Newsletter subscription error:", error);
+          logger.error("Newsletter subscription error:", error);
           showMessage(
             form,
             "خطا در برقراری ارتباط با سرور. لطفاً اتصال اینترنت خود را بررسی کنید.",

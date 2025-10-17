@@ -37,12 +37,12 @@
         return;
       }
     } catch (err) {
-      console.error("Failed to load profile:", err);
+      logger.error("Failed to load profile:", err);
     }
 
     // Load orders
     async function loadOrders(status = "all") {
-      console.log("[ORDERS] Loading orders with status:", status);
+      logger.log("[ORDERS] Loading orders with status:", status);
 
       try {
         const url =
@@ -50,7 +50,7 @@
             ? "/api/orders/me"
             : `/api/orders/me?status=${status}`;
 
-        console.log("[ORDERS] Fetching from:", url);
+        logger.log("[ORDERS] Fetching from:", url);
 
         const response = await fetch(url, {
           method: "GET",
@@ -61,30 +61,30 @@
           },
         });
 
-        console.log("[ORDERS] Response status:", response.status);
+        logger.log("[ORDERS] Response status:", response.status);
 
         if (response.status === 401) {
-          console.error("[ORDERS] Unauthorized - redirecting to login");
+          logger.error("[ORDERS] Unauthorized - redirecting to login");
           window.location.href = "/login?redirect=/profile";
           return;
         }
 
         if (!response.ok) {
           const errorText = await response.text();
-          console.error("[ORDERS] Error response:", errorText);
+          logger.error("[ORDERS] Error response:", errorText);
           throw new Error(`HTTP ${response.status}: ${errorText}`);
         }
 
         const result = await response.json();
-        console.log("[ORDERS] API response:", result);
+        logger.log("[ORDERS] API response:", result);
 
         // The backend returns { success, data: { items, meta } }
         ordersData = result?.data?.items || [];
-        console.log("[ORDERS] Parsed orders data:", ordersData);
+        logger.log("[ORDERS] Parsed orders data:", ordersData);
 
         updateOrdersUI(ordersData);
       } catch (err) {
-        console.error("[ORDERS] Failed to load orders:", err);
+        logger.error("[ORDERS] Failed to load orders:", err);
         // Show error state in UI
         const ordersContainer = document.querySelector(
           "#orders .profile-card .space-y-4"
@@ -118,7 +118,7 @@
           updateAddressesUI(addressesData);
         }
       } catch (err) {
-        console.error("Failed to load addresses:", err);
+        logger.error("Failed to load addresses:", err);
       }
     }
 
@@ -220,7 +220,7 @@
             hiddenInput.value = profile.birthDate.split("T")[0];
           }
         } catch (err) {
-          console.error("Error converting birth date:", err);
+          logger.error("Error converting birth date:", err);
           const fallbackDate = profile.birthDate.split("T")[0];
           birthDateInput.value = fallbackDate;
           hiddenInput.value = fallbackDate;
@@ -285,14 +285,14 @@
 
     // Update orders UI
     function updateOrdersUI(orders) {
-      console.log("[ORDERS UI] Updating UI with orders:", orders);
-      console.log("[ORDERS UI] Orders count:", orders?.length || 0);
+      logger.log("[ORDERS UI] Updating UI with orders:", orders);
+      logger.log("[ORDERS UI] Orders count:", orders?.length || 0);
 
       // Update recent orders in dashboard
       const recentOrdersContainer = document.querySelector(
         "#dashboard .profile-card .space-y-4"
       );
-      console.log(
+      logger.log(
         "[ORDERS UI] Recent orders container found:",
         !!recentOrdersContainer
       );
@@ -320,11 +320,11 @@
       const ordersContainer = document.querySelector(
         "#orders .profile-card .space-y-4"
       );
-      console.log("[ORDERS UI] Orders container found:", !!ordersContainer);
-      console.log("[ORDERS UI] Container element:", ordersContainer);
+      logger.log("[ORDERS UI] Orders container found:", !!ordersContainer);
+      logger.log("[ORDERS UI] Container element:", ordersContainer);
       if (ordersContainer) {
         ordersContainer.innerHTML = "";
-        console.log("[ORDERS UI] Rendering", orders.length, "orders");
+        logger.log("[ORDERS UI] Rendering", orders.length, "orders");
         if (orders.length === 0) {
           ordersContainer.innerHTML = `
             <div class="text-center py-8 text-gray-500">
@@ -422,7 +422,7 @@
 
     // Create order card element
     function createOrderCard(order, isCompact) {
-      console.log(
+      logger.log(
         "[CREATE ORDER CARD] Order data:",
         JSON.stringify(order, null, 2)
       );
@@ -442,13 +442,13 @@
               day: "numeric",
             }).format(dateObj);
           } else {
-            console.warn("[ORDER CARD] Invalid date value:", dateValue);
+            logger.warn("[ORDER CARD] Invalid date value:", dateValue);
           }
         } else {
-          console.warn("[ORDER CARD] No date field found in order:", order);
+          logger.warn("[ORDER CARD] No date field found in order:", order);
         }
       } catch (err) {
-        console.error(
+        logger.error(
           "[ORDER CARD] Date formatting error:",
           err,
           "Order:",
@@ -721,7 +721,7 @@
           alert("❌ خطا: " + (error.error?.message || "خطایی رخ داد"));
         }
       } catch (err) {
-        console.error("Failed to save address:", err);
+        logger.error("Failed to save address:", err);
         alert("❌ خطا در ذخیره‌سازی آدرس");
       }
     });
@@ -758,7 +758,7 @@
               alert("❌ خطا در حذف آدرس");
             }
           } catch (err) {
-            console.error("Failed to delete address:", err);
+            logger.error("Failed to delete address:", err);
             alert("❌ خطا در حذف آدرس");
           }
         }
@@ -785,7 +785,7 @@
             alert("❌ خطا در تنظیم آدرس پیش‌فرض");
           }
         } catch (err) {
-          console.error("Failed to set default address:", err);
+          logger.error("Failed to set default address:", err);
           alert("❌ خطا در تنظیم آدرس پیش‌فرض");
         }
       }
@@ -823,7 +823,7 @@
                 alert("❌ خطا در بارگذاری جزئیات سفارش");
               }
             } catch (err) {
-              console.error("Failed to fetch order details:", err);
+              logger.error("Failed to fetch order details:", err);
               alert("❌ خطا در بارگذاری جزئیات سفارش");
             }
           }
@@ -926,7 +926,7 @@
                 alert("❌ پاسخ معتبر از سرور دریافت نشد.");
               }
             } catch (err) {
-              console.error("Failed to reorder:", err);
+              logger.error("Failed to reorder:", err);
               alert("❌ خطا در افزودن به سبد خرید");
             }
           }
@@ -1166,7 +1166,7 @@
             });
           }
         } catch (err) {
-          console.error("Failed to upload image:", err);
+          logger.error("Failed to upload image:", err);
           alert("❌ خطا در آپلود تصویر");
           originalImages.forEach((img) => {
             img.style.opacity = "1";
@@ -1187,7 +1187,7 @@
 
         const birthDateGregorian =
           document.getElementById("birthDateGregorian")?.value;
-        console.log(
+        logger.log(
           "[PROFILE SUBMIT] Birth date (Gregorian):",
           birthDateGregorian
         );
@@ -1200,7 +1200,7 @@
           gender: document.getElementById("genderValue")?.value?.toUpperCase(),
         };
 
-        console.log("[PROFILE SUBMIT] Form data:", formData);
+        logger.log("[PROFILE SUBMIT] Form data:", formData);
 
         try {
           const response = await fetch("/api/profile", {
@@ -1217,11 +1217,11 @@
             alert("✅ تغییرات با موفقیت ذخیره شد!");
           } else {
             const error = await response.json();
-            console.error("[PROFILE SUBMIT] Error response:", error);
+            logger.error("[PROFILE SUBMIT] Error response:", error);
             alert("❌ خطا: " + (error.error?.message || "خطایی رخ داد"));
           }
         } catch (err) {
-          console.error("Failed to update profile:", err);
+          logger.error("Failed to update profile:", err);
           alert("❌ خطا در ذخیره‌سازی");
         }
       });
@@ -1254,7 +1254,7 @@
             alert("❌ خطا در ذخیره‌سازی");
           }
         } catch (err) {
-          console.error("Failed to update notifications:", err);
+          logger.error("Failed to update notifications:", err);
           alert("❌ خطا در ذخیره‌سازی");
         }
       });
@@ -1274,7 +1274,7 @@
             });
             window.location.href = "/";
           } catch (err) {
-            console.error("Logout failed:", err);
+            logger.error("Logout failed:", err);
           }
         }
       });
@@ -1452,7 +1452,7 @@
         maxDate: new persianDate(),
         observer: true,
         onSelect: function (unix) {
-          console.log("[DATEPICKER] Date selected:", unix);
+          logger.log("[DATEPICKER] Date selected:", unix);
 
           // Convert to Gregorian YYYY-MM-DD format
           const pDate = new persianDate(unix);
@@ -1463,7 +1463,7 @@
           // Convert Persian/Farsi digits to Latin digits
           gregorianDate = toEnglishDigits(gregorianDate);
 
-          console.log(
+          logger.log(
             "[DATEPICKER] Gregorian date (Latin digits):",
             gregorianDate
           );
@@ -1472,7 +1472,7 @@
           const hiddenInput = document.getElementById("birthDateGregorian");
           if (hiddenInput) {
             hiddenInput.value = gregorianDate;
-            console.log(
+            logger.log(
               "[DATEPICKER] Updated hidden field:",
               hiddenInput.value
             );
@@ -1480,7 +1480,7 @@
         },
       });
 
-      console.log("[DATEPICKER] Initialized successfully");
+      logger.log("[DATEPICKER] Initialized successfully");
     }
   });
 })();

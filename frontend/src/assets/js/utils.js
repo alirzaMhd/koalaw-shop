@@ -111,7 +111,7 @@
       setJSON(cacheKey, { ts: Date.now(), items });
       return items;
     } catch (e) {
-      console.warn("Footer: failed to load DB categories", e);
+      logger.warn("Footer: failed to load DB categories", e);
       return [];
     }
   }

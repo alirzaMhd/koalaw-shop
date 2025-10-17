@@ -896,7 +896,7 @@
             const productData = await api.getProduct(productId);
             product = productData.product || productData;
           } catch (error) {
-            console.error("Error fetching product:", error);
+            logger.error("Error fetching product:", error);
             throw new Error("خطا در بارگذاری اطلاعات محصول");
           }
         }
@@ -1538,11 +1538,6 @@
 
               payload.badgeIds = selectedBadges;
 
-              console.log("=== PRODUCT FORM SUBMISSION ===");
-              console.log("Is Edit:", isEdit);
-              console.log("Product ID:", productId);
-              console.log("Payload:", JSON.stringify(payload, null, 2));
-              console.log("================================");
 
               if (isEdit) {
                 await api.updateProduct(productId, payload);
@@ -1555,7 +1550,7 @@
               panel.close();
               handlers.products();
             } catch (error) {
-              console.error("Product save error:", error);
+              logger.error("Product save error:", error);
               utils.showToast("خطا: " + error.message, "error");
               submitBtn.disabled = false;
               submitBtn.innerHTML = originalText;
@@ -1565,7 +1560,7 @@
 
         utils.refreshIcons();
       } catch (error) {
-        console.error("Product form error:", error);
+        logger.error("Product form error:", error);
         panel.open(
           utils.showError(error.message || "خطا در بارگذاری فرم"),
           "خطا"
@@ -2000,7 +1995,6 @@
       try {
         const response = await api.getById(orderId);
         const order = response.order || response;
-        console.log(order);
         const statusOptions = [
           { value: "DRAFT", label: "پیش‌نویس" },
           { value: "AWAITING_PAYMENT", label: "در انتظار پرداخت" },
@@ -2343,7 +2337,7 @@
             const postData = await api.getMagazinePost(postId);
             post = postData.data || postData;
           } catch (error) {
-            console.error("Error fetching post:", error);
+            logger.error("Error fetching post:", error);
             throw new Error("خطا در بارگذاری اطلاعات مقاله");
           }
         }
@@ -2582,10 +2576,8 @@
               let heroImageUrl = null;
 
               if (imageFile && imageFile.size > 0) {
-                console.log("Uploading magazine hero image...");
                 try {
                   heroImageUrl = await utils.uploadImage(imageFile);
-                  console.log("Hero image uploaded:", heroImageUrl);
                 } catch (uploadError) {
                   throw new Error("خطا در آپلود تصویر: " + uploadError.message);
                 }
@@ -2663,7 +2655,6 @@
                 payload.relatedPostIds = selectedIds;
               }
 
-              console.log("Magazine payload:", payload);
 
               if (isEdit) {
                 await api.updateMagazinePost(postId, payload);
@@ -2676,7 +2667,7 @@
               panel.close();
               handlers.magazine();
             } catch (error) {
-              console.error("Magazine save error:", error);
+              logger.error("Magazine save error:", error);
               utils.showToast("خطا: " + error.message, "error");
               submitBtn.disabled = false;
               submitBtn.innerHTML = originalText;
@@ -2686,7 +2677,7 @@
 
         utils.refreshIcons();
       } catch (error) {
-        console.error("Magazine form error:", error);
+        logger.error("Magazine form error:", error);
         panel.open(
           utils.showError(error.message || "خطا در بارگذاری فرم"),
           "خطا"
@@ -4439,7 +4430,7 @@
 
         utils.refreshIcons();
       } catch (error) {
-        console.error("Dashboard error:", error);
+        logger.error("Dashboard error:", error);
         document.getElementById("app-content").innerHTML = utils.showError(
           error.message
         );
@@ -4503,7 +4494,7 @@
 
         utils.refreshIcons();
       } catch (error) {
-        console.error("Products error:", error);
+        logger.error("Products error:", error);
         document.getElementById("app-content").innerHTML = utils.showError(
           error.message
         );
@@ -4589,7 +4580,7 @@
 
         utils.refreshIcons();
       } catch (error) {
-        console.error("Orders error:", error);
+        logger.error("Orders error:", error);
         document.getElementById("app-content").innerHTML = utils.showError(
           error.message
         );
@@ -4634,7 +4625,7 @@
 
         utils.refreshIcons();
       } catch (error) {
-        console.error("Users error:", error);
+        logger.error("Users error:", error);
         document.getElementById("app-content").innerHTML = utils.showError(
           error.message
         );
@@ -4693,7 +4684,7 @@
 
         utils.refreshIcons();
       } catch (error) {
-        console.error("Reviews error:", error);
+        logger.error("Reviews error:", error);
         document.getElementById("app-content").innerHTML = utils.showError(
           error.message
         );
@@ -4742,7 +4733,7 @@
 
         utils.refreshIcons();
       } catch (error) {
-        console.error("Brands error:", error);
+        logger.error("Brands error:", error);
         document.getElementById("app-content").innerHTML = utils.showError(
           error.message
         );
@@ -4790,7 +4781,7 @@
 
         utils.refreshIcons();
       } catch (error) {
-        console.error("Collections error:", error);
+        logger.error("Collections error:", error);
         document.getElementById("app-content").innerHTML = utils.showError(
           error.message
         );
@@ -4846,7 +4837,7 @@
 
         utils.refreshIcons();
       } catch (error) {
-        console.error("Coupons error:", error);
+        logger.error("Coupons error:", error);
         document.getElementById("app-content").innerHTML = utils.showError(
           error.message
         );
@@ -4868,7 +4859,7 @@
 
         utils.refreshIcons();
       } catch (error) {
-        console.error("Newsletter error:", error);
+        logger.error("Newsletter error:", error);
         document.getElementById("app-content").innerHTML = utils.showError(
           error.message
         );
@@ -4920,7 +4911,7 @@
 
         utils.refreshIcons();
       } catch (error) {
-        console.error("Magazine error:", error);
+        logger.error("Magazine error:", error);
         document.getElementById("app-content").innerHTML = utils.showError(
           error.message
         );
@@ -5082,7 +5073,7 @@
 
         utils.refreshIcons();
       } catch (error) {
-        console.error("Badges error:", error);
+        logger.error("Badges error:", error);
         document.getElementById("app-content").innerHTML = utils.showError(
           error.message
         );
@@ -5133,7 +5124,7 @@
 
         utils.refreshIcons();
       } catch (error) {
-        console.error("Newsletter subscribers error:", error);
+        logger.error("Newsletter subscribers error:", error);
         document.getElementById("app-content").innerHTML = utils.showError(
           error.message
         );
@@ -5246,7 +5237,7 @@
     navigate(routeName) {
       const route = this.routes[routeName];
       if (!route) {
-        console.error("Route not found:", routeName);
+        logger.error("Route not found:", routeName);
         return;
       }
 

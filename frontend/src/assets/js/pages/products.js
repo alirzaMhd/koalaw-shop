@@ -86,7 +86,7 @@
           }
         }
       } catch (err) {
-        console.warn("Not authenticated or failed to fetch profile:", err);
+        logger.warn("Not authenticated or failed to fetch profile:", err);
       }
 
       currentUser = null;
@@ -216,7 +216,7 @@
             }
           }
         } catch (e) {
-          console.warn(
+          logger.warn(
             "Failed to get authenticated cart, falling back to anonymous:",
             e
           );
@@ -690,7 +690,7 @@
           userReviewsCount++;
           updateReviewCounts();
         } catch (err) {
-          console.error("Failed to submit review:", err);
+          logger.error("Failed to submit review:", err);
           showToast(err.message || "خطا در ثبت نظر", "x-circle");
         }
       });
@@ -720,7 +720,7 @@
     // ----------- Load product from API and hydrate -----------
     const slug = parseSlugFromUrl();
     if (!slug) {
-      console.warn(
+      logger.warn(
         "No product slug found. Use a path like /product/:slug or pass ?slug=..."
       );
       return;
@@ -1086,17 +1086,13 @@
 
           // Sync to backend cart with comprehensive error handling
           try {
-            console.log("[ADD TO CART] Starting backend sync...");
-            console.log("[ADD TO CART] Product ID:", p.id);
-            console.log(
-              "[ADD TO CART] Selected Variant ID:",
-              selectedVariantId
-            );
-            console.log("[ADD TO CART] Quantity:", quantity);
+            logger.log("[ADD TO CART] Starting backend sync...");
+            logger.log("[ADD TO CART] Product ID:", p.id);
+            logger.log("[ADD TO CART] Quantity:", quantity);
 
             // Validate product ID is UUID
             if (!isUUID(p.id)) {
-              console.error(
+              logger.error(
                 "[ADD TO CART] Product ID is not a valid UUID:",
                 p.id
               );
@@ -1104,7 +1100,7 @@
             }
 
             const cartId = await getOrCreateBackendCartId();
-            console.log("[ADD TO CART] Backend Cart ID:", cartId);
+            logger.log("[ADD TO CART] Backend Cart ID:", cartId);
 
             const payload = {
               productId: p.id,
@@ -1115,11 +1111,6 @@
               quantity: quantity,
             };
 
-            console.log(
-              "[ADD TO CART] Payload:",
-              JSON.stringify(payload, null, 2)
-            );
-
             const response = await fetch(`${CARTS_API}/${cartId}/items`, {
               method: "POST",
               headers: {
@@ -1129,11 +1120,11 @@
               body: JSON.stringify(payload),
             });
 
-            console.log("[ADD TO CART] Response status:", response.status);
+            logger.log("[ADD TO CART] Response status:", response.status);
 
             if (!response.ok) {
               const errorText = await response.text();
-              console.error("[ADD TO CART] Backend error response:", errorText);
+              logger.error("[ADD TO CART] Backend error response:", errorText);
 
               let errorJson;
               try {
@@ -1148,10 +1139,10 @@
             }
 
             const result = await response.json();
-            console.log("[ADD TO CART] Success! Backend response:", result);
+            logger.log("[ADD TO CART] Success! Backend response:", result);
           } catch (e) {
-            console.error("[ADD TO CART] Backend sync failed:", e);
-            console.error("[ADD TO CART] Error details:", {
+            logger.error("[ADD TO CART] Backend sync failed:", e);
+            logger.error("[ADD TO CART] Error details:", {
               message: e.message,
               stack: e.stack,
             });
@@ -1313,7 +1304,7 @@
       KUtils.refreshIcons();
       setTopRating(currentAvgRating);
     } catch (err) {
-      console.error("Failed to load product:", err);
+      logger.error("Failed to load product:", err);
       if (productTitleEl) productTitleEl.textContent = "محصول یافت نشد";
       setVisible(productBadge, false);
       badgesGrid && badgesGrid.classList.add("hidden");

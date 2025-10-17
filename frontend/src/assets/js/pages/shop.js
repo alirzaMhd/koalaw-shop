@@ -346,7 +346,7 @@ async function loadFilters() {
           .join("");
       }
     } catch (e) {
-      console.warn("DB categories render skipped:", e);
+      logger.warn("DB categories render skipped:", e);
     }
     // ========== BRANDS ==========
     const brandRoot = document.getElementById("brand-filter-list");
@@ -464,7 +464,7 @@ async function loadFilters() {
       maxDisp.textContent = toFa(parseInt(maxIn.value)) + " تومان";
     }
   } catch (e) {
-    console.warn("Failed to load filter options", e);
+    logger.warn("Failed to load filter options", e);
   } finally {
     try {
       window.KUtils?.refreshIcons?.();
@@ -506,7 +506,7 @@ async function loadFilters() {
           headers: { "Cache-Control": "no-store" },
         });
         if (!res.ok) {
-          console.error(
+          logger.error(
             "Failed to load products",
             res.status,
             await res.text()
@@ -517,7 +517,7 @@ async function loadFilters() {
         const json = await res.json();
         handleProductsResponse(json);
       } catch (e) {
-        console.error("Network error loading products", e);
+        logger.error("Network error loading products", e);
       } finally {
         isLoading = false;
       }
@@ -532,7 +532,7 @@ async function loadFilters() {
         try {
           frag.appendChild(createProductCard(item));
         } catch (e) {
-          console.error("Card render failed", item, e);
+          logger.error("Card render failed", item, e);
         }
       }
       productGrid.appendChild(frag);

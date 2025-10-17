@@ -78,7 +78,7 @@
           "خطا در ارسال کد. لطفاً دوباره تلاش کنید.";
         resetBtn();
       } catch (error) {
-        console.error("Forgot password error:", error);
+        logger.error("Forgot password error:", error);
         emailMsg.textContent = "خطا در ارتباط با سرور. لطفاً دوباره تلاش کنید.";
         resetBtn();
       }

@@ -42,7 +42,7 @@
         const options = { year: "numeric", month: "long", day: "numeric" };
         return new Intl.DateTimeFormat("fa-IR", options).format(date);
       } catch (e) {
-        console.error("Date formatting error:", e);
+        logger.error("Date formatting error:", e);
         return "اخیراً";
       }
     }
@@ -73,7 +73,7 @@
         const items = Array.isArray(json?.data) ? json.data : [];
         return items;
       } catch (err) {
-        console.warn("Could not load magazine categories:", err);
+        logger.warn("Could not load magazine categories:", err);
         return [];
       }
     }
@@ -113,7 +113,6 @@
         btn.classList.add("active");
         // Set and fetch
         activeFilter = code;
-        console.log("🔖 Filter changed to:", activeFilter);
         currentPage = 1;
         fetchArticles(1, false, categoriesMap);
       });
@@ -281,17 +280,14 @@
         }
 
         const fullUrl = `${url}?${params.toString()}`;
-        console.log("🔍 Fetching articles:", fullUrl);
 
         const response = await fetch(fullUrl);
-        console.log("📡 Response status:", response.status);
 
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
 
         const data = await response.json();
-        console.log("📦 Response data:", data);
 
         // Handle success response
         if (data.success || data.ok) {
@@ -304,9 +300,7 @@
           totalPages = meta.totalPages;
           currentPage = meta.page;
 
-          console.log(
-            `✅ Loaded ${items.length} articles (page ${currentPage}/${totalPages})`
-          );
+
 
           // Clear grid if not appending
           if (!append) {
@@ -351,7 +345,7 @@
           throw new Error(data.message || "Failed to load articles");
         }
       } catch (error) {
-        console.error("❌ Error fetching articles:", error);
+        logger.error("❌ Error fetching articles:", error);
 
         // Show error state if not appending
         if (!append) {
@@ -377,7 +371,6 @@
         "input",
         KUtils.debounce((e) => {
           searchQuery = e.target.value.trim();
-          console.log("🔎 Search query:", searchQuery || "(empty)");
           currentPage = 1;
           fetchArticles(1, false, categoriesMap);
         }, 300)
@@ -401,9 +394,6 @@
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting && !isLoading && currentPage < totalPages) {
-            console.log(
-              `♾️ Loading more articles (page ${currentPage + 1}/${totalPages})...`
-            );
             fetchArticles(currentPage + 1, true, categoriesMap);
           }
         });
@@ -418,7 +408,6 @@
     /**
      * Initial load
      */
-    console.log("🚀 Initializing magazine page");
 
     const cats = await fetchMagCategories();
     // Build categoriesMap (code -> name)
@@ -433,7 +422,6 @@
      * Expose refresh function globally (for debugging)
      */
     window.refreshMagazine = () => {
-      console.log("🔄 Manual refresh triggered");
       currentPage = 1;
       fetchArticles(1, false, categoriesMap);
     };
