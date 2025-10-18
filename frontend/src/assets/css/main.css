@@ -1299,3 +1299,18 @@ section[id] { scroll-margin-top: 7rem; }
   flex-shrink: 0;
   white-space: nowrap;
 }
+
+#nav-cart-count {
+  position: absolute;
+  top: 0rem;  /* Adjust this decimal value */
+  right: -0.1rem;
+  background: linear-gradient(to right, rgb(244, 63, 94), rgb(236, 72, 153));
+  color: white;
+  font-size: 0.75rem;
+  border-radius: 9999px;
+  height: 1.25rem;
+  width: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
