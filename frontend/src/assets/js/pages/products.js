@@ -129,7 +129,7 @@
         if (typeof KUtils?.setJSON === "function")
           return KUtils.setJSON(key, val);
         localStorage.setItem(key, JSON.stringify(val));
-      } catch { }
+      } catch {}
     };
 
     const loadCart = () => {
@@ -189,7 +189,9 @@
     const isUUID = (v) => UUID_RE.test(String(v || ""));
     const uuidv4 = () =>
       "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
-        const r = (crypto?.getRandomValues?.(new Uint8Array(1))[0] ?? Math.floor(Math.random() * 256)) & 15;
+        const r =
+          (crypto?.getRandomValues?.(new Uint8Array(1))[0] ??
+            Math.floor(Math.random() * 256)) & 15;
         const v = c === "x" ? r : (r & 0x3) | 0x8;
         return v.toString(16);
       });
@@ -395,7 +397,158 @@
           .forEach((t) => t.classList.remove("active"));
         img.closest(".thumbnail")?.classList.add("active");
       });
+    // ========== IMAGE ZOOM (center panel + bigger lens that maps 1:1) ==========
+    (function setupImageZoom() {
+      if (!mainImg) return;
 
+      const LENS_SIZE_PX = 220; // bigger square lens
+      const PANEL_SIZE_PX = 560; // center panel size
+
+      // Ensure zoom panel exists (create or normalize to center of screen)
+      let zoomPanel = document.getElementById("zoom-panel");
+      if (!zoomPanel) {
+        zoomPanel = document.createElement("div");
+        zoomPanel.id = "zoom-panel";
+        document.body.appendChild(zoomPanel);
+      }
+      Object.assign(zoomPanel.style, {
+        position: "fixed",
+        left: "50%",
+        top: `calc(100% - ${PANEL_SIZE_PX/10}px)`,
+        transform: "translate(-50%, -50%)",
+        width: PANEL_SIZE_PX + "px",
+        height: PANEL_SIZE_PX + "px",
+        borderRadius: "12px",
+        border: "1px solid #e5e7eb",
+        boxShadow: "0 25px 40px rgba(0,0,0,.12)",
+        backgroundColor: "rgba(255,255,255,.8)",
+        backdropFilter: "blur(8px)",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "0 0",
+        pointerEvents: "none",
+        zIndex: "60",
+        display: "none",
+      });
+
+      // Ensure lens exists (create if missing)
+      let zoomLens = document.getElementById("zoom-lens");
+      const mainImageWrap = mainImg.parentElement; // .main-image (relative)
+      if (!zoomLens) {
+        zoomLens = document.createElement("div");
+        zoomLens.id = "zoom-lens";
+        mainImageWrap && mainImageWrap.appendChild(zoomLens);
+      }
+      Object.assign(zoomLens.style, {
+        position: "absolute",
+        border: "2px solid #fb7185", // rose-400
+        background: "rgba(253, 164, 175, .25)", // rose-300/25
+        borderRadius: "8px",
+        pointerEvents: "none",
+        display: "none",
+        top: "0px",
+        left: "0px",
+        transform: "translate(0,0)",
+      });
+      mainImageWrap && mainImageWrap.classList.add("relative");
+
+      let imgRect, wrapRect, lensSize, zoomFactor;
+
+      function showZoom(e) {
+        if (!mainImg.naturalWidth || !mainImg.naturalHeight) {
+          mainImg.addEventListener("load", () => showZoom(e), { once: true });
+          return;
+        }
+
+        zoomPanel.style.display = "block";
+        zoomLens.style.display = "block";
+        zoomPanel.style.backgroundImage = `url("${mainImg.src}")`;
+
+        imgRect = mainImg.getBoundingClientRect();
+        wrapRect = mainImageWrap.getBoundingClientRect();
+
+        // Lens size: big, but never larger than image bounds
+        lensSize = Math.min(LENS_SIZE_PX, imgRect.width, imgRect.height);
+        zoomFactor = PANEL_SIZE_PX / lensSize;
+
+        zoomLens.style.width = `${lensSize}px`;
+        zoomLens.style.height = `${lensSize}px`;
+
+        // Background size scaled based on displayed image size (not natural),
+        // so the lens area maps 1:1 to the panel
+        const bgW = imgRect.width * zoomFactor;
+        const bgH = imgRect.height * zoomFactor;
+        zoomPanel.style.backgroundSize = `${bgW}px ${bgH}px`;
+
+        moveZoom(e);
+      }
+
+      function moveZoom(e) {
+        if (zoomPanel.style.display === "none") return;
+
+        const x = e.clientX - imgRect.left;
+        const y = e.clientY - imgRect.top;
+
+        const half = lensSize / 2;
+
+        // Clamp lens inside the displayed image area
+        let lx = Math.max(0, Math.min(x - half, imgRect.width - lensSize));
+        let ly = Math.max(0, Math.min(y - half, imgRect.height - lensSize));
+
+        // Position lens relative to the wrapper (account for image offset inside it)
+        const offsetX = imgRect.left - wrapRect.left;
+        const offsetY = imgRect.top - wrapRect.top;
+        zoomLens.style.transform = `translate(${offsetX + lx}px, ${offsetY + ly}px)`;
+
+        // Show exactly the lens contents in the panel (lens -> full panel)
+        const posX = -lx * zoomFactor;
+        const posY = -ly * zoomFactor;
+        zoomPanel.style.backgroundPosition = `${posX}px ${posY}px`;
+      }
+
+      function hideZoom() {
+        zoomPanel.style.display = "none";
+        zoomLens.style.display = "none";
+      }
+
+      mainImg.addEventListener("mouseenter", showZoom);
+      mainImg.addEventListener("mousemove", moveZoom);
+      mainImg.addEventListener("mouseleave", hideZoom);
+
+      // If the main image source changes (thumbnail click), update the panel background
+      mainImg.addEventListener("load", () => {
+        if (zoomPanel.style.display !== "none") {
+          zoomPanel.style.backgroundImage = `url("${mainImg.src}")`;
+          // Recompute geometry
+          imgRect = mainImg.getBoundingClientRect();
+          wrapRect = mainImageWrap.getBoundingClientRect();
+        }
+      });
+
+      gallery &&
+        gallery.addEventListener("click", () => {
+          if (zoomPanel.style.display !== "none") {
+            zoomPanel.style.backgroundImage = `url("${mainImg.src}")`;
+          }
+        });
+
+      // Keep geometry fresh while active
+      window.addEventListener(
+        "scroll",
+        () => {
+          if (zoomPanel.style.display !== "none") {
+            imgRect = mainImg.getBoundingClientRect();
+            wrapRect = mainImageWrap.getBoundingClientRect();
+          }
+        },
+        { passive: true }
+      );
+      window.addEventListener("resize", () => {
+        if (zoomPanel.style.display !== "none") {
+          hideZoom(); // recompute on next enter
+        }
+      });
+    })();
+    // ========== END IMAGE ZOOM ==========
     // ========== INVENTORY-AWARE QUANTITY SYSTEM ==========
     let quantity = 1;
     let availableStock = 0;
@@ -639,7 +792,8 @@
             .fill(0)
             .map(
               (_, i) =>
-                `<i data-feather="star" class="w-4 h-4 ${i < currentRating ? "fill-current" : ""
+                `<i data-feather="star" class="w-4 h-4 ${
+                  i < currentRating ? "fill-current" : ""
                 }"></i>`
             )
             .join("");
@@ -677,7 +831,10 @@
           currentRating = 0;
           setupRatingControl();
 
-          showToast("نظر شما با موفقیت برای تایید به ادمین داده شد ✨", "check-circle");
+          showToast(
+            "نظر شما با موفقیت برای تایید به ادمین داده شد ✨",
+            "check-circle"
+          );
 
           // Update counts and top rating
           const oldCount = initialReviewsCount + userReviewsCount;
