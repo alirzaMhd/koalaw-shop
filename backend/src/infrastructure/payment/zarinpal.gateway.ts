@@ -202,7 +202,7 @@ class ZarinpalGateway {
 
   constructor(config?: Partial<ZarinpalConfig>) {
     const merchantId = config?.merchantId || env.ZARINPAL_MERCHANT_ID?.toString() || "";
-    const sandbox = config?.sandbox ?? (env.ZARINPAL_SANDBOX === "true" || env.NODE_ENV !== "production");
+    const sandbox = config?.sandbox ?? (env.ZARINPAL_SANDBOX === "true");
     const accessToken = config?.accessToken || env.ZARINPAL_ACCESS_TOKEN?.toString() || "";
 
     if (!merchantId) {
