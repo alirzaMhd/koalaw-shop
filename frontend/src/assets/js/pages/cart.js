@@ -41,9 +41,9 @@
     const LAST_ORDER_KEY = "koalaw_last_order";
 
     const FREE_SHIP_THRESHOLD = 1000000;
-    const BASE_SHIPPING = 45000;
-    const EXPRESS_PRICE = 30000;
-    const GIFT_WRAP_PRICE = 20000;
+    const BASE_SHIPPING = 50000;
+    const EXPRESS_PRICE = 70000;
+    const GIFT_WRAP_PRICE = 30000;
 
     const SAMPLE_ITEMS = [];
     // UUID validation helper
