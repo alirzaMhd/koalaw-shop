@@ -4,7 +4,7 @@
 import { z } from "zod";
 
 // Common schemas
-const currencyCodeSchema = z.enum(["IRR", "USD", "EUR"]).default("IRR");
+const currencyCodeSchema = z.enum(["IRT", "USD", "EUR"]).default("IRT");
 
 const positionSchema = z.number().int().min(0).optional();
 

@@ -39,7 +39,7 @@ const quoteSchema = z
       .string()
       .trim()
       .toUpperCase()
-      .regex(/^[A-Z]{3}$/, "کد ارز نامعتبر است (مثلاً IRR).")
+      .regex(/^[A-Z]{3}$/, "کد ارز نامعتبر است (مثلاً IRT).")
       .optional(),
   })
   .refine((v) => Boolean(v.cartId) || typeof v.subtotal === "number", {

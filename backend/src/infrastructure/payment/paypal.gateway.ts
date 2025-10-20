@@ -38,7 +38,7 @@ export const paypalGateway = {
       purchase_units: [
         {
           amount: {
-            currency_code: (args.currency || "IRR").toUpperCase(),
+            currency_code: (args.currency || "IRT").toUpperCase(),
             value: String(Math.max(0, Math.floor(args.amount || 0))),
           },
           custom_id: args.metadata?.orderId || undefined,
@@ -63,7 +63,7 @@ export const paypalGateway = {
       id: data.id as string,
       approvalUrl: approvalLink as string | undefined,
       amount: args.amount,
-      currency: (args.currency || "IRR").toUpperCase(),
+      currency: (args.currency || "IRT").toUpperCase(),
     };
   },
 };

@@ -9,7 +9,7 @@ import {
 } from "./category.entity.js";
 // ---------- Primitive/refs ----------
 
-export type CurrencyCode = string; // DB default: 'IRR' (char(3)); keep flexible
+export type CurrencyCode = string; // DB default: 'IRT' (char(3)); keep flexible
 
 export interface BrandRef {
   id: string;
@@ -244,7 +244,7 @@ export function mapDbVariantToEntity(row: any): ProductVariant {
     variantName: row.variantName ?? row.variant_name,
     sku: row.sku ?? null,
     price: typeof row.price === "number" ? row.price : row.price ?? null,
-    currencyCode: row.currencyCode ?? row.currency_code ?? "IRR",
+    currencyCode: row.currencyCode ?? row.currency_code ?? "IRT",
     stock: row.stock ?? 0,
     colorName: row.colorName ?? row.color_name ?? null,
     colorHexCode: row.colorHexCode ?? row.color_hex_code ?? null,
@@ -339,7 +339,7 @@ export function mapDbProductToEntity(row: any): Product {
 
     price: row.price,
     compareAtPrice: row.compareAtPrice ?? row.compare_at_price ?? null,
-    currencyCode: row.currencyCode ?? row.currency_code ?? "IRR",
+    currencyCode: row.currencyCode ?? row.currency_code ?? "IRT",
 
     ratingAvg: Number(row.ratingAvg ?? row.rating_avg ?? 0),
     ratingCount: Number(row.ratingCount ?? row.rating_count ?? 0),

@@ -901,7 +901,7 @@
                     // keep identifiers for later sync
                     productId: it.productId,
                     variantId: it.variantId || null,
-                    currencyCode: it.currencyCode || "IRR",
+                    currencyCode: it.currencyCode || "IRT",
                   }));
 
                   KUtils?.setJSON?.("koalaw_cart", uiItems);

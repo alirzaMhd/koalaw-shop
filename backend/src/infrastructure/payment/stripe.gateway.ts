@@ -15,7 +15,7 @@ export const stripeGateway = {
     }
     const intent = await stripeClient.paymentIntents.create({
       amount: Math.max(0, Math.floor(args.amount || 0)),
-      currency: (args.currency || "IRR").toLowerCase(),
+      currency: (args.currency || "IRT").toLowerCase(),
       metadata: args.metadata || {},
       automatic_payment_methods: { enabled: true },
     });

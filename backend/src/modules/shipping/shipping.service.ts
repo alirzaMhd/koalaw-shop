@@ -15,7 +15,7 @@
 //   SHIPPING_ESTIMATED_DAYS_STANDARD=2-4
 //   SHIPPING_ESTIMATED_DAYS_EXPRESS=1-2
 //   SHIPPING_REGION_OVERRIDES='[{"province":"tehran","multiplier":1,"extra":0}]'
-//   CURRENCY_DEFAULT=IRR
+//   CURRENCY_DEFAULT=IRT
 
 import { prisma } from "../../infrastructure/db/prismaClient.js";
 import { env } from "../../config/env.js";
@@ -74,7 +74,7 @@ export interface ShipmentLabel {
 const FREE_SHIP_THRESHOLD = Number(env.PRICING_FREE_SHIP_THRESHOLD ?? 1_000_000);
 const BASE_SHIPPING = Number(env.PRICING_BASE_SHIPPING ?? 45_000);
 const EXPRESS_SURCHARGE = Number(env.PRICING_EXPRESS_SURCHARGE ?? 30_000);
-const DEFAULT_CURRENCY = String(env.CURRENCY_DEFAULT ?? "IRR");
+const DEFAULT_CURRENCY = String(env.CURRENCY_DEFAULT ?? "IRT");
 
 const ETA_STD = String(env.SHIPPING_ESTIMATED_DAYS_STANDARD ?? "2-4");
 const ETA_EXP = String(env.SHIPPING_ESTIMATED_DAYS_EXPRESS ?? "1-2");

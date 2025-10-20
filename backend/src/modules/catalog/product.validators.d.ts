@@ -72,7 +72,7 @@ export declare const createProductInputSchema: z.ZodEffects<z.ZodObject<{
     howToUse: z.ZodOptional<z.ZodString>;
     price: z.ZodNumber;
     compareAtPrice: z.ZodOptional<z.ZodNumber>;
-    currencyCode: z.ZodDefault<z.ZodEnum<["IRR", "USD", "EUR"]>>;
+    currencyCode: z.ZodDefault<z.ZodEnum<["IRT", "USD", "EUR"]>>;
     isBestseller: z.ZodDefault<z.ZodBoolean>;
     isFeatured: z.ZodDefault<z.ZodBoolean>;
     isSpecialProduct: z.ZodDefault<z.ZodBoolean>;
@@ -96,14 +96,14 @@ export declare const createProductInputSchema: z.ZodEffects<z.ZodObject<{
         variantName: z.ZodString;
         sku: z.ZodOptional<z.ZodString>;
         price: z.ZodOptional<z.ZodNumber>;
-        currencyCode: z.ZodDefault<z.ZodEnum<["IRR", "USD", "EUR"]>>;
+        currencyCode: z.ZodDefault<z.ZodEnum<["IRT", "USD", "EUR"]>>;
         stock: z.ZodDefault<z.ZodNumber>;
         colorName: z.ZodOptional<z.ZodString>;
         colorHexCode: z.ZodOptional<z.ZodString>;
         isActive: z.ZodDefault<z.ZodBoolean>;
         position: z.ZodOptional<z.ZodNumber>;
     }, "strip", z.ZodTypeAny, {
-        currencyCode: "IRR" | "USD" | "EUR";
+        currencyCode: "IRT" | "USD" | "EUR";
         isActive: boolean;
         variantName: string;
         stock: number;
@@ -114,7 +114,7 @@ export declare const createProductInputSchema: z.ZodEffects<z.ZodObject<{
         colorHexCode?: string | undefined;
     }, {
         variantName: string;
-        currencyCode?: "IRR" | "USD" | "EUR" | undefined;
+        currencyCode?: "IRT" | "USD" | "EUR" | undefined;
         price?: number | undefined;
         isActive?: boolean | undefined;
         position?: number | undefined;
@@ -126,7 +126,7 @@ export declare const createProductInputSchema: z.ZodEffects<z.ZodObject<{
     badgeIds: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
     relatedProductIds: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 }, "strip", z.ZodTypeAny, {
-    currencyCode: "IRR" | "USD" | "EUR";
+    currencyCode: "IRT" | "USD" | "EUR";
     title: string;
     category: string;
     price: number;
@@ -152,7 +152,7 @@ export declare const createProductInputSchema: z.ZodEffects<z.ZodObject<{
         alt?: string | undefined;
     }[] | undefined;
     variants?: {
-        currencyCode: "IRR" | "USD" | "EUR";
+        currencyCode: "IRT" | "USD" | "EUR";
         isActive: boolean;
         variantName: string;
         stock: number;
@@ -169,7 +169,7 @@ export declare const createProductInputSchema: z.ZodEffects<z.ZodObject<{
     title: string;
     category: string;
     price: number;
-    currencyCode?: "IRR" | "USD" | "EUR" | undefined;
+    currencyCode?: "IRT" | "USD" | "EUR" | undefined;
     slug?: string | undefined;
     brandId?: string | undefined;
     colorThemeId?: string | undefined;
@@ -193,7 +193,7 @@ export declare const createProductInputSchema: z.ZodEffects<z.ZodObject<{
     }[] | undefined;
     variants?: {
         variantName: string;
-        currencyCode?: "IRR" | "USD" | "EUR" | undefined;
+        currencyCode?: "IRT" | "USD" | "EUR" | undefined;
         price?: number | undefined;
         isActive?: boolean | undefined;
         position?: number | undefined;
@@ -206,7 +206,7 @@ export declare const createProductInputSchema: z.ZodEffects<z.ZodObject<{
     badgeIds?: string[] | undefined;
     relatedProductIds?: string[] | undefined;
 }>, {
-    currencyCode: "IRR" | "USD" | "EUR";
+    currencyCode: "IRT" | "USD" | "EUR";
     title: string;
     category: string;
     price: number;
@@ -232,7 +232,7 @@ export declare const createProductInputSchema: z.ZodEffects<z.ZodObject<{
         alt?: string | undefined;
     }[] | undefined;
     variants?: {
-        currencyCode: "IRR" | "USD" | "EUR";
+        currencyCode: "IRT" | "USD" | "EUR";
         isActive: boolean;
         variantName: string;
         stock: number;
@@ -249,7 +249,7 @@ export declare const createProductInputSchema: z.ZodEffects<z.ZodObject<{
     title: string;
     category: string;
     price: number;
-    currencyCode?: "IRR" | "USD" | "EUR" | undefined;
+    currencyCode?: "IRT" | "USD" | "EUR" | undefined;
     slug?: string | undefined;
     brandId?: string | undefined;
     colorThemeId?: string | undefined;
@@ -273,7 +273,7 @@ export declare const createProductInputSchema: z.ZodEffects<z.ZodObject<{
     }[] | undefined;
     variants?: {
         variantName: string;
-        currencyCode?: "IRR" | "USD" | "EUR" | undefined;
+        currencyCode?: "IRT" | "USD" | "EUR" | undefined;
         price?: number | undefined;
         isActive?: boolean | undefined;
         position?: number | undefined;
@@ -301,7 +301,7 @@ export declare const updateProductInputSchema: z.ZodObject<{
     howToUse: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     price: z.ZodOptional<z.ZodNumber>;
     compareAtPrice: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
-    currencyCode: z.ZodOptional<z.ZodDefault<z.ZodEnum<["IRR", "USD", "EUR"]>>>;
+    currencyCode: z.ZodOptional<z.ZodDefault<z.ZodEnum<["IRT", "USD", "EUR"]>>>;
     isBestseller: z.ZodOptional<z.ZodBoolean>;
     isFeatured: z.ZodOptional<z.ZodBoolean>;
     isSpecialProduct: z.ZodOptional<z.ZodBoolean>;
@@ -325,14 +325,14 @@ export declare const updateProductInputSchema: z.ZodObject<{
         variantName: z.ZodString;
         sku: z.ZodOptional<z.ZodString>;
         price: z.ZodOptional<z.ZodNumber>;
-        currencyCode: z.ZodDefault<z.ZodEnum<["IRR", "USD", "EUR"]>>;
+        currencyCode: z.ZodDefault<z.ZodEnum<["IRT", "USD", "EUR"]>>;
         stock: z.ZodDefault<z.ZodNumber>;
         colorName: z.ZodOptional<z.ZodString>;
         colorHexCode: z.ZodOptional<z.ZodString>;
         isActive: z.ZodDefault<z.ZodBoolean>;
         position: z.ZodOptional<z.ZodNumber>;
     }, "strip", z.ZodTypeAny, {
-        currencyCode: "IRR" | "USD" | "EUR";
+        currencyCode: "IRT" | "USD" | "EUR";
         isActive: boolean;
         variantName: string;
         stock: number;
@@ -343,7 +343,7 @@ export declare const updateProductInputSchema: z.ZodObject<{
         colorHexCode?: string | undefined;
     }, {
         variantName: string;
-        currencyCode?: "IRR" | "USD" | "EUR" | undefined;
+        currencyCode?: "IRT" | "USD" | "EUR" | undefined;
         price?: number | undefined;
         isActive?: boolean | undefined;
         position?: number | undefined;
@@ -355,7 +355,7 @@ export declare const updateProductInputSchema: z.ZodObject<{
     badgeIds: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
     relatedProductIds: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 }, "strip", z.ZodTypeAny, {
-    currencyCode?: "IRR" | "USD" | "EUR" | undefined;
+    currencyCode?: "IRT" | "USD" | "EUR" | undefined;
     title?: string | undefined;
     category?: string | undefined;
     slug?: string | undefined;
@@ -381,7 +381,7 @@ export declare const updateProductInputSchema: z.ZodObject<{
         alt?: string | undefined;
     }[] | undefined;
     variants?: {
-        currencyCode: "IRR" | "USD" | "EUR";
+        currencyCode: "IRT" | "USD" | "EUR";
         isActive: boolean;
         variantName: string;
         stock: number;
@@ -395,7 +395,7 @@ export declare const updateProductInputSchema: z.ZodObject<{
     badgeIds?: string[] | undefined;
     relatedProductIds?: string[] | undefined;
 }, {
-    currencyCode?: "IRR" | "USD" | "EUR" | undefined;
+    currencyCode?: "IRT" | "USD" | "EUR" | undefined;
     title?: string | undefined;
     category?: string | undefined;
     slug?: string | undefined;
@@ -422,7 +422,7 @@ export declare const updateProductInputSchema: z.ZodObject<{
     }[] | undefined;
     variants?: {
         variantName: string;
-        currencyCode?: "IRR" | "USD" | "EUR" | undefined;
+        currencyCode?: "IRT" | "USD" | "EUR" | undefined;
         price?: number | undefined;
         isActive?: boolean | undefined;
         position?: number | undefined;
@@ -465,14 +465,14 @@ export declare const addVariantInputSchema: z.ZodObject<{
     variantName: z.ZodString;
     sku: z.ZodOptional<z.ZodString>;
     price: z.ZodOptional<z.ZodNumber>;
-    currencyCode: z.ZodDefault<z.ZodEnum<["IRR", "USD", "EUR"]>>;
+    currencyCode: z.ZodDefault<z.ZodEnum<["IRT", "USD", "EUR"]>>;
     stock: z.ZodDefault<z.ZodNumber>;
     colorName: z.ZodOptional<z.ZodString>;
     colorHexCode: z.ZodOptional<z.ZodString>;
     isActive: z.ZodDefault<z.ZodBoolean>;
     position: z.ZodDefault<z.ZodOptional<z.ZodNumber>>;
 }, "strip", z.ZodTypeAny, {
-    currencyCode: "IRR" | "USD" | "EUR";
+    currencyCode: "IRT" | "USD" | "EUR";
     isActive: boolean;
     variantName: string;
     position: number;
@@ -483,7 +483,7 @@ export declare const addVariantInputSchema: z.ZodObject<{
     colorHexCode?: string | undefined;
 }, {
     variantName: string;
-    currencyCode?: "IRR" | "USD" | "EUR" | undefined;
+    currencyCode?: "IRT" | "USD" | "EUR" | undefined;
     price?: number | undefined;
     isActive?: boolean | undefined;
     position?: number | undefined;
@@ -496,14 +496,14 @@ export declare const updateVariantInputSchema: z.ZodObject<{
     variantName: z.ZodOptional<z.ZodString>;
     sku: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     price: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
-    currencyCode: z.ZodOptional<z.ZodDefault<z.ZodEnum<["IRR", "USD", "EUR"]>>>;
+    currencyCode: z.ZodOptional<z.ZodDefault<z.ZodEnum<["IRT", "USD", "EUR"]>>>;
     stock: z.ZodOptional<z.ZodNumber>;
     colorName: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     colorHexCode: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     isActive: z.ZodOptional<z.ZodBoolean>;
     position: z.ZodOptional<z.ZodNumber>;
 }, "strip", z.ZodTypeAny, {
-    currencyCode?: "IRR" | "USD" | "EUR" | undefined;
+    currencyCode?: "IRT" | "USD" | "EUR" | undefined;
     price?: number | null | undefined;
     isActive?: boolean | undefined;
     variantName?: string | undefined;
@@ -513,7 +513,7 @@ export declare const updateVariantInputSchema: z.ZodObject<{
     colorName?: string | null | undefined;
     colorHexCode?: string | null | undefined;
 }, {
-    currencyCode?: "IRR" | "USD" | "EUR" | undefined;
+    currencyCode?: "IRT" | "USD" | "EUR" | undefined;
     price?: number | null | undefined;
     isActive?: boolean | undefined;
     variantName?: string | undefined;
@@ -580,7 +580,7 @@ export declare const validateProductInput: {
         activeOnly?: boolean | undefined;
     };
     create: (data: unknown) => {
-        currencyCode: "IRR" | "USD" | "EUR";
+        currencyCode: "IRT" | "USD" | "EUR";
         title: string;
         category: string;
         price: number;
@@ -606,7 +606,7 @@ export declare const validateProductInput: {
             alt?: string | undefined;
         }[] | undefined;
         variants?: {
-            currencyCode: "IRR" | "USD" | "EUR";
+            currencyCode: "IRT" | "USD" | "EUR";
             isActive: boolean;
             variantName: string;
             stock: number;
@@ -621,7 +621,7 @@ export declare const validateProductInput: {
         relatedProductIds?: string[] | undefined;
     };
     update: (data: unknown) => {
-        currencyCode?: "IRR" | "USD" | "EUR" | undefined;
+        currencyCode?: "IRT" | "USD" | "EUR" | undefined;
         title?: string | undefined;
         category?: string | undefined;
         slug?: string | undefined;
@@ -647,7 +647,7 @@ export declare const validateProductInput: {
             alt?: string | undefined;
         }[] | undefined;
         variants?: {
-            currencyCode: "IRR" | "USD" | "EUR";
+            currencyCode: "IRT" | "USD" | "EUR";
             isActive: boolean;
             variantName: string;
             stock: number;
@@ -672,7 +672,7 @@ export declare const validateProductInput: {
         alt?: string | null | undefined;
     };
     addVariant: (data: unknown) => {
-        currencyCode: "IRR" | "USD" | "EUR";
+        currencyCode: "IRT" | "USD" | "EUR";
         isActive: boolean;
         variantName: string;
         position: number;
@@ -683,7 +683,7 @@ export declare const validateProductInput: {
         colorHexCode?: string | undefined;
     };
     updateVariant: (data: unknown) => {
-        currencyCode?: "IRR" | "USD" | "EUR" | undefined;
+        currencyCode?: "IRT" | "USD" | "EUR" | undefined;
         price?: number | null | undefined;
         isActive?: boolean | undefined;
         variantName?: string | undefined;

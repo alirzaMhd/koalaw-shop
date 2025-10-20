@@ -267,7 +267,7 @@
       }
     };
     const formatPrice = (amount, currencyCode) => {
-      if (currencyCode === "IRR" || !currencyCode) {
+      if (currencyCode === "IRT" || !currencyCode) {
         return `${faNumber(amount || 0)} تومان`;
       }
       const nf = new Intl.NumberFormat("fa-IR", {
@@ -414,7 +414,7 @@
       Object.assign(zoomPanel.style, {
         position: "fixed",
         left: "50%",
-        top: `calc(100% - ${PANEL_SIZE_PX/10}px)`,
+        top: `calc(100% - ${PANEL_SIZE_PX / 10}px)`,
         transform: "translate(-50%, -50%)",
         width: PANEL_SIZE_PX + "px",
         height: PANEL_SIZE_PX + "px",
@@ -1221,7 +1221,7 @@
             cart[idx].variantId =
               cart[idx].variantId || selectedVariantId || null;
             cart[idx].currencyCode =
-              cart[idx].currencyCode || p.currencyCode || "IRR";
+              cart[idx].currencyCode || p.currencyCode || "IRT";
           } else {
             cart.push({
               id: lineId,
@@ -1233,7 +1233,7 @@
               variant: vObj?.variantName || "",
               productId: p.id,
               variantId: selectedVariantId || null,
-              currencyCode: p.currencyCode || "IRR",
+              currencyCode: p.currencyCode || "IRT",
             });
           }
 

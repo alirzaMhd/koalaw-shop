@@ -257,8 +257,8 @@
       }
     }
     function toomanToRial(price) {
-      rial = price * 10
-      return rial
+      rial = price * 10;
+      return rial;
     }
 
     // Fetch related products from cart items
@@ -291,7 +291,7 @@
                 slug: rel.slug,
                 variant: "",
                 variantId: null,
-                currencyCode: rel.currencyCode || "IRR",
+                currencyCode: rel.currencyCode || "IRT",
               });
             }
           });
@@ -475,10 +475,7 @@
       gw && (gw.checked = !!state.gift);
       note && (note.value = state.note || "");
       couponInput && (couponInput.value = state.coupon || "");
-      couponMsg &&
-        (couponMsg.textContent = state.coupon
-          ? ""
-          : "");
+      couponMsg && (couponMsg.textContent = state.coupon ? "" : "");
 
       const navCnt = document.getElementById("nav-cart-count");
       if (navCnt)
@@ -816,7 +813,6 @@
             });
             const data = await resp.json();
             const q = data?.data?.quote;
-
 
             if (resp.ok && q?.appliedCoupon?.ok) {
               s.coupon = code;

@@ -63,7 +63,7 @@ function mapItem(row: any): CartItem {
     unitPrice: row.unitPrice ?? row.unit_price,
     quantity: row.quantity,
     lineTotal: row.lineTotal ?? row.line_total,
-    currencyCode: row.currencyCode ?? row.currency_code ?? "IRR",
+    currencyCode: row.currencyCode ?? row.currency_code ?? "IRT",
     imageUrl: row.imageUrl ?? row.image_url ?? null,
     createdAt: row.createdAt ?? row.created_at,
     updatedAt: row.updatedAt ?? row.updated_at,
@@ -131,7 +131,7 @@ async function resolveSnapshot(args: {
     title: product.title,
     variantName,
     unitPrice,
-    currencyCode: product.currencyCode || "IRR",
+    currencyCode: product.currencyCode || "IRT",
     imageUrl,
   };
 }

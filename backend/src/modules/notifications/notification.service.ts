@@ -164,7 +164,7 @@ async function renderTemplate(name: string, data: Record<string, any>): Promise<
     ? data.items
         .map(
           (it: any) =>
-            `<tr><td style="padding:6px 8px;border-bottom:1px solid #eee">${safeStr(it.title)} ${it.variantName ? `(${it.variantName})` : ""}</td><td style="padding:6px 8px;border-bottom:1px solid #eee">${it.qty}×</td><td style="padding:6px 8px;border-bottom:1px solid #eee">${money(it.lineTotal, data.amounts?.currencyCode || "IRR")}</td></tr>`
+            `<tr><td style="padding:6px 8px;border-bottom:1px solid #eee">${safeStr(it.title)} ${it.variantName ? `(${it.variantName})` : ""}</td><td style="padding:6px 8px;border-bottom:1px solid #eee">${it.qty}×</td><td style="padding:6px 8px;border-bottom:1px solid #eee">${money(it.lineTotal, data.amounts?.currencyCode || "IRT")}</td></tr>`
         )
         .join("")
     : "";
@@ -182,11 +182,11 @@ async function renderTemplate(name: string, data: Record<string, any>): Promise<
         ${
           amounts.total != null
             ? `<div style="margin-top:12px;border-top:1px dashed #ddd;padding-top:8px">
-                <div>جمع جزء: <strong>${money(amounts.subtotal || 0, amounts.currencyCode || "IRR")}</strong></div>
-                <div>تخفیف: <strong>${money(amounts.discount || 0, amounts.currencyCode || "IRR")}</strong></div>
-                <div>هزینه ارسال: <strong>${money(amounts.shipping || 0, amounts.currencyCode || "IRR")}</strong></div>
-                ${amounts.giftWrap ? `<div>بسته‌بندی هدیه: <strong>${money(amounts.giftWrap, amounts.currencyCode || "IRR")}</strong></div>` : ""}
-                <div style="margin-top:6px">مبلغ نهایی: <strong>${money(amounts.total, amounts.currencyCode || "IRR")}</strong></div>
+                <div>جمع جزء: <strong>${money(amounts.subtotal || 0, amounts.currencyCode || "IRT")}</strong></div>
+                <div>تخفیف: <strong>${money(amounts.discount || 0, amounts.currencyCode || "IRT")}</strong></div>
+                <div>هزینه ارسال: <strong>${money(amounts.shipping || 0, amounts.currencyCode || "IRT")}</strong></div>
+                ${amounts.giftWrap ? `<div>بسته‌بندی هدیه: <strong>${money(amounts.giftWrap, amounts.currencyCode || "IRT")}</strong></div>` : ""}
+                <div style="margin-top:6px">مبلغ نهایی: <strong>${money(amounts.total, amounts.currencyCode || "IRT")}</strong></div>
               </div>`
             : ""
         }
@@ -197,7 +197,7 @@ async function renderTemplate(name: string, data: Record<string, any>): Promise<
       </div>
     </div>
   </div>`;
-  const text = `${title} - مبلغ: ${money(amounts.total || 0, amounts.currencyCode || "IRR")}`;
+  const text = `${title} - مبلغ: ${money(amounts.total || 0, amounts.currencyCode || "IRT")}`;
   return { html, text };
 }
 

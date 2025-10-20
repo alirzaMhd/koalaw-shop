@@ -87,7 +87,7 @@ const FREE_SHIP_THRESHOLD = Number(env.PRICING_FREE_SHIP_THRESHOLD ?? 1_000_000)
 const BASE_SHIPPING = Number(env.PRICING_BASE_SHIPPING ?? 45_000);
 const EXPRESS_SURCHARGE = Number(env.PRICING_EXPRESS_SURCHARGE ?? 30_000);
 const GIFT_WRAP_PRICE = Number(env.PRICING_GIFT_WRAP_PRICE ?? 20_000);
-const DEFAULT_CURRENCY = String(env.CURRENCY_DEFAULT ?? "IRR");
+const DEFAULT_CURRENCY = String(env.CURRENCY_DEFAULT ?? "IRT");
 // ---------- Sample fallback coupons (used if DB has none and feature enabled) ----------
 
 

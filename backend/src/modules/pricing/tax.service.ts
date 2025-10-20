@@ -12,7 +12,7 @@
 //   TAX_TAXABLE_SHIPPING=true
 //   TAX_COUNTRY_DEFAULT=IR
 //   TAX_REGION_OVERRIDES='[{"country":"IR","province":"Tehran","rate":9}]'  (JSON array; see RegionOverride type)
-//   CURRENCY_DEFAULT=IRR
+//   CURRENCY_DEFAULT=IRT
 //
 // Note: The service is stateless and safe to reuse. It does not persist any tax data.
 //       Integrate with pricing.service by calling computeForLines and adding the tax totals to your quote.
@@ -26,7 +26,7 @@ const DEFAULT_RATE = Number(env.TAX_RATE_PERCENT ?? 9); // IR VAT ~9%
 const PRICES_INCLUDE_TAX = String(env.TAX_INCLUSIVE_PRICES ?? "false") === "true";
 const SHIPPING_TAXABLE = String(env.TAX_TAXABLE_SHIPPING ?? "true") === "true";
 const COUNTRY_DEFAULT = String(env.TAX_COUNTRY_DEFAULT ?? "IR");
-const DEFAULT_CURRENCY = String(env.CURRENCY_DEFAULT ?? "IRR");
+const DEFAULT_CURRENCY = String(env.CURRENCY_DEFAULT ?? "IRT");
 
 type RatePct = number;
 

@@ -69,7 +69,7 @@ const EnvSchema = z.object({
   PRICING_EXPRESS_SURCHARGE: z.coerce.number().int().optional(),
   PRICING_GIFT_WRAP_PRICE: z.coerce.number().int().optional(),
   PRICING_ENABLE_SAMPLE_COUPONS: z.string().optional(),
-  CURRENCY_DEFAULT: z.string().default("IRR"),
+  CURRENCY_DEFAULT: z.string().default("IRT"),
 
   // Inventory
   INVENTORY_ALLOW_BACKORDER: z.string().optional(),

@@ -290,7 +290,7 @@ class ProductService {
     const result = await prisma.$transaction(async (tx: {
       product: { create: (args: { data: any }) => any };
       productImage: { createMany: (args: { data: { productId: string; url: string; alt: string | null; position: number }[] }) => any };
-      productVariant: { createMany: (args: { data: { productId: string; variantName: string; sku: string | null; price: number | null; currencyCode: "IRR" | "USD" | "EUR"; stock: number; colorName: string | null; colorHexCode: string | null; isActive: boolean; position: number }[] }) => any };
+      productVariant: { createMany: (args: { data: { productId: string; variantName: string; sku: string | null; price: number | null; currencyCode: "IRT" | "USD" | "EUR"; stock: number; colorName: string | null; colorHexCode: string | null; isActive: boolean; position: number }[] }) => any };
       relatedProduct: { createMany: (args: { data: { productId: string; relatedProductId: string; position: number }[] }) => any };
     }) => {
       const product = await tx.product.create({
@@ -320,7 +320,7 @@ class ProductService {
             variantName: v.variantName,
             sku: v.sku ?? null,
             price: typeof v.price === "number" ? v.price : null,
-            currencyCode: v.currencyCode ?? "IRR",
+            currencyCode: v.currencyCode ?? "IRT",
             stock: v.stock ?? 0,
             colorName: v.colorName ?? null,
             colorHexCode: v.colorHexCode ?? null,
@@ -385,7 +385,7 @@ class ProductService {
     await prisma.$transaction(async (tx: {
       product: { update: (args: { where: { id: string }; data: any }) => any };
       productImage: { deleteMany: (args: { where: { productId: string } }) => any; createMany: (args: { data: { productId: string; url: string; alt: string | null; position: number }[] }) => any };
-      productVariant: { deleteMany: (args: { where: { productId: string } }) => any; createMany: (args: { data: { productId: string; variantName: string; sku: string | null; price: number | null; currencyCode: "IRR" | "USD" | "EUR"; stock: number; colorName: string | null; colorHexCode: string | null; isActive: boolean; position: number }[] }) => any };
+      productVariant: { deleteMany: (args: { where: { productId: string } }) => any; createMany: (args: { data: { productId: string; variantName: string; sku: string | null; price: number | null; currencyCode: "IRT" | "USD" | "EUR"; stock: number; colorName: string | null; colorHexCode: string | null; isActive: boolean; position: number }[] }) => any };
       relatedProduct: { deleteMany: (args: { where: { productId: string } }) => any; createMany: (args: { data: { productId: string; relatedProductId: string; position: number }[] }) => any };
     }) => {
       await tx.product.update({
@@ -421,7 +421,7 @@ class ProductService {
               variantName: v.variantName,
               sku: v.sku ?? null,
               price: typeof v.price === "number" ? v.price : null,
-              currencyCode: v.currencyCode ?? "IRR",
+              currencyCode: v.currencyCode ?? "IRT",
               stock: v.stock ?? 0,
               colorName: v.colorName ?? null,
               colorHexCode: v.colorHexCode ?? null,
@@ -528,7 +528,7 @@ class ProductService {
         variantName: input.variantName,
         sku: input.sku ?? null,
         price: typeof input.price === "number" ? input.price : null,
-        currencyCode: input.currencyCode ?? "IRR",
+        currencyCode: input.currencyCode ?? "IRT",
         stock: input.stock ?? 0,
         colorName: input.colorName ?? null,
         colorHexCode: input.colorHexCode ?? null,

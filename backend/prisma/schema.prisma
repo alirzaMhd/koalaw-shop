@@ -83,7 +83,7 @@ model Product {
   howToUse         String?          @map("how_to_use")
   price            Int
   compareAtPrice   Int?             @map("compare_at_price")
-  currencyCode     String           @default("IRR") @map("currency_code") @db.Char(3)
+  currencyCode     String           @default("IRT") @map("currency_code") @db.Char(3)
   ratingAvg        Decimal          @default(0.0) @map("rating_avg") @db.Decimal(3, 2)
   ratingCount      Int              @default(0) @map("rating_count")
   isBestseller     Boolean          @default(false) @map("is_bestseller")
@@ -141,7 +141,7 @@ model ProductVariant {
   variantName  String      @map("variant_name")
   sku          String?     @unique
   price        Int?
-  currencyCode String      @default("IRR") @map("currency_code") @db.Char(3)
+  currencyCode String      @default("IRT") @map("currency_code") @db.Char(3)
   stock        Int         @default(0)
   colorName    String?     @map("color_name")
   colorHexCode String?     @map("color_hex_code") @db.Char(7)
@@ -229,7 +229,7 @@ model CartItem {
   unitPrice    Int             @map("unit_price")
   quantity     Int
   lineTotal    Int             @map("line_total")
-  currencyCode String          @default("IRR") @map("currency_code") @db.Char(3)
+  currencyCode String          @default("IRT") @map("currency_code") @db.Char(3)
   imageUrl     String?         @map("image_url")
   createdAt    DateTime        @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt    DateTime        @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
@@ -255,7 +255,7 @@ model Order {
   shippingTotal        Int                @default(0) @map("shipping_total")
   giftWrapTotal        Int                @default(0) @map("gift_wrap_total")
   total                Int                @default(0)
-  currencyCode         String             @default("IRR") @map("currency_code") @db.Char(3)
+  currencyCode         String             @default("IRT") @map("currency_code") @db.Char(3)
   shippingFirstName    String             @map("shipping_first_name")
   shippingLastName     String             @map("shipping_last_name")
   shippingPhone        String             @map("shipping_phone")
@@ -286,7 +286,7 @@ model OrderItem {
   unitPrice    Int             @map("unit_price")
   quantity     Int
   lineTotal    Int             @map("line_total")
-  currencyCode String          @default("IRR") @map("currency_code") @db.Char(3)
+  currencyCode String          @default("IRT") @map("currency_code") @db.Char(3)
   imageUrl     String?         @map("image_url")
   position     Int             @default(0)
   createdAt    DateTime        @default(now()) @map("created_at") @db.Timestamptz(6)
@@ -303,7 +303,7 @@ model Payment {
   method         PaymentMethod
   status         PaymentStatus @default(PENDING)
   amount         Int
-  currencyCode   String        @default("IRR") @map("currency_code") @db.Char(3)
+  currencyCode   String        @default("IRT") @map("currency_code") @db.Char(3)
   authority      String?
   transactionRef String?       @map("transaction_ref")
   paidAt         DateTime?     @map("paid_at") @db.Timestamptz(6)

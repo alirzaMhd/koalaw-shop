@@ -313,7 +313,7 @@ if (code !== 100 || !data?.authority) {
         authority,
         paymentUrl,
         amount: request.amount,
-        currency: request.currency || "IRR",
+        currency: request.currency || "IRT",
         fee: data.fee,
         feeType: data.fee_type,
       };
