@@ -205,7 +205,7 @@ class CheckoutService {
     options: CheckoutOptions;
     returnUrl?: string | undefined;
     cancelUrl?: string | undefined;
-    
+
     lines?: Array<{
       title: string;
       unitPrice: number;
@@ -254,12 +254,12 @@ class CheckoutService {
     if (!items.length) throw new AppError("سبد خرید خالی است.", 400, "CART_EMPTY");
     const adHocLines = Array.isArray(args.lines)
       ? args.lines.filter(
-          (l) =>
-            !!l &&
-            !isNaN(Number(l.unitPrice)) &&
-            Math.floor(Number(l.quantity || 0)) > 0 &&
-            String(l.title || "").trim().length > 0
-        )
+        (l) =>
+          !!l &&
+          !isNaN(Number(l.unitPrice)) &&
+          Math.floor(Number(l.quantity || 0)) > 0 &&
+          String(l.title || "").trim().length > 0
+      )
       : [];
     // Use ad-hoc lines whenever provided (even if DB cart has items), otherwise fall back to DB cart
     const useAdHoc = adHocLines.length > 0;
@@ -268,30 +268,30 @@ class CheckoutService {
     }
     const quote: QuoteResult = useAdHoc
       ? await pricingService.quoteLines(
-          adHocLines.map<QuoteLine>((l) => ({
-            title: l.title,
-            unitPrice: Math.floor(Number(l.unitPrice || 0)),
-            quantity: Math.max(1, Math.floor(Number(l.quantity || 1))),
-            lineTotal:
-              Math.floor(Number(l.unitPrice || 0)) *
-              Math.max(1, Math.floor(Number(l.quantity || 1))),
-            imageUrl: l.imageUrl ?? null,
-            variantName: l.variantName ?? null,
-            currencyCode: l.currencyCode,
-          })),
-          {
-            couponCode: options.couponCode ?? null,
-            ...(options.shippingMethod !== undefined ? { shippingMethod: options.shippingMethod } : {}),
-            ...(options.giftWrap !== undefined ? { giftWrap: options.giftWrap } : {}),
-            ...(userId ? { userId } : {}),
-          }
-        )
-      : await pricingService.quoteCart(cartId, {
+        adHocLines.map<QuoteLine>((l) => ({
+          title: l.title,
+          unitPrice: Math.floor(Number(l.unitPrice || 0)),
+          quantity: Math.max(1, Math.floor(Number(l.quantity || 1))),
+          lineTotal:
+            Math.floor(Number(l.unitPrice || 0)) *
+            Math.max(1, Math.floor(Number(l.quantity || 1))),
+          imageUrl: l.imageUrl ?? null,
+          variantName: l.variantName ?? null,
+          currencyCode: l.currencyCode,
+        })),
+        {
           couponCode: options.couponCode ?? null,
-          ...(options.shippingMethod !== undefined ? { shippingMethod: options.shippingMethod } : {}),
-          ...(options.giftWrap !== undefined ? { giftWrap: options.giftWrap } : {}),
+          shippingMethod: options.shippingMethod || 'standard',
+          giftWrap: options.giftWrap ?? false,
           ...(userId ? { userId } : {}),
-        });
+        }
+      )
+      : await pricingService.quoteCart(cartId, {
+        couponCode: options.couponCode ?? null,
+        shippingMethod: options.shippingMethod || 'standard',
+        giftWrap: options.giftWrap ?? false,
+        ...(userId ? { userId } : {}),
+      });
 
     const addr = ensureAddress(address);
     const orderNumber = await generateOrderNumber();
@@ -348,33 +348,33 @@ class CheckoutService {
 
       const itemsForOrder = useAdHoc
         ? adHocLines.map((l, idx) => ({
-            orderId: order.id,
-            productId: l.productId || null,
-            variantId: l.variantId || null,
-            title: l.title,
-            variantName: l.variantName || null,
-            unitPrice: Math.floor(Number(l.unitPrice || 0)),
-            quantity: Math.max(1, Math.floor(Number(l.quantity || 1))),
-            lineTotal:
-              Math.floor(Number(l.unitPrice || 0)) *
-              Math.max(1, Math.floor(Number(l.quantity || 1))),
-            currencyCode: l.currencyCode || currency,
-            imageUrl: l.imageUrl || null,
-            position: idx,
-          }))
+          orderId: order.id,
+          productId: l.productId || null,
+          variantId: l.variantId || null,
+          title: l.title,
+          variantName: l.variantName || null,
+          unitPrice: Math.floor(Number(l.unitPrice || 0)),
+          quantity: Math.max(1, Math.floor(Number(l.quantity || 1))),
+          lineTotal:
+            Math.floor(Number(l.unitPrice || 0)) *
+            Math.max(1, Math.floor(Number(l.quantity || 1))),
+          currencyCode: l.currencyCode || currency,
+          imageUrl: l.imageUrl || null,
+          position: idx,
+        }))
         : items.map((it: typeof items[number], idx: number) => ({
-            orderId: order.id,
-            productId: it.productId || null,
-            variantId: it.variantId || null,
-            title: it.title,
-            variantName: it.variantName || null,
-            unitPrice: it.unitPrice,
-            quantity: it.quantity,
-            lineTotal: it.unitPrice * it.quantity,
-            currencyCode: it.currencyCode || currency,
-            imageUrl: it.imageUrl || null,
-            position: idx,
-          }));
+          orderId: order.id,
+          productId: it.productId || null,
+          variantId: it.variantId || null,
+          title: it.title,
+          variantName: it.variantName || null,
+          unitPrice: it.unitPrice,
+          quantity: it.quantity,
+          lineTotal: it.unitPrice * it.quantity,
+          currencyCode: it.currencyCode || currency,
+          imageUrl: it.imageUrl || null,
+          position: idx,
+        }));
       if (!itemsForOrder.length) {
         throw new AppError("سبد خرید خالی است.", 400, "CART_EMPTY");
       }

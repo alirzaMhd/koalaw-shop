@@ -84,7 +84,7 @@ const lineSchema = z
   })
   .strict();
 
-const baseCreateOrderSchema  = z
+const baseCreateOrderSchema = z
   .object({
     cartId: uuidSchema,
     address: addressSchema,
@@ -94,7 +94,7 @@ const baseCreateOrderSchema  = z
     giftWrap: z.coerce.boolean().optional().default(false),
     note: z.string().trim().max(2000).optional().nullable(),
     returnUrl: z.string().url().optional(),
-    cancelUrl: z.string().url().optional(),lines: z.array(lineSchema).optional(),
+    cancelUrl: z.string().url().optional(), lines: z.array(lineSchema).optional(),
     items: z.array(lineSchema).optional(),
     clientCart: z.array(lineSchema).optional(),
     cart: z.array(lineSchema).optional(),
@@ -157,12 +157,11 @@ class CheckoutController {
         address: body.address,
         options: {
           paymentMethod: body.paymentMethod,
+          shippingMethod: body.shippingMethod || 'standard',
           couponCode: body.couponCode || undefined,
           giftWrap: body.giftWrap,
           note: body.note || null,
-          userId, // for coupon usage caps
-          // Conditionally add shippingMethod only if it's provided
-          ...(body.shippingMethod && { shippingMethod: body.shippingMethod }),
+          userId,
         },
         returnUrl: body.returnUrl,
         cancelUrl: body.cancelUrl,
