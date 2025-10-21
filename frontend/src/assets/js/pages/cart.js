@@ -42,7 +42,7 @@
 
     const FREE_SHIP_THRESHOLD = 1000000;
     const BASE_SHIPPING = 50000;
-    const EXPRESS_PRICE = 70000;
+    const EXPRESS_PRICE = 30000;
     const GIFT_WRAP_PRICE = 30000;
 
     const SAMPLE_ITEMS = [];
@@ -1129,9 +1129,9 @@
         std.checked = !state.express;
         exp.checked = !!state.express;
         document.getElementById("addr-price-standard").textContent =
-          KUtils.toIRR(45000);
+          KUtils.toIRR(BASE_SHIPPING);
         document.getElementById("addr-price-express").textContent =
-          KUtils.toIRR(45000 + 30000);
+          KUtils.toIRR(BASE_SHIPPING + EXPRESS_PRICE);
         document.querySelectorAll('input[name="addr-ship"]').forEach((r) => {
           r.onchange = () => {
             state = loadState();
