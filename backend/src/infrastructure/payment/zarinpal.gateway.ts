@@ -632,9 +632,9 @@ if (code !== 100 || !data?.authority) {
     const orderNumber = args.metadata?.orderNumber || "";
     const description = args.description || `پرداخت سفارش ${orderNumber || orderId}`;
     const currency: "IRR" | "IRT" = args.currency === "IRT" ? "IRT" : "IRR";
-
+    const amountInRials = args.amount * 10;
     const result = await this.createPayment({
-      amount: args.amount,
+      amount: amountInRials,
       description,
       callback_url: args.returnUrl || this.getDefaultCallbackUrl(),
       mobile: args.mobile,
