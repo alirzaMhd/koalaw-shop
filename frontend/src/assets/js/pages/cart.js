@@ -256,10 +256,6 @@
         console.warn("[CART] Failed to clear backend cart:", e);
       }
     }
-    function toomanToRial(price) {
-      rial = price * 10;
-      return rial;
-    }
 
     // Fetch related products from cart items
     async function fetchRelatedProducts(cart) {
@@ -1382,7 +1378,7 @@
           // Send ad-hoc lines so backend can create order even if server cart is empty
           lines: cart.map((it) => ({
             title: String(it.title || "").trim(),
-            unitPrice: Number(toomanToRial(it.price) || 0),
+            unitPrice: Number(it.price || 0),
             quantity: Number(it.qty || 1),
             imageUrl: it.image || undefined,
             currencyCode: it.currencyCode || "IRR",
